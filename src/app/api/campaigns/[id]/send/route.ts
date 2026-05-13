@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY!);
+}
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,6 +29,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const emails = customers.map((c) => c.email);
 
   try {
+    const resend = getResend();
     await resend.emails.send({
       from: "Nine2Five <noreply@nine2five.nz>",
       to: emails,
