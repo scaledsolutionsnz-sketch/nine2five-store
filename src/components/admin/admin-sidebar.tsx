@@ -46,7 +46,7 @@ export function AdminSidebar({ email }: { email: string }) {
   }
 
   return (
-    <aside className="w-60 shrink-0 flex flex-col h-screen bg-white border-r border-gray-200">
+    <aside className="w-72 shrink-0 flex flex-col h-screen bg-white border-r border-gray-200">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-100">
         <div className="flex items-center gap-3">
@@ -61,8 +61,8 @@ export function AdminSidebar({ email }: { email: string }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-3">
-        <div className="space-y-0.5">
+      <nav className="flex-1 overflow-y-auto px-4 py-4">
+        <div className="space-y-1">
           {nav.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
             return (
@@ -70,13 +70,13 @@ export function AdminSidebar({ email }: { email: string }) {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-100",
+                  "flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] transition-all duration-100",
                   active
                     ? "bg-[#16a34a]/10 text-[#16a34a] font-semibold"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium"
                 )}
               >
-                <Icon className={cn("h-[18px] w-[18px] shrink-0", active ? "text-[#16a34a]" : "text-gray-400")} />
+                <Icon className={cn("h-5 w-5 shrink-0", active ? "text-[#16a34a]" : "text-gray-400")} />
                 {label}
               </Link>
             );
@@ -85,22 +85,22 @@ export function AdminSidebar({ email }: { email: string }) {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-gray-100 px-3 py-3 space-y-0.5">
+      <div className="border-t border-gray-100 px-4 py-4 space-y-1">
         <Link
           href="/admin/settings"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
+          className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
         >
-          <Settings className="h-[18px] w-[18px] text-gray-400" />
+          <Settings className="h-5 w-5 text-gray-400" />
           Settings
         </Link>
         <button
           onClick={signOut}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all"
+          className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all"
         >
-          <LogOut className="h-[18px] w-[18px]" />
+          <LogOut className="h-5 w-5" />
           Sign out
         </button>
-        <div className="px-3 pt-2">
+        <div className="px-4 pt-2">
           <p className="text-[11px] text-gray-300 truncate">{email}</p>
         </div>
       </div>
