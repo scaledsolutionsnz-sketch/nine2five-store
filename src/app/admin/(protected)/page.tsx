@@ -143,45 +143,52 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="p-8 max-w-6xl space-y-8">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#16a34a] mb-1">Overview</p>
-        <h1 className="font-display font-bold text-2xl text-white">Dashboard</h1>
+    <div className="max-w-6xl space-y-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display font-bold text-xl text-white">Dashboard</h1>
+          <p className="text-[13px] text-[#555] mt-0.5">
+            {new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long" })}
+          </p>
+        </div>
+        <Link href="/admin/orders" className="flex items-center gap-1.5 text-xs font-semibold text-[#16a34a] hover:text-[#4ade80] transition-colors">
+          View all orders <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
 
       {/* Metric cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {metrics.map((m) => (
           <div
             key={m.label}
             className={cn(
-              "p-5 rounded-xl border",
+              "p-5 rounded-xl border relative overflow-hidden",
               m.accent
-                ? "bg-[#16a34a]/5 border-[#16a34a]/20"
+                ? "bg-[#16a34a]/[0.07] border-[#16a34a]/20"
                 : m.warn
-                ? "bg-amber-500/5 border-amber-500/20"
-                : "bg-[#141414] border-[#1e1e1e]"
+                ? "bg-amber-500/[0.05] border-amber-500/20"
+                : "bg-[#111] border-white/[0.06]"
             )}
           >
-            <div className="flex items-start justify-between mb-3">
-              <p className="text-xs text-[#737373] font-medium">{m.label}</p>
-              <m.icon
-                className={cn(
-                  "h-4 w-4",
-                  m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#404040]"
-                )}
-              />
+            <div className="flex items-center justify-between mb-4">
+              <div className={cn(
+                "h-8 w-8 rounded-lg flex items-center justify-center",
+                m.accent ? "bg-[#16a34a]/15" : m.warn ? "bg-amber-500/10" : "bg-white/[0.04]"
+              )}>
+                <m.icon className={cn("h-4 w-4", m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#444]")} />
+              </div>
             </div>
-            <p className="font-display font-bold text-2xl text-white">{m.value}</p>
-            <div className="flex items-center gap-1 mt-1">
+            <p className="font-display font-bold text-2xl text-white tracking-tight">{m.value}</p>
+            <p className="text-[11px] text-[#444] font-medium mt-0.5">{m.label}</p>
+            <div className="flex items-center gap-1 mt-2">
               {"up" in m && m.up !== undefined && (
                 m.up
                   ? <ArrowUpRight className="h-3 w-3 text-[#16a34a]" />
-                  : <ArrowDownRight className="h-3 w-3 text-red-400" />
+                  : <ArrowDownRight className="h-3 w-3 text-rose-400" />
               )}
               <p className={cn(
-                "text-xs",
-                m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#525252]"
+                "text-[11px] font-medium",
+                m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#555]"
               )}>
                 {m.sub}
               </p>
