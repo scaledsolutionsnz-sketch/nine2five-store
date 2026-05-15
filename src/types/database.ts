@@ -10,6 +10,8 @@ export type OrderStatus =
 
 export type CampaignStatus = "draft" | "sent";
 
+export type CampaignSegment = "all" | "subscribed" | "high_value";
+
 export type AffiliateStatus = "pending" | "active" | "suspended";
 
 export type AffiliateConversionStatus = "pending" | "approved" | "paid" | "reversed";
@@ -129,8 +131,11 @@ export interface EmailCampaign {
   subject: string;
   body_html: string;
   status: CampaignStatus;
+  segment: CampaignSegment;
   sent_at: string | null;
   recipient_count: number | null;
+  opens: number;
+  clicks: number;
   created_at: string;
 }
 

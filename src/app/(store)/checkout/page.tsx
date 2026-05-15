@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -287,6 +287,31 @@ function CheckoutForm({
     phone: "",
   });
   const [email, setEmail] = useState("");
+  const sessionIdRef = useRef<string>("");
+
+  // Initialise a stable session ID for abandoned cart tracking
+  useEffect(() => {
+    const stored = sessionStorage.getItem("n2f_session");
+    if (stored) {
+      sessionIdRef.current = stored;
+    } else {
+      const id = crypto.randomUUID();
+      sessionStorage.setItem("n2f_session", id);
+      sessionIdRef.current = id;
+    }
+  }, []);
+
+  const syncCart = useCallback(() => {
+    const sessionId = sessionIdRef.current;
+    if (!sessionId || !email || !items.length) return;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return;
+    fetch("/api/cart/sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId, email, items, country }),
+    }).catch(() => {});
+  }, [email, items, country]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -348,7 +373,9 @@ function CheckoutForm({
         <h2 className="font-display font-bold text-base mb-4">Contact</h2>
         <input
           type="email" placeholder="Email address" required
-          value={email} onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={syncCart}
           className={inputClass}
         />
       </div>
