@@ -5,9 +5,39 @@ import { createClient } from "@/lib/supabase/server";
 import { AddToCart } from "@/components/storefront/add-to-cart";
 import { WishlistButton } from "@/components/storefront/wishlist-button";
 import type { Product, ProductVariant } from "@/types/database";
+import type { Metadata } from "next";
 import { ChevronLeft, Shield, Truck, RotateCcw } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createClient();
+  const { data: product } = await supabase
+    .from("products")
+    .select("name, description, image_urls, price")
+    .eq("slug", slug)
+    .single();
+
+  if (!product) return { title: "Product not found" };
+
+  const price = `$${(product.price / 100).toFixed(2)} NZD`;
+  const img = product.image_urls?.[0];
+
+  return {
+    title: product.name,
+    description: product.description ?? `${product.name} — Māori inspired grip sock. ${price}.`,
+    openGraph: {
+      title: `${product.name} — Nine2Five`,
+      description: product.description ?? `Māori inspired grip sock. ${price}.`,
+      images: img ? [{ url: img, width: 800, height: 800, alt: product.name }] : [],
+    },
+  };
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

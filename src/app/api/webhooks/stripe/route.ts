@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase/server";
+import { resend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
+import { orderConfirmationHtml, orderConfirmationText } from "@/lib/emails/order-confirmation";
 import type { ShippingAddress } from "@/types/database";
 
 export async function POST(req: NextRequest) {
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
       const affiliateCode = meta.affiliate_code || null;
       const discountCode = meta.discount_code || null;
 
-      // Resolve affiliate if referral code present
+      // Resolve affiliate
       let affiliateId: string | null = null;
       if (affiliateCode) {
         const { data: affiliate } = await supabase
@@ -71,6 +73,8 @@ export async function POST(req: NextRequest) {
         affiliateId = affiliate?.id ?? null;
       }
 
+      const orderTotal = subtotal + shipping - discountAmount;
+
       // Create order
       const { data: order } = await supabase
         .from("orders")
@@ -80,14 +84,14 @@ export async function POST(req: NextRequest) {
           status: "processing",
           subtotal,
           shipping_cost: shipping,
-          total: subtotal + shipping - discountAmount,
+          total: orderTotal,
           discount_code: discountCode,
           discount_amount_cents: discountAmount,
           affiliate_code: affiliateCode,
           shipping_address: shippingAddress,
           stripe_payment_intent_id: pi.id,
         })
-        .select("id, total")
+        .select("id, order_number")
         .single();
 
       if (order && items.length > 0) {
@@ -109,13 +113,12 @@ export async function POST(req: NextRequest) {
             p_variant_id: item.variantId,
             p_quantity: item.quantity,
           });
-
           await supabase.from("stock_movements").insert({
             variant_id: item.variantId,
             type: "sale",
             quantity: -item.quantity,
             reference_id: order.id,
-            note: `Order #${order.id}`,
+            note: `Order #${order.order_number}`,
           });
         }
       }
@@ -130,9 +133,8 @@ export async function POST(req: NextRequest) {
         const { data: conversionId } = await supabase.rpc("record_affiliate_conversion", {
           p_affiliate_id: affiliateId,
           p_order_id: order.id,
-          p_order_total_cents: order.total,
+          p_order_total_cents: orderTotal,
         });
-
         if (conversionId) {
           await supabase
             .from("orders")
@@ -146,12 +148,55 @@ export async function POST(req: NextRequest) {
         await supabase.rpc("update_customer_ltv", { p_customer_id: customerId });
       }
 
-      // Mark cart session as converted
+      // Mark cart session converted
       if (meta.session_id) {
         await supabase
           .from("cart_sessions")
           .update({ converted_at: new Date().toISOString() })
           .eq("session_id", meta.session_id);
+      }
+
+      // Send order confirmation email
+      if (meta.email && order) {
+        const customerName = shippingAddress.first_name || meta.email.split("@")[0];
+        await resend.emails.send({
+          from: FROM_EMAIL,
+          replyTo: REPLY_TO,
+          to: meta.email,
+          subject: `Order #${order.order_number} confirmed — Nine2Five`,
+          html: orderConfirmationHtml({
+            order_number: order.order_number,
+            customer_name: customerName,
+            items: items.map((i) => ({
+              product_name: i.productName,
+              size: i.size,
+              quantity: i.quantity,
+              unit_price: i.price,
+            })),
+            subtotal,
+            shipping_cost: shipping,
+            discount_code: discountCode,
+            discount_amount_cents: discountAmount,
+            total: orderTotal,
+            shipping_address: shippingAddress,
+          }),
+          text: orderConfirmationText({
+            order_number: order.order_number,
+            customer_name: customerName,
+            items: items.map((i) => ({
+              product_name: i.productName,
+              size: i.size,
+              quantity: i.quantity,
+              unit_price: i.price,
+            })),
+            subtotal,
+            shipping_cost: shipping,
+            discount_code: discountCode,
+            discount_amount_cents: discountAmount,
+            total: orderTotal,
+            shipping_address: shippingAddress,
+          }),
+        });
       }
     } catch (err) {
       console.error("Webhook processing error:", err);

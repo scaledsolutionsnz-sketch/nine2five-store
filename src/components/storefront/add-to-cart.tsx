@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
 import type { Product, ProductVariant } from "@/types/database";
+import { BackInStockForm } from "./back-in-stock-form";
 
 export function AddToCart({
   product,
@@ -24,19 +25,20 @@ export function AddToCart({
     return variants.find((v) => v.size === size);
   }
 
+  const selectedVariant = selectedSize ? getVariant(selectedSize) : null;
+  const selectedOutOfStock = selectedVariant
+    ? selectedVariant.stock_quantity < 1
+    : false;
+
   function handleAdd() {
-    if (!selectedSize) {
-      toast.error("Please select a size");
-      return;
-    }
-    const variant = getVariant(selectedSize);
-    if (!variant || variant.stock_quantity < 1) {
+    if (!selectedSize) { toast.error("Please select a size"); return; }
+    if (!selectedVariant || selectedVariant.stock_quantity < 1) {
       toast.error("This size is out of stock");
       return;
     }
     addItem({
       productId: product.id,
-      variantId: variant.id,
+      variantId: selectedVariant.id,
       productName: product.name,
       size: selectedSize,
       price: product.price,
@@ -61,13 +63,14 @@ export function AddToCart({
             return (
               <button
                 key={size}
-                onClick={() => !outOfStock && setSelectedSize(size)}
-                disabled={outOfStock}
+                onClick={() => setSelectedSize(size)}
                 className={cn(
                   "relative flex-1 h-12 rounded-lg border text-sm font-semibold font-display transition-all",
-                  outOfStock && "opacity-30 cursor-not-allowed",
-                  selectedSize === size && !outOfStock
-                    ? "border-[#16a34a] bg-[#16a34a]/10 text-[#16a34a]"
+                  outOfStock && "opacity-40",
+                  selectedSize === size
+                    ? outOfStock
+                      ? "border-red-500/30 bg-red-500/5 text-red-400"
+                      : "border-[#16a34a] bg-[#16a34a]/10 text-[#16a34a]"
                     : "border-[#262626] text-[#a3a3a3] hover:border-[#404040] hover:text-white"
                 )}
               >
@@ -84,36 +87,51 @@ export function AddToCart({
         <p className="text-xs text-[#525252] mt-2">Shoe sizes NZ/AU</p>
       </div>
 
-      {/* Quantity */}
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#737373] mb-3">
-          Quantity
-        </p>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="h-9 w-9 rounded-lg border border-[#262626] flex items-center justify-center hover:border-[#404040] transition-colors"
-          >
-            <Minus className="h-3.5 w-3.5" />
-          </button>
-          <span className="font-display font-bold text-lg w-8 text-center">{quantity}</span>
-          <button
-            onClick={() => setQuantity(quantity + 1)}
-            className="h-9 w-9 rounded-lg border border-[#262626] flex items-center justify-center hover:border-[#404040] transition-colors"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </div>
+      {/* Back in stock form — shown when selected size is out of stock */}
+      {selectedSize && selectedOutOfStock && selectedVariant && (
+        <BackInStockForm
+          productId={product.id}
+          variantId={selectedVariant.id}
+          size={selectedSize}
+        />
+      )}
 
-      {/* Add button */}
-      <button
-        onClick={handleAdd}
-        className="w-full btn-primary py-4 text-base gap-2"
-      >
-        <ShoppingBag className="h-5 w-5" />
-        Add to Cart — ${((product.price * quantity) / 100).toFixed(2)} NZD
-      </button>
+      {/* Quantity + Add button — only when in-stock size selected */}
+      {(!selectedSize || !selectedOutOfStock) && (
+        <>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#737373] mb-3">
+              Quantity
+            </p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="h-9 w-9 rounded-lg border border-[#262626] flex items-center justify-center hover:border-[#404040] transition-colors"
+              >
+                <Minus className="h-3.5 w-3.5" />
+              </button>
+              <span className="font-display font-bold text-lg w-8 text-center">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="h-9 w-9 rounded-lg border border-[#262626] flex items-center justify-center hover:border-[#404040] transition-colors"
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={handleAdd}
+            disabled={!selectedSize}
+            className="w-full btn-primary py-4 text-base gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {selectedSize
+              ? `Add to Cart — $${((product.price * quantity) / 100).toFixed(2)} NZD`
+              : "Select a Size"}
+          </button>
+        </>
+      )}
     </div>
   );
 }
