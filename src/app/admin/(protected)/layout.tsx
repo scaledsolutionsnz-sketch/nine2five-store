@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -17,10 +17,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!admin) redirect("/admin/login");
 
   return (
-    <div className="flex h-screen bg-[#0a0a0a]">
-      <AdminNav email={user.email!} />
+    <div className="flex h-screen bg-[#0a0a0a] overflow-hidden">
+      <AdminSidebar email={user.email!} />
       <main className="flex-1 overflow-y-auto">
-        <div className="p-8 max-w-6xl">{children}</div>
+        {children}
       </main>
     </div>
   );

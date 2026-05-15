@@ -1,124 +1,285 @@
 export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
-import { ShoppingCart, Users, Package, TrendingUp } from "lucide-react";
+import {
+  DollarSign,
+  ShoppingBag,
+  Users,
+  TrendingUp,
+  AlertTriangle,
+  Clock,
+  ArrowUpRight,
+  ArrowDownRight,
+  Package,
+} from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import type { Order } from "@/types/database";
+
+function fmt(cents: number) {
+  return `$${(cents / 100).toLocaleString("en-NZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function pct(a: number, b: number) {
+  if (b === 0) return a > 0 ? 100 : 0;
+  return Math.round(((a - b) / b) * 100);
+}
+
+const STATUS_STYLES: Record<string, string> = {
+  processing: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  shipped: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  delivered: "bg-green-500/10 text-green-400 border-green-500/20",
+  pending: "bg-[#1e1e1e] text-[#737373] border-[#262626]",
+  cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
+  refunded: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+};
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
 
   const [
-    { count: totalOrders },
+    { data: todayOrders },
+    { data: monthOrders },
+    { data: lastMonthOrders },
     { count: totalCustomers },
+    { count: newCustomers },
+    { count: pendingOrders },
     { data: recentOrders },
     { data: lowStock },
   ] = await Promise.all([
-    supabase.from("orders").select("*", { count: "exact", head: true }),
-    supabase.from("customers").select("*", { count: "exact", head: true }),
     supabase
       .from("orders")
-      .select("id, order_number, status, total, created_at, shipping_address")
+      .select("total")
+      .gte("created_at", todayStart)
+      .not("status", "in", "(cancelled,refunded)"),
+    supabase
+      .from("orders")
+      .select("total")
+      .gte("created_at", monthStart)
+      .not("status", "in", "(cancelled,refunded)"),
+    supabase
+      .from("orders")
+      .select("total")
+      .gte("created_at", lastMonthStart)
+      .lte("created_at", lastMonthEnd)
+      .not("status", "in", "(cancelled,refunded)"),
+    supabase.from("customers").select("*", { count: "exact", head: true }),
+    supabase
+      .from("customers")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", monthStart),
+    supabase
+      .from("orders")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "processing"),
+    supabase
+      .from("orders")
+      .select("id, order_number, status, total, created_at, guest_email, customer_id, customers(first_name, last_name, email)")
       .order("created_at", { ascending: false })
-      .limit(5),
+      .limit(8),
     supabase
       .from("product_variants")
-      .select("id, size, stock_quantity, product:product_id(name)")
+      .select("id, size, stock_quantity, products(name)")
       .lt("stock_quantity", 10)
-      .order("stock_quantity", { ascending: true }),
+      .order("stock_quantity"),
   ]);
 
-  const { data: revenueData } = await supabase
-    .from("orders")
-    .select("total")
-    .in("status", ["processing", "shipped", "delivered"]);
+  const revenueToday = (todayOrders ?? []).reduce((s, o) => s + o.total, 0);
+  const revenueMonth = (monthOrders ?? []).reduce((s, o) => s + o.total, 0);
+  const revenueLastMonth = (lastMonthOrders ?? []).reduce((s, o) => s + o.total, 0);
+  const ordersToday = (todayOrders ?? []).length;
+  const monthPct = pct(revenueMonth, revenueLastMonth);
 
-  const totalRevenue = (revenueData ?? []).reduce((sum, o) => sum + o.total, 0);
+  const typedRecentOrders = (recentOrders ?? []) as unknown as (Order & {
+    customers?: { first_name: string; last_name: string; email: string } | null;
+  })[];
 
-  const stats = [
-    { label: "Total Orders", value: String(totalOrders ?? 0), icon: ShoppingCart, color: "text-[#16a34a]" },
-    { label: "Customers", value: String(totalCustomers ?? 0), icon: Users, color: "text-blue-400" },
-    { label: "Revenue", value: `$${(totalRevenue / 100).toFixed(2)}`, icon: TrendingUp, color: "text-amber-400" },
-    { label: "Low Stock", value: String(lowStock?.length ?? 0), icon: Package, color: "text-rose-400" },
+  const typedLowStock = (lowStock ?? []) as unknown as {
+    id: string;
+    size: string;
+    stock_quantity: number;
+    products: { name: string } | null;
+  }[];
+
+  const metrics = [
+    {
+      label: "Revenue Today",
+      value: fmt(revenueToday),
+      sub: `${ordersToday} order${ordersToday !== 1 ? "s" : ""}`,
+      icon: DollarSign,
+      accent: true,
+      warn: false,
+    },
+    {
+      label: "Revenue This Month",
+      value: fmt(revenueMonth),
+      sub: `${monthPct >= 0 ? "+" : ""}${monthPct}% vs last month`,
+      up: monthPct >= 0,
+      icon: TrendingUp,
+      accent: false,
+      warn: false,
+    },
+    {
+      label: "Total Customers",
+      value: (totalCustomers ?? 0).toLocaleString(),
+      sub: `+${newCustomers ?? 0} this month`,
+      icon: Users,
+      accent: false,
+      warn: false,
+    },
+    {
+      label: "Pending Fulfilment",
+      value: (pendingOrders ?? 0).toString(),
+      sub: (pendingOrders ?? 0) > 0 ? "Needs action" : "All clear",
+      icon: Clock,
+      accent: false,
+      warn: (pendingOrders ?? 0) > 0,
+    },
   ];
 
-  const STATUS_COLORS: Record<string, string> = {
-    pending: "bg-[#737373]/15 text-[#a3a3a3]",
-    processing: "bg-blue-500/15 text-blue-400",
-    shipped: "bg-[#16a34a]/15 text-[#16a34a]",
-    delivered: "bg-emerald-500/15 text-emerald-400",
-    cancelled: "bg-rose-500/15 text-rose-400",
-    refunded: "bg-amber-500/15 text-amber-400",
-  };
-
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Dashboard</h1>
-        <p className="text-sm text-[#737373] mt-1">Welcome back, Wiremu.</p>
+    <div className="p-8 max-w-6xl space-y-8">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#16a34a] mb-1">Overview</p>
+        <h1 className="font-display font-bold text-2xl text-white">Dashboard</h1>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="p-5 rounded-xl bg-[#141414] border border-[#1e1e1e]">
-            <Icon className={`h-5 w-5 mb-3 ${color}`} />
-            <p className="font-display font-bold text-2xl">{value}</p>
-            <p className="text-xs text-[#737373] mt-0.5">{label}</p>
+      {/* Metric cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {metrics.map((m) => (
+          <div
+            key={m.label}
+            className={cn(
+              "p-5 rounded-xl border",
+              m.accent
+                ? "bg-[#16a34a]/5 border-[#16a34a]/20"
+                : m.warn
+                ? "bg-amber-500/5 border-amber-500/20"
+                : "bg-[#141414] border-[#1e1e1e]"
+            )}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-xs text-[#737373] font-medium">{m.label}</p>
+              <m.icon
+                className={cn(
+                  "h-4 w-4",
+                  m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#404040]"
+                )}
+              />
+            </div>
+            <p className="font-display font-bold text-2xl text-white">{m.value}</p>
+            <div className="flex items-center gap-1 mt-1">
+              {"up" in m && m.up !== undefined && (
+                m.up
+                  ? <ArrowUpRight className="h-3 w-3 text-[#16a34a]" />
+                  : <ArrowDownRight className="h-3 w-3 text-red-400" />
+              )}
+              <p className={cn(
+                "text-xs",
+                m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#525252]"
+              )}>
+                {m.sub}
+              </p>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-[1fr_300px] gap-6">
         {/* Recent orders */}
-        <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
-          <h2 className="font-display font-bold text-base mb-5">Recent Orders</h2>
-          {(recentOrders ?? []).length === 0 ? (
-            <p className="text-sm text-[#525252]">No orders yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {(recentOrders ?? []).map((order) => {
-                const addr = order.shipping_address as { first_name?: string; last_name?: string };
+        <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
+            <div className="flex items-center gap-2">
+              <ShoppingBag className="h-4 w-4 text-[#404040]" />
+              <h2 className="font-display font-semibold text-sm text-white">Recent Orders</h2>
+            </div>
+            <Link href="/admin/orders" className="text-xs text-[#16a34a] hover:underline">
+              View all →
+            </Link>
+          </div>
+          <div className="divide-y divide-[#1a1a1a]">
+            {typedRecentOrders.length === 0 ? (
+              <div className="px-5 py-8 text-center text-sm text-[#525252]">No orders yet</div>
+            ) : (
+              typedRecentOrders.map((order) => {
+                const name = order.customers
+                  ? `${order.customers.first_name} ${order.customers.last_name}`.trim()
+                  : (order.guest_email?.split("@")[0] ?? "Guest");
                 return (
-                  <div key={order.id} className="flex items-center justify-between py-2 border-b border-[#1a1a1a] last:border-0">
-                    <div>
-                      <p className="text-sm font-medium">#{order.order_number} — {addr?.first_name} {addr?.last_name}</p>
-                      <p className="text-xs text-[#525252]">{new Date(order.created_at).toLocaleDateString("en-NZ")}</p>
+                  <Link
+                    key={order.id}
+                    href={`/admin/orders/${order.id}`}
+                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#1a1a1a] transition-colors"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white truncate">
+                        #{order.order_number} · {name}
+                      </p>
+                      <p className="text-xs text-[#525252] mt-0.5">
+                        {new Date(order.created_at).toLocaleDateString("en-NZ", {
+                          day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
+                        })}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_COLORS[order.status] ?? ""}`}>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className={cn(
+                        "text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border",
+                        STATUS_STYLES[order.status] ?? STATUS_STYLES.pending
+                      )}>
                         {order.status}
                       </span>
-                      <span className="text-sm font-display font-bold">${(order.total / 100).toFixed(2)}</span>
+                      <p className="text-sm font-display font-semibold text-white w-20 text-right">
+                        {fmt(order.total)}
+                      </p>
                     </div>
-                  </div>
+                  </Link>
                 );
-              })}
-            </div>
-          )}
+              })
+            )}
+          </div>
         </div>
 
         {/* Low stock */}
-        <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
-          <h2 className="font-display font-bold text-base mb-5">Low Stock Alerts</h2>
-          {(lowStock ?? []).length === 0 ? (
-            <p className="text-sm text-[#16a34a]">All stock levels OK</p>
-          ) : (
-            <div className="space-y-3">
-              {(lowStock ?? []).map((v) => {
-                const product = v.product as unknown as { name: string } | null;
-                return (
-                  <div key={v.id} className="flex items-center justify-between py-2 border-b border-[#1a1a1a] last:border-0">
-                    <div>
-                      <p className="text-sm font-medium">{product?.name}</p>
-                      <p className="text-xs text-[#525252]">Size {v.size}</p>
-                    </div>
-                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${v.stock_quantity === 0 ? "bg-rose-500/15 text-rose-400" : "bg-amber-500/15 text-amber-400"}`}>
-                      {v.stock_quantity} left
-                    </span>
-                  </div>
-                );
-              })}
+        <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-400" />
+              <h2 className="font-display font-semibold text-sm text-white">Low Stock</h2>
             </div>
-          )}
+            <Link href="/admin/inventory" className="text-xs text-[#16a34a] hover:underline">
+              Manage →
+            </Link>
+          </div>
+          <div className="divide-y divide-[#1a1a1a]">
+            {typedLowStock.length === 0 ? (
+              <div className="px-5 py-8 text-center">
+                <Package className="h-6 w-6 text-[#16a34a] mx-auto mb-2" />
+                <p className="text-sm text-[#525252]">All stock healthy</p>
+              </div>
+            ) : (
+              typedLowStock.map((v) => (
+                <div key={v.id} className="flex items-center justify-between px-5 py-3.5">
+                  <div className="min-w-0">
+                    <p className="text-sm text-white truncate">{v.products?.name ?? "Unknown"}</p>
+                    <p className="text-xs text-[#525252]">Size {v.size}</p>
+                  </div>
+                  <span className={cn(
+                    "text-xs font-bold px-2 py-0.5 rounded-full shrink-0",
+                    v.stock_quantity === 0
+                      ? "bg-red-500/10 text-red-400"
+                      : "bg-amber-500/10 text-amber-400"
+                  )}>
+                    {v.stock_quantity === 0 ? "Out" : `${v.stock_quantity} left`}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
