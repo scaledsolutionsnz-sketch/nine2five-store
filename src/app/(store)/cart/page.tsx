@@ -12,7 +12,7 @@ export default function CartPage() {
 
   if (count === 0) {
     return (
-      <div className="pt-32 pb-24 px-6 text-center max-w-md mx-auto">
+      <div className="pt-16 pb-24 px-6 text-center max-w-md mx-auto">
         <ShoppingBag className="h-12 w-12 text-[#333] mx-auto mb-4" />
         <h1 className="font-display font-bold text-2xl mb-2">Your cart is empty</h1>
         <p className="text-[#737373] mb-8">Add some grip socks to get started.</p>
@@ -22,7 +22,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="pt-24 pb-24 px-6 md:px-10 max-w-5xl mx-auto">
+    <div className="pt-12 pb-24 px-6 md:px-10 max-w-5xl mx-auto">
       <h1 className="font-display font-black text-3xl mb-10">Your Cart</h1>
 
       <div className="grid md:grid-cols-[1fr_320px] gap-10">

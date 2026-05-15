@@ -16,7 +16,7 @@ export default async function ShopPage() {
   const products = (data ?? []) as Product[];
 
   return (
-    <div className="pt-24 pb-24 px-6 md:px-10 max-w-6xl mx-auto">
+    <div className="pt-12 pb-24 px-6 md:px-10 max-w-6xl mx-auto">
       <div className="mb-12">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#16a34a] mb-2">Collection</p>
         <h1 className="font-display font-black text-4xl md:text-5xl">All Products</h1>

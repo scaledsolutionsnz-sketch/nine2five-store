@@ -5,7 +5,7 @@ import { PurchaseEvent } from "@/components/analytics/purchase-event";
 
 export default function OrderConfirmedPage() {
   return (
-    <div className="pt-32 pb-24 px-6 text-center max-w-md mx-auto">
+    <div className="pt-16 pb-24 px-6 text-center max-w-md mx-auto">
       <Suspense>
         <PurchaseEvent />
       </Suspense>

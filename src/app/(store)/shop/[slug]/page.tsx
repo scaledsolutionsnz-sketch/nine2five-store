@@ -62,7 +62,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const isOnSale = p.compare_at_price && p.compare_at_price > p.price;
 
   return (
-    <div className="pt-20 pb-24 px-6 md:px-10 max-w-6xl mx-auto">
+    <div className="pt-8 pb-24 px-6 md:px-10 max-w-6xl mx-auto">
       <Link
         href="/shop"
         className="inline-flex items-center gap-1.5 text-sm text-[#737373] hover:text-white transition-colors mb-8"
