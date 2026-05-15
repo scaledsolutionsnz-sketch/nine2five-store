@@ -1,10 +1,16 @@
 import { Suspense } from "react";
 import { Nav } from "@/components/layout/nav";
 import { AffiliateTracker } from "@/components/storefront/affiliate-tracker";
+import { Pixels } from "@/components/analytics/pixels";
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <Pixels
+        metaPixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID ?? null}
+        ga4Id={process.env.NEXT_PUBLIC_GA4_ID ?? null}
+        tiktokPixelId={process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID ?? null}
+      />
       <Nav />
       <Suspense>
         <AffiliateTracker />

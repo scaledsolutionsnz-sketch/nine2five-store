@@ -344,6 +344,21 @@ function CheckoutForm({
       }),
     });
 
+    // Save purchase data for pixel events on the confirmation page
+    const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+    const discountAmt = discount?.amount ?? 0;
+    sessionStorage.setItem("n2f_purchase", JSON.stringify({
+      orderNumber: clientSecret.split("_secret_")[0],
+      total: subtotal + shippingCost - discountAmt,
+      currency: "NZD",
+      items: items.map((i) => ({
+        name: i.productName,
+        productId: i.productId,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+    }));
+
     const result = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -358,6 +373,7 @@ function CheckoutForm({
     });
 
     if (result.error) {
+      sessionStorage.removeItem("n2f_purchase");
       setError(result.error.message ?? "Payment failed. Please try again.");
       setSubmitting(false);
     } else {

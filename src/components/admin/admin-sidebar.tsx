@@ -13,6 +13,7 @@ import {
   UserCheck,
   Warehouse,
   ClipboardList,
+  BarChart2,
   Settings,
   LogOut,
   ChevronRight,
@@ -24,7 +25,8 @@ const nav = [
   {
     group: "Overview",
     items: [
-      { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/admin",            label: "Dashboard", icon: LayoutDashboard },
+      { href: "/admin/analytics",  label: "Analytics", icon: BarChart2 },
     ],
   },
   {
