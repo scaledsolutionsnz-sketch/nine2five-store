@@ -26,12 +26,12 @@ function pct(a: number, b: number) {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  processing: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  shipped: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  delivered: "bg-green-500/10 text-green-400 border-green-500/20",
-  pending: "bg-[#1e1e1e] text-[#737373] border-[#262626]",
-  cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
-  refunded: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  processing: "bg-amber-50 text-amber-600 border-amber-100",
+  shipped:    "bg-blue-50 text-blue-600 border-blue-100",
+  delivered:  "bg-green-50 text-green-600 border-green-100",
+  pending:    "bg-gray-50 text-gray-500 border-gray-100",
+  cancelled:  "bg-red-50 text-red-500 border-red-100",
+  refunded:   "bg-purple-50 text-purple-600 border-purple-100",
 };
 
 export default async function AdminDashboard() {
@@ -146,8 +146,8 @@ export default async function AdminDashboard() {
     <div className="max-w-6xl space-y-7">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display font-bold text-xl text-white">Dashboard</h1>
-          <p className="text-[13px] text-[#555] mt-0.5">
+          <h1 className="font-display font-bold text-xl text-gray-900">Dashboard</h1>
+          <p className="text-[13px] text-gray-400 mt-0.5">
             {new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long" })}
           </p>
         </div>
@@ -164,22 +164,22 @@ export default async function AdminDashboard() {
             className={cn(
               "p-5 rounded-xl border relative overflow-hidden",
               m.accent
-                ? "bg-[#16a34a]/[0.07] border-[#16a34a]/20"
+                ? "bg-[#16a34a]/[0.06] border-[#16a34a]/15"
                 : m.warn
-                ? "bg-amber-500/[0.05] border-amber-500/20"
-                : "bg-[#111] border-white/[0.06]"
+                ? "bg-amber-50 border-amber-100"
+                : "bg-white border-gray-100 shadow-sm"
             )}
           >
             <div className="flex items-center justify-between mb-4">
               <div className={cn(
                 "h-8 w-8 rounded-lg flex items-center justify-center",
-                m.accent ? "bg-[#16a34a]/15" : m.warn ? "bg-amber-500/10" : "bg-white/[0.04]"
+                m.accent ? "bg-[#16a34a]/10" : m.warn ? "bg-amber-100" : "bg-gray-100"
               )}>
-                <m.icon className={cn("h-4 w-4", m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#444]")} />
+                <m.icon className={cn("h-4 w-4", m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-500" : "text-gray-400")} />
               </div>
             </div>
-            <p className="font-display font-bold text-2xl text-white tracking-tight">{m.value}</p>
-            <p className="text-[11px] text-[#444] font-medium mt-0.5">{m.label}</p>
+            <p className="font-display font-bold text-2xl text-gray-900 tracking-tight">{m.value}</p>
+            <p className="text-[11px] text-gray-400 font-medium mt-0.5">{m.label}</p>
             <div className="flex items-center gap-1 mt-2">
               {"up" in m && m.up !== undefined && (
                 m.up
@@ -188,7 +188,7 @@ export default async function AdminDashboard() {
               )}
               <p className={cn(
                 "text-[11px] font-medium",
-                m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-400" : "text-[#555]"
+                m.accent ? "text-[#16a34a]" : m.warn ? "text-amber-500" : "text-gray-400"
               )}>
                 {m.sub}
               </p>
@@ -199,19 +199,19 @@ export default async function AdminDashboard() {
 
       <div className="grid lg:grid-cols-[1fr_300px] gap-6">
         {/* Recent orders */}
-        <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
+        <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4 text-[#404040]" />
-              <h2 className="font-display font-semibold text-sm text-white">Recent Orders</h2>
+              <ShoppingBag className="h-4 w-4 text-gray-400" />
+              <h2 className="font-display font-semibold text-sm text-gray-900">Recent Orders</h2>
             </div>
-            <Link href="/admin/orders" className="text-xs text-[#16a34a] hover:underline">
+            <Link href="/admin/orders" className="text-xs text-[#16a34a] hover:underline font-medium">
               View all →
             </Link>
           </div>
-          <div className="divide-y divide-[#1a1a1a]">
+          <div className="divide-y divide-gray-50">
             {typedRecentOrders.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-[#525252]">No orders yet</div>
+              <div className="px-5 py-8 text-center text-sm text-gray-400">No orders yet</div>
             ) : (
               typedRecentOrders.map((order) => {
                 const name = order.customers
@@ -221,13 +221,13 @@ export default async function AdminDashboard() {
                   <Link
                     key={order.id}
                     href={`/admin/orders/${order.id}`}
-                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#1a1a1a] transition-colors"
+                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">
+                      <p className="text-sm font-medium text-gray-900 truncate">
                         #{order.order_number} · {name}
                       </p>
-                      <p className="text-xs text-[#525252] mt-0.5">
+                      <p className="text-xs text-gray-400 mt-0.5">
                         {new Date(order.created_at).toLocaleDateString("en-NZ", {
                           day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
                         })}
@@ -240,7 +240,7 @@ export default async function AdminDashboard() {
                       )}>
                         {order.status}
                       </span>
-                      <p className="text-sm font-display font-semibold text-white w-20 text-right">
+                      <p className="text-sm font-display font-semibold text-gray-900 w-20 text-right">
                         {fmt(order.total)}
                       </p>
                     </div>
@@ -252,34 +252,34 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Low stock */}
-        <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
+        <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-amber-400" />
-              <h2 className="font-display font-semibold text-sm text-white">Low Stock</h2>
+              <h2 className="font-display font-semibold text-sm text-gray-900">Low Stock</h2>
             </div>
-            <Link href="/admin/inventory" className="text-xs text-[#16a34a] hover:underline">
+            <Link href="/admin/inventory" className="text-xs text-[#16a34a] hover:underline font-medium">
               Manage →
             </Link>
           </div>
-          <div className="divide-y divide-[#1a1a1a]">
+          <div className="divide-y divide-gray-50">
             {typedLowStock.length === 0 ? (
               <div className="px-5 py-8 text-center">
                 <Package className="h-6 w-6 text-[#16a34a] mx-auto mb-2" />
-                <p className="text-sm text-[#525252]">All stock healthy</p>
+                <p className="text-sm text-gray-400">All stock healthy</p>
               </div>
             ) : (
               typedLowStock.map((v) => (
                 <div key={v.id} className="flex items-center justify-between px-5 py-3.5">
                   <div className="min-w-0">
-                    <p className="text-sm text-white truncate">{v.products?.name ?? "Unknown"}</p>
-                    <p className="text-xs text-[#525252]">Size {v.size}</p>
+                    <p className="text-sm text-gray-900 truncate">{v.products?.name ?? "Unknown"}</p>
+                    <p className="text-xs text-gray-400">Size {v.size}</p>
                   </div>
                   <span className={cn(
                     "text-xs font-bold px-2 py-0.5 rounded-full shrink-0",
                     v.stock_quantity === 0
-                      ? "bg-red-500/10 text-red-400"
-                      : "bg-amber-500/10 text-amber-400"
+                      ? "bg-red-50 text-red-500"
+                      : "bg-amber-50 text-amber-500"
                   )}>
                     {v.stock_quantity === 0 ? "Out" : `${v.stock_quantity} left`}
                   </span>
