@@ -1,20 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 export function Nav() {
   const { count } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setLoggedIn(!!data.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setLoggedIn(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
@@ -46,7 +57,20 @@ export function Nav() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          {/* Account */}
+          <Link
+            href={loggedIn ? "/account" : "/account/login"}
+            className="relative flex items-center justify-center h-9 w-9 rounded-lg hover:bg-white/8 transition-colors"
+            title={loggedIn ? "My Account" : "Sign In"}
+          >
+            <User className="h-5 w-5" />
+            {loggedIn && (
+              <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-[#16a34a]" />
+            )}
+          </Link>
+
+          {/* Cart */}
           <Link
             href="/cart"
             className="relative flex items-center justify-center h-9 w-9 rounded-lg hover:bg-white/8 transition-colors"
@@ -58,6 +82,7 @@ export function Nav() {
               </span>
             )}
           </Link>
+
           <button
             onClick={() => setOpen(!open)}
             className="md:hidden flex items-center justify-center h-9 w-9 rounded-lg hover:bg-white/8 transition-colors"
@@ -69,14 +94,20 @@ export function Nav() {
 
       {open && (
         <div className="md:hidden bg-[#0a0a0a] border-t border-[#262626] px-6 py-4 space-y-4">
-          {["Shop", "Kahotea", "Limited", "About"].map((item) => (
+          {[
+            { label: "Shop", href: "/shop" },
+            { label: "Kahotea", href: "/shop?collection=kahotea" },
+            { label: "Limited", href: "/shop?collection=limited" },
+            { label: "About", href: "/#about" },
+            { label: loggedIn ? "My Account" : "Sign In", href: loggedIn ? "/account" : "/account/login" },
+          ].map(({ label, href }) => (
             <Link
-              key={item}
-              href={item === "Shop" ? "/shop" : item === "About" ? "/#about" : `/shop?collection=${item.toLowerCase()}`}
+              key={label}
+              href={href}
               onClick={() => setOpen(false)}
               className="block text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors"
             >
-              {item}
+              {label}
             </Link>
           ))}
         </div>

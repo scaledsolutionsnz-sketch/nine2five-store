@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AddToCart } from "@/components/storefront/add-to-cart";
+import { WishlistButton } from "@/components/storefront/wishlist-button";
 import type { Product, ProductVariant } from "@/types/database";
 import { ChevronLeft, Shield, Truck, RotateCcw } from "lucide-react";
 
@@ -89,7 +90,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <p className="text-[#737373] leading-relaxed mb-8">{p.description}</p>
           )}
 
-          <AddToCart product={p} variants={v} />
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <AddToCart product={p} variants={v} />
+            </div>
+            <WishlistButton productId={p.id} />
+          </div>
 
           {/* Trust badges */}
           <div className="mt-8 pt-8 border-t border-[#1e1e1e] grid grid-cols-3 gap-4">
