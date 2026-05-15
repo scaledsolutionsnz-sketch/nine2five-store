@@ -1,9 +1,14 @@
+import { Suspense } from "react";
 import { Nav } from "@/components/layout/nav";
+import { AffiliateTracker } from "@/components/storefront/affiliate-tracker";
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Nav />
+      <Suspense>
+        <AffiliateTracker />
+      </Suspense>
       <main>{children}</main>
       <footer className="border-t border-[#1e1e1e] mt-24 py-12 px-6 md:px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
