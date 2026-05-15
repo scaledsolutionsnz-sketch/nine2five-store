@@ -142,18 +142,15 @@ export default async function AdminDashboard() {
     },
   ];
 
+  const firstName = "Wiremu";
+
   return (
-    <div className="max-w-6xl space-y-7">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display font-bold text-xl text-gray-900">Dashboard</h1>
-          <p className="text-[13px] text-gray-400 mt-0.5">
-            {new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long" })}
-          </p>
-        </div>
-        <Link href="/admin/orders" className="flex items-center gap-1.5 text-xs font-semibold text-[#16a34a] hover:text-[#4ade80] transition-colors">
-          View all orders <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
+    <div className="max-w-5xl space-y-8">
+      <div>
+        <h1 className="font-display font-bold text-2xl text-gray-900">Welcome back, {firstName}</h1>
+        <p className="text-sm text-gray-400 mt-1">
+          {new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+        </p>
       </div>
 
       {/* Metric cards */}
