@@ -61,8 +61,8 @@ export function AdminSidebar({ email }: { email: string }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-4 py-4">
-        <div className="space-y-1">
+      <nav className="flex-1 px-4 py-4 flex flex-col min-h-0">
+        <div className="flex flex-col flex-1">
           {nav.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
             return (
@@ -70,7 +70,7 @@ export function AdminSidebar({ email }: { email: string }) {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] transition-all duration-100",
+                  "flex-1 flex items-center gap-4 px-4 rounded-xl text-[15px] transition-all duration-100",
                   active
                     ? "bg-[#16a34a]/10 text-[#16a34a] font-semibold"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium"
@@ -85,17 +85,17 @@ export function AdminSidebar({ email }: { email: string }) {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-gray-100 px-4 py-4 space-y-1">
+      <div className="border-t border-gray-100 px-4 py-3 space-y-1">
         <Link
           href="/admin/settings"
-          className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
+          className="flex items-center gap-4 px-4 py-3 rounded-xl text-[15px] font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
         >
           <Settings className="h-5 w-5 text-gray-400" />
           Settings
         </Link>
         <button
           onClick={signOut}
-          className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all"
+          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-[15px] font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all"
         >
           <LogOut className="h-5 w-5" />
           Sign out
