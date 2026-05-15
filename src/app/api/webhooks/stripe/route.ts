@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase/server";
-import { resend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
+import { getResend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
 import { orderConfirmationHtml, orderConfirmationText } from "@/lib/emails/order-confirmation";
 import type { ShippingAddress } from "@/types/database";
 
@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
       // Send order confirmation email
       if (meta.email && order) {
         const customerName = shippingAddress.first_name || meta.email.split("@")[0];
-        await resend.emails.send({
+        await getResend().emails.send({
           from: FROM_EMAIL,
           replyTo: REPLY_TO,
           to: meta.email,
