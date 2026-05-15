@@ -20,8 +20,8 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
           <div>
             <p className="font-display font-black text-lg tracking-tight">NINE2FIVE</p>
-            <p className="text-sm text-[#737373] mt-1">Māori grip socks. Built for performance.</p>
-            <p className="text-xs text-[#525252] mt-2">Christchurch, New Zealand</p>
+            <p className="text-sm text-[#737373] mt-1">Māori grip socks. Wear your identity.</p>
+            <p className="text-xs text-[#525252] mt-2">Masterton, New Zealand</p>
           </div>
           <div className="flex gap-12 text-sm">
             <div className="space-y-2">
@@ -32,7 +32,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
             </div>
             <div className="space-y-2">
               <p className="font-medium text-xs uppercase tracking-widest text-[#525252]">Info</p>
-              <a href="/#about" className="block text-[#737373] hover:text-white transition-colors">About</a>
+              <a href="/#vision" className="block text-[#737373] hover:text-white transition-colors">Our Vision</a>
               <a href="/shipping" className="block text-[#737373] hover:text-white transition-colors">Shipping</a>
             </div>
           </div>
@@ -42,6 +42,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
           <div className="flex items-center gap-4">
             <a href="https://instagram.com/nine2five.nz" target="_blank" rel="noopener" className="text-xs text-[#525252] hover:text-white transition-colors">Instagram</a>
             <a href="https://tiktok.com/@nine2five.nz" target="_blank" rel="noopener" className="text-xs text-[#525252] hover:text-white transition-colors">TikTok</a>
+            <a href="https://www.facebook.com/profile.php?id=61563357785307" target="_blank" rel="noopener" className="text-xs text-[#525252] hover:text-white transition-colors">Facebook</a>
           </div>
         </div>
       </footer>
