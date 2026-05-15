@@ -14,6 +14,7 @@ import {
   Warehouse,
   ClipboardList,
   BarChart2,
+  Receipt,
   Settings,
   LogOut,
   ChevronRight,
@@ -48,8 +49,9 @@ const nav = [
   {
     group: "Operations",
     items: [
-      { href: "/admin/suppliers", label: "Suppliers", icon: Warehouse },
-      { href: "/admin/purchase-orders", label: "Purchase Orders", icon: ClipboardList },
+      { href: "/admin/suppliers",       label: "Suppliers",        icon: Warehouse },
+      { href: "/admin/purchase-orders", label: "Purchase Orders",  icon: ClipboardList },
+      { href: "/admin/accounting",      label: "Accounting",       icon: Receipt },
     ],
   },
 ];
