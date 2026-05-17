@@ -27,7 +27,7 @@ const COUNTRIES = [
 const STEP_LABELS = ["Information", "Shipping", "Payment"];
 
 const inputClass =
-  "w-full h-12 px-4 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 focus:bg-white/[0.06] transition-all";
+  "w-full h-14 px-4 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 focus:bg-white/[0.06] transition-all";
 
 export default function CheckoutPage() {
   const { items, total, count } = useCart();
@@ -214,7 +214,7 @@ export default function CheckoutPage() {
                     {/* Contact */}
                     <div className="pb-6">
                       <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Contact</p>
-                      <div className="space-y-4">
+                      <div className="space-y-7">
                         <div>
                           <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Country</label>
                           <select
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
                     {/* Shipping Address */}
                     <div className="pt-6 pb-8">
                       <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Shipping Address</p>
-                      <div className="space-y-4">
+                      <div className="space-y-7">
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">First Name</label>
@@ -404,7 +404,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* ── Right column — Order summary ── */}
-        <div className="space-y-4">
+        <div className="space-y-7">
           <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
             <h2 className="font-display font-bold text-base text-white mb-5">Order Summary</h2>
             <div className="space-y-3 mb-5">
