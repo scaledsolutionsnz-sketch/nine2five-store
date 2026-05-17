@@ -209,52 +209,89 @@ export default function CheckoutPage() {
 
               {!isBulk && !loading && (
                 <>
-                  <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
-                    <h2 className="font-display font-bold text-base text-white mb-4">Contact</h2>
-                    <div className="space-y-3">
-                      <select
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
-                        className={cn(inputClass, "appearance-none")}
-                      >
-                        {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
-                      </select>
-                      <input
-                        type="email" placeholder="Email address" required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        onBlur={syncCart}
-                        className={inputClass}
-                      />
-                    </div>
-                  </div>
+                  <div className="bg-[#0e0e0e] border border-white/[0.07] rounded-2xl overflow-hidden">
 
-                  <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
-                    <h2 className="font-display font-bold text-base text-white mb-4">Shipping Address</h2>
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-3">
-                        <input placeholder="First name" required value={address.first_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, first_name: e.target.value }))} className={inputClass} />
-                        <input placeholder="Last name" required value={address.last_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, last_name: e.target.value }))} className={inputClass} />
+                    {/* Contact */}
+                    <div className="px-8 pt-8 pb-6">
+                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Contact</p>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Country</label>
+                          <select
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                            className={cn(inputClass, "appearance-none")}
+                          >
+                            {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Email Address</label>
+                          <input
+                            type="email" placeholder="you@example.com" required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            onBlur={syncCart}
+                            className={inputClass}
+                          />
+                        </div>
                       </div>
-                      <input placeholder="Address line 1" required value={address.line1 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line1: e.target.value }))} className={inputClass} />
-                      <input placeholder="Address line 2 (optional)" value={address.line2 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line2: e.target.value }))} className={inputClass} />
-                      <div className="grid grid-cols-2 gap-3">
-                        <input placeholder="City / Town" required value={address.city ?? ""} onChange={(e) => setAddress(a => ({ ...a, city: e.target.value }))} className={inputClass} />
-                        <input placeholder="Postcode" required value={address.postcode ?? ""} onChange={(e) => setAddress(a => ({ ...a, postcode: e.target.value }))} className={inputClass} />
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-white/[0.06] mx-8" />
+
+                    {/* Shipping Address */}
+                    <div className="px-8 pt-6 pb-8">
+                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Shipping Address</p>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">First Name</label>
+                            <input placeholder="First name" required value={address.first_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, first_name: e.target.value }))} className={inputClass} />
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Last Name</label>
+                            <input placeholder="Last name" required value={address.last_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, last_name: e.target.value }))} className={inputClass} />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Address</label>
+                          <div className="space-y-2">
+                            <input placeholder="Address line 1" required value={address.line1 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line1: e.target.value }))} className={inputClass} />
+                            <input placeholder="Apartment, suite, etc. (optional)" value={address.line2 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line2: e.target.value }))} className={inputClass} />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">City / Town</label>
+                            <input placeholder="City" required value={address.city ?? ""} onChange={(e) => setAddress(a => ({ ...a, city: e.target.value }))} className={inputClass} />
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Postcode</label>
+                            <input placeholder="0000" required value={address.postcode ?? ""} onChange={(e) => setAddress(a => ({ ...a, postcode: e.target.value }))} className={inputClass} />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Region</label>
+                          {country === "NZ" ? (
+                            <select
+                              required value={address.region ?? ""}
+                              onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))}
+                              className={cn(inputClass, "appearance-none")}
+                            >
+                              <option value="" disabled>Select region</option>
+                              {NZ_REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                            </select>
+                          ) : (
+                            <input placeholder="State / Region" required value={address.region ?? ""} onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))} className={inputClass} />
+                          )}
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Phone <span className="text-white/20 normal-case tracking-normal font-normal">(optional)</span></label>
+                          <input placeholder="+64 21 000 0000" value={address.phone ?? ""} onChange={(e) => setAddress(a => ({ ...a, phone: e.target.value }))} className={inputClass} />
+                        </div>
                       </div>
-                      {country === "NZ" ? (
-                        <select
-                          required value={address.region ?? ""}
-                          onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))}
-                          className={cn(inputClass, "appearance-none")}
-                        >
-                          <option value="" disabled>Select region</option>
-                          {NZ_REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
-                        </select>
-                      ) : (
-                        <input placeholder="State / Region" required value={address.region ?? ""} onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))} className={inputClass} />
-                      )}
-                      <input placeholder="Phone (optional)" value={address.phone ?? ""} onChange={(e) => setAddress(a => ({ ...a, phone: e.target.value }))} className={inputClass} />
                     </div>
                   </div>
 
@@ -263,7 +300,7 @@ export default function CheckoutPage() {
                     disabled={!step1Valid}
                     className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    Continue to shipping
+                    Continue to Shipping
                   </button>
                 </>
               )}
