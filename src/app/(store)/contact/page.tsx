@@ -51,7 +51,7 @@ export default function ContactPage() {
           className="absolute inset-0"
           style={{ background: "radial-gradient(ellipse at 30% 100%, rgba(74,222,128,0.1) 0%, transparent 55%)" }}
         />
-        <div className="absolute bottom-0 left-0 right-0 px-10 md:px-20 pb-12">
+        <div className="absolute bottom-0 left-0 right-0 pb-12" style={{ paddingLeft: "5rem", paddingRight: "5rem" }}>
           <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#4ade80] mb-3">
             Get In Touch
           </p>
@@ -63,7 +63,7 @@ export default function ContactPage() {
       </div>
 
       {/* Main content */}
-      <div className="px-10 md:px-20 max-w-screen-xl mx-auto py-20">
+      <div className="max-w-screen-xl mx-auto" style={{ paddingLeft: "5rem", paddingRight: "5rem", paddingTop: "5rem", paddingBottom: "5rem" }}>
         <div className="grid md:grid-cols-[1fr_1.6fr] gap-16 md:gap-24">
 
           {/* Left — info */}
