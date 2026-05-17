@@ -135,7 +135,7 @@ export default function CheckoutPage() {
     !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
 
   return (
-    <div className="bg-black min-h-screen pt-24 md:pt-32 pb-24 px-8 md:px-16 max-w-screen-xl mx-auto">
+    <div className="bg-black min-h-screen max-w-screen-xl mx-auto" style={{ paddingTop: "5rem", paddingBottom: "6rem", paddingLeft: "5rem", paddingRight: "5rem" }}>
       <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition-colors mb-6">
         <ChevronLeft className="h-4 w-4" /> Back to Cart
       </Link>
