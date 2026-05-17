@@ -4,15 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { Trash2, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
-import { calculateShipping } from "@/lib/shipping";
+import { calculateShippingByPairs } from "@/lib/shipping";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, total, count } = useCart();
-  const shipping = calculateShipping(total, "NZ");
+  const { cost: shipping, isBulk, delivery } = calculateShippingByPairs(count, "NZ");
 
   if (count === 0) {
     return (
-      <div className="pt-16 pb-24 px-6 text-center max-w-md mx-auto">
+      <div className="pt-24 pb-24 px-5 sm:px-8 text-center max-w-md mx-auto">
         <ShoppingBag className="h-12 w-12 text-[#333] mx-auto mb-4" />
         <h1 className="font-display font-bold text-2xl mb-2">Your cart is empty</h1>
         <p className="text-[#737373] mb-8">Add some grip socks to get started.</p>
@@ -22,7 +22,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="pt-12 pb-24 px-6 md:px-10 max-w-5xl mx-auto">
+    <div className="pt-24 pb-24 px-5 sm:px-8 md:px-10 max-w-5xl mx-auto">
       <h1 className="font-display font-black text-3xl mb-10">Your Cart</h1>
 
       <div className="grid md:grid-cols-[1fr_320px] gap-10">
@@ -86,21 +86,39 @@ export default function CartPage() {
             </div>
             <div className="flex justify-between">
               <span className="text-[#737373]">Shipping (NZ)</span>
-              <span>{shipping === 0 ? <span className="text-[#16a34a]">Free</span> : `$${(shipping / 100).toFixed(2)}`}</span>
+              <span>
+                {isBulk
+                  ? <span className="text-[#ef4444] text-xs">Contact us</span>
+                  : `$${(shipping / 100).toFixed(2)}`}
+              </span>
             </div>
-            {shipping > 0 && (
-              <p className="text-xs text-[#525252]">
-                Free shipping on orders over $75
+            {!isBulk && delivery && (
+              <p className="text-xs text-[#525252]">{delivery}</p>
+            )}
+            {isBulk && (
+              <p className="text-xs text-[#ef4444]">
+                Please contact us directly for bulk shipping rates.
               </p>
             )}
-            <div className="border-t border-[#262626] pt-3 flex justify-between font-display font-bold text-base">
-              <span>Total</span>
-              <span>${((total + shipping) / 100).toFixed(2)} NZD</span>
-            </div>
+            {!isBulk && (
+              <div className="border-t border-[#262626] pt-3 flex justify-between font-display font-bold text-base">
+                <span>Total</span>
+                <span>${((total + shipping) / 100).toFixed(2)} NZD</span>
+              </div>
+            )}
           </div>
-          <Link href="/checkout" className="btn-primary w-full mt-6 text-center block">
-            Checkout
-          </Link>
+          {isBulk ? (
+            <a
+              href="mailto:nine2five.co.nz@gmail.com"
+              className="btn-primary w-full mt-6 text-center block"
+            >
+              Contact Us for Bulk Rates
+            </a>
+          ) : (
+            <Link href="/checkout" className="btn-primary w-full mt-6 text-center block">
+              Checkout
+            </Link>
+          )}
           <Link href="/shop" className="block text-center text-sm text-[#525252] hover:text-white transition-colors mt-4">
             Continue shopping
           </Link>
