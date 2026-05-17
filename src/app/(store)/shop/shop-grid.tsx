@@ -119,9 +119,9 @@ function InteractiveCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {/* Size picker panel — slides in when picking */}
+      {/* Size picker panel — slides up from bottom, image stays visible */}
       {mode === "picking" && (
-        <div className="absolute inset-0 bg-[#0d0d0d]/96 backdrop-blur-sm flex flex-col justify-end p-3 z-10">
+        <div className="absolute bottom-0 left-0 right-0 bg-[#0d0d0d]/95 backdrop-blur-sm p-3 z-10" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <button
             onClick={(e) => { e.preventDefault(); setMode("idle"); }}
             className="absolute top-2 right-2 text-white/30 hover:text-white text-xs"
