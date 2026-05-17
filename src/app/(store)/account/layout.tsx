@@ -13,7 +13,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
   await supabase.rpc("link_customer_account");
 
   return (
-    <div className="pt-24 pb-24 px-5 sm:px-8 md:px-10 max-w-5xl mx-auto">
+    <div className="pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20 max-w-5xl mx-auto">
       <div className="grid md:grid-cols-[200px_1fr] gap-8">
         <AccountNav email={user.email!} />
         <main>{children}</main>
