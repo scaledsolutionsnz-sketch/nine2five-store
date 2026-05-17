@@ -112,7 +112,7 @@ export default function CheckoutPage() {
 
   if (count === 0) {
     return (
-      <div className="pt-24 pb-24 px-6 sm:px-10 text-center max-w-md mx-auto">
+      <div className="bg-[#0d0d0d] min-h-screen pt-24 pb-24 px-6 sm:px-10 text-center max-w-md mx-auto">
         <p className="text-[#737373] mb-4">Your cart is empty.</p>
         <Link href="/shop" className="btn-primary">Shop Now</Link>
       </div>
@@ -130,7 +130,7 @@ export default function CheckoutPage() {
     !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
 
   return (
-    <div className="pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20 max-w-5xl mx-auto">
+    <div className="bg-[#0d0d0d] min-h-screen pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20 max-w-5xl mx-auto">
       <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-[#737373] hover:text-white transition-colors mb-6">
         <ChevronLeft className="h-4 w-4" /> Back to Cart
       </Link>

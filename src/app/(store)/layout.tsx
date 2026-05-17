@@ -16,7 +16,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <AffiliateTracker />
       </Suspense>
       <main className="pt-16">{children}</main>
-      <footer className="border-t border-[#1e1e1e] mt-24 py-12 px-6 md:px-10">
+      <footer className="bg-[#0d0d0d] border-t border-[#1a1a1a] mt-24 py-12 px-6 md:px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
           <div>
             <p className="font-display font-black text-lg tracking-tight">NINE2FIVE</p>

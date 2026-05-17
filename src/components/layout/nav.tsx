@@ -33,7 +33,7 @@ export function Nav() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#262626]"
+          ? "bg-[#0d0d0d]/95 backdrop-blur-md border-b border-white/[0.08]"
           : "bg-transparent"
       )}
     >
@@ -93,7 +93,7 @@ export function Nav() {
       </nav>
 
       {open && (
-        <div className="md:hidden bg-[#0a0a0a] border-t border-[#262626] px-6 py-4 space-y-4">
+        <div className="md:hidden bg-[#0d0d0d] border-t border-white/[0.08] px-6 py-4 space-y-4">
           {[
             { label: "Shop", href: "/shop" },
             { label: "Kahotea", href: "/shop?collection=kahotea" },

@@ -16,7 +16,7 @@ export default async function ShopPage() {
   const products = (data ?? []) as Product[];
 
   return (
-    <div className="min-h-screen bg-[#112016] pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20">
+    <div className="min-h-screen bg-[#0d0d0d] pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -55,7 +55,7 @@ function ShopCard({ product }: { product: Product }) {
     >
       <div
         className="relative aspect-square overflow-hidden"
-        style={{ background: 'radial-gradient(ellipse at 50% 95%, rgba(74,222,128,0.16) 0%, rgba(12,24,16,0.95) 65%)' }}
+        style={{ background: 'radial-gradient(ellipse at 50% 95%, rgba(74,222,128,0.16) 0%, rgba(17,17,17,0.95) 65%)' }}
       >
         {img ? (
           <Image
