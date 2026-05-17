@@ -27,7 +27,7 @@ const COUNTRIES = [
 const STEP_LABELS = ["Information", "Shipping", "Payment"];
 
 const inputClass =
-  "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
+  "w-full h-12 px-4 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 focus:bg-white/[0.06] transition-all";
 
 export default function CheckoutPage() {
   const { items, total, count } = useCart();
@@ -209,10 +209,10 @@ export default function CheckoutPage() {
 
               {!isBulk && !loading && (
                 <>
-                  <div className="bg-[#0e0e0e] border border-white/[0.07] rounded-2xl overflow-hidden">
+                  <div>
 
                     {/* Contact */}
-                    <div className="px-8 pt-8 pb-6">
+                    <div className="pb-6">
                       <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Contact</p>
                       <div className="space-y-4">
                         <div>
@@ -239,10 +239,10 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* Divider */}
-                    <div className="border-t border-white/[0.06] mx-8" />
+                    <div className="border-t border-white/[0.06]" />
 
                     {/* Shipping Address */}
-                    <div className="px-8 pt-6 pb-8">
+                    <div className="pt-6 pb-8">
                       <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Shipping Address</p>
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-3">
