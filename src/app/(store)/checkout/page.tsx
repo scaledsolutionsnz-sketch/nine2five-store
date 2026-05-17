@@ -47,6 +47,56 @@ export default function CheckoutPage() {
   });
 
   const sessionIdRef = useRef<string>("");
+  const addressLine1Ref = useRef<HTMLInputElement>(null);
+
+  // Google Places autocomplete on address line 1
+  useEffect(() => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) return;
+
+    function init() {
+      const input = addressLine1Ref.current;
+      if (!input || !(window as any).google?.maps?.places) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ac = new (window as any).google.maps.places.Autocomplete(input, {
+        types: ["address"],
+        componentRestrictions: { country: ["nz", "au"] },
+        fields: ["address_components"],
+      });
+      ac.addListener("place_changed", () => {
+        const place = ac.getPlace();
+        if (!place?.address_components) return;
+        const get = (t: string) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          place.address_components.find((c: any) => c.types.includes(t))?.long_name ?? "";
+        const streetNumber = get("street_number");
+        const route = get("route");
+        const subpremise = get("subpremise");
+        const line1 = [subpremise, streetNumber, route].filter(Boolean).join(" ");
+        const city =
+          get("locality") || get("sublocality_level_1") || get("administrative_area_level_2");
+        const postcode = get("postal_code");
+        const region = get("administrative_area_level_1");
+        setAddress(a => ({ ...a, line1, city, postcode, region }));
+      });
+    }
+
+    if ((window as any).google?.maps?.places) {
+      init();
+    } else {
+      const existing = document.getElementById("gplaces-script");
+      if (!existing) {
+        const s = document.createElement("script");
+        s.id = "gplaces-script";
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        s.async = true;
+        s.onload = init;
+        document.head.appendChild(s);
+      } else {
+        existing.addEventListener("load", init);
+      }
+    }
+  }, []);
   useEffect(() => {
     const stored = sessionStorage.getItem("n2f_session");
     if (stored) {
@@ -258,7 +308,7 @@ export default function CheckoutPage() {
                         <div>
                           <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Address</label>
                           <div className="space-y-2">
-                            <input placeholder="Address line 1" required value={address.line1 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line1: e.target.value }))} className={inputClass} />
+                            <input ref={addressLine1Ref} placeholder="Start typing your address…" required value={address.line1 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line1: e.target.value }))} className={inputClass} />
                             <input placeholder="Apartment, suite, etc. (optional)" value={address.line2 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line2: e.target.value }))} className={inputClass} />
                           </div>
                         </div>
