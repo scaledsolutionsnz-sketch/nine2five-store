@@ -20,6 +20,33 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       {/* ════════════════════════════════════════════
           FOOTER
       ════════════════════════════════════════════ */}
+      <style>{`
+        .ft-link {
+          color: rgba(255,255,255,0.38);
+          text-decoration: none;
+          transition: color 0.25s;
+        }
+        .ft-link:hover { color: #ffffff; }
+        .ft-link-green {
+          color: rgba(255,255,255,0.38);
+          text-decoration: none;
+          transition: color 0.25s;
+        }
+        .ft-link-green:hover { color: #4ade80; }
+        .ft-social {
+          color: rgba(255,255,255,0.25);
+          text-decoration: none;
+          transition: color 0.25s;
+        }
+        .ft-social:hover { color: #4ade80; }
+        .ft-bottom-social {
+          color: rgba(255,255,255,0.2);
+          text-decoration: none;
+          transition: color 0.25s;
+        }
+        .ft-bottom-social:hover { color: #ffffff; }
+      `}</style>
+
       <footer
         style={{
           backgroundColor: "#000000",
@@ -37,7 +64,12 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
             <div className="md:col-span-1">
               <p
                 className="font-display font-black"
-                style={{ fontSize: "1.5rem", letterSpacing: "-0.01em", color: "#ffffff", marginBottom: 12 }}
+                style={{
+                  fontSize: "1.5rem",
+                  letterSpacing: "-0.01em",
+                  color: "#ffffff",
+                  marginBottom: 12,
+                }}
               >
                 NINE2FIVE
               </p>
@@ -53,31 +85,36 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Masterton, New Zealand
               </p>
               <div className="flex items-center gap-5">
-                {[
-                  { label: "IG", href: "https://instagram.com/nine2five.nz", full: "Instagram" },
-                  { label: "TT", href: "https://tiktok.com/@nine2five.nz", full: "TikTok" },
-                  { label: "FB", href: "https://www.facebook.com/profile.php?id=61563357785307", full: "Facebook" },
-                ].map((s) => (
-                  <a
-                    key={s.label}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.full}
-                    className="font-bold"
-                    style={{
-                      fontSize: 10,
-                      letterSpacing: "0.12em",
-                      color: "rgba(255,255,255,0.3)",
-                      textTransform: "uppercase",
-                      transition: "color 0.3s",
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#4ade80"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.3)"; }}
-                  >
-                    {s.label}
-                  </a>
-                ))}
+                <a
+                  href="https://instagram.com/nine2five.nz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="ft-social font-bold"
+                  style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}
+                >
+                  IG
+                </a>
+                <a
+                  href="https://tiktok.com/@nine2five.nz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="ft-social font-bold"
+                  style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}
+                >
+                  TT
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61563357785307"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="ft-social font-bold"
+                  style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}
+                >
+                  FB
+                </a>
               </div>
             </div>
 
@@ -95,27 +132,10 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Shop
               </p>
               <ul className="space-y-3">
-                {[
-                  { label: "All Products", href: "/shop" },
-                  { label: "Kahotea", href: "/shop?collection=kahotea" },
-                  { label: "Limited Drops", href: "/shop?collection=limited" },
-                  { label: "Performance", href: "/shop?collection=performance" },
-                ].map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm"
-                      style={{
-                        color: "rgba(255,255,255,0.4)",
-                        transition: "color 0.3s",
-                      }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#ffffff"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.4)"; }}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                <li><a href="/shop" className="ft-link text-sm">All Products</a></li>
+                <li><a href="/shop?collection=kahotea" className="ft-link text-sm">Kahotea</a></li>
+                <li><a href="/shop?collection=limited" className="ft-link text-sm">Limited Drops</a></li>
+                <li><a href="/shop?collection=performance" className="ft-link text-sm">Performance</a></li>
               </ul>
             </div>
 
@@ -133,26 +153,9 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Info
               </p>
               <ul className="space-y-3">
-                {[
-                  { label: "Our Vision", href: "/#vision" },
-                  { label: "Shipping", href: "/shipping" },
-                  { label: "Contact", href: "mailto:nine2five.co.nz@gmail.com" },
-                ].map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm"
-                      style={{
-                        color: "rgba(255,255,255,0.4)",
-                        transition: "color 0.3s",
-                      }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#ffffff"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.4)"; }}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                <li><a href="/#vision" className="ft-link text-sm">Our Vision</a></li>
+                <li><a href="/shipping" className="ft-link text-sm">Shipping</a></li>
+                <li><a href="mailto:nine2five.co.nz@gmail.com" className="ft-link text-sm">Contact</a></li>
               </ul>
             </div>
 
@@ -173,13 +176,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <li>
                   <a
                     href="mailto:nine2five.co.nz@gmail.com"
-                    className="text-sm"
-                    style={{
-                      color: "rgba(255,255,255,0.4)",
-                      transition: "color 0.3s",
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#4ade80"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.4)"; }}
+                    className="ft-link-green text-sm"
                   >
                     nine2five.co.nz@gmail.com
                   </a>
@@ -189,13 +186,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                     href="https://instagram.com/nine2five.nz"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm"
-                    style={{
-                      color: "rgba(255,255,255,0.4)",
-                      transition: "color 0.3s",
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#ffffff"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.4)"; }}
+                    className="ft-link text-sm"
                   >
                     @nine2five.nz
                   </a>
@@ -227,28 +218,33 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               © {new Date().getFullYear()} Nine2Five Limited. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
-              {[
-                { label: "Instagram", href: "https://instagram.com/nine2five.nz" },
-                { label: "TikTok", href: "https://tiktok.com/@nine2five.nz" },
-                { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61563357785307" },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs"
-                  style={{
-                    color: "rgba(255,255,255,0.2)",
-                    transition: "color 0.3s",
-                    letterSpacing: "0.04em",
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#ffffff"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.2)"; }}
-                >
-                  {s.label}
-                </a>
-              ))}
+              <a
+                href="https://instagram.com/nine2five.nz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ft-bottom-social text-xs"
+                style={{ letterSpacing: "0.04em" }}
+              >
+                Instagram
+              </a>
+              <a
+                href="https://tiktok.com/@nine2five.nz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ft-bottom-social text-xs"
+                style={{ letterSpacing: "0.04em" }}
+              >
+                TikTok
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61563357785307"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ft-bottom-social text-xs"
+                style={{ letterSpacing: "0.04em" }}
+              >
+                Facebook
+              </a>
             </div>
           </div>
         </div>

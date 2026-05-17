@@ -8,12 +8,12 @@ export const dynamic = "force-dynamic";
 
 /* ─── Fallback products (6 items) ───────────────────────────── */
 const FALLBACK_PRODUCTS = [
-  { name: "Grey Kahotea",   price: 2000, badge: null,      compare: null },
-  { name: "Toa Whenua",     price: 2000, badge: "New",     compare: null },
-  { name: "Pasifika",       price: 1800, badge: "Limited", compare: 2200 },
-  { name: "Black Kahotea",  price: 2000, badge: null,      compare: null },
-  { name: "Ahi Kaa",        price: 1800, badge: "Sale",    compare: 2400 },
-  { name: "Ataahua White",  price: 2000, badge: "New",     compare: null },
+  { name: "Grey Kahotea",  price: 2000, badge: null,      compare: null },
+  { name: "Toa Whenua",    price: 2000, badge: "New",     compare: null },
+  { name: "Pasifika",      price: 1800, badge: "Limited", compare: 2200 },
+  { name: "Black Kahotea", price: 2000, badge: null,      compare: null },
+  { name: "Ahi Kaa",       price: 1800, badge: "Sale",    compare: 2400 },
+  { name: "Ataahua White", price: 2000, badge: "New",     compare: null },
 ];
 
 /* ─── Collections ───────────────────────────────────────────── */
@@ -50,19 +50,23 @@ const COLLECTIONS = [
 
 /* ─── Testimonials ──────────────────────────────────────────── */
 const TESTIMONIALS = [
-  { quote: "These socks have become part of my game day ritual. Nothing else comes close.", name: "James T.", sport: "Rugby" },
-  { quote: "Finally a brand that celebrates who we are. Wore them to my first club match.", name: "Aroha W.", sport: "Touch Rugby" },
+  { quote: "These socks have become part of my game day ritual. Nothing else comes close.", name: "James T.",   sport: "Rugby" },
+  { quote: "Finally a brand that celebrates who we are. Wore them to my first club match.",  name: "Aroha W.",  sport: "Touch Rugby" },
   { quote: "Quality is next level. I wear them to every session — gym, training, all of it.", name: "Marcus P.", sport: "Gym" },
-  { quote: "My whole team ordered matching sets. Looks fire on the field.", name: "Tama K.", sport: "Club Rugby" },
-  { quote: "Perfect fit and grip. Best pilates socks I have ever tried. 10/10.", name: "Sarah M.", sport: "Pilates" },
-  { quote: "Proud to wear my identity on the field. Every. Single. Game.", name: "Daniel R.", sport: "School Sport" },
+  { quote: "My whole team ordered matching sets. Looks fire on the field.",                  name: "Tama K.",   sport: "Club Rugby" },
+  { quote: "Perfect fit and grip. Best pilates socks I have ever tried. 10/10.",            name: "Sarah M.",  sport: "Pilates" },
+  { quote: "Proud to wear my identity on the field. Every. Single. Game.",                  name: "Daniel R.", sport: "School Sport" },
 ];
 
 /* ─── Data fetch ────────────────────────────────────────────── */
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const supabase = await createClient();
-    const { data } = await supabase.from("products").select("*").eq("active", true).limit(6);
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("active", true)
+      .limit(6);
     return (data ?? []) as Product[];
   } catch {
     return [];
@@ -76,50 +80,118 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Global styles for this page */}
+      {/* ─── Page-level CSS ─────────────────────────────────── */}
       <style>{`
         @keyframes heroFadeUp {
           from { opacity: 0; transform: translateY(28px); }
           to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes scrollPulse {
-          0%, 100% { opacity: 0.35; transform: scaleY(1); }
-          50%       { opacity: 0.85; transform: scaleY(1.08); }
+          0%, 100% { opacity: 0.35; }
+          50%       { opacity: 0.85; }
         }
         @keyframes marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
-        .hero-anim-1 { animation: heroFadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
-        .hero-anim-2 { animation: heroFadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.38s both; }
-        .hero-anim-3 { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.56s both; }
-        .hero-anim-4 { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.72s both; }
-        .hero-anim-5 { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 1.0s both; }
-        .scroll-pulse { animation: scrollPulse 2.2s ease-in-out infinite; }
-        .marquee-track { animation: marquee 22s linear infinite; }
 
-        /* Collection card image zoom */
-        .coll-card { overflow: hidden; position: relative; border-radius: 1rem; }
+        /* Hero staggered reveals */
+        .h-a1 { animation: heroFadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
+        .h-a2 { animation: heroFadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.38s both; }
+        .h-a3 { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.55s both; }
+        .h-a4 { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.70s both; }
+        .h-a5 { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.98s both; }
+
+        /* Scroll indicator */
+        .scroll-line { animation: scrollPulse 2.4s ease-in-out infinite; }
+
+        /* Marquee */
+        .mq-track { animation: marquee 22s linear infinite; }
+
+        /* Collection card hover zoom */
+        .coll-card { overflow: hidden; border-radius: 1rem; display: block; position: relative; }
         .coll-card img { transition: transform 0.75s cubic-bezier(0.16,1,0.3,1) !important; }
         .coll-card:hover img { transform: scale(1.06) !important; }
 
-        /* Product card lift */
+        /* Product card lift + image zoom */
         .prod-card {
+          display: block;
+          text-decoration: none;
+          overflow: hidden;
+          border-radius: 1rem;
+          background-color: #111111;
           transition: transform 0.5s cubic-bezier(0.16,1,0.3,1),
                       box-shadow 0.5s cubic-bezier(0.16,1,0.3,1);
         }
         .prod-card:hover {
           transform: translateY(-8px);
-          box-shadow: 0 28px 56px rgba(74, 222, 128, 0.06);
+          box-shadow: 0 28px 56px rgba(74,222,128,0.06);
         }
-        .prod-card img { transition: transform 0.7s cubic-bezier(0.16,1,0.3,1) !important; }
+        .prod-card img {
+          transition: transform 0.7s cubic-bezier(0.16,1,0.3,1) !important;
+        }
         .prod-card:hover img { transform: scale(1.05) !important; }
 
-        /* Footer link hover */
-        .footer-link { color: rgba(255,255,255,0.38); transition: color 0.25s; }
-        .footer-link:hover { color: #ffffff; }
-        .footer-social { color: rgba(255,255,255,0.25); transition: color 0.25s; }
-        .footer-social:hover { color: #4ade80; }
+        /* CTA button hover */
+        .btn-green {
+          display: inline-flex; align-items: center; gap: 0.5rem;
+          background-color: #4ade80; color: #000000; text-decoration: none;
+          font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
+          letter-spacing: 0.08em; border-radius: 9999px;
+          padding: 1rem 2rem;
+          transition: background-color 0.3s;
+        }
+        .btn-green:hover { background-color: #86efac; }
+
+        .btn-outline-hero {
+          display: inline-flex; align-items: center; gap: 0.5rem;
+          border: 1px solid rgba(255,255,255,0.22); color: #ffffff; text-decoration: none;
+          font-weight: 500; font-size: 0.8125rem; text-transform: uppercase;
+          letter-spacing: 0.08em; border-radius: 9999px;
+          padding: 1rem 2rem;
+          transition: border-color 0.3s, background-color 0.3s;
+        }
+        .btn-outline-hero:hover {
+          border-color: rgba(255,255,255,0.5);
+          background-color: rgba(255,255,255,0.05);
+        }
+
+        .btn-green-sm {
+          display: inline-flex; align-items: center; gap: 0.5rem;
+          background-color: #4ade80; color: #000000; text-decoration: none;
+          font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
+          letter-spacing: 0.08em; border-radius: 9999px;
+          padding: 1rem 2rem; align-self: flex-start;
+          transition: background-color 0.3s;
+        }
+        .btn-green-sm:hover { background-color: #86efac; }
+
+        .btn-green-lg {
+          display: inline-flex; align-items: center; gap: 0.5rem;
+          background-color: #4ade80; color: #000000; text-decoration: none;
+          font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
+          letter-spacing: 0.08em; border-radius: 9999px;
+          padding: 1.1rem 2.6rem;
+          transition: background-color 0.3s;
+        }
+        .btn-green-lg:hover { background-color: #86efac; }
+
+        /* Inline link hover (View All etc.) */
+        .link-ghost {
+          display: inline-flex; align-items: center; gap: 0.375rem;
+          color: rgba(255,255,255,0.38); text-decoration: none;
+          font-weight: 600; font-size: 0.8125rem; text-transform: uppercase;
+          letter-spacing: 0.06em;
+          transition: color 0.25s;
+        }
+        .link-ghost:hover { color: #4ade80; }
+
+        .social-link {
+          color: rgba(255,255,255,0.25); text-decoration: none;
+          font-size: 0.875rem; font-weight: 500; letter-spacing: 0.06em;
+          transition: color 0.25s;
+        }
+        .social-link:hover { color: #ffffff; }
       `}</style>
 
       <div style={{ backgroundColor: "#000000", color: "#ffffff" }}>
@@ -127,10 +199,8 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             HERO
         ════════════════════════════════════════════ */}
-        <section
-          className="relative overflow-hidden"
-          style={{ minHeight: "100dvh" }}
-        >
+        <section className="relative overflow-hidden" style={{ minHeight: "100dvh" }}>
+
           {/* Full-bleed image */}
           <div className="absolute inset-0">
             <Image
@@ -141,7 +211,6 @@ export default async function HomePage() {
               priority
               unoptimized
             />
-            {/* Bottom-up dark fade */}
             <div
               className="absolute inset-0"
               style={{
@@ -149,7 +218,6 @@ export default async function HomePage() {
                   "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.65) 38%, rgba(0,0,0,0.18) 100%)",
               }}
             />
-            {/* Left-side fade for text */}
             <div
               className="absolute inset-0"
               style={{
@@ -185,7 +253,7 @@ export default async function HomePage() {
               paddingBottom: "clamp(3rem, 7dvh, 6rem)",
             }}
           >
-            <div className="hero-anim-1 flex items-center gap-2 mb-6">
+            <div className="h-a1 flex items-center gap-2 mb-6">
               <span
                 style={{
                   width: 6,
@@ -210,7 +278,7 @@ export default async function HomePage() {
             </div>
 
             <h1
-              className="font-display font-black text-white hero-anim-2"
+              className="font-display font-black text-white h-a2"
               style={{
                 fontSize: "clamp(3.8rem, 10vw, 10rem)",
                 lineHeight: 0.85,
@@ -221,8 +289,9 @@ export default async function HomePage() {
             </h1>
 
             <p
-              className="text-white/50 hero-anim-3"
+              className="h-a3"
               style={{
+                color: "rgba(255,255,255,0.5)",
                 fontSize: "clamp(1rem, 1.5vw, 1.125rem)",
                 lineHeight: 1.65,
                 maxWidth: 440,
@@ -233,36 +302,13 @@ export default async function HomePage() {
             </p>
 
             <div
-              className="hero-anim-4 flex flex-wrap items-center gap-4"
+              className="h-a4 flex flex-wrap items-center gap-4"
               style={{ marginTop: "2.5rem" }}
             >
-              <Link
-                href="/shop"
-                className="inline-flex items-center gap-2 font-bold text-sm uppercase"
-                style={{
-                  backgroundColor: "#4ade80",
-                  color: "#000000",
-                  borderRadius: 9999,
-                  padding: "1rem 2rem",
-                  letterSpacing: "0.08em",
-                  transition: "background-color 0.3s",
-                  textDecoration: "none",
-                }}
-              >
+              <Link href="/shop" className="btn-green">
                 Shop Collection <ArrowUpRight className="h-4 w-4" />
               </Link>
-              <Link
-                href="/shop?collection=limited"
-                className="inline-flex items-center gap-2 font-medium text-sm uppercase text-white"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.22)",
-                  borderRadius: 9999,
-                  padding: "1rem 2rem",
-                  letterSpacing: "0.08em",
-                  transition: "border-color 0.3s, background-color 0.3s",
-                  textDecoration: "none",
-                }}
-              >
+              <Link href="/shop?collection=limited" className="btn-outline-hero">
                 View Limited Drop
               </Link>
             </div>
@@ -270,16 +316,15 @@ export default async function HomePage() {
 
           {/* Scroll indicator */}
           <div
-            className="hero-anim-5 absolute z-10 right-8 md:right-16 hidden md:flex flex-col items-center gap-2"
+            className="h-a5 absolute z-10 right-8 md:right-16 hidden md:flex flex-col items-center gap-2"
             style={{ bottom: "clamp(3rem, 7dvh, 6rem)" }}
           >
             <div
-              className="scroll-pulse"
+              className="scroll-line"
               style={{
                 width: 1,
                 height: 64,
-                background:
-                  "linear-gradient(to bottom, rgba(74,222,128,0.7), transparent)",
+                background: "linear-gradient(to bottom, rgba(74,222,128,0.7), transparent)",
               }}
             />
             <span
@@ -307,7 +352,7 @@ export default async function HomePage() {
           }}
         >
           <div
-            className="marquee-track flex items-center"
+            className="mq-track flex items-center"
             style={{ width: "max-content" }}
           >
             {[0, 1].map((copy) => (
@@ -333,14 +378,7 @@ export default async function HomePage() {
                     }}
                   >
                     {word}
-                    <span
-                      style={{
-                        marginLeft: "2.5rem",
-                        opacity: 0.35,
-                      }}
-                    >
-                      ·
-                    </span>
+                    <span style={{ marginLeft: "2.5rem", opacity: 0.35 }}>·</span>
                   </span>
                 ))}
               </div>
@@ -384,7 +422,7 @@ export default async function HomePage() {
                 <Link
                   key={col.name}
                   href={col.href}
-                  className="coll-card block"
+                  className="coll-card"
                   style={{ height: "clamp(300px, 40vw, 540px)" }}
                 >
                   <Image
@@ -394,7 +432,6 @@ export default async function HomePage() {
                     className="object-cover object-center"
                     unoptimized
                   />
-                  {/* Gradient overlay */}
                   <div
                     className="absolute inset-0"
                     style={{
@@ -402,7 +439,6 @@ export default async function HomePage() {
                         "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.38) 48%, transparent 100%)",
                     }}
                   />
-                  {/* Content */}
                   <div className="absolute inset-x-0 bottom-0 p-7 md:p-8">
                     <p
                       style={{
@@ -428,8 +464,13 @@ export default async function HomePage() {
                       {col.name.toUpperCase()}
                     </h3>
                     <p
-                      className="text-white/50 text-sm leading-relaxed"
-                      style={{ maxWidth: 320, marginBottom: 16 }}
+                      style={{
+                        color: "rgba(255,255,255,0.5)",
+                        fontSize: 14,
+                        lineHeight: 1.6,
+                        maxWidth: 320,
+                        marginBottom: 16,
+                      }}
                     >
                       {col.desc}
                     </p>
@@ -460,12 +501,10 @@ export default async function HomePage() {
                 className="object-cover object-center"
                 unoptimized
               />
-              {/* Subtle green overlay */}
               <div
                 className="absolute inset-0"
                 style={{ background: "rgba(74,222,128,0.03)" }}
               />
-              {/* Right-side fade into section bg */}
               <div
                 className="absolute inset-0 hidden md:block"
                 style={{
@@ -476,9 +515,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: content */}
-            <div
-              className="flex flex-col justify-center p-10 md:p-16 lg:p-20"
-            >
+            <div className="flex flex-col justify-center p-10 md:p-16 lg:p-20">
               <p
                 style={{
                   fontSize: 11,
@@ -515,9 +552,9 @@ export default async function HomePage() {
                 MĀORI
               </h2>
               <p
-                className="leading-relaxed"
                 style={{
                   color: "rgba(255,255,255,0.48)",
+                  lineHeight: 1.7,
                   maxWidth: 420,
                   marginBottom: 16,
                 }}
@@ -525,9 +562,9 @@ export default async function HomePage() {
                 We create products shaped by whakapapa, tikanga, and movement. Every design is a statement of pride — built for athletes who carry their identity into every space they enter.
               </p>
               <p
-                className="leading-relaxed"
                 style={{
                   color: "rgba(255,255,255,0.3)",
+                  lineHeight: 1.7,
                   maxWidth: 420,
                   fontStyle: "italic",
                   marginBottom: 36,
@@ -535,19 +572,7 @@ export default async function HomePage() {
               >
                 &ldquo;We&rsquo;re not adding Māori identity to sportswear. We are sportswear.&rdquo;
               </p>
-              <Link
-                href="/shop"
-                className="inline-flex items-center gap-2 font-bold text-sm uppercase self-start"
-                style={{
-                  backgroundColor: "#4ade80",
-                  color: "#000000",
-                  borderRadius: 9999,
-                  padding: "1rem 2rem",
-                  letterSpacing: "0.08em",
-                  textDecoration: "none",
-                  transition: "background-color 0.3s",
-                }}
-              >
+              <Link href="/shop" className="btn-green-sm">
                 Shop the Collection <ArrowUpRight className="h-4 w-4" />
               </Link>
             </div>
@@ -560,9 +585,7 @@ export default async function HomePage() {
         <section style={{ backgroundColor: "#000000", padding: "7rem 0" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16">
 
-            <div
-              className="flex items-end justify-between mb-12"
-            >
+            <div className="flex items-end justify-between mb-12">
               <div>
                 <p
                   style={{
@@ -587,11 +610,7 @@ export default async function HomePage() {
                   SHOP THE RANGE
                 </h2>
               </div>
-              <Link
-                href="/shop"
-                className="footer-link flex items-center gap-1.5 font-semibold text-sm uppercase shrink-0 ml-4"
-                style={{ letterSpacing: "0.06em", textDecoration: "none" }}
-              >
+              <Link href="/shop" className="link-ghost shrink-0 ml-4">
                 View All <ArrowUpRight className="h-4 w-4" />
               </Link>
             </div>
@@ -695,7 +714,6 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          {/* Scrollable strip */}
           <div
             className="scrollbar-hide"
             style={{
@@ -720,11 +738,7 @@ export default async function HomePage() {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                {/* Stars */}
-                <div
-                  className="flex items-center gap-0.5"
-                  style={{ marginBottom: 16 }}
-                >
+                <div className="flex items-center gap-0.5" style={{ marginBottom: 16 }}>
                   {Array.from({ length: 5 }).map((_, j) => (
                     <Star
                       key={j}
@@ -733,7 +747,6 @@ export default async function HomePage() {
                     />
                   ))}
                 </div>
-                {/* Quote */}
                 <p
                   style={{
                     color: "rgba(255,255,255,0.68)",
@@ -744,12 +757,8 @@ export default async function HomePage() {
                 >
                   &ldquo;{t.quote}&rdquo;
                 </p>
-                {/* Attribution */}
                 <div>
-                  <p
-                    className="font-semibold text-white"
-                    style={{ fontSize: 14 }}
-                  >
+                  <p className="font-semibold text-white" style={{ fontSize: 14 }}>
                     {t.name}
                   </p>
                   <p
@@ -779,9 +788,7 @@ export default async function HomePage() {
             borderTop: "1px solid rgba(255,255,255,0.07)",
           }}
         >
-          <div
-            className="max-w-screen-xl mx-auto px-8 md:px-16 text-center"
-          >
+          <div className="max-w-screen-xl mx-auto px-8 md:px-16 text-center">
             <p
               style={{
                 fontSize: 11,
@@ -816,53 +823,38 @@ export default async function HomePage() {
             >
               Māori grip socks. Masterton, New Zealand.
             </p>
-            <Link
-              href="/shop"
-              className="inline-flex items-center gap-2 font-bold text-sm uppercase"
-              style={{
-                backgroundColor: "#4ade80",
-                color: "#000000",
-                borderRadius: 9999,
-                padding: "1.1rem 2.6rem",
-                letterSpacing: "0.08em",
-                textDecoration: "none",
-                transition: "background-color 0.3s",
-              }}
-            >
+            <Link href="/shop" className="btn-green-lg">
               Shop Now <ArrowUpRight className="h-4 w-4" />
             </Link>
 
             <div
               className="flex flex-wrap items-center justify-center gap-8 mt-14 pt-10"
-              style={{
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-              }}
+              style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
             >
-              {[
-                {
-                  label: "Instagram",
-                  href: "https://instagram.com/nine2five.nz",
-                },
-                {
-                  label: "TikTok",
-                  href: "https://tiktok.com/@nine2five.nz",
-                },
-                {
-                  label: "Facebook",
-                  href: "https://www.facebook.com/profile.php?id=61563357785307",
-                },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-social text-sm font-medium"
-                  style={{ letterSpacing: "0.06em", textDecoration: "none" }}
-                >
-                  {s.label}
-                </a>
-              ))}
+              <a
+                href="https://instagram.com/nine2five.nz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://tiktok.com/@nine2five.nz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                TikTok
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61563357785307"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                Facebook
+              </a>
             </div>
           </div>
         </section>
@@ -879,14 +871,7 @@ function LiveCard({ product }: { product: Product }) {
     product.compare_at_price && product.compare_at_price > product.price;
 
   return (
-    <Link
-      href={`/shop/${product.slug}`}
-      className="prod-card group block overflow-hidden rounded-2xl"
-      style={{
-        backgroundColor: "#111111",
-        textDecoration: "none",
-      }}
-    >
+    <Link href={`/shop/${product.slug}`} className="prod-card">
       <div
         className="relative overflow-hidden"
         style={{
@@ -903,9 +888,7 @@ function LiveCard({ product }: { product: Product }) {
             className="object-cover"
           />
         ) : (
-          <div
-            className="absolute inset-0 flex items-end justify-center pb-8"
-          >
+          <div className="absolute inset-0 flex items-end justify-center pb-8">
             <span
               className="font-display font-black text-center px-4 leading-none"
               style={{ color: "rgba(255,255,255,0.13)", fontSize: 13 }}
@@ -938,10 +921,7 @@ function LiveCard({ product }: { product: Product }) {
           {product.name}
         </p>
         <div className="flex items-center gap-2">
-          <p
-            className="font-bold text-sm"
-            style={{ color: "#4ade80" }}
-          >
+          <p className="font-bold text-sm" style={{ color: "#4ade80" }}>
             ${(product.price / 100).toFixed(2)}
           </p>
           {isOnSale && (
@@ -971,14 +951,7 @@ function FallbackCard({
   compare: number | null;
 }) {
   return (
-    <Link
-      href="/shop"
-      className="prod-card group block overflow-hidden rounded-2xl"
-      style={{
-        backgroundColor: "#111111",
-        textDecoration: "none",
-      }}
-    >
+    <Link href="/shop" className="prod-card">
       <div
         className="relative overflow-hidden flex items-end justify-center pb-8"
         style={{
@@ -1017,10 +990,7 @@ function FallbackCard({
           {name}
         </p>
         <div className="flex items-center gap-2">
-          <p
-            className="font-bold text-sm"
-            style={{ color: "#4ade80" }}
-          >
+          <p className="font-bold text-sm" style={{ color: "#4ade80" }}>
             ${(price / 100).toFixed(2)}
           </p>
           {compare && (
