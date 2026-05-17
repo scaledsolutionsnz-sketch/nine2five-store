@@ -46,14 +46,11 @@ export function Nav() {
           <Link href="/shop" className="text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors">
             Shop
           </Link>
-          <Link href="/shop?collection=kahotea" className="text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors">
-            Kahotea
+          <Link href="/gallery" className="text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors">
+            Gallery
           </Link>
-          <Link href="/shop?collection=limited" className="text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors">
-            Limited
-          </Link>
-          <Link href="/#about" className="text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors">
-            About
+          <Link href="/contact" className="text-sm font-medium text-[#a3a3a3] hover:text-white transition-colors">
+            Contact
           </Link>
         </div>
 
@@ -96,9 +93,8 @@ export function Nav() {
         <div className="md:hidden bg-[#0d0d0d] border-t border-white/[0.08] px-6 py-4 space-y-4">
           {[
             { label: "Shop", href: "/shop" },
-            { label: "Kahotea", href: "/shop?collection=kahotea" },
-            { label: "Limited", href: "/shop?collection=limited" },
-            { label: "About", href: "/#about" },
+            { label: "Gallery", href: "/gallery" },
+            { label: "Contact", href: "/contact" },
             { label: loggedIn ? "My Account" : "Sign In", href: loggedIn ? "/account" : "/account/login" },
           ].map(({ label, href }) => (
             <Link
