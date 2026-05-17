@@ -26,7 +26,7 @@ export function AddressForm({ customer }: { customer: Customer | null }) {
   });
   const [saving, setSaving] = useState(false);
 
-  const inputClass = "w-full h-11 px-4 rounded-xl bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -43,11 +43,11 @@ export function AddressForm({ customer }: { customer: Customer | null }) {
 
   return (
     <form onSubmit={save}>
-      <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl p-5 space-y-4">
+      <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
         <h2 className="font-display font-semibold text-sm text-white mb-2">Default Shipping Address</h2>
 
         <div>
-          <label className="block text-xs text-[#737373] mb-1.5">Country</label>
+          <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Country</label>
           <select
             value={form.country}
             onChange={(e) => setForm((f) => ({ ...f, country: e.target.value, region: "" }))}
@@ -59,37 +59,37 @@ export function AddressForm({ customer }: { customer: Customer | null }) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">First Name</label>
+            <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">First Name</label>
             <input required value={form.first_name} onChange={(e) => setForm((f) => ({ ...f, first_name: e.target.value }))} className={inputClass} />
           </div>
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Last Name</label>
+            <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Last Name</label>
             <input required value={form.last_name} onChange={(e) => setForm((f) => ({ ...f, last_name: e.target.value }))} className={inputClass} />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs text-[#737373] mb-1.5">Address Line 1</label>
+          <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Address Line 1</label>
           <input required value={form.line1} onChange={(e) => setForm((f) => ({ ...f, line1: e.target.value }))} placeholder="Street address" className={inputClass} />
         </div>
         <div>
-          <label className="block text-xs text-[#737373] mb-1.5">Address Line 2 <span className="text-[#525252]">(optional)</span></label>
+          <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Address Line 2 <span className="text-white/25">(optional)</span></label>
           <input value={form.line2 ?? ""} onChange={(e) => setForm((f) => ({ ...f, line2: e.target.value }))} placeholder="Apartment, unit, etc." className={inputClass} />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">City / Town</label>
+            <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">City / Town</label>
             <input required value={form.city} onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))} className={inputClass} />
           </div>
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Postcode</label>
+            <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Postcode</label>
             <input required value={form.postcode} onChange={(e) => setForm((f) => ({ ...f, postcode: e.target.value }))} className={inputClass} />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs text-[#737373] mb-1.5">Region</label>
+          <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Region</label>
           {form.country === "NZ" ? (
             <select
               required value={form.region}
@@ -105,13 +105,13 @@ export function AddressForm({ customer }: { customer: Customer | null }) {
         </div>
 
         <div>
-          <label className="block text-xs text-[#737373] mb-1.5">Phone <span className="text-[#525252]">(optional)</span></label>
+          <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Phone <span className="text-white/25">(optional)</span></label>
           <input type="tel" value={form.phone ?? ""} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="+64 21 000 0000" className={inputClass} />
         </div>
 
         <button
           type="submit" disabled={saving}
-          className="w-full h-11 rounded-xl bg-[#16a34a] text-white font-display font-semibold text-sm hover:bg-[#15803d] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : "Save Address"}
         </button>

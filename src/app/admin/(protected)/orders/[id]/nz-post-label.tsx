@@ -56,9 +56,9 @@ export function NzPostLabel({ order }: { order: OrderWithItems }) {
   }
 
   return (
-    <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
+    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-display font-bold text-base">NZ Post Label</h2>
+        <h2 className="font-display font-semibold text-sm text-gray-900">NZ Post Label</h2>
         <button
           onClick={printLabel}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] transition-colors"
@@ -67,7 +67,7 @@ export function NzPostLabel({ order }: { order: OrderWithItems }) {
           Print Label
         </button>
       </div>
-      <div className="p-4 rounded-lg bg-white text-black text-sm font-mono space-y-1 border border-[#262626]">
+      <div className="p-4 rounded-lg bg-gray-50 text-black text-sm font-mono space-y-1 border border-gray-100">
         <p className="font-black text-base">NINE2FIVE</p>
         <p className="text-xs text-gray-500">Nine2Five Limited, Christchurch NZ</p>
         <p className="mt-3 font-bold text-lg">{addr.first_name} {addr.last_name}</p>

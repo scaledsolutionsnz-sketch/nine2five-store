@@ -53,77 +53,90 @@ function SignupForm() {
     setLoading(false);
   }
 
-  const inputClass = "w-full h-11 px-4 rounded-xl bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6 pt-20">
-        <div className="w-full max-w-sm text-center">
-          <div className="w-12 h-12 rounded-full bg-[#16a34a]/10 flex items-center justify-center mx-auto mb-4">
-            <svg className="h-6 w-6 text-[#16a34a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="bg-black min-h-screen flex items-center justify-center px-6">
+        <div className="w-full max-w-md text-center">
+          <div className="w-12 h-12 rounded-full bg-[#4ade80]/10 flex items-center justify-center mx-auto mb-4">
+            <svg className="h-6 w-6 text-[#4ade80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h2 className="font-display font-bold text-xl text-white mb-2">Check your email</h2>
-          <p className="text-sm text-[#737373] mb-6">
+          <h2 className="font-display font-black text-2xl text-white mb-2">Check your email</h2>
+          <p className="text-white/40 text-sm mb-6">
             We sent a confirmation link to <span className="text-white">{form.email}</span>. Click it to activate your account.
           </p>
-          <Link href="/" className="text-sm text-[#16a34a] hover:underline">← Back to store</Link>
+          <Link href="/" className="text-sm text-white/40 hover:text-white transition-colors">← Back to store</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 pt-20">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <Link href="/" className="font-display font-black text-xl tracking-tight text-white inline-block mb-6">
+    <div className="bg-black min-h-screen flex items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <Link href="/" className="font-display font-black text-2xl tracking-tight text-white inline-block mb-1">
             NINE2FIVE
           </Link>
-          <h1 className="font-display font-bold text-2xl text-white">Create account</h1>
-          <p className="text-sm text-[#737373] mt-1">Join Nine2Five for order history and wishlist</p>
+          <p className="text-white/40 text-sm">Join Nine2Five for order history and wishlist</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              placeholder="First name" required
-              value={form.firstName} onChange={(e) => setForm((f) => ({ ...f, firstName: e.target.value }))}
-              className={inputClass}
-            />
-            <input
-              placeholder="Last name" required
-              value={form.lastName} onChange={(e) => setForm((f) => ({ ...f, lastName: e.target.value }))}
-              className={inputClass}
-            />
-          </div>
-          <input
-            type="email" placeholder="Email address" required
-            value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            className={inputClass}
-          />
-          <input
-            type="password" placeholder="Password (min 6 characters)" required minLength={6}
-            value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            className={inputClass}
-          />
+        <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">First Name</label>
+                <input
+                  placeholder="First name" required
+                  value={form.firstName} onChange={(e) => setForm((f) => ({ ...f, firstName: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Last Name</label>
+                <input
+                  placeholder="Last name" required
+                  value={form.lastName} onChange={(e) => setForm((f) => ({ ...f, lastName: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Email</label>
+              <input
+                type="email" placeholder="your@email.com" required
+                value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Password</label>
+              <input
+                type="password" placeholder="Min 6 characters" required minLength={6}
+                value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
 
-          {error && (
-            <p className="text-xs text-red-400 bg-red-500/10 px-3 py-2 rounded-lg">{error}</p>
-          )}
+            {error && (
+              <p className="text-red-400 bg-red-500/10 rounded-xl px-4 py-3 text-sm">{error}</p>
+            )}
 
-          <button
-            type="submit" disabled={loading}
-            className="w-full h-11 rounded-xl bg-[#16a34a] text-white font-display font-semibold text-sm hover:bg-[#15803d] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
-          >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Account"}
-          </button>
-        </form>
+            <button
+              type="submit" disabled={loading}
+              className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Account"}
+            </button>
+          </form>
+        </div>
 
-        <p className="text-center text-sm text-[#737373] mt-6">
+        <p className="text-center text-sm text-white/40 mt-6">
           Already have one?{" "}
-          <Link href={`/account/login${next !== "/account" ? `?next=${next}` : ""}`} className="text-[#16a34a] hover:underline">
+          <Link href={`/account/login${next !== "/account" ? `?next=${next}` : ""}`} className="text-white/40 hover:text-white underline transition-colors">
             Sign in
           </Link>
         </p>

@@ -1,11 +1,11 @@
 export const dynamic = "force-dynamic";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { CampaignManager } from "./campaign-manager";
 import type { EmailCampaign } from "@/types/database";
 
 export default async function CampaignsPage() {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
 
   const [
     { data: campaigns },
@@ -23,7 +23,7 @@ export default async function CampaignsPage() {
     <div>
       <div className="mb-8">
         <h1 className="font-display font-bold text-2xl">Email Campaigns</h1>
-        <p className="text-sm text-[#737373] mt-1">Segment, personalise, and track your emails</p>
+        <p className="text-sm text-gray-400 mt-1">Segment, personalise, and track your emails</p>
       </div>
       <CampaignManager
         initialCampaigns={(campaigns ?? []) as EmailCampaign[]}

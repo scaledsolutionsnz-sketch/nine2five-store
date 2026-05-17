@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
 import { AccountNav } from "@/components/storefront/account-nav";
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
@@ -13,8 +12,8 @@ export default async function AccountLayout({ children }: { children: React.Reac
   await supabase.rpc("link_customer_account");
 
   return (
-    <div className="bg-[#0d0d0d] min-h-screen pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20 max-w-5xl mx-auto">
-      <div className="grid md:grid-cols-[200px_1fr] gap-8">
+    <div className="bg-black min-h-screen pt-24 md:pt-32 pb-24 px-8 md:px-16 max-w-screen-xl mx-auto">
+      <div className="grid md:grid-cols-[220px_1fr] gap-12">
         <AccountNav email={user.email!} />
         <main>{children}</main>
       </div>

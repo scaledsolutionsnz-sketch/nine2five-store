@@ -32,21 +32,21 @@ interface PO {
 }
 
 const STATUS_CONFIG: Record<PurchaseOrderStatus, { label: string; color: string; icon: React.ElementType }> = {
-  draft:      { label: "Draft",      color: "text-[#737373] bg-[#737373]/10", icon: FileText },
-  ordered:    { label: "Ordered",    color: "text-blue-400 bg-blue-400/10",   icon: Package },
-  in_transit: { label: "In Transit", color: "text-amber-400 bg-amber-400/10", icon: Truck },
-  received:   { label: "Received",   color: "text-[#16a34a] bg-[#16a34a]/10", icon: CheckCircle },
-  cancelled:  { label: "Cancelled",  color: "text-rose-400 bg-rose-400/10",   icon: AlertCircle },
+  draft:      { label: "Draft",      color: "text-gray-500 bg-gray-100",       icon: FileText },
+  ordered:    { label: "Ordered",    color: "text-blue-600 bg-blue-50",         icon: Package },
+  in_transit: { label: "In Transit", color: "text-amber-600 bg-amber-50",       icon: Truck },
+  received:   { label: "Received",   color: "text-green-600 bg-green-50",       icon: CheckCircle },
+  cancelled:  { label: "Cancelled",  color: "text-red-500 bg-red-50",           icon: AlertCircle },
 };
 
 const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderStatus; label: string }>> = {
   draft:      { status: "ordered",    label: "Mark Ordered" },
   ordered:    { status: "in_transit", label: "Mark In Transit" },
-  in_transit: { status: "in_transit", label: "Receive Stock" }, // special — uses receive endpoint
+  in_transit: { status: "in_transit", label: "Receive Stock" },
 };
 
 const inputClass =
-  "w-full h-10 px-3 rounded-lg bg-[#0e0e0e] border border-[#262626] text-sm text-white placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  "w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#16a34a] transition-colors";
 
 interface LineItemDraft { variant_id: string; quantity_ordered: number; unit_cost_cents: number; }
 
@@ -98,31 +98,31 @@ function CreatePOModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-xl bg-[#141414] border border-[#1e1e1e] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-[#1e1e1e]">
-          <h2 className="font-display font-bold text-lg">New Purchase Order</h2>
-          <button onClick={onClose} className="text-[#525252] hover:text-white transition-colors">✕</button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+      <div className="w-full max-w-xl bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-gray-100">
+          <h2 className="font-display font-semibold text-base text-gray-900">New Purchase Order</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition-colors">✕</button>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-[#525252] mb-1.5">Supplier</label>
+              <label className="block text-xs text-gray-500 mb-1.5">Supplier</label>
               <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} className={cn(inputClass, "appearance-none")}>
                 <option value="">No supplier</option>
                 {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-[#525252] mb-1.5">Expected by</label>
+              <label className="block text-xs text-gray-500 mb-1.5">Expected by</label>
               <input type="date" value={expectedAt} onChange={(e) => setExpectedAt(e.target.value)} className={inputClass} />
             </div>
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-xs text-[#525252] mb-2">Line Items</label>
+            <label className="block text-xs text-gray-500 mb-2">Line Items</label>
             <div className="space-y-2">
               {lines.map((line, i) => (
                 <div key={i} className="grid grid-cols-[1fr_80px_100px_28px] gap-2 items-center">
@@ -145,7 +145,7 @@ function CreatePOModal({
                     className={cn(inputClass, "text-center text-xs")}
                   />
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#525252] text-xs">$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
                     <input
                       type="number" min={0} step={0.01} placeholder="Unit cost"
                       value={line.unit_cost_cents / 100 || ""}
@@ -156,7 +156,7 @@ function CreatePOModal({
                   <button
                     onClick={() => setLines((prev) => prev.filter((_, idx) => idx !== i))}
                     disabled={lines.length === 1}
-                    className="h-10 w-7 flex items-center justify-center text-[#525252] hover:text-rose-400 disabled:opacity-20 transition-colors"
+                    className="h-10 w-7 flex items-center justify-center text-gray-400 hover:text-red-500 disabled:opacity-20 transition-colors"
                   >✕</button>
                 </div>
               ))}
@@ -171,12 +171,12 @@ function CreatePOModal({
 
           <input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} className={inputClass} />
 
-          <div className="flex items-center justify-between pt-2 border-t border-[#1e1e1e]">
-            <p className="text-sm text-[#737373]">
-              Total: <span className="text-white font-semibold">${(totalCents / 100).toFixed(2)}</span>
+          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+            <p className="text-sm text-gray-500">
+              Total: <span className="text-gray-900 font-semibold">${(totalCents / 100).toFixed(2)}</span>
             </p>
             <div className="flex gap-2">
-              <button onClick={onClose} className="h-9 px-4 rounded-lg bg-[#1e1e1e] text-sm text-[#737373] hover:text-white transition-colors">
+              <button onClick={onClose} className="h-9 px-4 rounded-lg border border-gray-200 text-sm text-gray-600 hover:text-gray-900 transition-colors">
                 Cancel
               </button>
               <button
@@ -206,7 +206,6 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
     if (!next) return;
     setActing(true);
     if (po.status === "in_transit") {
-      // Receive stock
       if (!confirm("Receive stock? This will update inventory for all line items.")) { setActing(false); return; }
       const res = await fetch(`/api/admin/purchase-orders/${po.id}/receive`, { method: "POST" });
       const data = await res.json();
@@ -244,7 +243,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
   }
 
   return (
-    <div className="rounded-xl bg-[#141414] border border-[#1e1e1e] overflow-hidden">
+    <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
       <div className="flex items-center gap-4 p-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -252,9 +251,9 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               <StatusIcon className="h-3 w-3" />
               {cfg.label}
             </span>
-            <span className="text-xs text-[#525252] font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
+            <span className="text-xs text-gray-400 font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-[#737373]">
+          <div className="flex items-center gap-4 text-xs text-gray-500">
             <span>{po.suppliers?.name ?? "No supplier"}</span>
             <span>{po.purchase_order_items.length} item{po.purchase_order_items.length !== 1 ? "s" : ""}</span>
             {po.total_cost_cents ? <span>${(po.total_cost_cents / 100).toFixed(2)}</span> : null}
@@ -271,7 +270,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50",
                 po.status === "in_transit"
                   ? "bg-[#16a34a] text-white hover:bg-[#15803d]"
-                  : "bg-[#1e1e1e] text-white hover:bg-[#262626]"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               )}
             >
               {acting ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
@@ -282,14 +281,14 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
             <button
               onClick={cancel}
               disabled={acting}
-              className="h-7 px-2.5 rounded-lg text-xs text-[#525252] hover:text-rose-400 hover:bg-rose-500/5 transition-colors disabled:opacity-40"
+              className="h-7 px-2.5 rounded-lg text-xs text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
             >
               Cancel
             </button>
           )}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="h-7 w-7 flex items-center justify-center text-[#525252] hover:text-white transition-colors"
+            className="h-7 w-7 flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors"
           >
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
@@ -297,13 +296,13 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
       </div>
 
       {expanded && (
-        <div className="border-t border-[#1e1e1e] bg-[#0e0e0e] px-4 py-3">
+        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
           {po.purchase_order_items.length === 0 ? (
-            <p className="text-xs text-[#525252]">No line items.</p>
+            <p className="text-xs text-gray-400">No line items.</p>
           ) : (
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-[#525252] border-b border-[#1a1a1a]">
+                <tr className="text-gray-400 border-b border-gray-100">
                   <th className="text-left pb-2">Variant</th>
                   <th className="text-right pb-2">Ordered</th>
                   <th className="text-right pb-2">Received</th>
@@ -312,13 +311,13 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               </thead>
               <tbody>
                 {po.purchase_order_items.map((item) => (
-                  <tr key={item.id} className="border-b border-[#1a1a1a] last:border-0">
-                    <td className="py-2 text-[#d4d4d4]">
+                  <tr key={item.id} className="border-b border-gray-50 last:border-0">
+                    <td className="py-2 text-gray-700">
                       {item.product_variants?.products?.name ?? "Unknown"} · Size {item.product_variants?.size ?? "—"}
                     </td>
-                    <td className="py-2 text-right">{item.quantity_ordered}</td>
-                    <td className="py-2 text-right text-[#737373]">{item.quantity_received}</td>
-                    <td className="py-2 text-right text-[#737373]">
+                    <td className="py-2 text-right text-gray-900">{item.quantity_ordered}</td>
+                    <td className="py-2 text-right text-gray-500">{item.quantity_received}</td>
+                    <td className="py-2 text-right text-gray-500">
                       {item.unit_cost_cents ? `$${(item.unit_cost_cents / 100).toFixed(2)}` : "—"}
                     </td>
                   </tr>
@@ -326,7 +325,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               </tbody>
             </table>
           )}
-          {po.notes && <p className="mt-3 text-xs text-[#525252]">Note: {po.notes}</p>}
+          {po.notes && <p className="mt-3 text-xs text-gray-400">Note: {po.notes}</p>}
         </div>
       )}
     </div>
@@ -345,12 +344,8 @@ export function PurchaseOrdersClient({
   const [orders, setOrders] = useState(initialOrders);
   const [creating, setCreating] = useState(false);
 
-  function handleSaved(po: PO) {
-    setOrders((prev) => [po, ...prev]);
-  }
-  function handleUpdated(po: PO) {
-    setOrders((prev) => prev.map((o) => o.id === po.id ? po : o));
-  }
+  function handleSaved(po: PO) { setOrders((prev) => [po, ...prev]); }
+  function handleUpdated(po: PO) { setOrders((prev) => prev.map((o) => o.id === po.id ? po : o)); }
 
   const open = orders.filter((o) => o.status !== "received" && o.status !== "cancelled");
   const closed = orders.filter((o) => o.status === "received" || o.status === "cancelled");
@@ -383,7 +378,7 @@ export function PurchaseOrdersClient({
 
       {closed.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#404040] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
             Completed / Cancelled
           </p>
           <div className="space-y-3 opacity-60">
@@ -393,10 +388,10 @@ export function PurchaseOrdersClient({
       )}
 
       {orders.length === 0 && !creating && (
-        <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl bg-[#141414] border border-[#1e1e1e]">
-          <Package className="h-10 w-10 text-[#404040] mb-4" />
-          <p className="text-[#525252] text-sm">No purchase orders yet.</p>
-          <p className="text-[#404040] text-xs mt-1">Create one to track stock orders from suppliers.</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl bg-white border border-gray-100 shadow-sm">
+          <Package className="h-10 w-10 text-gray-200 mb-4" />
+          <p className="text-gray-500 text-sm">No purchase orders yet.</p>
+          <p className="text-gray-400 text-xs mt-1">Create one to track stock orders from suppliers.</p>
         </div>
       )}
     </div>

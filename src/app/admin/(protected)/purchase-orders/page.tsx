@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
 
 export default async function PurchaseOrdersPage() {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
 
   const [{ data: orders }, { data: suppliers }, { data: variants }] = await Promise.all([
     supabase
@@ -19,7 +19,7 @@ export default async function PurchaseOrdersPage() {
     <div>
       <div className="mb-8">
         <h1 className="font-display font-bold text-2xl">Purchase Orders</h1>
-        <p className="text-sm text-[#737373] mt-1">Order stock from suppliers and receive into inventory.</p>
+        <p className="text-sm text-gray-400 mt-1">Order stock from suppliers and receive into inventory.</p>
       </div>
       <PurchaseOrdersClient
         initialOrders={orders ?? []}

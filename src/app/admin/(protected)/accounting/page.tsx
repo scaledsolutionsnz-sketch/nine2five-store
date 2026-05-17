@@ -16,7 +16,7 @@ export default async function AccountingPage() {
     <div>
       <div className="mb-8">
         <h1 className="font-display font-bold text-2xl">Accounting</h1>
-        <p className="text-sm text-[#737373] mt-1">
+        <p className="text-sm text-gray-400 mt-1">
           Revenue, GST, and exports for MYOB, Xero, or your accountant.
         </p>
       </div>

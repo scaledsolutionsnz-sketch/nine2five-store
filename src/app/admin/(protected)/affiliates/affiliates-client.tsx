@@ -14,14 +14,12 @@ function fmt(cents: number) {
 }
 
 const STATUS: Record<AffiliateStatus, { label: string; class: string }> = {
-  pending: { label: "Pending", class: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-  active: { label: "Active", class: "bg-green-500/10 text-green-400 border-green-500/20" },
-  suspended: { label: "Suspended", class: "bg-red-500/10 text-red-400 border-red-500/20" },
+  pending:   { label: "Pending",   class: "bg-amber-50 text-amber-600 border-amber-100" },
+  active:    { label: "Active",    class: "bg-green-50 text-green-600 border-green-100" },
+  suspended: { label: "Suspended", class: "bg-red-50 text-red-500 border-red-100" },
 };
 
-interface Props {
-  affiliates: Affiliate[];
-}
+interface Props { affiliates: Affiliate[] }
 
 export function AffiliatesClient({ affiliates: initial }: Props) {
   const [affiliates, setAffiliates] = useState(initial);
@@ -61,24 +59,26 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Clicks", value: totals.clicks.toLocaleString(), icon: MousePointer },
-          { label: "Conversions", value: totals.conversions.toLocaleString(), icon: TrendingUp },
-          { label: "Commission Owed", value: fmt(totals.commission - totals.paid), icon: DollarSign },
-          { label: "Affiliates", value: affiliates.length.toString(), icon: Users },
+          { label: "Total Clicks",    value: totals.clicks.toLocaleString(),                       icon: MousePointer },
+          { label: "Conversions",     value: totals.conversions.toLocaleString(),                  icon: TrendingUp },
+          { label: "Commission Owed", value: fmt(totals.commission - totals.paid),                 icon: DollarSign },
+          { label: "Affiliates",      value: affiliates.length.toString(),                         icon: Users },
         ].map(({ label, value, icon: Icon }) => (
-          <div key={label} className="p-5 rounded-xl bg-[#141414] border border-[#1e1e1e]">
+          <div key={label} className="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs text-[#737373]">{label}</p>
-              <Icon className="h-4 w-4 text-[#404040]" />
+              <p className="text-xs text-gray-400 font-medium">{label}</p>
+              <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center">
+                <Icon className="h-4 w-4 text-gray-400" />
+              </div>
             </div>
-            <p className="font-display font-bold text-xl text-white">{value}</p>
+            <p className="font-display font-bold text-2xl text-gray-900">{value}</p>
           </div>
         ))}
       </div>
 
       {/* Actions */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[#737373]">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
+        <p className="text-sm text-gray-500">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
         <button
           onClick={() => setShowCreate(true)}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] transition-colors"
@@ -89,45 +89,45 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
       </div>
 
       {/* Table */}
-      <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1e1e1e]">
+            <tr className="border-b border-gray-100 bg-gray-50">
               {["Affiliate", "Code", "Status", "Clicks", "Conversions", "Commission", "Rate", "Actions"].map((h) => (
-                <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-[#525252]">
+                <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400">
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#1a1a1a]">
+          <tbody className="divide-y divide-gray-50">
             {affiliates.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-[#525252]">
+                <td colSpan={8} className="px-4 py-10 text-center text-gray-400 text-sm">
                   No affiliates yet. Add your first referral partner.
                 </td>
               </tr>
             )}
             {affiliates.map((a) => (
-              <tr key={a.id} className="hover:bg-[#1a1a1a] transition-colors">
-                <td className="px-4 py-3">
-                  <p className="font-medium text-white">{a.name}</p>
-                  <p className="text-xs text-[#525252]">{a.email}</p>
+              <tr key={a.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-3.5">
+                  <p className="font-medium text-gray-900">{a.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{a.email}</p>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5">
                   <div className="flex items-center gap-2">
-                    <code className="text-xs bg-[#1e1e1e] px-2 py-0.5 rounded text-[#16a34a]">
+                    <code className="text-xs bg-gray-100 px-2 py-0.5 rounded text-[#16a34a] font-mono">
                       {a.referral_code}
                     </code>
                     <button
                       onClick={() => copyLink(a.referral_code)}
-                      className="text-[#525252] hover:text-white transition-colors"
+                      className="text-gray-400 hover:text-gray-700 transition-colors"
                     >
                       <Copy className="h-3 w-3" />
                     </button>
                   </div>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5">
                   <span className={cn(
                     "text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border",
                     STATUS[a.status].class
@@ -135,24 +135,24 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                     {STATUS[a.status].label}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-[#a3a3a3]">{a.total_clicks.toLocaleString()}</td>
-                <td className="px-4 py-3 text-[#a3a3a3]">{a.total_conversions.toLocaleString()}</td>
-                <td className="px-4 py-3 font-display font-semibold text-white">
+                <td className="px-4 py-3.5 text-gray-600">{a.total_clicks.toLocaleString()}</td>
+                <td className="px-4 py-3.5 text-gray-600">{a.total_conversions.toLocaleString()}</td>
+                <td className="px-4 py-3.5 font-display font-semibold text-gray-900">
                   {fmt(a.total_commission_cents)}
                   {a.total_paid_cents > 0 && (
-                    <span className="block text-[10px] text-[#525252] font-normal">
+                    <span className="block text-[10px] text-gray-400 font-normal mt-0.5">
                       {fmt(a.total_paid_cents)} paid
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-[#a3a3a3]">{a.commission_rate}%</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5 text-gray-600">{a.commission_rate}%</td>
+                <td className="px-4 py-3.5">
                   <div className="flex items-center gap-1">
                     {a.status === "pending" && (
                       <button
                         onClick={() => updateStatus(a.id, "active")}
                         title="Approve"
-                        className="p-1.5 rounded-lg hover:bg-green-500/10 text-[#525252] hover:text-green-400 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-green-50 text-gray-400 hover:text-green-600 transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
@@ -161,7 +161,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                       <button
                         onClick={() => updateStatus(a.id, "suspended")}
                         title="Suspend"
-                        className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#525252] hover:text-red-400 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                       >
                         <Pause className="h-3.5 w-3.5" />
                       </button>
@@ -170,14 +170,14 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                       <button
                         onClick={() => updateStatus(a.id, "active")}
                         title="Reactivate"
-                        className="p-1.5 rounded-lg hover:bg-green-500/10 text-[#525252] hover:text-green-400 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-green-50 text-gray-400 hover:text-green-600 transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
                     )}
                     <button
                       onClick={() => setSelected(a)}
-                      className="p-1.5 rounded-lg hover:bg-[#262626] text-[#525252] hover:text-white transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
                     </button>
@@ -250,20 +250,20 @@ function CreateAffiliateModal({
     toast.success("Affiliate created");
   }
 
-  const inputClass = "w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:border-[#16a34a] transition-colors";
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl w-full max-w-md">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
-          <h2 className="font-display font-bold text-base">New Affiliate</h2>
-          <button onClick={onClose} className="text-[#525252] hover:text-white">
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-xl w-full max-w-md">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <h2 className="font-display font-semibold text-base text-gray-900">New Affiliate</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700">
             <X className="h-4 w-4" />
           </button>
         </div>
         <form onSubmit={submit} className="p-5 space-y-4">
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Full Name</label>
+            <label className="block text-xs text-gray-500 mb-1.5">Full Name</label>
             <input
               required
               value={form.name}
@@ -276,7 +276,7 @@ function CreateAffiliateModal({
             />
           </div>
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Email</label>
+            <label className="block text-xs text-gray-500 mb-1.5">Email</label>
             <input
               required
               type="email"
@@ -287,7 +287,7 @@ function CreateAffiliateModal({
             />
           </div>
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Referral Code</label>
+            <label className="block text-xs text-gray-500 mb-1.5">Referral Code</label>
             <input
               required
               value={form.referral_code}
@@ -295,12 +295,12 @@ function CreateAffiliateModal({
               placeholder="wiremu10"
               className={inputClass}
             />
-            <p className="text-[10px] text-[#525252] mt-1">
+            <p className="text-[10px] text-gray-400 mt-1">
               Link: nine2five.co.nz?ref={form.referral_code || "code"}
             </p>
           </div>
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Commission Rate (%)</label>
+            <label className="block text-xs text-gray-500 mb-1.5">Commission Rate (%)</label>
             <input
               required
               type="number"
@@ -312,10 +312,10 @@ function CreateAffiliateModal({
             />
           </div>
           {error && (
-            <p className="text-xs text-red-400 bg-red-500/10 px-3 py-2 rounded-lg">{error}</p>
+            <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
           )}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-lg border border-[#262626] text-sm text-[#737373] hover:text-white hover:border-[#404040] transition-colors">
+            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-lg border border-gray-200 text-sm text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors">
               Cancel
             </button>
             <button type="submit" disabled={loading} className="flex-1 h-10 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors">
@@ -361,14 +361,14 @@ function AffiliateDetailModal({
   const pending = affiliate.total_commission_cents - affiliate.total_paid_cents;
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl w-full max-w-lg">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-xl w-full max-w-lg">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div>
-            <h2 className="font-display font-bold text-base">{affiliate.name}</h2>
-            <p className="text-xs text-[#525252]">{affiliate.email}</p>
+            <h2 className="font-display font-semibold text-base text-gray-900">{affiliate.name}</h2>
+            <p className="text-xs text-gray-400 mt-0.5">{affiliate.email}</p>
           </div>
-          <button onClick={onClose} className="text-[#525252] hover:text-white">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -380,23 +380,23 @@ function AffiliateDetailModal({
               { label: "Conversions", value: affiliate.total_conversions.toLocaleString() },
               { label: "Pending Pay", value: fmt(pending) },
             ].map(({ label, value }) => (
-              <div key={label} className="p-3 rounded-lg bg-[#1a1a1a] border border-[#1e1e1e] text-center">
-                <p className="text-xs text-[#737373] mb-1">{label}</p>
-                <p className="font-display font-bold text-base text-white">{value}</p>
+              <div key={label} className="p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+                <p className="text-xs text-gray-400 mb-1">{label}</p>
+                <p className="font-display font-bold text-base text-gray-900">{value}</p>
               </div>
             ))}
           </div>
 
           {/* Referral link */}
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Referral Link</label>
+            <label className="block text-xs text-gray-500 mb-1.5">Referral Link</label>
             <div className="flex items-center gap-2">
-              <code className="flex-1 text-xs bg-[#1a1a1a] border border-[#262626] px-3 py-2 rounded-lg text-[#16a34a] overflow-hidden overflow-ellipsis whitespace-nowrap">
+              <code className="flex-1 text-xs bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-[#16a34a] overflow-hidden overflow-ellipsis whitespace-nowrap font-mono">
                 {link}
               </code>
               <button
                 onClick={() => { navigator.clipboard.writeText(link); toast.success("Copied"); }}
-                className="px-3 py-2 rounded-lg border border-[#262626] text-xs text-[#737373] hover:text-white hover:border-[#404040] transition-colors"
+                className="px-3 py-2 rounded-lg border border-gray-200 text-xs text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-colors"
               >
                 Copy
               </button>
@@ -405,7 +405,7 @@ function AffiliateDetailModal({
 
           {/* Commission rate */}
           <div>
-            <label className="block text-xs text-[#737373] mb-1.5">Commission Rate (%)</label>
+            <label className="block text-xs text-gray-500 mb-1.5">Commission Rate (%)</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -413,7 +413,7 @@ function AffiliateDetailModal({
                 max="50"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
-                className="w-24 h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#262626] text-white text-sm focus:outline-none focus:border-[#16a34a]"
+                className="w-24 h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#16a34a]"
               />
               <button
                 onClick={saveRate}
@@ -426,7 +426,7 @@ function AffiliateDetailModal({
           </div>
 
           {/* Joined */}
-          <p className="text-xs text-[#525252]">
+          <p className="text-xs text-gray-400">
             Joined {new Date(affiliate.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
             {affiliate.approved_at && ` · Approved ${new Date(affiliate.approved_at).toLocaleDateString("en-NZ")}`}
           </p>

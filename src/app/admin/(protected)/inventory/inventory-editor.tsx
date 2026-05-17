@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-  Save, Loader2, Plus, Minus, History, ChevronDown, ChevronUp,
+  Save, Loader2, Plus, Minus, History, ChevronUp,
   AlertTriangle, XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -23,12 +23,12 @@ type AdjType = typeof ADJUSTMENT_TYPES[number]["value"];
 
 function StockBadge({ qty }: { qty: number }) {
   if (qty === 0) return (
-    <span className="flex items-center gap-1 text-[10px] font-bold uppercase text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded">
+    <span className="flex items-center gap-1 text-[10px] font-bold uppercase text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
       <XCircle className="h-3 w-3" /> Out
     </span>
   );
   if (qty < 10) return (
-    <span className="flex items-center gap-1 text-[10px] font-bold uppercase text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
+    <span className="flex items-center gap-1 text-[10px] font-bold uppercase text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
       <AlertTriangle className="h-3 w-3" /> Low
     </span>
   );
@@ -85,7 +85,7 @@ function VariantCard({
     setDelta(0);
     setNote("");
     setAdjusting(false);
-    setMovements(null); // reset so history refreshes next open
+    setMovements(null);
     toast.success(`Stock ${delta > 0 ? "+" : ""}${delta} applied`);
   }
 
@@ -99,19 +99,19 @@ function VariantCard({
     setHistoryOpen(true);
   }
 
-  const inputClass = "h-8 px-2 rounded bg-[#0e0e0e] border border-[#262626] text-sm text-center font-display font-bold focus:outline-none focus:border-[#16a34a]";
+  const inputClass = "h-8 px-2 rounded-lg bg-white border border-gray-200 text-sm text-center font-display font-bold focus:outline-none focus:border-[#16a34a]";
 
   return (
-    <div className="rounded-xl bg-[#1a1a1a] border border-[#262626] overflow-hidden">
+    <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
       {/* Main row */}
       <div className="flex items-center gap-3 p-4">
         <div className="flex-1">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#525252]">Size</p>
-          <p className="font-display font-bold text-lg mt-0.5">{variant.size}</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Size</p>
+          <p className="font-display font-bold text-lg text-gray-900 mt-0.5">{variant.size}</p>
         </div>
 
         <div className="text-center">
-          <p className="text-xs text-[#525252] mb-1">Stock</p>
+          <p className="text-xs text-gray-400 mb-1">Stock</p>
           <input
             type="number" min={0}
             value={qty}
@@ -127,7 +127,7 @@ function VariantCard({
             onClick={saveDirectEdit}
             disabled={saving || qty === variant.stock_quantity}
             title="Save"
-            className="h-8 w-8 rounded bg-[#16a34a]/10 text-[#16a34a] flex items-center justify-center hover:bg-[#16a34a]/20 transition-colors disabled:opacity-30"
+            className="h-8 w-8 rounded-lg bg-[#16a34a]/10 text-[#16a34a] flex items-center justify-center hover:bg-[#16a34a]/20 transition-colors disabled:opacity-30"
           >
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
           </button>
@@ -135,8 +135,8 @@ function VariantCard({
             onClick={() => setAdjusting(!adjusting)}
             title="Adjust"
             className={cn(
-              "h-8 w-8 rounded flex items-center justify-center transition-colors",
-              adjusting ? "bg-white/10 text-white" : "bg-[#1e1e1e] text-[#737373] hover:text-white"
+              "h-8 w-8 rounded-lg flex items-center justify-center transition-colors",
+              adjusting ? "bg-gray-200 text-gray-900" : "bg-gray-100 text-gray-500 hover:text-gray-900"
             )}
           >
             <Plus className="h-3.5 w-3.5" />
@@ -145,8 +145,8 @@ function VariantCard({
             onClick={loadHistory}
             title="History"
             className={cn(
-              "h-8 w-8 rounded flex items-center justify-center transition-colors",
-              historyOpen ? "bg-white/10 text-white" : "bg-[#1e1e1e] text-[#737373] hover:text-white"
+              "h-8 w-8 rounded-lg flex items-center justify-center transition-colors",
+              historyOpen ? "bg-gray-200 text-gray-900" : "bg-gray-100 text-gray-500 hover:text-gray-900"
             )}
           >
             {loadingHistory
@@ -158,11 +158,11 @@ function VariantCard({
 
       {/* Adjustment panel */}
       {adjusting && (
-        <div className="border-t border-[#262626] bg-[#141414] p-4 space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#525252]">Adjust Stock</p>
+        <div className="border-t border-gray-100 bg-gray-50 p-4 space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Adjust Stock</p>
           <div className="flex items-center gap-2">
-            <button onClick={() => setDelta((d) => d - 1)} className="h-8 w-8 rounded bg-[#1e1e1e] hover:bg-[#262626] flex items-center justify-center transition-colors">
-              <Minus className="h-3.5 w-3.5" />
+            <button onClick={() => setDelta((d) => d - 1)} className="h-8 w-8 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 flex items-center justify-center transition-colors">
+              <Minus className="h-3.5 w-3.5 text-gray-600" />
             </button>
             <input
               type="number"
@@ -170,13 +170,13 @@ function VariantCard({
               onChange={(e) => setDelta(parseInt(e.target.value) || 0)}
               className={cn(inputClass, "w-20")}
             />
-            <button onClick={() => setDelta((d) => d + 1)} className="h-8 w-8 rounded bg-[#1e1e1e] hover:bg-[#262626] flex items-center justify-center transition-colors">
-              <Plus className="h-3.5 w-3.5" />
+            <button onClick={() => setDelta((d) => d + 1)} className="h-8 w-8 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 flex items-center justify-center transition-colors">
+              <Plus className="h-3.5 w-3.5 text-gray-600" />
             </button>
             <select
               value={adjType}
               onChange={(e) => setAdjType(e.target.value as AdjType)}
-              className="h-8 px-2 rounded bg-[#0e0e0e] border border-[#262626] text-sm text-white focus:outline-none focus:border-[#16a34a] flex-1"
+              className="h-8 px-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#16a34a] flex-1"
             >
               {ADJUSTMENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
@@ -185,10 +185,10 @@ function VariantCard({
             placeholder="Note (optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="w-full h-8 px-3 rounded bg-[#0e0e0e] border border-[#262626] text-sm text-white placeholder-[#525252] focus:outline-none focus:border-[#16a34a]"
+            className="w-full h-8 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#16a34a]"
           />
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#525252]">
+            <p className="text-xs text-gray-400">
               {delta !== 0
                 ? `New total: ${Math.max(0, qty + delta)}`
                 : "Enter +/- amount"}
@@ -196,7 +196,7 @@ function VariantCard({
             <button
               onClick={applyAdjustment}
               disabled={applying || delta === 0}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#16a34a] text-white text-xs font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#16a34a] text-white text-xs font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
             >
               {applying ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
               Apply
@@ -207,15 +207,15 @@ function VariantCard({
 
       {/* Movement history */}
       {historyOpen && movements !== null && (
-        <div className="border-t border-[#262626] bg-[#0e0e0e] p-4">
+        <div className="border-t border-gray-100 bg-gray-50 p-4">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#525252]">Recent movements</p>
-            <button onClick={() => setHistoryOpen(false)} className="text-[#525252] hover:text-white">
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Recent movements</p>
+            <button onClick={() => setHistoryOpen(false)} className="text-gray-400 hover:text-gray-700">
               <ChevronUp className="h-3.5 w-3.5" />
             </button>
           </div>
           {movements.length === 0 ? (
-            <p className="text-xs text-[#525252]">No movements yet.</p>
+            <p className="text-xs text-gray-400">No movements yet.</p>
           ) : (
             <div className="space-y-2">
               {movements.map((m) => (
@@ -223,14 +223,14 @@ function VariantCard({
                   <div className="flex items-center gap-2">
                     <span className={cn(
                       "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase",
-                      m.quantity > 0 ? "bg-[#16a34a]/10 text-[#16a34a]" : "bg-rose-500/10 text-rose-400"
+                      m.quantity > 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"
                     )}>
                       {m.quantity > 0 ? "+" : ""}{m.quantity}
                     </span>
-                    <span className="text-[#737373] capitalize">{m.type}</span>
-                    {m.note && <span className="text-[#525252]">· {m.note}</span>}
+                    <span className="text-gray-500 capitalize">{m.type}</span>
+                    {m.note && <span className="text-gray-400">· {m.note}</span>}
                   </div>
-                  <span className="text-[#404040]">
+                  <span className="text-gray-400">
                     {new Date(m.created_at).toLocaleDateString("en-NZ")}
                   </span>
                 </div>
@@ -266,19 +266,19 @@ export function InventoryEditor({
     <div className="space-y-8">
       {/* Low stock alert */}
       {lowStock.length > 0 && (
-        <div className="p-5 rounded-xl bg-amber-500/5 border border-amber-500/20">
+        <div className="p-5 rounded-xl bg-amber-50 border border-amber-100">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="h-4 w-4 text-amber-400" />
-            <p className="font-display font-bold text-sm text-amber-400">
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <p className="font-display font-semibold text-sm text-amber-700">
               {lowStock.length} variant{lowStock.length !== 1 ? "s" : ""} need restocking
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {lowStock.map((v) => (
-              <div key={v.variant_id} className="px-3 py-2 rounded-lg bg-[#141414] border border-[#1e1e1e]">
-                <p className="text-xs font-medium text-white truncate">{v.product_name}</p>
-                <p className="text-xs text-[#737373]">Size {v.size}</p>
-                <p className={cn("text-lg font-display font-bold mt-1", v.stock_quantity === 0 ? "text-rose-400" : "text-amber-400")}>
+              <div key={v.variant_id} className="px-3 py-2 rounded-xl bg-white border border-amber-100">
+                <p className="text-xs font-medium text-gray-900 truncate">{v.product_name}</p>
+                <p className="text-xs text-gray-500 mt-0.5">Size {v.size}</p>
+                <p className={cn("text-lg font-display font-bold mt-1", v.stock_quantity === 0 ? "text-red-500" : "text-amber-600")}>
                   {v.stock_quantity}
                 </p>
               </div>
@@ -290,7 +290,7 @@ export function InventoryEditor({
       {/* Per-product stock */}
       {products.map((product) => (
         <div key={product.id}>
-          <h3 className="font-display font-bold text-base mb-3 text-white">{product.name}</h3>
+          <h3 className="font-display font-semibold text-base text-gray-900 mb-3">{product.name}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {product.product_variants
               .sort((a, b) => a.size.localeCompare(b.size))

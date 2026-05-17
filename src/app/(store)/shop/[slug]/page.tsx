@@ -6,7 +6,7 @@ import { AddToCart } from "@/components/storefront/add-to-cart";
 import { WishlistButton } from "@/components/storefront/wishlist-button";
 import type { Product, ProductVariant } from "@/types/database";
 import type { Metadata } from "next";
-import { ChevronLeft, Shield, Truck, RotateCcw } from "lucide-react";
+import { Shield, Truck, RotateCcw } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -62,84 +62,85 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const isOnSale = p.compare_at_price && p.compare_at_price > p.price;
 
   return (
-    <div className="bg-[#0d0d0d] min-h-screen pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20 max-w-6xl mx-auto">
-      <Link
-        href="/shop"
-        className="inline-flex items-center gap-1.5 text-sm text-[#737373] hover:text-white transition-colors mb-8"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Back to Shop
-      </Link>
+    <div className="bg-black min-h-screen">
+      <div className="pt-24 md:pt-32 pb-24 px-8 md:px-16 max-w-screen-xl mx-auto">
+        <Link
+          href="/shop"
+          className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition-colors mb-10"
+        >
+          ← Back to Shop
+        </Link>
 
-      <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
-        {/* Image */}
-        <div className="space-y-3">
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-[#141414]">
-            {p.image_urls?.[0] ? (
-              <Image
-                src={p.image_urls[0]}
-                alt={p.name}
-                fill
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="absolute inset-0 bg-[#1c1c1c] flex items-center justify-center">
-                <span className="text-[#333] text-sm">No image</span>
-              </div>
-            )}
-            {isOnSale && (
-              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#16a34a] text-white text-xs font-bold uppercase tracking-wider">
-                Sale
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Details */}
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#16a34a] mb-2">
-            Māori Grip Socks
-          </p>
-          <h1 className="font-display font-black text-3xl md:text-4xl text-white mb-3">
-            {p.name}
-          </h1>
-
-          <div className="flex items-baseline gap-3 mb-6">
-            <span className="font-display font-bold text-2xl text-white">
-              ${(p.price / 100).toFixed(2)} NZD
-            </span>
-            {isOnSale && (
-              <span className="text-lg text-[#525252] line-through">
-                ${(p.compare_at_price! / 100).toFixed(2)}
-              </span>
-            )}
-          </div>
-
-          {p.description && (
-            <p className="text-[#737373] leading-relaxed mb-8">{p.description}</p>
-          )}
-
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <AddToCart product={p} variants={v} />
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
+          {/* Image */}
+          <div>
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#111]">
+              {p.image_urls?.[0] ? (
+                <Image
+                  src={p.image_urls[0]}
+                  alt={p.name}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <div className="absolute inset-0 bg-[#111] flex items-center justify-center">
+                  <span className="text-white/20 text-sm">No image</span>
+                </div>
+              )}
+              {isOnSale && (
+                <span className="absolute top-4 left-4 bg-white text-black rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest">
+                  Sale
+                </span>
+              )}
             </div>
-            <WishlistButton productId={p.id} />
           </div>
 
-          {/* Trust badges */}
-          <div className="mt-8 pt-8 border-t border-[#1e1e1e] grid grid-cols-3 gap-4">
-            {[
-              { icon: Truck, label: "Free NZ shipping", sub: "Orders over $75" },
-              { icon: Shield, label: "Secure checkout", sub: "Stripe payments" },
-              { icon: RotateCcw, label: "Easy returns", sub: "7-day policy" },
-            ].map(({ icon: Icon, label, sub }) => (
-              <div key={label} className="text-center">
-                <Icon className="h-5 w-5 text-[#16a34a] mx-auto mb-1.5" />
-                <p className="text-xs font-semibold text-white">{label}</p>
-                <p className="text-xs text-[#525252] mt-0.5">{sub}</p>
+          {/* Details */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#4ade80] mb-2">
+              Māori Grip Socks
+            </p>
+            <h1 className="font-display font-black text-3xl md:text-4xl text-white mb-3">
+              {p.name}
+            </h1>
+
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="text-2xl font-black text-white">
+                ${(p.price / 100).toFixed(2)} NZD
+              </span>
+              {isOnSale && (
+                <span className="text-white/30 line-through ml-3">
+                  ${(p.compare_at_price! / 100).toFixed(2)}
+                </span>
+              )}
+            </div>
+
+            {p.description && (
+              <p className="text-white/50 leading-relaxed mb-8">{p.description}</p>
+            )}
+
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <AddToCart product={p} variants={v} />
               </div>
-            ))}
+              <WishlistButton productId={p.id} />
+            </div>
+
+            {/* Trust badges */}
+            <div className="mt-8 pt-8 border-t border-white/[0.08] grid grid-cols-3 gap-4">
+              {[
+                { icon: Truck, label: "Free NZ shipping", sub: "Orders over $75" },
+                { icon: Shield, label: "Secure checkout", sub: "Stripe payments" },
+                { icon: RotateCcw, label: "Easy returns", sub: "7-day policy" },
+              ].map(({ icon: Icon, label, sub }) => (
+                <div key={label} className="text-center">
+                  <Icon className="h-5 w-5 text-[#4ade80] mx-auto mb-1.5" />
+                  <p className="text-xs font-semibold text-white">{label}</p>
+                  <p className="text-xs text-white/40 mt-0.5">{sub}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

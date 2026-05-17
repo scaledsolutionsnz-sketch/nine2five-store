@@ -44,63 +44,70 @@ function LoginForm() {
     toast.success("Magic link sent — check your email");
   }
 
-  const inputClass = "w-full h-11 px-4 rounded-xl bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 pt-20">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <Link href="/" className="font-display font-black text-xl tracking-tight text-white inline-block mb-6">
+    <div className="bg-black min-h-screen flex items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <Link href="/" className="font-display font-black text-2xl tracking-tight text-white inline-block mb-1">
             NINE2FIVE
           </Link>
-          <h1 className="font-display font-bold text-2xl text-white">Welcome back</h1>
-          <p className="text-sm text-[#737373] mt-1">Sign in to your account</p>
+          <p className="text-white/40 text-sm">Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email" required placeholder="Email address"
-            value={email} onChange={(e) => setEmail(e.target.value)}
-            className={inputClass}
-          />
-          <input
-            type="password" required placeholder="Password" minLength={6}
-            value={password} onChange={(e) => setPassword(e.target.value)}
-            className={inputClass}
-          />
+        <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Email</label>
+              <input
+                type="email" required placeholder="your@email.com"
+                value={email} onChange={(e) => setEmail(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Password</label>
+              <input
+                type="password" required placeholder="••••••••" minLength={6}
+                value={password} onChange={(e) => setPassword(e.target.value)}
+                className={inputClass}
+              />
+            </div>
 
-          {error && (
-            <p className="text-xs text-red-400 bg-red-500/10 px-3 py-2 rounded-lg">{error}</p>
-          )}
+            {error && (
+              <p className="text-red-400 bg-red-500/10 rounded-xl px-4 py-3 text-sm">{error}</p>
+            )}
+
+            <button
+              type="submit" disabled={loading}
+              className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
+            </button>
+          </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/[0.08]" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="px-3 bg-[#111] text-xs text-white/30">or</span>
+            </div>
+          </div>
 
           <button
-            type="submit" disabled={loading}
-            className="w-full h-11 rounded-xl bg-[#16a34a] text-white font-display font-semibold text-sm hover:bg-[#15803d] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            onClick={handleMagicLink}
+            disabled={loading}
+            className="w-full border border-white/[0.08] rounded-xl h-12 flex items-center justify-center gap-3 text-sm text-white/50 hover:text-white hover:bg-white/[0.04] disabled:opacity-50 transition-all"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
+            Send magic link
           </button>
-        </form>
-
-        <div className="relative my-5">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-[#262626]" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="px-3 bg-[#0a0a0a] text-xs text-[#525252]">or</span>
-          </div>
         </div>
 
-        <button
-          onClick={handleMagicLink}
-          disabled={loading}
-          className="w-full h-11 rounded-xl border border-[#262626] text-sm text-[#a3a3a3] hover:text-white hover:border-[#404040] disabled:opacity-50 transition-colors"
-        >
-          Send magic link
-        </button>
-
-        <p className="text-center text-sm text-[#737373] mt-6">
+        <p className="text-center text-sm text-white/40 hover:text-white mt-6 transition-colors">
           No account?{" "}
-          <Link href={`/account/signup${next !== "/account" ? `?next=${next}` : ""}`} className="text-[#16a34a] hover:underline">
+          <Link href={`/account/signup${next !== "/account" ? `?next=${next}` : ""}`} className="text-white/40 hover:text-white underline">
             Create one
           </Link>
         </p>

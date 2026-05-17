@@ -12,7 +12,7 @@ import { useCart } from "@/lib/cart-context";
 import { NZ_REGIONS, calculateShippingByPairs } from "@/lib/shipping";
 import { getCookie } from "@/components/storefront/affiliate-tracker";
 import type { ShippingAddress } from "@/types/database";
-import { ChevronLeft, ChevronRight, Loader2, Tag, X, Check, Package, MapPin } from "lucide-react";
+import { ChevronLeft, Loader2, Tag, X, Check, Package, MapPin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,7 @@ const COUNTRIES = [
 const STEP_LABELS = ["Information", "Shipping", "Payment"];
 
 const inputClass =
-  "w-full h-11 px-3 rounded-lg bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
 export default function CheckoutPage() {
   const { items, total, count } = useCart();
@@ -112,9 +112,14 @@ export default function CheckoutPage() {
 
   if (count === 0) {
     return (
-      <div className="bg-[#0d0d0d] min-h-screen pt-24 pb-24 px-6 sm:px-10 text-center max-w-md mx-auto">
-        <p className="text-[#737373] mb-4">Your cart is empty.</p>
-        <Link href="/shop" className="btn-primary">Shop Now</Link>
+      <div className="bg-black min-h-screen flex flex-col items-center justify-center px-8 text-center">
+        <p className="text-white/50 mb-4">Your cart is empty.</p>
+        <Link
+          href="/shop"
+          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300"
+        >
+          Shop Now
+        </Link>
       </div>
     );
   }
@@ -130,12 +135,12 @@ export default function CheckoutPage() {
     !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
 
   return (
-    <div className="bg-[#0d0d0d] min-h-screen pt-24 pb-24 px-6 sm:px-10 md:px-16 lg:px-20 max-w-5xl mx-auto">
-      <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-[#737373] hover:text-white transition-colors mb-6">
+    <div className="bg-black min-h-screen pt-24 md:pt-32 pb-24 px-8 md:px-16 max-w-screen-xl mx-auto">
+      <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition-colors mb-6">
         <ChevronLeft className="h-4 w-4" /> Back to Cart
       </Link>
 
-      <h1 className="font-display font-black text-3xl mb-8">Checkout</h1>
+      <h1 className="font-display font-black text-4xl text-white mb-10">Checkout</h1>
 
       {/* Step indicator */}
       <div className="flex items-center gap-0 mb-10">
@@ -146,7 +151,7 @@ export default function CheckoutPage() {
           return (
             <div key={label} className="flex items-center">
               {i > 0 && (
-                <div className={cn("h-px w-8 md:w-12 transition-colors", isDone ? "bg-[#16a34a]" : "bg-[#262626]")} />
+                <div className={cn("h-px w-8 md:w-12 transition-colors", isDone ? "bg-[#4ade80]" : "bg-white/[0.08]")} />
               )}
               <button
                 type="button"
@@ -155,17 +160,17 @@ export default function CheckoutPage() {
               >
                 <div className={cn(
                   "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                  isActive && "bg-[#16a34a] text-white",
-                  isDone && "bg-[#16a34a]/20 text-[#16a34a] hover:bg-[#16a34a]/30",
-                  !isActive && !isDone && "bg-[#1a1a1a] border border-[#262626] text-[#525252]",
+                  isActive && "bg-[#4ade80] text-black",
+                  isDone && "bg-[#4ade80]/15 text-[#4ade80] border border-[#4ade80]/30",
+                  !isActive && !isDone && "bg-[#111] border border-white/[0.08] text-white/30",
                 )}>
                   {isDone ? <Check className="h-3.5 w-3.5" /> : num}
                 </div>
                 <span className={cn(
                   "text-xs hidden sm:block transition-colors",
                   isActive && "text-white font-semibold",
-                  isDone && "text-[#16a34a]",
-                  !isActive && !isDone && "text-[#525252]",
+                  isDone && "text-[#4ade80]",
+                  !isActive && !isDone && "text-white/40",
                 )}>
                   {label}
                 </span>
@@ -175,7 +180,7 @@ export default function CheckoutPage() {
         })}
       </div>
 
-      <div className="grid md:grid-cols-[1fr_360px] gap-12">
+      <div className="grid md:grid-cols-[1fr_400px] gap-12">
         {/* ── Left column ── */}
         <div>
           {/* STEP 1 — Information */}
@@ -183,24 +188,29 @@ export default function CheckoutPage() {
             <div className="space-y-6">
               {loading && (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#16a34a]" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[#4ade80]" />
                 </div>
               )}
 
               {isBulk && !loading && (
-                <div className="rounded-xl bg-[#141414] border border-[#262626] p-6 text-center space-y-4">
-                  <p className="text-sm text-[#737373] leading-relaxed">
+                <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 text-center space-y-4">
+                  <p className="text-sm text-white/50 leading-relaxed">
                     Your order contains more than 12 pairs.<br />
                     Please contact us directly for bulk shipping rates.
                   </p>
-                  <a href="mailto:nine2five.co.nz@gmail.com" className="btn-primary inline-block px-8">Contact Us</a>
+                  <a
+                    href="mailto:nine2five.co.nz@gmail.com"
+                    className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 inline-block"
+                  >
+                    Contact Us
+                  </a>
                 </div>
               )}
 
               {!isBulk && !loading && (
                 <>
-                  <div>
-                    <h2 className="font-display font-bold text-base mb-4">Contact</h2>
+                  <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
+                    <h2 className="font-display font-bold text-base text-white mb-4">Contact</h2>
                     <div className="space-y-3">
                       <select
                         value={country}
@@ -219,8 +229,8 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <h2 className="font-display font-bold text-base mb-4">Shipping Address</h2>
+                  <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
+                    <h2 className="font-display font-bold text-base text-white mb-4">Shipping Address</h2>
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                         <input placeholder="First name" required value={address.first_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, first_name: e.target.value }))} className={inputClass} />
@@ -251,7 +261,7 @@ export default function CheckoutPage() {
                   <button
                     onClick={() => setStep(2)}
                     disabled={!step1Valid}
-                    className="btn-primary w-full py-3.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Continue to shipping
                   </button>
@@ -264,32 +274,32 @@ export default function CheckoutPage() {
           {step === 2 && (
             <div className="space-y-6">
               {/* Summary of step 1 */}
-              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#141414] border border-[#262626] text-sm">
-                <MapPin className="h-4 w-4 text-[#737373] mt-0.5 shrink-0" />
+              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#111] border border-white/[0.08] text-sm">
+                <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-white truncate">{address.first_name} {address.last_name}</p>
-                  <p className="text-[#737373] truncate">{address.line1}{address.line2 ? `, ${address.line2}` : ""}, {address.city} {address.postcode}</p>
-                  <p className="text-[#737373]">{email}</p>
+                  <p className="text-white/40 truncate">{address.line1}{address.line2 ? `, ${address.line2}` : ""}, {address.city} {address.postcode}</p>
+                  <p className="text-white/40">{email}</p>
                 </div>
-                <button type="button" onClick={() => setStep(1)} className="text-xs text-[#16a34a] hover:underline shrink-0">
+                <button type="button" onClick={() => setStep(1)} className="text-xs text-[#4ade80] hover:underline shrink-0">
                   Change
                 </button>
               </div>
 
-              <div>
-                <h2 className="font-display font-bold text-base mb-4">Delivery Method</h2>
-                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#141414] border border-[#16a34a] ring-1 ring-[#16a34a]/20">
-                  <div className="h-4 w-4 rounded-full border-2 border-[#16a34a] flex items-center justify-center shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-[#16a34a]" />
+              <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+                <h2 className="font-display font-bold text-base text-white mb-4">Delivery Method</h2>
+                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#111] border border-[#4ade80]/30 ring-1 ring-[#4ade80]/10">
+                  <div className="h-4 w-4 rounded-full border-2 border-[#4ade80] flex items-center justify-center shrink-0">
+                    <div className="h-2 w-2 rounded-full bg-[#4ade80]" />
                   </div>
-                  <Package className="h-5 w-5 text-[#737373] shrink-0" />
+                  <Package className="h-5 w-5 text-white/40 shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">{shippingInfo.label}</p>
-                    <p className="text-xs text-[#737373] mt-0.5">{shippingInfo.delivery}</p>
+                    <p className="text-xs text-white/40 mt-0.5">{shippingInfo.delivery}</p>
                   </div>
-                  <p className="text-sm font-semibold">
+                  <p className="text-sm font-semibold text-white">
                     {effectiveShipping === 0
-                      ? <span className="text-[#16a34a]">Free</span>
+                      ? <span className="text-[#4ade80]">Free</span>
                       : `$${(effectiveShipping / 100).toFixed(2)}`}
                   </p>
                 </div>
@@ -299,14 +309,14 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="h-12 px-5 rounded-lg bg-[#1a1a1a] border border-[#262626] text-sm text-[#737373] hover:text-white hover:border-[#404040] transition-colors"
+                  className="border border-white/20 text-white font-medium text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:border-white/50 hover:bg-white/5 transition-all"
                 >
                   Back
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="btn-primary flex-1 py-3.5"
+                  className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 flex-1"
                 >
                   Continue to payment
                 </button>
@@ -319,7 +329,7 @@ export default function CheckoutPage() {
             <>
               {loading && (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#16a34a]" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[#4ade80]" />
                 </div>
               )}
               {clientSecret && !loading && (
@@ -330,8 +340,8 @@ export default function CheckoutPage() {
                     appearance: {
                       theme: "night",
                       variables: {
-                        colorPrimary: "#16a34a",
-                        colorBackground: "#141414",
+                        colorPrimary: "#4ade80",
+                        colorBackground: "#111111",
                         colorText: "#fafafa",
                         colorDanger: "#ef4444",
                         fontFamily: "Inter, sans-serif",
@@ -358,53 +368,53 @@ export default function CheckoutPage() {
 
         {/* ── Right column — Order summary ── */}
         <div className="space-y-4">
-          <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
-            <h2 className="font-display font-bold text-base mb-5">Order Summary</h2>
+          <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+            <h2 className="font-display font-bold text-base text-white mb-5">Order Summary</h2>
             <div className="space-y-3 mb-5">
               {items.map((item) => (
-                <div key={`${item.productId}-${item.size}`} className="flex gap-3">
-                  <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-[#1c1c1c] shrink-0">
+                <div key={`${item.productId}-${item.size}`} className="flex gap-4">
+                  <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-[#1a1a1a] shrink-0">
                     {item.imageUrl && (
                       <Image src={item.imageUrl} alt={item.productName} fill className="object-cover" />
                     )}
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#16a34a] text-white text-[10px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4ade80] text-black text-[10px] font-bold flex items-center justify-center">
                       {item.quantity}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-white truncate">{item.productName}</p>
-                    <p className="text-xs text-[#737373]">Size {item.size}</p>
+                    <p className="text-xs text-white/40">Size {item.size}</p>
                   </div>
-                  <p className="text-sm font-medium">${((item.price * item.quantity) / 100).toFixed(2)}</p>
+                  <p className="text-sm font-medium text-white">${((item.price * item.quantity) / 100).toFixed(2)}</p>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-[#262626] pt-4 space-y-2 text-sm">
-              <div className="flex justify-between text-[#737373]">
+            <div className="border-t border-white/[0.08] pt-4 space-y-2 text-sm">
+              <div className="flex justify-between text-white/40">
                 <span>Subtotal</span>
                 <span>${(total / 100).toFixed(2)}</span>
               </div>
               {discounts.map((d) => (
-                <div key={d.code} className="flex justify-between text-[#16a34a]">
+                <div key={d.code} className="flex justify-between text-[#4ade80]">
                   <span className="flex items-center gap-1.5">
                     <Tag className="h-3 w-3" /> {d.code}
                   </span>
                   <span>{d.amount > 0 ? `−$${(d.amount / 100).toFixed(2)}` : "Free ship"}</span>
                 </div>
               ))}
-              <div className="flex justify-between text-[#737373]">
+              <div className="flex justify-between text-white/40">
                 <span>Shipping</span>
                 <span>
                   {isBulk
-                    ? <span className="text-[#ef4444] text-xs">Bulk order</span>
+                    ? <span className="text-red-400 text-xs">Bulk order</span>
                     : effectiveShipping === 0
-                      ? <span className="text-[#16a34a]">Free</span>
+                      ? <span className="text-[#4ade80]">Free</span>
                       : `$${(effectiveShipping / 100).toFixed(2)}`}
                 </span>
               </div>
               {!isBulk && (
-                <div className="flex justify-between font-display font-bold text-base pt-2 border-t border-[#262626]">
+                <div className="flex justify-between font-black text-lg text-white pt-2 border-t border-white/[0.08]">
                   <span>Total</span>
                   <span>${(orderTotal / 100).toFixed(2)} NZD</span>
                 </div>
@@ -463,13 +473,13 @@ function DiscountInput({
   return (
     <div className="space-y-2">
       {discounts.map((d) => (
-        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#16a34a]/10 border border-[#16a34a]/20">
+        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#4ade80]/10 border border-[#4ade80]/20">
           <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-[#16a34a]" />
-            <span className="text-sm font-semibold text-[#16a34a] font-mono">{d.code}</span>
-            <span className="text-xs text-[#16a34a]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
+            <Check className="h-4 w-4 text-[#4ade80]" />
+            <span className="text-sm font-semibold text-[#4ade80] font-mono">{d.code}</span>
+            <span className="text-xs text-[#4ade80]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
           </div>
-          <button onClick={() => onRemove(d.code)} className="text-[#16a34a] hover:opacity-70 transition-opacity">
+          <button onClick={() => onRemove(d.code)} className="text-[#4ade80] hover:opacity-70 transition-opacity">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -481,12 +491,12 @@ function DiscountInput({
             onChange={(e) => { setCode(e.target.value.toUpperCase()); setError(""); }}
             onKeyDown={(e) => e.key === "Enter" && apply()}
             placeholder="Discount code"
-            className="flex-1 h-11 px-3 rounded-lg bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors font-mono"
+            className="flex-1 h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors font-mono"
           />
           <button
             onClick={apply}
             disabled={loading || !code.trim()}
-            className="h-11 px-4 rounded-lg bg-[#1a1a1a] border border-[#262626] text-sm text-white hover:border-[#404040] disabled:opacity-40 transition-colors"
+            className="h-12 px-5 rounded-xl bg-[#4ade80] text-black font-bold text-sm hover:bg-[#86efac] disabled:opacity-40 transition-all"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
           </button>
@@ -594,41 +604,39 @@ function PaymentStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Delivery summary pill */}
-      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#141414] border border-[#262626] text-sm">
-        <MapPin className="h-4 w-4 text-[#737373] mt-0.5 shrink-0" />
+      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#111] border border-white/[0.08] text-sm">
+        <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-white truncate">{address.first_name} {address.last_name}</p>
-          <p className="text-[#737373] truncate">{address.line1}, {address.city} {address.postcode}</p>
-          <p className="text-[#737373]">{email}</p>
+          <p className="text-white/40 truncate">{address.line1}, {address.city} {address.postcode}</p>
+          <p className="text-white/40">{email}</p>
         </div>
-        <button type="button" onClick={onBack} className="text-xs text-[#16a34a] hover:underline shrink-0">
+        <button type="button" onClick={onBack} className="text-xs text-[#4ade80] hover:underline shrink-0">
           Change
         </button>
       </div>
 
-      <div>
-        <h2 className="font-display font-bold text-base mb-4">Payment</h2>
-        <div className="p-4 rounded-lg bg-[#141414] border border-[#262626]">
-          <PaymentElement />
-        </div>
+      <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+        <h2 className="font-display font-bold text-base text-white mb-4">Payment</h2>
+        <PaymentElement />
       </div>
 
       {error && (
-        <p className="text-sm text-[#ef4444] bg-[#ef4444]/10 px-4 py-3 rounded-lg">{error}</p>
+        <p className="text-sm text-red-400 bg-red-500/10 px-4 py-3 rounded-xl">{error}</p>
       )}
 
       <div className="flex gap-3">
         <button
           type="button"
           onClick={onBack}
-          className="h-12 px-5 rounded-lg bg-[#1a1a1a] border border-[#262626] text-sm text-[#737373] hover:text-white hover:border-[#404040] transition-colors"
+          className="border border-white/20 text-white font-medium text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:border-white/50 hover:bg-white/5 transition-all"
         >
           Back
         </button>
         <button
           type="submit"
           disabled={submitting || !stripe}
-          className="btn-primary flex-1 py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <span className="flex items-center justify-center gap-2">

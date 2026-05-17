@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import type { Customer } from "@/types/database";
 
 export default async function CustomersPage() {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
   const { data } = await supabase
     .from("customers")
     .select("*")
@@ -15,35 +15,35 @@ export default async function CustomersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Customers</h1>
-        <p className="text-sm text-[#737373] mt-1">{customers.length} registered customers</p>
+        <h1 className="font-display font-bold text-2xl text-gray-900">Customers</h1>
+        <p className="text-sm text-gray-400 mt-1">{customers.length} registered customers</p>
       </div>
 
-      <div className="rounded-xl bg-[#141414] border border-[#1e1e1e] overflow-hidden">
+      <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1a1a1a]">
+            <tr className="border-b border-gray-100 bg-gray-50">
               {["Name", "Email", "Phone", "Joined", "Orders"].map((h) => (
-                <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-[#525252]">{h}</th>
+                <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-400">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {customers.map((c) => (
-              <tr key={c.id} className="border-b border-[#1a1a1a] last:border-0 hover:bg-white/[0.02] transition-colors">
-                <td className="px-4 py-3 font-medium">{c.first_name} {c.last_name}</td>
-                <td className="px-4 py-3 text-[#737373]">{c.email}</td>
-                <td className="px-4 py-3 text-[#737373]">{c.phone ?? "—"}</td>
-                <td className="px-4 py-3 text-[#737373] text-xs">
+              <tr key={c.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-3.5 font-medium text-gray-900">{c.first_name} {c.last_name}</td>
+                <td className="px-4 py-3.5 text-gray-500">{c.email}</td>
+                <td className="px-4 py-3.5 text-gray-500">{c.phone ?? "—"}</td>
+                <td className="px-4 py-3.5 text-gray-400 text-xs">
                   {new Date(c.created_at).toLocaleDateString("en-NZ")}
                 </td>
-                <td className="px-4 py-3 text-[#737373]">—</td>
+                <td className="px-4 py-3.5 text-gray-400">—</td>
               </tr>
             ))}
           </tbody>
         </table>
         {customers.length === 0 && (
-          <div className="text-center py-16 text-[#525252]">No customers yet.</div>
+          <div className="text-center py-16 text-gray-400 text-sm">No customers yet.</div>
         )}
       </div>
     </div>

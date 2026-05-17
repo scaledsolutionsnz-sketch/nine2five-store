@@ -24,25 +24,31 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json() as Partial<DiscountCode>;
 
-  if (!body.code || !body.type || body.value === undefined) {
+  if (!body.code || !body.type) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  if (!["percentage", "fixed"].includes(body.type)) {
+  const isFreeShipping = body.type === "free_shipping";
+
+  if (!["percentage", "fixed", "free_shipping"].includes(body.type)) {
     return NextResponse.json({ error: "Invalid type" }, { status: 400 });
   }
 
-  if (body.type === "percentage" && (body.value < 1 || body.value > 100)) {
+  if (body.type === "percentage" && ((body.value ?? 0) < 1 || (body.value ?? 0) > 100)) {
     return NextResponse.json({ error: "Percentage must be 1–100" }, { status: 400 });
   }
+
+  // Store free shipping as fixed/$0 — PostgREST rejects "free_shipping" type (stale schema cache)
+  const storedType = isFreeShipping ? "fixed" : body.type;
+  const storedValue = isFreeShipping ? 0 : (body.value ?? 0);
 
   const service = await createServiceClient();
   const { data, error } = await service
     .from("discount_codes")
     .insert({
       code: body.code.toUpperCase().trim(),
-      type: body.type,
-      value: body.value,
+      type: storedType,
+      value: storedValue,
       min_order_cents: body.min_order_cents ?? 0,
       max_uses: body.max_uses ?? null,
       expires_at: body.expires_at ?? null,

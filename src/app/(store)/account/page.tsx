@@ -8,7 +8,7 @@ const STATUS_STYLES: Record<string, string> = {
   processing: "bg-amber-500/10 text-amber-400",
   shipped: "bg-blue-500/10 text-blue-400",
   delivered: "bg-green-500/10 text-green-400",
-  pending: "bg-[#1e1e1e] text-[#737373]",
+  pending: "bg-white/[0.05] text-white/40",
   cancelled: "bg-red-500/10 text-red-400",
   refunded: "bg-purple-500/10 text-purple-400",
 };
@@ -47,12 +47,12 @@ export default async function AccountPage() {
   const firstName = customer?.first_name || user?.email?.split("@")[0] || "there";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
-        <h1 className="font-display font-bold text-2xl text-white">
+        <h1 className="font-display font-black text-3xl text-white">
           Kia ora, {firstName}
         </h1>
-        <p className="text-sm text-[#737373] mt-1">Manage your orders, wishlist, and account details</p>
+        <p className="text-white/40 mt-1">Manage your orders, wishlist, and account details</p>
       </div>
 
       {/* Quick stats */}
@@ -65,11 +65,11 @@ export default async function AccountPage() {
           <Link
             key={label}
             href={href}
-            className="p-4 rounded-xl bg-[#141414] border border-[#1e1e1e] hover:border-[#16a34a]/30 transition-colors group"
+            className="bg-[#111] border border-white/[0.08] rounded-2xl p-6 hover:border-[#4ade80]/20 transition-colors group"
           >
-            <Icon className="h-4 w-4 text-[#404040] group-hover:text-[#16a34a] mb-2 transition-colors" />
-            <p className="font-display font-bold text-xl text-white">{value}</p>
-            <p className="text-xs text-[#525252] mt-0.5">{label}</p>
+            <Icon className="h-4 w-4 text-white/20 group-hover:text-[#4ade80] mb-2 transition-colors" />
+            <p className="font-display font-black text-2xl text-white">{value}</p>
+            <p className="text-white/40 text-xs uppercase tracking-widest mt-1">{label}</p>
           </Link>
         ))}
       </div>
@@ -77,29 +77,29 @@ export default async function AccountPage() {
       {/* Recent orders */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-semibold text-base text-white">Recent Orders</h2>
-          <Link href="/account/orders" className="text-xs text-[#16a34a] hover:underline">View all →</Link>
+          <h2 className="font-display font-semibold text-lg text-white">Recent Orders</h2>
+          <Link href="/account/orders" className="text-xs text-[#4ade80] hover:underline">View all →</Link>
         </div>
-        <div className="bg-[#141414] border border-[#1e1e1e] rounded-xl overflow-hidden">
+        <div className="bg-[#111] border border-white/[0.08] rounded-2xl overflow-hidden">
           {recentOrders.length === 0 ? (
             <div className="px-5 py-10 text-center">
-              <ShoppingBag className="h-8 w-8 text-[#262626] mx-auto mb-3" />
-              <p className="text-sm text-[#525252]">No orders yet</p>
-              <Link href="/shop" className="inline-block mt-3 text-sm text-[#16a34a] hover:underline">
+              <ShoppingBag className="h-8 w-8 text-white/20 mx-auto mb-3" />
+              <p className="text-sm text-white/40">No orders yet</p>
+              <Link href="/shop" className="inline-block mt-3 text-sm text-[#4ade80] hover:underline">
                 Shop the collection →
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-[#1a1a1a]">
+            <div className="divide-y divide-white/[0.06]">
               {recentOrders.map((order) => (
                 <Link
                   key={order.id}
                   href={`/account/orders/${order.id}`}
-                  className="flex items-center justify-between px-5 py-4 hover:bg-[#1a1a1a] transition-colors"
+                  className="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors"
                 >
                   <div>
                     <p className="text-sm font-medium text-white">Order #{order.order_number}</p>
-                    <p className="text-xs text-[#525252] mt-0.5">
+                    <p className="text-xs text-white/40 mt-0.5">
                       {new Date(order.created_at).toLocaleDateString("en-NZ", {
                         day: "numeric", month: "long", year: "numeric"
                       })}

@@ -15,8 +15,8 @@ export default async function AddressesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display font-bold text-2xl text-white">Addresses</h1>
-        <p className="text-sm text-[#737373] mt-1">Save your default shipping address for faster checkout</p>
+        <h1 className="font-display font-black text-2xl text-white mb-8">Addresses</h1>
+        <p className="text-white/40 text-sm -mt-6">Save your default shipping address for faster checkout</p>
       </div>
       <AddressForm customer={customer as Customer | null} />
     </div>

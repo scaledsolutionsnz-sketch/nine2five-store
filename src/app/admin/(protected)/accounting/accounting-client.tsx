@@ -30,7 +30,7 @@ interface StripeBalance {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function dollars(cents: number): string { return `$${(cents / 100).toFixed(2)}` }
+function dollars(cents: number): string { return `$${(cents / 100).toFixed(2)}`; }
 function gst(cents: number): number     { return Math.round(cents * 3 / 23); }
 function exGst(cents: number): number   { return cents - gst(cents); }
 
@@ -54,28 +54,28 @@ function StripePanel() {
   useEffect(() => { load(); }, []);
 
   const statusColor: Record<string, string> = {
-    paid:        "text-[#16a34a] bg-[#16a34a]/10",
-    in_transit:  "text-amber-400 bg-amber-400/10",
-    pending:     "text-[#737373] bg-[#737373]/10",
-    failed:      "text-rose-400 bg-rose-500/10",
-    canceled:    "text-rose-400 bg-rose-500/10",
+    paid:        "text-green-600 bg-green-50",
+    in_transit:  "text-amber-600 bg-amber-50",
+    pending:     "text-gray-500 bg-gray-100",
+    failed:      "text-red-500 bg-red-50",
+    canceled:    "text-red-500 bg-red-50",
   };
 
   return (
-    <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
+    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-display font-bold text-base">Stripe Account</h2>
+        <h2 className="font-display font-semibold text-sm text-gray-900">Stripe Account</h2>
         <button
           onClick={load}
           disabled={loading}
-          className="h-7 w-7 flex items-center justify-center text-[#525252] hover:text-white rounded hover:bg-[#1e1e1e] transition-colors disabled:opacity-40"
+          className="h-7 w-7 flex items-center justify-center text-gray-400 hover:text-gray-700 rounded hover:bg-gray-100 transition-colors disabled:opacity-40"
         >
           <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
         </button>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-sm text-amber-400 mb-4">
+        <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 px-3 py-2 rounded-lg mb-4">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error === "Unauthorized" ? "Not authorised" : "Could not load Stripe balance — check your STRIPE_SECRET_KEY env var"}
         </div>
@@ -84,41 +84,41 @@ function StripePanel() {
       {balance && (
         <>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="p-4 rounded-lg bg-[#0e0e0e] border border-[#1e1e1e]">
-              <p className="text-xs text-[#525252] mb-1">Available</p>
-              <p className="font-display font-bold text-2xl text-white">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <p className="text-xs text-gray-400 mb-1">Available</p>
+              <p className="font-display font-bold text-2xl text-gray-900">
                 {dollars(balance.available_cents)}
               </p>
-              <p className="text-xs text-[#525252] mt-0.5">{balance.currency}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{balance.currency}</p>
             </div>
-            <div className="p-4 rounded-lg bg-[#0e0e0e] border border-[#1e1e1e]">
-              <p className="text-xs text-[#525252] mb-1">Pending</p>
-              <p className="font-display font-bold text-2xl text-[#737373]">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <p className="text-xs text-gray-400 mb-1">Pending</p>
+              <p className="font-display font-bold text-2xl text-gray-500">
                 {dollars(balance.pending_cents)}
               </p>
-              <p className="text-xs text-[#525252] mt-0.5">Clearing</p>
+              <p className="text-xs text-gray-400 mt-0.5">Clearing</p>
             </div>
           </div>
 
           {balance.payouts.length > 0 && (
             <>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#525252] mb-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
                 Recent Payouts
               </p>
               <div className="space-y-2">
                 {balance.payouts.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between py-2 border-b border-[#1a1a1a] last:border-0">
+                  <div key={p.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                     <div>
-                      <p className="text-sm font-medium">
-                        {dollars(p.amount)} <span className="text-[#737373] font-normal text-xs">{p.currency}</span>
+                      <p className="text-sm font-medium text-gray-900">
+                        {dollars(p.amount)} <span className="text-gray-400 font-normal text-xs">{p.currency}</span>
                       </p>
-                      <p className="text-xs text-[#525252]">
+                      <p className="text-xs text-gray-400">
                         {new Date(p.arrival_date * 1000).toLocaleDateString("en-NZ")}
                       </p>
                     </div>
                     <span className={cn(
                       "text-[10px] font-bold uppercase px-2 py-0.5 rounded-full",
-                      statusColor[p.status] ?? "text-[#737373] bg-[#737373]/10"
+                      statusColor[p.status] ?? "text-gray-500 bg-gray-100"
                     )}>
                       {p.status.replace("_", " ")}
                     </span>
@@ -129,14 +129,14 @@ function StripePanel() {
           )}
 
           {balance.payouts.length === 0 && (
-            <p className="text-sm text-[#525252]">No payouts yet.</p>
+            <p className="text-sm text-gray-400">No payouts yet.</p>
           )}
         </>
       )}
 
       {loading && !balance && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-5 w-5 animate-spin text-[#525252]" />
+          <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
         </div>
       )}
     </div>
@@ -149,8 +149,8 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
   const total = rows.reduce((s, r) => s + r.revenue_cents, 0);
 
   return (
-    <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
-      <h2 className="font-display font-bold text-base mb-5 flex items-center gap-2">
+    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
+      <h2 className="font-display font-semibold text-sm text-gray-900 mb-5 flex items-center gap-2">
         <TrendingUp className="h-4 w-4 text-[#16a34a]" />
         Monthly Revenue — last 12 months
       </h2>
@@ -158,9 +158,9 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1a1a1a]">
+            <tr className="border-b border-gray-100">
               {["Month", "Orders", "Revenue (incl. GST)", "GST (15%)", "Revenue (excl. GST)", "Refunds", "Discounts"].map((h) => (
-                <th key={h} className="text-left px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#525252] whitespace-nowrap first:pl-0 last:pr-0">
+                <th key={h} className="text-left px-3 py-2 text-xs font-semibold uppercase tracking-widest text-gray-400 whitespace-nowrap first:pl-0 last:pr-0">
                   {h}
                 </th>
               ))}
@@ -171,29 +171,29 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
               const gstAmt   = gst(r.revenue_cents);
               const exGstAmt = exGst(r.revenue_cents);
               return (
-                <tr key={r.month} className="border-b border-[#1a1a1a] last:border-0 hover:bg-white/[0.015] transition-colors">
-                  <td className="px-3 py-3 font-medium whitespace-nowrap first:pl-0">
+                <tr key={r.month} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                  <td className="px-3 py-3 font-medium text-gray-900 whitespace-nowrap first:pl-0">
                     {new Date(r.month).toLocaleDateString("en-NZ", { month: "short", year: "numeric" })}
                   </td>
-                  <td className="px-3 py-3 text-[#737373]">{r.order_count}</td>
-                  <td className="px-3 py-3 font-medium">{dollars(r.revenue_cents)}</td>
-                  <td className="px-3 py-3 text-[#737373]">{dollars(gstAmt)}</td>
-                  <td className="px-3 py-3 text-[#737373]">{dollars(exGstAmt)}</td>
-                  <td className="px-3 py-3 text-rose-400 text-xs">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
-                  <td className="px-3 py-3 text-[#737373] text-xs last:pr-0">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
+                  <td className="px-3 py-3 text-gray-500">{r.order_count}</td>
+                  <td className="px-3 py-3 font-medium text-gray-900">{dollars(r.revenue_cents)}</td>
+                  <td className="px-3 py-3 text-gray-500">{dollars(gstAmt)}</td>
+                  <td className="px-3 py-3 text-gray-500">{dollars(exGstAmt)}</td>
+                  <td className="px-3 py-3 text-red-500 text-xs">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
+                  <td className="px-3 py-3 text-gray-400 text-xs last:pr-0">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
-            <tr className="border-t border-[#262626]">
-              <td className="px-3 py-3 font-bold first:pl-0">Total</td>
-              <td className="px-3 py-3 text-[#737373]">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
+            <tr className="border-t border-gray-200">
+              <td className="px-3 py-3 font-bold text-gray-900 first:pl-0">Total</td>
+              <td className="px-3 py-3 text-gray-500">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
               <td className="px-3 py-3 font-bold text-[#16a34a]">{dollars(total)}</td>
-              <td className="px-3 py-3 text-[#737373]">{dollars(gst(total))}</td>
-              <td className="px-3 py-3 text-[#737373]">{dollars(exGst(total))}</td>
-              <td className="px-3 py-3 text-rose-400">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
-              <td className="px-3 py-3 text-[#737373] last:pr-0">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
+              <td className="px-3 py-3 text-gray-500">{dollars(gst(total))}</td>
+              <td className="px-3 py-3 text-gray-500">{dollars(exGst(total))}</td>
+              <td className="px-3 py-3 text-red-500">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
+              <td className="px-3 py-3 text-gray-400 last:pr-0">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
             </tr>
           </tfoot>
         </table>
@@ -235,12 +235,12 @@ function ExportPanel() {
     URL.revokeObjectURL(url);
   }
 
-  const inputClass = "h-10 px-3 rounded-lg bg-[#0e0e0e] border border-[#262626] text-sm text-white focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "h-10 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#16a34a] transition-colors";
 
   return (
-    <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e]">
-      <h2 className="font-display font-bold text-base mb-1">Export</h2>
-      <p className="text-xs text-[#525252] mb-5">
+    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
+      <h2 className="font-display font-semibold text-sm text-gray-900 mb-1">Export</h2>
+      <p className="text-xs text-gray-400 mb-5">
         Download accounting data for MYOB, Xero, or your accountant. All amounts in NZD.
       </p>
 
@@ -251,16 +251,16 @@ function ExportPanel() {
             key={f.value}
             onClick={() => setFormat(f.value)}
             className={cn(
-              "p-3 rounded-lg border text-left transition-colors",
+              "p-3 rounded-xl border text-left transition-colors",
               format === f.value
                 ? "border-[#16a34a] bg-[#16a34a]/5"
-                : "border-[#262626] bg-[#0e0e0e] hover:border-[#404040]"
+                : "border-gray-200 bg-gray-50 hover:border-gray-300"
             )}
           >
-            <p className={cn("text-sm font-semibold", format === f.value ? "text-[#16a34a]" : "text-white")}>
+            <p className={cn("text-sm font-semibold", format === f.value ? "text-[#16a34a]" : "text-gray-900")}>
               {f.label}
             </p>
-            <p className="text-xs text-[#525252] mt-0.5">{f.desc}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{f.desc}</p>
           </button>
         ))}
       </div>
@@ -268,11 +268,11 @@ function ExportPanel() {
       {/* Date range */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1">
-          <label className="block text-xs text-[#525252] mb-1.5">From</label>
+          <label className="block text-xs text-gray-500 mb-1.5">From</label>
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={cn(inputClass, "w-full")} />
         </div>
         <div className="flex-1">
-          <label className="block text-xs text-[#525252] mb-1.5">To</label>
+          <label className="block text-xs text-gray-500 mb-1.5">To</label>
           <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={cn(inputClass, "w-full")} />
         </div>
         <div className="pt-5">
@@ -289,7 +289,7 @@ function ExportPanel() {
         </div>
       </div>
 
-      <p className="text-xs text-[#404040]">
+      <p className="text-xs text-gray-400">
         GST calculated at 15% (tax-inclusive) · NZ GST formula: amount × 3/23
       </p>
     </div>

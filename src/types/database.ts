@@ -27,7 +27,7 @@ export type StockMovementType =
   | "reserved"
   | "reservation_released";
 
-export type DiscountType = "percentage" | "fixed";
+export type DiscountType = "percentage" | "fixed" | "free_shipping";
 
 export type PurchaseOrderStatus = "draft" | "ordered" | "in_transit" | "received" | "cancelled";
 
@@ -151,6 +151,7 @@ export interface DiscountCode {
   uses: number;
   expires_at: string | null;
   active: boolean;
+  free_shipping: boolean;
   created_at: string;
 }
 

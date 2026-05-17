@@ -27,9 +27,7 @@ export function AccountNav({ email }: { email: string }) {
 
   return (
     <aside className="space-y-1">
-      <div className="px-3 py-3 mb-3">
-        <p className="text-xs font-semibold text-[#525252] truncate">{email}</p>
-      </div>
+      <p className="text-white/30 text-xs px-4 mb-4 truncate">{email}</p>
       {links.map(({ href, label, icon: Icon, exact }) => {
         const active = exact ? pathname === href : pathname.startsWith(href);
         return (
@@ -37,10 +35,10 @@ export function AccountNav({ email }: { email: string }) {
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors",
+              "flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all",
               active
-                ? "bg-[#16a34a]/10 text-[#16a34a] font-medium"
-                : "text-[#737373] hover:text-white hover:bg-[#141414]"
+                ? "bg-[#111] border border-white/[0.08] text-white"
+                : "text-white/50 hover:text-white hover:bg-white/[0.05]"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
@@ -50,7 +48,7 @@ export function AccountNav({ email }: { email: string }) {
       })}
       <button
         onClick={signOut}
-        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#737373] hover:text-red-400 hover:bg-red-500/5 transition-colors mt-2"
+        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/50 hover:text-red-400 hover:bg-red-500/5 transition-all mt-2"
       >
         <LogOut className="h-4 w-4" />
         Sign Out

@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, Loader2, Pencil, X, Check, Warehouse } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Supplier } from "@/types/database";
 
 const inputClass =
-  "w-full h-10 px-3 rounded-lg bg-[#0e0e0e] border border-[#262626] text-sm text-white placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors";
+  "w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#16a34a] transition-colors";
 
 function SupplierForm({
   initial,
@@ -49,8 +48,8 @@ function SupplierForm({
   }
 
   return (
-    <div className="p-6 rounded-xl bg-[#141414] border border-[#1e1e1e] space-y-3">
-      <h3 className="font-display font-bold text-sm mb-2">{initial?.id ? "Edit Supplier" : "New Supplier"}</h3>
+    <div className="p-6 rounded-xl bg-gray-50 border border-gray-200 space-y-3">
+      <h3 className="font-display font-semibold text-sm text-gray-900 mb-2">{initial?.id ? "Edit Supplier" : "New Supplier"}</h3>
       <input placeholder="Company name *" value={form.name} onChange={set("name")} className={inputClass} />
       <div className="grid grid-cols-2 gap-3">
         <input placeholder="Contact name" value={form.contact_name} onChange={set("contact_name")} className={inputClass} />
@@ -65,10 +64,10 @@ function SupplierForm({
         value={form.notes}
         onChange={set("notes")}
         rows={2}
-        className="w-full px-3 py-2.5 rounded-lg bg-[#0e0e0e] border border-[#262626] text-sm text-white placeholder-[#525252] focus:outline-none focus:border-[#16a34a] resize-none"
+        className="w-full px-3 py-2.5 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#16a34a] resize-none"
       />
       <div className="flex justify-end gap-2">
-        <button onClick={onCancel} className="h-9 px-4 rounded-lg bg-[#1e1e1e] text-sm text-[#737373] hover:text-white transition-colors">
+        <button onClick={onCancel} className="h-9 px-4 rounded-lg border border-gray-200 text-sm text-gray-600 hover:text-gray-900 transition-colors">
           Cancel
         </button>
         <button
@@ -128,12 +127,12 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
       )}
 
       {/* Active suppliers */}
-      <div className="rounded-xl bg-[#141414] border border-[#1e1e1e] overflow-hidden">
+      <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1a1a1a]">
+            <tr className="border-b border-gray-100 bg-gray-50">
               {["Supplier", "Contact", "Email", "Phone", ""].map((h) => (
-                <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-[#525252]">{h}</th>
+                <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-400">{h}</th>
               ))}
             </tr>
           </thead>
@@ -146,23 +145,23 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
                   </td>
                 </tr>
               ) : (
-                <tr key={s.id} className="border-b border-[#1a1a1a] last:border-0 hover:bg-white/[0.02]">
-                  <td className="px-4 py-3 font-medium">{s.name}</td>
-                  <td className="px-4 py-3 text-[#737373]">{s.contact_name ?? "—"}</td>
-                  <td className="px-4 py-3 text-[#737373]">{s.email ?? "—"}</td>
-                  <td className="px-4 py-3 text-[#737373]">{s.phone ?? "—"}</td>
-                  <td className="px-4 py-3">
+                <tr key={s.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-3.5 font-medium text-gray-900">{s.name}</td>
+                  <td className="px-4 py-3.5 text-gray-500">{s.contact_name ?? "—"}</td>
+                  <td className="px-4 py-3.5 text-gray-500">{s.email ?? "—"}</td>
+                  <td className="px-4 py-3.5 text-gray-500">{s.phone ?? "—"}</td>
+                  <td className="px-4 py-3.5">
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => setEditing(s.id)}
-                        className="h-7 w-7 rounded flex items-center justify-center text-[#525252] hover:text-white hover:bg-[#1e1e1e] transition-colors"
+                        className="h-7 w-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => deactivate(s.id)}
                         disabled={deactivating === s.id}
-                        className="h-7 w-7 rounded flex items-center justify-center text-[#525252] hover:text-rose-400 hover:bg-rose-500/5 transition-colors disabled:opacity-40"
+                        className="h-7 w-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
                       >
                         {deactivating === s.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
                       </button>
@@ -175,8 +174,8 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
         </table>
         {active.length === 0 && !creating && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <Warehouse className="h-8 w-8 text-[#404040] mb-3" />
-            <p className="text-[#525252] text-sm">No suppliers yet. Add one above.</p>
+            <Warehouse className="h-8 w-8 text-gray-300 mb-3" />
+            <p className="text-gray-400 text-sm">No suppliers yet. Add one above.</p>
           </div>
         )}
       </div>
@@ -184,11 +183,11 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
       {/* Inactive */}
       {inactive.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#404040] mb-3">Inactive</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Inactive</p>
           <div className="space-y-1">
             {inactive.map((s) => (
-              <div key={s.id} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-[#111] border border-[#1a1a1a] opacity-50">
-                <p className="text-sm text-[#737373] line-through">{s.name}</p>
+              <div key={s.id} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-100 opacity-50">
+                <p className="text-sm text-gray-500 line-through">{s.name}</p>
               </div>
             ))}
           </div>

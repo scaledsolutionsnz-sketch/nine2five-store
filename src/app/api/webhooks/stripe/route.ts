@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { getResend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
 import { orderConfirmationHtml, orderConfirmationText } from "@/lib/emails/order-confirmation";
+import { createEShipShipment } from "@/lib/eship";
 import type { ShippingAddress } from "@/types/database";
+
+function getServiceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -21,13 +29,23 @@ export async function POST(req: NextRequest) {
     const meta = pi.metadata as Record<string, string>;
 
     try {
+      const supabase = getServiceClient();
+
+      // Skip if order already created (e.g. by POS)
+      const { data: existingOrder } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("stripe_payment_intent_id", pi.id)
+        .maybeSingle();
+      if (existingOrder) {
+        return NextResponse.json({ received: true });
+      }
+
       const shippingAddress: ShippingAddress = JSON.parse(meta.shippingAddress || "{}");
       const items: Array<{
         productId: string; variantId: string; productName: string;
         size: string; quantity: number; price: number;
       }> = JSON.parse(meta.items || "[]");
-
-      const supabase = await createServiceClient();
 
       // Upsert customer
       let customerId: string | null = null;
@@ -76,7 +94,7 @@ export async function POST(req: NextRequest) {
       const orderTotal = subtotal + shipping - discountAmount;
 
       // Create order
-      const { data: order } = await supabase
+      const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           customer_id: customerId,
@@ -93,6 +111,11 @@ export async function POST(req: NextRequest) {
         })
         .select("id, order_number")
         .single();
+
+      if (orderError) {
+        console.error("Order insert failed:", JSON.stringify(orderError));
+        throw new Error(`Order insert failed: ${orderError.message}`);
+      }
 
       if (order && items.length > 0) {
         await supabase.from("order_items").insert(
@@ -123,9 +146,11 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Increment discount code uses
+      // Increment discount code uses (supports comma-separated multiple codes)
       if (discountCode) {
-        await supabase.rpc("increment_discount_uses", { p_code: discountCode });
+        for (const code of discountCode.split(",").map((c: string) => c.trim()).filter(Boolean)) {
+          await supabase.rpc("increment_discount_uses", { p_code: code });
+        }
       }
 
       // Record affiliate conversion
@@ -154,6 +179,22 @@ export async function POST(req: NextRequest) {
           .from("cart_sessions")
           .update({ converted_at: new Date().toISOString() })
           .eq("session_id", meta.session_id);
+      }
+
+      // Auto-create eShip shipment for delivery orders
+      if (order && items.length > 0) {
+        const totalPairs = items.reduce((s, i) => s + i.quantity, 0);
+        try {
+          const eship = await createEShipShipment({
+            orderNumber: order.order_number,
+            shippingAddress,
+            totalPairs,
+          });
+          // Order created in eShip — tracking number assigned when label is printed in eShip dashboard
+          void eship;
+        } catch (err) {
+          console.error("eShip auto-create failed for order", order.order_number, err);
+        }
       }
 
       // Send order confirmation email
