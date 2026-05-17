@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, MapPin, Mail, Instagram } from "lucide-react";
+import { ArrowUpRight, MapPin, Mail } from "lucide-react";
 
 const inputClass =
   "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
@@ -88,8 +88,8 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="h-10 w-10 rounded-xl bg-[#111] border border-white/[0.08] flex items-center justify-center shrink-0">
-                  <Instagram className="h-4 w-4 text-[#4ade80]" />
+                <div className="h-10 w-10 rounded-xl bg-[#111] border border-white/[0.08] flex items-center justify-center shrink-0 text-[#4ade80] font-bold text-xs">
+                  IG
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-white/40 mb-1">Instagram</p>
