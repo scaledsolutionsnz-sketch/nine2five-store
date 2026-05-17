@@ -8,6 +8,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     .from("product_variants")
     .select("*")
     .eq("product_id", id)
-    .order("sort_order", { ascending: true });
+    .order("size", { ascending: true });
   return NextResponse.json(data ?? []);
 }
