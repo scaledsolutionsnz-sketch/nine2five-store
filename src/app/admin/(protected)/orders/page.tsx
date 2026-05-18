@@ -94,40 +94,40 @@ export default async function OrdersPage({
               const totalPairs = order.order_items.reduce((s, i) => s + i.quantity, 0);
               return (
                 <tr key={order.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-14 font-mono font-bold text-white text-2xl whitespace-nowrap">
+                  <td className="px-6 py-16 font-mono font-bold text-white text-base whitespace-nowrap">
                     #{order.order_number}
                   </td>
-                  <td className="px-6 py-14 text-white/40 text-xl whitespace-nowrap">
+                  <td className="px-6 py-16 text-white/40 text-sm whitespace-nowrap">
                     {new Date(order.created_at).toLocaleDateString("en-NZ")}
                   </td>
-                  <td className="px-6 py-14 text-white/80 text-2xl">
+                  <td className="px-6 py-16 text-white/80 text-sm">
                     {addr?.first_name} {addr?.last_name}
                     {order.guest_email && <p className="text-base text-white/30 mt-1">{order.guest_email}</p>}
                   </td>
-                  <td className="px-6 py-14">
+                  <td className="px-6 py-16">
                     <span className={cn(
-                      "inline-flex items-center px-4 py-2 rounded-full text-lg font-medium whitespace-nowrap",
+                      "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap",
                       PAYMENT_COLORS[payment]
                     )}>
                       {payment}
                     </span>
                   </td>
-                  <td className="px-6 py-14">
+                  <td className="px-6 py-16">
                     <span className={cn(
-                      "inline-flex items-center px-4 py-2 rounded-full text-lg font-medium whitespace-nowrap",
+                      "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap",
                       FULFILLMENT_COLORS[fulfillment]
                     )}>
                       {fulfillment}
                     </span>
                   </td>
-                  <td className="px-6 py-14 font-mono font-semibold text-white text-2xl whitespace-nowrap">
+                  <td className="px-6 py-16 font-mono font-semibold text-white text-base whitespace-nowrap">
                     ${(order.total / 100).toFixed(2)}
                   </td>
-                  <td className="px-6 py-14 font-mono text-white/60 text-xl">
+                  <td className="px-6 py-16 font-mono text-white/60 text-sm">
                     {totalPairs} {totalPairs === 1 ? "pair" : "pairs"}
                   </td>
-                  <td className="px-6 py-14">
-                    <Link href={`/admin/orders/${order.id}`} className="text-lg text-[#4ade80] hover:text-[#86efac] font-medium transition-colors whitespace-nowrap">
+                  <td className="px-6 py-16">
+                    <Link href={`/admin/orders/${order.id}`} className="text-sm text-[#4ade80] hover:text-[#86efac] font-medium transition-colors whitespace-nowrap">
                       View →
                     </Link>
                   </td>
