@@ -59,7 +59,7 @@ export function AdminSidebar({ email }: { email: string }) {
   const initials = username.slice(0, 2).toUpperCase();
 
   return (
-    <aside className="w-[240px] shrink-0 flex flex-col h-full bg-[#0c0c0e] border-r border-white/[0.05]">
+    <aside className="w-[240px] shrink-0 flex flex-col h-screen sticky top-0 bg-[#0c0c0e] border-r border-white/[0.05]">
       {/* Logo */}
       <div className="px-5 pt-7 pb-5 shrink-0">
         <div className="flex items-center gap-3">

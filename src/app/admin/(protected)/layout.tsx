@@ -16,11 +16,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!admin) redirect("/admin/login");
 
   return (
-    <div className="h-screen flex overflow-hidden bg-[#09090b]">
+    <div className="flex min-h-screen bg-[#09090b]">
       <AdminSidebar email={user.email!} />
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0 bg-[#09090b]">
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#09090b]">
         <AdminTopbar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1">
           <div className="mx-auto max-w-[1400px] px-8 py-8">
             {children}
           </div>
