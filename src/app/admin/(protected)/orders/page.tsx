@@ -66,27 +66,27 @@ export default async function OrdersPage({
               const addr = order.shipping_address as { first_name?: string; last_name?: string };
               return (
                 <tr key={order.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-7 font-mono font-bold text-white text-xl">#{order.order_number}</td>
-                  <td className="px-6 py-7 text-white/80 text-lg">
+                  <td className="px-6 py-14 font-mono font-bold text-white text-2xl">#{order.order_number}</td>
+                  <td className="px-6 py-14 text-white/80 text-2xl">
                     {addr?.first_name} {addr?.last_name}
-                    {order.guest_email && <p className="text-sm text-white/30 mt-1">{order.guest_email}</p>}
+                    {order.guest_email && <p className="text-base text-white/30 mt-1">{order.guest_email}</p>}
                   </td>
-                  <td className="px-6 py-7 text-white/40 text-base">
+                  <td className="px-6 py-14 text-white/40 text-xl">
                     {new Date(order.created_at).toLocaleDateString("en-NZ")}
                   </td>
-                  <td className="px-6 py-7 font-mono font-semibold text-white text-xl">
+                  <td className="px-6 py-14 font-mono font-semibold text-white text-2xl">
                     ${(order.total / 100).toFixed(2)}
                   </td>
-                  <td className="px-6 py-7">
+                  <td className="px-6 py-14">
                     <span className={cn(
-                      "inline-flex items-center px-3 py-1.5 rounded-full text-base font-medium",
+                      "inline-flex items-center px-4 py-2 rounded-full text-lg font-medium",
                       STATUS_COLORS[order.status] ?? STATUS_COLORS.pending
                     )}>
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-6 py-7">
-                    <Link href={`/admin/orders/${order.id}`} className="text-base text-[#4ade80] hover:text-[#86efac] font-medium transition-colors">
+                  <td className="px-6 py-14">
+                    <Link href={`/admin/orders/${order.id}`} className="text-lg text-[#4ade80] hover:text-[#86efac] font-medium transition-colors">
                       View →
                     </Link>
                   </td>
