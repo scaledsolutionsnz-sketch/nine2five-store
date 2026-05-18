@@ -6,7 +6,7 @@ import { Plus, Loader2, Pencil, X, Check, Warehouse } from "lucide-react";
 import type { Supplier } from "@/types/database";
 
 const inputClass =
-  "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
 function SupplierForm({
   initial,
@@ -48,7 +48,7 @@ function SupplierForm({
   }
 
   return (
-    <div className="p-6 bg-[#F3F5F8] border border-[#E2E7EF] rounded-xl space-y-3">
+    <div className="p-6 bg-[#F3F5F8] border border-[#E2E8F0] rounded-xl space-y-3">
       <h3 className="font-semibold text-sm text-[#1F2937] mb-2">{initial?.id ? "Edit Supplier" : "New Supplier"}</h3>
       <input placeholder="Company name *" value={form.name} onChange={set("name")} className={inputClass} />
       <div className="grid grid-cols-2 gap-3">
@@ -64,10 +64,10 @@ function SupplierForm({
         value={form.notes}
         onChange={set("notes")}
         rows={2}
-        className="w-full px-3 py-2.5 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 resize-none"
+        className="w-full px-3 py-2.5 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 resize-none"
       />
       <div className="flex justify-end gap-2">
-        <button onClick={onCancel} className="h-9 px-4 rounded-full bg-white border border-[#E2E7EF] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
+        <button onClick={onCancel} className="h-9 px-4 rounded-full bg-white border border-[#E2E8F0] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
           Cancel
         </button>
         <button
@@ -127,7 +127,7 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
       )}
 
       {/* Active suppliers */}
-      <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
@@ -186,7 +186,7 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
           <p className="text-xs font-semibold uppercase tracking-widest text-[#8A94A6] mb-3">Inactive</p>
           <div className="space-y-1">
             {inactive.map((s) => (
-              <div key={s.id} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-[#F3F5F8] border border-[#E2E7EF] opacity-50">
+              <div key={s.id} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-[#F3F5F8] border border-[#E2E8F0] opacity-50">
                 <p className="text-sm text-[#6B7280] line-through">{s.name}</p>
               </div>
             ))}

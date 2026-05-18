@@ -14,8 +14,8 @@ function fmt(cents: number) {
 }
 
 const STATUS: Record<AffiliateStatus, { label: string; cls: string }> = {
-  pending:   { label: "Pending",   cls: "bg-[#FEF3C7] text-[#92400E]" },
-  active:    { label: "Active",    cls: "bg-[#CDEEDC] text-[#166B3B]" },
+  pending:   { label: "Pending",   cls: "bg-[#FFF4CC] text-[#9A5B00]" },
+  active:    { label: "Active",    cls: "bg-[#D5F1E2] text-[#166B3B]" },
   suspended: { label: "Suspended", cls: "bg-[#FEE2E2] text-[#991B1B]" },
 };
 
@@ -62,11 +62,11 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Clicks",    value: totals.clicks.toLocaleString(),                icon: MousePointer, color: "#1E40AF",  bg: "bg-[#DBEAFE]" },
-          { label: "Conversions",     value: totals.conversions.toLocaleString(),           icon: TrendingUp,   color: "#166B3B",  bg: "bg-[#CDEEDC]" },
+          { label: "Conversions",     value: totals.conversions.toLocaleString(),           icon: TrendingUp,   color: "#166B3B",  bg: "bg-[#D5F1E2]" },
           { label: "Commission Owed", value: fmt(totals.commission - totals.paid),          icon: DollarSign,   color: "#92400E",  bg: "bg-[#FEF3C7]" },
           { label: "Affiliates",      value: affiliates.length.toString(),                  icon: Users,        color: "#7C3AED",  bg: "bg-[#EDE9FE]" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="p-5 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div key={label} className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <div className="flex items-center justify-between mb-3">
               <p className="text-xs text-[#6B7280] font-medium">{label}</p>
               <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", bg)}>
@@ -91,7 +91,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
       </div>
 
       {/* Table */}
-      <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
@@ -154,7 +154,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                       <button
                         onClick={() => updateStatus(a.id, "active")}
                         title="Approve"
-                        className="p-1.5 rounded-lg hover:bg-[#CDEEDC] text-[#6B7280] hover:text-[#166B3B] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[#D5F1E2] text-[#6B7280] hover:text-[#166B3B] transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
@@ -172,7 +172,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                       <button
                         onClick={() => updateStatus(a.id, "active")}
                         title="Reactivate"
-                        className="p-1.5 rounded-lg hover:bg-[#CDEEDC] text-[#6B7280] hover:text-[#166B3B] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[#D5F1E2] text-[#6B7280] hover:text-[#166B3B] transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
@@ -252,12 +252,12 @@ function CreateAffiliateModal({
     toast.success("Affiliate created");
   }
 
-  const inputClass = "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E7EF] text-[#334155] text-sm placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  const inputClass = "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-[#334155] text-sm placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white border border-[#E2E7EF] rounded-2xl w-full max-w-md" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E7EF]">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-md" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
           <h2 className="font-semibold text-base text-[#1F2937]">New Affiliate</h2>
           <button onClick={onClose} className="text-[#6B7280] hover:text-[#334155] transition-colors">
             <X className="h-4 w-4" />
@@ -317,7 +317,7 @@ function CreateAffiliateModal({
             <p className="text-xs text-[#991B1B] bg-[#FEE2E2] border border-[#FCA5A5] px-3 py-2 rounded-lg">{error}</p>
           )}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-full bg-white border border-[#E2E7EF] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
+            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-full bg-white border border-[#E2E8F0] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
               Cancel
             </button>
             <button type="submit" disabled={loading} className="flex-1 h-10 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors">
@@ -364,8 +364,8 @@ function AffiliateDetailModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-white border border-[#E2E7EF] rounded-2xl w-full max-w-lg" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E7EF]">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-lg" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
           <div>
             <h2 className="font-semibold text-base text-[#1F2937]">{affiliate.name}</h2>
             <p className="text-xs text-[#6B7280] mt-0.5">{affiliate.email}</p>
@@ -382,7 +382,7 @@ function AffiliateDetailModal({
               { label: "Conversions", value: affiliate.total_conversions.toLocaleString() },
               { label: "Pending Pay", value: fmt(pending) },
             ].map(({ label, value }) => (
-              <div key={label} className="p-3 bg-[#F3F5F8] border border-[#E2E7EF] rounded-xl text-center">
+              <div key={label} className="p-3 bg-[#F3F5F8] border border-[#E2E8F0] rounded-xl text-center">
                 <p className="text-xs text-[#6B7280] mb-1">{label}</p>
                 <p className="font-bold text-base text-[#1F2937] font-mono">{value}</p>
               </div>
@@ -393,12 +393,12 @@ function AffiliateDetailModal({
           <div>
             <label className="block text-xs text-[#6B7280] mb-1.5">Referral Link</label>
             <div className="flex items-center gap-2">
-              <code className="flex-1 text-xs bg-[#F3F5F8] border border-[#E2E7EF] px-3 py-2 rounded-lg text-[#116DFF] overflow-hidden text-ellipsis whitespace-nowrap font-mono">
+              <code className="flex-1 text-xs bg-[#F3F5F8] border border-[#E2E8F0] px-3 py-2 rounded-lg text-[#116DFF] overflow-hidden text-ellipsis whitespace-nowrap font-mono">
                 {link}
               </code>
               <button
                 onClick={() => { navigator.clipboard.writeText(link); toast.success("Copied"); }}
-                className="px-3 py-2 rounded-lg border border-[#E2E7EF] bg-white text-xs text-[#334155] hover:bg-[#F6FAFF] hover:border-[#116DFF]/30 transition-colors"
+                className="px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white text-xs text-[#334155] hover:bg-[#F6FAFF] hover:border-[#116DFF]/30 transition-colors"
               >
                 Copy
               </button>
@@ -415,7 +415,7 @@ function AffiliateDetailModal({
                 max="50"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
-                className="w-24 h-10 px-3 rounded-lg bg-white border border-[#E2E7EF] text-[#334155] text-sm focus:outline-none focus:border-[#116DFF]/50 font-mono"
+                className="w-24 h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-[#334155] text-sm focus:outline-none focus:border-[#116DFF]/50 font-mono"
               />
               <button
                 onClick={saveRate}

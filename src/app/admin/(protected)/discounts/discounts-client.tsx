@@ -50,7 +50,7 @@ function ActionMenu({ code, onToggle, onDelete }: {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-8 w-44 bg-white border border-[#E2E7EF] rounded-xl shadow-lg z-50 py-1 overflow-hidden" style={{ boxShadow: "0 8px 24px rgba(15,23,42,0.12)" }}>
+        <div className="absolute right-0 top-8 w-44 bg-white border border-[#E2E8F0] rounded-xl shadow-lg z-50 py-1 overflow-hidden" style={{ boxShadow: "0 8px 24px rgba(15,23,42,0.12)" }}>
           <button
             onClick={() => { navigator.clipboard.writeText(code.code); toast.success("Copied"); setOpen(false); }}
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-[#334155] hover:bg-[#F3F5F8] transition-colors text-left"
@@ -67,7 +67,7 @@ function ActionMenu({ code, onToggle, onDelete }: {
               : <><Check style={{ width: 13, height: 13, color: "#166B3B" }} /> Activate</>
             }
           </button>
-          <div className="h-px bg-[#E2E7EF] my-1" />
+          <div className="h-px bg-[#E2E8F0] my-1" />
           <button
             onClick={() => { onDelete(); setOpen(false); }}
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-[#991B1B] hover:bg-[#FEE2E2] transition-colors text-left"
@@ -132,13 +132,13 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
       {/* ── Stats ── */}
       <div className="grid grid-cols-3 gap-5">
         {[
-          { label: "Active Codes",  value: activeCodes.toString(),  sub: `${totalCodes} total`,                        icon: Tag,      iconColor: "#166B3B",  iconBg: "bg-[#CDEEDC]" },
+          { label: "Active Codes",  value: activeCodes.toString(),  sub: `${totalCodes} total`,                        icon: Tag,      iconColor: "#166B3B",  iconBg: "bg-[#D5F1E2]" },
           { label: "Total Uses",    value: totalUses.toString(),    sub: "across all codes",                            icon: BarChart2, iconColor: "#1E40AF",  iconBg: "bg-[#DBEAFE]" },
           { label: "Total Codes",   value: totalCodes.toString(),   sub: `${codes.length - activeCodes} inactive`,      icon: Hash,     iconColor: "#7C3AED",  iconBg: "bg-[#EDE9FE]" },
         ].map(({ label, value, sub, icon: Icon, iconColor, iconBg }) => (
           <div
             key={label}
-            className="rounded-xl bg-white border border-[#E2E7EF] p-6"
+            className="rounded-xl bg-white border border-[#E2E8F0] p-6"
             style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
           >
             <div className="flex items-start justify-between mb-4">
@@ -158,9 +158,9 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
       </div>
 
       {/* ── Table ── */}
-      <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         {/* Table header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E7EF]">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
           <div>
             <h3 className="text-[15px] font-semibold text-[#1F2937] leading-none">All Codes</h3>
             <p className="text-[12px] text-[#6B7280] mt-1">{totalCodes} discount codes</p>
@@ -169,7 +169,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
 
         {codes.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-[#F3F5F8] border border-[#E2E7EF] flex items-center justify-center mb-4">
+            <div className="w-14 h-14 rounded-2xl bg-[#F3F5F8] border border-[#E2E8F0] flex items-center justify-center mb-4">
               <Tag style={{ width: 22, height: 22, color: "#C4CAD4" }} strokeWidth={1.5} />
             </div>
             <p className="text-[14px] font-medium text-[#6B7280]">No discount codes yet</p>
@@ -267,9 +267,9 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                       <span className={cn(
                         "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium",
                         active
-                          ? "bg-[#CDEEDC] text-[#166B3B]"
+                          ? "bg-[#D5F1E2] text-[#166B3B]"
                           : status === "Expired"
-                            ? "bg-[#FEF3C7] text-[#92400E]"
+                            ? "bg-[#FFF4CC] text-[#9A5B00]"
                             : "bg-[#F3F4F6] text-[#6B7280]"
                       )}>
                         {active && <span className="w-1.5 h-1.5 rounded-full bg-[#166B3B] mr-1.5" />}
@@ -313,7 +313,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const field = "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E7EF] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-all";
+  const field = "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-all";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -344,8 +344,8 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white border border-[#E2E7EF] rounded-2xl w-full max-w-md overflow-hidden" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E7EF]">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-md overflow-hidden" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
           <div>
             <h2 className="text-[16px] font-semibold text-[#1F2937] leading-none">New Discount Code</h2>
             <p className="text-[12px] text-[#6B7280] mt-1">Create a promo code for your store</p>
@@ -421,7 +421,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-10 rounded-full bg-white border border-[#E2E7EF] text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-all"
+              className="flex-1 h-10 rounded-full bg-white border border-[#E2E8F0] text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-all"
             >
               Cancel
             </button>

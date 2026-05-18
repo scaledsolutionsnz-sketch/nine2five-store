@@ -86,7 +86,7 @@ export function AdminSidebar({ email }: { email: string }) {
             {section.label && (
               <p
                 className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: "#5A6478" }}
+                style={{ color: "#697386" }}
               >
                 {section.label}
               </p>
@@ -174,7 +174,7 @@ export function AdminSidebar({ email }: { email: string }) {
             <p className="text-[12px] font-medium truncate leading-none" style={{ color: "#C5CBD5" }}>
               {email}
             </p>
-            <p className="text-[10px] mt-1 leading-none" style={{ color: "#5A6478" }}>
+            <p className="text-[10px] mt-1 leading-none" style={{ color: "#697386" }}>
               Administrator
             </p>
           </div>

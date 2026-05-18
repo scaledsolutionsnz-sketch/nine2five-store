@@ -51,10 +51,10 @@ function Sparkline({ data, up = true }: { data: number[]; up?: boolean }) {
 // ─── Status map ──────────────────────────────────────────────────────────────
 
 const STATUS: Record<string, { pay: string; fulfill: string; payCls: string; fulfillCls: string }> = {
-  processing: { pay: "Paid",      fulfill: "Unfulfilled", payCls: "bg-[#CDEEDC] text-[#166B3B]",     fulfillCls: "bg-[#FEF3C7] text-[#92400E]" },
-  shipped:    { pay: "Paid",      fulfill: "Fulfilled",   payCls: "bg-[#CDEEDC] text-[#166B3B]",     fulfillCls: "bg-[#DBEAFE] text-[#1E40AF]" },
-  delivered:  { pay: "Paid",      fulfill: "Delivered",   payCls: "bg-[#CDEEDC] text-[#166B3B]",     fulfillCls: "bg-[#CDEEDC] text-[#166B3B]" },
-  pending:    { pay: "Unpaid",    fulfill: "Unfulfilled", payCls: "bg-[#FEF3C7] text-[#92400E]",     fulfillCls: "bg-[#FEF3C7] text-[#92400E]" },
+  processing: { pay: "Paid",      fulfill: "Unfulfilled", payCls: "bg-[#D5F1E2] text-[#166B3B]",     fulfillCls: "bg-[#FFF4CC] text-[#9A5B00]" },
+  shipped:    { pay: "Paid",      fulfill: "Fulfilled",   payCls: "bg-[#D5F1E2] text-[#166B3B]",     fulfillCls: "bg-[#DBEAFE] text-[#1E40AF]" },
+  delivered:  { pay: "Paid",      fulfill: "Delivered",   payCls: "bg-[#D5F1E2] text-[#166B3B]",     fulfillCls: "bg-[#D5F1E2] text-[#166B3B]" },
+  pending:    { pay: "Unpaid",    fulfill: "Unfulfilled", payCls: "bg-[#FFF4CC] text-[#9A5B00]",     fulfillCls: "bg-[#FFF4CC] text-[#9A5B00]" },
   cancelled:  { pay: "Voided",   fulfill: "Cancelled",   payCls: "bg-[#FEE2E2] text-[#991B1B]",     fulfillCls: "bg-[#FEE2E2] text-[#991B1B]" },
   refunded:   { pay: "Refunded", fulfill: "Returned",    payCls: "bg-[#F3F4F6] text-[#6B7280]",     fulfillCls: "bg-[#F3F4F6] text-[#6B7280]" },
 };
@@ -165,7 +165,7 @@ export default async function AdminDashboard() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/orders"
-            className="flex items-center gap-2 h-9 px-4 rounded-full bg-white border border-[#E2E7EF] text-[#334155] text-[13px] font-medium hover:bg-[#F6FAFF] transition-all"
+            className="flex items-center gap-2 h-9 px-4 rounded-full bg-white border border-[#E2E8F0] text-[#334155] text-[13px] font-medium hover:bg-[#F6FAFF] transition-all"
           >
             <ShoppingBag style={{ width: 14, height: 14 }} strokeWidth={1.8} />
             Orders
@@ -187,7 +187,7 @@ export default async function AdminDashboard() {
           return (
             <div
               key={label}
-              className="rounded-xl bg-white border border-[#E2E7EF] p-6"
+              className="rounded-[14px] bg-white border border-[#E2E8F0] p-6"
               style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)", borderTop: primary ? "2px solid #116DFF" : undefined }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -199,7 +199,7 @@ export default async function AdminDashboard() {
                 </div>
                 <span className={cn(
                   "flex items-center gap-0.5 text-[11px] font-semibold px-2 py-1 rounded-lg",
-                  up ? "bg-[#CDEEDC] text-[#166B3B]" : "bg-[#FEE2E2] text-[#991B1B]"
+                  up ? "bg-[#D5F1E2] text-[#166B3B]" : "bg-[#FEE2E2] text-[#991B1B]"
                 )}>
                   {up ? <ArrowUpRight style={{ width: 12, height: 12 }} /> : <ArrowDownRight style={{ width: 12, height: 12 }} />}
                   {Math.abs(change)}%
@@ -223,8 +223,8 @@ export default async function AdminDashboard() {
       <div className="grid lg:grid-cols-[1fr_300px] gap-5">
 
         {/* Recent orders */}
-        <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E7EF]">
+        <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
             <div>
               <h3 className="text-[15px] font-semibold text-[#1F2937] leading-none">Recent Orders</h3>
               <p className="text-[12px] text-[#6B7280] mt-1">Last {orders.length} transactions</p>
@@ -236,7 +236,7 @@ export default async function AdminDashboard() {
 
           {orders.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-[#F3F5F8] border border-[#E2E7EF] flex items-center justify-center mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#F3F5F8] border border-[#E2E8F0] flex items-center justify-center mb-4">
                 <ShoppingBag style={{ width: 24, height: 24, color: "#C4CAD4" }} strokeWidth={1.5} />
               </div>
               <p className="text-[14px] font-medium text-[#6B7280]">No orders yet</p>
@@ -303,8 +303,8 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Low stock */}
-        <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E7EF]">
+        <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
             <div>
               <h3 className="text-[15px] font-semibold text-[#1F2937] leading-none">Low Stock</h3>
               <p className="text-[12px] text-[#6B7280] mt-1">Below 10 units</p>
@@ -316,7 +316,7 @@ export default async function AdminDashboard() {
 
           {stocks.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center px-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#CDEEDC] flex items-center justify-center mb-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#D5F1E2] flex items-center justify-center mb-3">
                 <Package style={{ width: 20, height: 20, color: "#166B3B" }} strokeWidth={1.5} />
               </div>
               <p className="text-[14px] font-medium text-[#334155]">All stock healthy</p>
@@ -340,7 +340,7 @@ export default async function AdminDashboard() {
                     "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium ml-4 shrink-0",
                     v.stock_quantity === 0
                       ? "bg-[#FEE2E2] text-[#991B1B]"
-                      : "bg-[#FEF3C7] text-[#92400E]"
+                      : "bg-[#FFF4CC] text-[#9A5B00]"
                   )}>
                     {v.stock_quantity === 0 ? "Out of stock" : `${v.stock_quantity} left`}
                   </span>
@@ -361,7 +361,7 @@ export default async function AdminDashboard() {
           <Link
             key={href}
             href={href}
-            className="group flex items-center gap-4 p-5 rounded-xl bg-white border border-[#E2E7EF] hover:border-[#116DFF]/30 hover:bg-[#F6FAFF] transition-all duration-150"
+            className="group flex items-center gap-4 p-5 rounded-[14px] bg-white border border-[#E2E8F0] hover:border-[#116DFF]/30 hover:bg-[#F6FAFF] transition-all duration-150"
             style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
           >
             <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shrink-0", iconBg)}>

@@ -16,9 +16,12 @@ export default async function PurchaseOrdersPage() {
   ]);
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-semibold text-[#1F2937]">Purchase Orders</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Purchase Orders</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">Track and receive stock orders from suppliers.</p>
+        </div>
       </div>
       <PurchaseOrdersClient
         initialOrders={orders ?? []}

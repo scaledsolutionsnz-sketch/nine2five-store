@@ -76,7 +76,7 @@ export function CampaignManager({
   }
 
   const inputClass =
-    "w-full px-3 py-2.5 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+    "w-full px-3 py-2.5 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
   const selectedSegment = SEGMENTS.find((s) => s.value === segment)!;
   const recipientCount = segmentCounts[segment];
 
@@ -86,10 +86,10 @@ export function CampaignManager({
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: "All customers", value: customerCount,   icon: Users,      color: "#1E40AF", bg: "bg-[#DBEAFE]" },
-          { label: "Subscribed",    value: subscribedCount, icon: Mail,       color: "#166B3B", bg: "bg-[#CDEEDC]" },
+          { label: "Subscribed",    value: subscribedCount, icon: Mail,       color: "#166B3B", bg: "bg-[#D5F1E2]" },
           { label: "High-value",    value: highValueCount,  icon: TrendingUp, color: "#92400E", bg: "bg-[#FEF3C7]" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="p-5 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div key={label} className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center mb-3", bg)}>
               <Icon className="h-4 w-4" style={{ color }} />
             </div>
@@ -100,7 +100,7 @@ export function CampaignManager({
       </div>
 
       {/* Compose */}
-      <div className="p-6 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <h2 className="font-semibold text-sm text-[#1F2937] mb-5 flex items-center gap-2">
           <Plus className="h-4 w-4" /> New Campaign
         </h2>
@@ -114,7 +114,7 @@ export function CampaignManager({
 
           {/* Segment picker */}
           <div className="relative">
-            <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[#F3F5F8] border border-[#E2E7EF]">
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[#F3F5F8] border border-[#E2E8F0]">
               <Users className="h-4 w-4 text-[#6B7280] shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-[#334155]">{selectedSegment.label}</p>
@@ -145,7 +145,7 @@ export function CampaignManager({
               <button
                 type="button"
                 onClick={() => setPreview(!preview)}
-                className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F3F5F8] border border-[#E2E7EF] text-[#6B7280] hover:text-[#334155] text-xs transition-colors"
+                className="absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F3F5F8] border border-[#E2E8F0] text-[#6B7280] hover:text-[#334155] text-xs transition-colors"
               >
                 {preview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                 {preview ? "Edit" : "Preview"}
@@ -155,7 +155,7 @@ export function CampaignManager({
 
           {/* Preview panel */}
           {preview && body && (
-            <div className="rounded-xl border border-[#E2E7EF] bg-[#F3F5F8] p-4 max-h-64 overflow-y-auto">
+            <div className="rounded-xl border border-[#E2E8F0] bg-[#F3F5F8] p-4 max-h-64 overflow-y-auto">
               <p className="text-xs text-[#6B7280] mb-3 uppercase tracking-widest">Preview</p>
               <div className="text-sm text-[#334155] leading-relaxed whitespace-pre-wrap font-sans">
                 {body.replace(/\{\{first_name\}\}/g, "Aroha")}
@@ -186,7 +186,7 @@ export function CampaignManager({
           const openRate = c.recipient_count ? Math.round((c.opens / c.recipient_count) * 100) : 0;
           const clickRate = c.recipient_count ? Math.round((c.clicks / c.recipient_count) * 100) : 0;
           return (
-            <div key={c.id} className="p-5 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+            <div key={c.id} className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
@@ -195,7 +195,7 @@ export function CampaignManager({
                     <span className={cn(
                       "px-2.5 py-1 rounded text-[13px] font-medium shrink-0",
                       c.status === "sent"
-                        ? "bg-[#CDEEDC] text-[#166B3B]"
+                        ? "bg-[#D5F1E2] text-[#166B3B]"
                         : "bg-[#F3F4F6] text-[#6B7280]"
                     )}>
                       {c.status === "sent" ? "Sent" : "Draft"}
@@ -225,7 +225,7 @@ export function CampaignManager({
 
               {/* Engagement stats */}
               {c.status === "sent" && (
-                <div className="mt-4 pt-4 border-t border-[#E2E7EF] flex items-center gap-6">
+                <div className="mt-4 pt-4 border-t border-[#E2E8F0] flex items-center gap-6">
                   <div className="flex items-center gap-1.5">
                     <Eye className="h-3.5 w-3.5 text-[#6B7280]" />
                     <span className="text-sm font-semibold text-[#1F2937]">{c.opens}</span>

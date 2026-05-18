@@ -13,9 +13,12 @@ export default async function AccountingPage() {
   const { data } = await supabase.rpc("get_monthly_revenue", { p_months: 12 });
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-semibold text-[#1F2937]">Accounting</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Accounting</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">Monthly revenue, GST breakdown, and exports.</p>
+        </div>
       </div>
       <AccountingClient monthlyData={(data ?? []) as MonthlyRow[]} />
     </div>

@@ -34,8 +34,8 @@ interface PO {
 const STATUS_CONFIG: Record<PurchaseOrderStatus, { label: string; color: string; icon: React.ElementType }> = {
   draft:      { label: "Draft",      color: "bg-[#F3F4F6] text-[#6B7280]",       icon: FileText },
   ordered:    { label: "Ordered",    color: "bg-[#DBEAFE] text-[#1E40AF]",        icon: Package },
-  in_transit: { label: "In Transit", color: "bg-[#FEF3C7] text-[#92400E]",        icon: Truck },
-  received:   { label: "Received",   color: "bg-[#CDEEDC] text-[#166B3B]",        icon: CheckCircle },
+  in_transit: { label: "In Transit", color: "bg-[#FFF4CC] text-[#9A5B00]",        icon: Truck },
+  received:   { label: "Received",   color: "bg-[#D5F1E2] text-[#166B3B]",        icon: CheckCircle },
   cancelled:  { label: "Cancelled",  color: "bg-[#FEE2E2] text-[#991B1B]",        icon: AlertCircle },
 };
 
@@ -46,7 +46,7 @@ const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderSt
 };
 
 const inputClass =
-  "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
 interface LineItemDraft { variant_id: string; quantity_ordered: number; unit_cost_cents: number; }
 
@@ -99,8 +99,8 @@ function CreatePOModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="w-full max-w-xl bg-white border border-[#E2E7EF] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between p-5 border-b border-[#E2E7EF]">
+      <div className="w-full max-w-xl bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
+        <div className="flex items-center justify-between p-5 border-b border-[#E2E8F0]">
           <h2 className="font-semibold text-base text-[#1F2937]">New Purchase Order</h2>
           <button onClick={onClose} className="text-[#6B7280] hover:text-[#334155] transition-colors">✕</button>
         </div>
@@ -171,12 +171,12 @@ function CreatePOModal({
 
           <input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} className={inputClass} />
 
-          <div className="flex items-center justify-between pt-2 border-t border-[#E2E7EF]">
+          <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
             <p className="text-sm text-[#6B7280]">
               Total: <span className="text-[#1F2937] font-semibold font-mono">${(totalCents / 100).toFixed(2)}</span>
             </p>
             <div className="flex gap-2">
-              <button onClick={onClose} className="h-9 px-4 rounded-full bg-white border border-[#E2E7EF] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
+              <button onClick={onClose} className="h-9 px-4 rounded-full bg-white border border-[#E2E8F0] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
                 Cancel
               </button>
               <button
@@ -243,7 +243,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
   }
 
   return (
-    <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center gap-4 p-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -270,7 +270,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-50",
                 po.status === "in_transit"
                   ? "bg-[#116DFF] text-white hover:bg-[#0D5FE0]"
-                  : "bg-white border border-[#E2E7EF] text-[#334155] hover:bg-[#F6FAFF]"
+                  : "bg-white border border-[#E2E8F0] text-[#334155] hover:bg-[#F6FAFF]"
               )}
             >
               {acting ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
@@ -296,13 +296,13 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
       </div>
 
       {expanded && (
-        <div className="border-t border-[#E2E7EF] bg-[#F3F5F8] px-4 py-3">
+        <div className="border-t border-[#E2E8F0] bg-[#F3F5F8] px-4 py-3">
           {po.purchase_order_items.length === 0 ? (
             <p className="text-xs text-[#6B7280]">No line items.</p>
           ) : (
             <table className="w-full text-xs">
               <thead>
-                <tr style={{ borderBottom: "1px solid #E2E7EF" }}>
+                <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
                   <th className="text-left pb-2 text-[#6B7280] font-medium">Variant</th>
                   <th className="text-right pb-2 text-[#6B7280] font-medium">Ordered</th>
                   <th className="text-right pb-2 text-[#6B7280] font-medium">Received</th>
@@ -388,7 +388,7 @@ export function PurchaseOrdersClient({
       )}
 
       {orders.length === 0 && !creating && (
-        <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+        <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
           <Package className="h-10 w-10 text-[#C4CAD4] mb-4" />
           <p className="text-[#6B7280] text-sm">No purchase orders yet.</p>
           <p className="text-[#8A94A6] text-xs mt-1">Create one to track stock orders from suppliers.</p>

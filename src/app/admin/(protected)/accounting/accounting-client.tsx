@@ -54,15 +54,15 @@ function StripePanel() {
   useEffect(() => { load(); }, []);
 
   const statusColor: Record<string, string> = {
-    paid:        "bg-[#CDEEDC] text-[#166B3B]",
-    in_transit:  "bg-[#FEF3C7] text-[#92400E]",
+    paid:        "bg-[#D5F1E2] text-[#166B3B]",
+    in_transit:  "bg-[#FFF4CC] text-[#9A5B00]",
     pending:     "bg-[#F3F4F6] text-[#6B7280]",
     failed:      "bg-[#FEE2E2] text-[#991B1B]",
     canceled:    "bg-[#FEE2E2] text-[#991B1B]",
   };
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-semibold text-sm text-[#1F2937]">Stripe Account</h2>
         <button
@@ -84,14 +84,14 @@ function StripePanel() {
       {balance && (
         <>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="p-4 rounded-xl bg-[#F3F5F8] border border-[#E2E7EF]">
+            <div className="p-4 rounded-xl bg-[#F3F5F8] border border-[#E2E8F0]">
               <p className="text-xs text-[#6B7280] mb-1">Available</p>
               <p className="font-bold text-2xl text-[#1F2937] font-mono">
                 {dollars(balance.available_cents)}
               </p>
               <p className="text-xs text-[#8A94A6] mt-0.5 uppercase">{balance.currency}</p>
             </div>
-            <div className="p-4 rounded-xl bg-[#F3F5F8] border border-[#E2E7EF]">
+            <div className="p-4 rounded-xl bg-[#F3F5F8] border border-[#E2E8F0]">
               <p className="text-xs text-[#6B7280] mb-1">Pending</p>
               <p className="font-bold text-2xl text-[#6B7280] font-mono">
                 {dollars(balance.pending_cents)}
@@ -149,7 +149,7 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
   const total = rows.reduce((s, r) => s + r.revenue_cents, 0);
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <h2 className="font-semibold text-sm text-[#1F2937] mb-5 flex items-center gap-2">
         <TrendingUp className="h-4 w-4 text-[#116DFF]" />
         Monthly Revenue — last 12 months
@@ -235,10 +235,10 @@ function ExportPanel() {
     URL.revokeObjectURL(url);
   }
 
-  const inputClass = "h-10 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  const inputClass = "h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <h2 className="font-semibold text-sm text-[#1F2937] mb-1">Export</h2>
       <p className="text-xs text-[#6B7280] mb-5">
         Download accounting data for MYOB, Xero, or your accountant. All amounts in NZD.
@@ -254,7 +254,7 @@ function ExportPanel() {
               "p-3 rounded-xl border text-left transition-colors",
               format === f.value
                 ? "border-[#116DFF]/30 bg-[#EAF2FF]"
-                : "border-[#E2E7EF] bg-white hover:border-[#116DFF]/20 hover:bg-[#F6FAFF]"
+                : "border-[#E2E8F0] bg-white hover:border-[#116DFF]/20 hover:bg-[#F6FAFF]"
             )}
           >
             <p className={cn("text-sm font-semibold", format === f.value ? "text-[#116DFF]" : "text-[#334155]")}>

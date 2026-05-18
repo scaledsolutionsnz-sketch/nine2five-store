@@ -6,8 +6,8 @@ import { Search, Bell, MessageSquare, ExternalLink } from "lucide-react";
 export function AdminTopbar() {
   return (
     <header
-      className="shrink-0 flex items-center justify-between gap-4 sticky top-0 z-20 h-[64px] px-6"
-      style={{ backgroundColor: "#171C26", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+      className="shrink-0 flex items-center justify-between gap-4 sticky top-0 z-20 h-[72px] px-6"
+      style={{ backgroundColor: "#171C26", borderBottom: "1px solid #262D3A" }}
     >
       {/* Left: brand label */}
       <div className="flex items-center gap-2.5 shrink-0">
@@ -31,13 +31,13 @@ export function AdminTopbar() {
           <input
             type="text"
             placeholder="Search..."
-            className="h-10 w-[380px] pl-10 pr-4 text-[13px] rounded-full placeholder:text-white/25 text-white focus:outline-none transition-all"
+            className="h-[42px] w-[400px] pl-10 pr-4 text-[13px] rounded-full placeholder:text-white/25 text-white focus:outline-none transition-all"
             style={{
               backgroundColor: "#202633",
-              border: "1px solid #363D4A",
+              border: "1px solid #374151",
             }}
-            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(74,222,128,0.4)"; }}
-            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = "#363D4A"; }}
+            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(17,109,255,0.5)"; }}
+            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = "#374151"; }}
           />
         </div>
 
@@ -47,7 +47,7 @@ export function AdminTopbar() {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[13px] font-medium transition-all"
+          className="flex items-center gap-1.5 h-[40px] px-[14px] rounded-full text-[13px] font-medium transition-all"
           style={{
             backgroundColor: "rgba(255,255,255,0.06)",
             border: "1px solid rgba(255,255,255,0.08)",
@@ -68,7 +68,7 @@ export function AdminTopbar() {
 
         {/* Messages */}
         <button
-          className="h-9 w-9 rounded-full flex items-center justify-center transition-all"
+          className="h-[40px] w-[40px] rounded-full flex items-center justify-center transition-all"
           style={{
             backgroundColor: "rgba(255,255,255,0.06)",
             border: "1px solid rgba(255,255,255,0.06)",
@@ -88,7 +88,7 @@ export function AdminTopbar() {
 
         {/* Notifications */}
         <button
-          className="h-9 w-9 rounded-full flex items-center justify-center transition-all"
+          className="h-[40px] w-[40px] rounded-full flex items-center justify-center transition-all"
           style={{
             backgroundColor: "rgba(255,255,255,0.06)",
             border: "1px solid rgba(255,255,255,0.06)",
@@ -107,8 +107,8 @@ export function AdminTopbar() {
         </button>
 
         {/* Avatar */}
-        <div className="h-9 w-9 rounded-full flex items-center justify-center shrink-0 cursor-pointer bg-[#4ade80]">
-          <span className="text-[12px] text-black font-bold leading-none">W</span>
+        <div className="h-[42px] w-[42px] rounded-full flex items-center justify-center shrink-0 cursor-pointer bg-[#35E879]">
+          <span className="text-[12px] text-[#0B1210] font-bold leading-none">W</span>
         </div>
       </div>
     </header>

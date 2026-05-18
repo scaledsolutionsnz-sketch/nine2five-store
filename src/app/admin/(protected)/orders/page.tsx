@@ -87,8 +87,11 @@ export default async function OrdersPage({
   return (
     <div className="space-y-5">
       {/* Page header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-semibold text-[#1F2937]">Orders</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Orders</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">View and manage all customer orders.</p>
+        </div>
         <button className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] hover:bg-[#0D5FE0] text-white text-[14px] font-semibold transition-colors shadow-sm">
           <Plus style={{ width: 16, height: 16 }} strokeWidth={2.5} />
           Add New Order
@@ -97,13 +100,13 @@ export default async function OrdersPage({
 
       {/* Orders card */}
       <div
-        className="rounded-xl bg-white overflow-hidden"
-        style={{ border: "1px solid #E2E7EF", boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
+        className="rounded-[14px] bg-white overflow-hidden"
+        style={{ border: "1px solid #E2E8F0", boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
       >
         {/* Toolbar */}
         <div
           className="flex items-center justify-between gap-3 px-6 h-16"
-          style={{ borderBottom: "1px solid #E2E7EF" }}
+          style={{ borderBottom: "1px solid #E2E8F0" }}
         >
           {/* Left */}
           <div className="flex items-center gap-3">
@@ -301,7 +304,7 @@ export default async function OrdersPage({
             {page > 1 && (
               <Link
                 href={`/admin/orders?page=${page - 1}`}
-                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E7EF] hover:border-[#C7DAF8] text-[#334155] transition-colors"
+                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E8F0] hover:border-[#C7DAF8] text-[#334155] transition-colors"
               >
                 ← Previous
               </Link>
@@ -318,7 +321,7 @@ export default async function OrdersPage({
             {page < totalPages && (
               <Link
                 href={`/admin/orders?page=${page + 1}`}
-                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E7EF] hover:border-[#C7DAF8] text-[#334155] transition-colors"
+                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E8F0] hover:border-[#C7DAF8] text-[#334155] transition-colors"
               >
                 Next →
               </Link>

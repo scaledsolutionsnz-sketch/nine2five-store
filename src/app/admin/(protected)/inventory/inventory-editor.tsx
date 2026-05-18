@@ -96,7 +96,7 @@ function VariantRow({
     <>
       <tr className={cn(
         "border-b border-[#E5EAF1] hover:bg-[#F6FAFF] transition-colors",
-        showName ? "border-t border-[#E2E7EF]" : ""
+        showName ? "border-t border-[#E2E8F0]" : ""
       )}>
         {/* Product name — only shown on first variant row */}
         <td className="py-3 px-4 font-semibold text-[#1F2937] align-top">
@@ -119,7 +119,7 @@ function VariantRow({
                 "w-20 h-9 text-center rounded-lg border text-sm font-semibold focus:outline-none transition-colors font-mono",
                 dirty
                   ? "border-[#116DFF] bg-[#EAF2FF] text-[#116DFF]"
-                  : "border-[#E2E7EF] bg-white text-[#1F2937]",
+                  : "border-[#E2E8F0] bg-white text-[#1F2937]",
                 !dirty && stockColor
               )}
             />
@@ -128,7 +128,7 @@ function VariantRow({
               <span className="inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium bg-[#FEE2E2] text-[#991B1B]">Out</span>
             )}
             {!saving && qty > 0 && qty < 10 && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium bg-[#FEF3C7] text-[#92400E]">Low</span>
+              <span className="inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium bg-[#FFF4CC] text-[#9A5B00]">Low</span>
             )}
           </div>
         </td>
@@ -172,7 +172,7 @@ function VariantRow({
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setDelta(d => Math.max(1, d - 1))}
-                  className="h-8 w-8 rounded-lg bg-white border border-[#E2E7EF] hover:bg-[#F6FAFF] flex items-center justify-center transition-colors"
+                  className="h-8 w-8 rounded-lg bg-white border border-[#E2E8F0] hover:bg-[#F6FAFF] flex items-center justify-center transition-colors"
                 >
                   <Minus className="h-3.5 w-3.5 text-[#6B7280]" />
                 </button>
@@ -180,11 +180,11 @@ function VariantRow({
                   type="number" min={1}
                   value={delta}
                   onChange={(e) => setDelta(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 h-8 text-center rounded-lg border border-[#E2E7EF] bg-white text-[#334155] text-sm font-semibold focus:outline-none focus:border-[#116DFF]/50 font-mono"
+                  className="w-16 h-8 text-center rounded-lg border border-[#E2E8F0] bg-white text-[#334155] text-sm font-semibold focus:outline-none focus:border-[#116DFF]/50 font-mono"
                 />
                 <button
                   onClick={() => setDelta(d => d + 1)}
-                  className="h-8 w-8 rounded-lg bg-white border border-[#E2E7EF] hover:bg-[#F6FAFF] flex items-center justify-center transition-colors"
+                  className="h-8 w-8 rounded-lg bg-white border border-[#E2E8F0] hover:bg-[#F6FAFF] flex items-center justify-center transition-colors"
                 >
                   <Plus className="h-3.5 w-3.5 text-[#6B7280]" />
                 </button>
@@ -193,7 +193,7 @@ function VariantRow({
               <select
                 value={adjType}
                 onChange={(e) => setAdjType(e.target.value as AdjType)}
-                className="h-8 px-2 rounded-lg border border-[#E2E7EF] bg-white text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50"
+                className="h-8 px-2 rounded-lg border border-[#E2E8F0] bg-white text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50"
               >
                 {ADJUSTMENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
@@ -202,7 +202,7 @@ function VariantRow({
                 placeholder="Note (optional)"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                className="h-8 px-3 rounded-lg border border-[#E2E7EF] bg-white text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 w-44"
+                className="h-8 px-3 rounded-lg border border-[#E2E8F0] bg-white text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 w-44"
               />
 
               <div className="flex items-center gap-2 ml-auto">
@@ -251,7 +251,7 @@ function VariantRow({
                       <span className={cn(
                         "px-1.5 py-0.5 rounded text-[10px] font-bold",
                         m.quantity > 0
-                          ? "bg-[#CDEEDC] text-[#166B3B]"
+                          ? "bg-[#D5F1E2] text-[#166B3B]"
                           : "bg-[#FEE2E2] text-[#991B1B]"
                       )}>
                         {m.quantity > 0 ? "+" : ""}{m.quantity}
@@ -308,7 +308,7 @@ export function InventoryEditor({
       )}
 
       {/* Inventory table */}
-      <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>

@@ -41,7 +41,7 @@ export function OrderActions({
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value as OrderStatus)}
-        className="h-9 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
+        className="h-9 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
       >
         {STATUSES.map((s) => (
           <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
@@ -51,7 +51,7 @@ export function OrderActions({
         placeholder="Tracking number"
         value={tracking}
         onChange={(e) => setTracking(e.target.value)}
-        className="h-9 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors w-48"
+        className="h-9 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors w-48"
       />
       <button
         onClick={save}

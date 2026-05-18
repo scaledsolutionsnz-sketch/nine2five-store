@@ -13,38 +13,55 @@ export default async function CustomersPage() {
   const customers = (data ?? []) as Customer[];
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-semibold text-[#1F2937]">Customers</h1>
-        <span className="text-[14px] text-[#6B7280]">{customers.length} registered</span>
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Customers</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">All registered accounts and guest purchasers.</p>
+        </div>
       </div>
 
-      <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <table className="w-full text-sm">
-          <thead>
-            <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
-              {["Name", "Email", "Phone", "Joined", "Orders"].map((h) => (
-                <th key={h} className="text-left px-4 h-[52px] text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {customers.map((c) => (
-              <tr key={c.id} className="border-b border-[#E5EAF1] last:border-0 hover:bg-[#F6FAFF] transition-colors">
-                <td className="px-4 py-3.5 font-medium text-[#1F2937]">{c.first_name} {c.last_name}</td>
-                <td className="px-4 py-3.5 text-[#334155]">{c.email}</td>
-                <td className="px-4 py-3.5 text-[#6B7280]">{c.phone ?? "—"}</td>
-                <td className="px-4 py-3.5 text-[#6B7280] text-xs font-mono">
-                  {new Date(c.created_at).toLocaleDateString("en-NZ")}
-                </td>
-                <td className="px-4 py-3.5 text-[#6B7280]">—</td>
+      {/* Table card */}
+      <div className="bg-white rounded-[14px] border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+        {/* Toolbar */}
+        <div className="flex items-center justify-between px-6 h-[60px] border-b border-[#E2E8F0]">
+          <div className="flex items-center gap-2">
+            <span className="text-[14px] font-semibold text-[#1F2937]">All customers</span>
+            <span className="text-[13px] text-[#94A3B8]">({customers.length})</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <span className="text-[13px] text-[#64748B]">{customers.length} registered</span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full" style={{ minWidth: 700 }}>
+            <thead>
+              <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
+                {["Name", "Email", "Phone", "Joined", "Orders"].map((h) => (
+                  <th key={h} className="px-[18px] text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap" style={{ height: 52 }}>{h}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {customers.length === 0 && (
-          <div className="text-center py-16 text-[#8A94A6] text-sm">No customers yet.</div>
-        )}
+            </thead>
+            <tbody>
+              {customers.map((c) => (
+                <tr key={c.id} className="hover:bg-[#F6FAFF] transition-colors" style={{ borderBottom: "1px solid #E5EAF1" }}>
+                  <td className="px-[18px] py-[14px] text-[14px] font-semibold text-[#1F2937]">{c.first_name} {c.last_name}</td>
+                  <td className="px-[18px] py-[14px] text-[14px] text-[#64748B] max-w-[220px] truncate">{c.email}</td>
+                  <td className="px-[18px] py-[14px] text-[14px] text-[#64748B]">{c.phone ?? "—"}</td>
+                  <td className="px-[18px] py-[14px] text-[13px] text-[#94A3B8] font-mono">
+                    {new Date(c.created_at).toLocaleDateString("en-NZ")}
+                  </td>
+                  <td className="px-[18px] py-[14px] text-[14px] text-[#94A3B8] text-center">—</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {customers.length === 0 && (
+            <div className="text-center py-16 text-[#94A3B8] text-[14px]">No customers yet.</div>
+          )}
+        </div>
       </div>
     </div>
   );

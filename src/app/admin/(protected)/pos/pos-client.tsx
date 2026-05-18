@@ -55,7 +55,7 @@ function ProductCard({
   const variants = (product.product_variants ?? []).sort((a, b) => a.size.localeCompare(b.size));
 
   return (
-    <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden flex flex-col" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden flex flex-col" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       {/* Image */}
       <div className="relative aspect-square bg-[#F3F5F8]">
         {product.image_urls?.[0] ? (
@@ -99,7 +99,7 @@ function ProductCard({
                       : "#EAF2FF",
                   color: outOfStock ? "#C4CAD4" : inCart ? "#116DFF" : "#116DFF",
                   border: outOfStock
-                    ? "1px solid #E2E7EF"
+                    ? "1px solid #E2E8F0"
                     : inCart
                       ? "1.5px solid #116DFF"
                       : "1px solid #BBD3FF",
@@ -168,7 +168,7 @@ function CartItemRow({
       <div className="flex items-center gap-1">
         <button
           onClick={() => onQty(item.variantId, -1)}
-          className="w-[22px] h-[22px] rounded-md border border-[#E2E7EF] bg-white flex items-center justify-center hover:bg-[#F6FAFF] transition-colors"
+          className="w-[22px] h-[22px] rounded-md border border-[#E2E8F0] bg-white flex items-center justify-center hover:bg-[#F6FAFF] transition-colors"
         >
           <Minus style={{ width: 9, height: 9, color: "#6B7280" }} />
         </button>
@@ -178,7 +178,7 @@ function CartItemRow({
         <button
           onClick={() => onQty(item.variantId, 1)}
           disabled={item.quantity >= item.maxQty}
-          className="w-[22px] h-[22px] rounded-md border border-[#E2E7EF] bg-white flex items-center justify-center hover:bg-[#F6FAFF] transition-colors disabled:opacity-30"
+          className="w-[22px] h-[22px] rounded-md border border-[#E2E8F0] bg-white flex items-center justify-center hover:bg-[#F6FAFF] transition-colors disabled:opacity-30"
         >
           <Plus style={{ width: 9, height: 9, color: "#6B7280" }} />
         </button>
@@ -274,7 +274,7 @@ function StripeForm({
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 h-11 rounded-full bg-white border border-[#E2E7EF] text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-colors"
+          className="flex-1 h-11 rounded-full bg-white border border-[#E2E8F0] text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-colors"
         >
           Cancel
         </button>
@@ -313,7 +313,7 @@ function SuccessScreen({
   return (
     <div className="flex items-center justify-center h-full">
       <div className="text-center max-w-[360px]">
-        <div className="w-20 h-20 rounded-full bg-[#CDEEDC] border border-[#A7D7B9] flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 rounded-full bg-[#D5F1E2] border border-[#A7D7B9] flex items-center justify-center mx-auto mb-6">
           <Check style={{ width: 36, height: 36, color: "#166B3B" }} strokeWidth={2.5} />
         </div>
 
@@ -333,7 +333,7 @@ function SuccessScreen({
         <div className="flex gap-2.5">
           <Link
             href="/admin/orders"
-            className="flex-1 h-11 rounded-full bg-white border border-[#E2E7EF] flex items-center justify-center text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-colors"
+            className="flex-1 h-11 rounded-full bg-white border border-[#E2E8F0] flex items-center justify-center text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-colors"
           >
             View Order
           </Link>
@@ -551,7 +551,7 @@ export function POSClient({ products }: { products: Product[] }) {
   if (stripeSecret) {
     return (
       <div style={{ height: "calc(100vh - 136px)", minHeight: 600 }} className="flex items-center justify-center">
-        <div className="bg-white border border-[#E2E7EF] rounded-2xl p-7 w-full max-w-[460px]" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.12)" }}>
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-7 w-full max-w-[460px]" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.12)" }}>
           <div className="flex justify-between items-center mb-5">
             <div>
               <h3 className="text-[16px] font-bold text-[#1F2937]">Card Payment</h3>
@@ -608,7 +608,7 @@ export function POSClient({ products }: { products: Product[] }) {
             placeholder="Search products..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full h-10 pl-9 pr-3.5 text-[13px] bg-white border border-[#E2E7EF] rounded-xl text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
+            className="w-full h-10 pl-9 pr-3.5 text-[13px] bg-white border border-[#E2E8F0] rounded-xl text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
           />
         </div>
 
@@ -641,9 +641,9 @@ export function POSClient({ products }: { products: Product[] }) {
       </div>
 
       {/* ── RIGHT: Cart ──────────────────────────────────────── */}
-      <div className="w-[364px] flex flex-col bg-white border border-[#E2E7EF] rounded-xl overflow-hidden shrink-0" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="w-[364px] flex flex-col bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shrink-0" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         {/* Cart header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E7EF] shrink-0">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0] shrink-0">
           <div className="flex items-center gap-1.5">
             <ShoppingCart style={{ width: 15, height: 15, color: "#6B7280" }} />
             <span className="text-[14px] font-bold text-[#1F2937]">Cart</span>
@@ -686,7 +686,7 @@ export function POSClient({ products }: { products: Product[] }) {
         </div>
 
         {/* ── Fixed bottom ─────────────────────────────────────── */}
-        <div className="shrink-0 border-t border-[#E2E7EF]">
+        <div className="shrink-0 border-t border-[#E2E8F0]">
 
           {/* Discount section */}
           <div className="px-3.5 py-2.5 border-b border-[#E5EAF1]">
@@ -720,7 +720,7 @@ export function POSClient({ products }: { products: Product[] }) {
                       value={discountCode}
                       onChange={e => { setDiscountCode(e.target.value.toUpperCase()); setDiscountError(""); }}
                       onKeyDown={e => e.key === "Enter" && applyDiscountCode()}
-                      className="w-full h-[30px] pl-6 pr-2 text-[11px] font-mono bg-white border border-[#E2E7EF] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
+                      className="w-full h-[30px] pl-6 pr-2 text-[11px] font-mono bg-white border border-[#E2E8F0] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
                     />
                   </div>
                   <button
@@ -739,7 +739,7 @@ export function POSClient({ products }: { products: Product[] }) {
                   <select
                     value={manualDiscType}
                     onChange={e => setManualDiscType(e.target.value as "none" | "pct" | "fixed")}
-                    className="h-[26px] px-1 text-[10px] bg-white border border-[#E2E7EF] rounded-md text-[#334155] focus:outline-none"
+                    className="h-[26px] px-1 text-[10px] bg-white border border-[#E2E8F0] rounded-md text-[#334155] focus:outline-none"
                   >
                     <option value="none">None</option>
                     <option value="pct">%</option>
@@ -754,7 +754,7 @@ export function POSClient({ products }: { products: Product[] }) {
                         value={manualDiscValue}
                         onChange={e => setManualDiscValue(e.target.value)}
                         placeholder={manualDiscType === "pct" ? "%" : "$"}
-                        className="w-[52px] h-[26px] text-center text-[11px] bg-white border border-[#E2E7EF] rounded-md text-[#334155] focus:outline-none font-mono"
+                        className="w-[52px] h-[26px] text-center text-[11px] bg-white border border-[#E2E8F0] rounded-md text-[#334155] focus:outline-none font-mono"
                       />
                       {manualDiscAmount > 0 && (
                         <span className="text-[10px] text-[#116DFF] font-semibold font-mono">
@@ -821,7 +821,7 @@ export function POSClient({ products }: { products: Product[] }) {
                     placeholder={field === "name" ? "Full name" : field === "email" ? "Email (for receipt)" : "Phone"}
                     value={customer[field]}
                     onChange={e => setCustomer(c => ({ ...c, [field]: e.target.value }))}
-                    className="w-full h-[30px] px-2.5 text-[11px] bg-white border border-[#E2E7EF] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
+                    className="w-full h-[30px] px-2.5 text-[11px] bg-white border border-[#E2E8F0] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
                   />
                 ))}
                 <input
@@ -829,7 +829,7 @@ export function POSClient({ products }: { products: Product[] }) {
                   placeholder="Notes (optional)"
                   value={posNotes}
                   onChange={e => setPosNotes(e.target.value)}
-                  className="w-full h-[30px] px-2.5 text-[11px] bg-white border border-[#E2E7EF] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
+                  className="w-full h-[30px] px-2.5 text-[11px] bg-white border border-[#E2E8F0] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
                 />
                 {customer.email && (
                   <label className="flex items-center gap-1.5 cursor-pointer">
@@ -864,7 +864,7 @@ export function POSClient({ products }: { products: Product[] }) {
                     style={{
                       backgroundColor: active ? "#EAF2FF" : "#F3F5F8",
                       color: active ? "#116DFF" : "#6B7280",
-                      border: active ? "1px solid #BBD3FF" : "1px solid #E2E7EF",
+                      border: active ? "1px solid #BBD3FF" : "1px solid #E2E8F0",
                     }}
                   >
                     {pm.icon}
@@ -887,7 +887,7 @@ export function POSClient({ products }: { products: Product[] }) {
               disabled={cart.length === 0 || processing || stripeLoading}
               className="w-full h-12 rounded-xl text-[14px] font-bold text-white transition-all duration-150 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: cart.length === 0 ? "#E2E7EF" : "#116DFF",
+                backgroundColor: cart.length === 0 ? "#E2E8F0" : "#116DFF",
                 color: cart.length === 0 ? "#8A94A6" : "white",
                 boxShadow: cart.length > 0 ? "0 4px 16px rgba(17,109,255,0.25)" : "none",
               }}
