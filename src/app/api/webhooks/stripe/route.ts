@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
           shipping_address: shippingAddress,
           stripe_payment_intent_id: pi.id,
         })
-        .select("id, order_number")
+        .select("id, order_number, created_at")
         .single();
 
       if (orderError) {
@@ -207,6 +207,7 @@ export async function POST(req: NextRequest) {
           subject: `Order #${order.order_number} confirmed — Nine2Five`,
           html: orderConfirmationHtml({
             order_number: order.order_number,
+            order_date: order.created_at,
             customer_name: customerName,
             items: items.map((i) => ({
               product_name: i.productName,

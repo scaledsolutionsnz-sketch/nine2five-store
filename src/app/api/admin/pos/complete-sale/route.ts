@@ -183,6 +183,7 @@ export async function POST(req: NextRequest) {
         subject: `Your Nine2Five receipt — Order #${order.order_number}`,
         html: orderConfirmationHtml({
           order_number: order.order_number,
+          order_date: new Date().toISOString(),
           customer_name: customerName,
           items: items.map(i => ({
             product_name: i.productName,

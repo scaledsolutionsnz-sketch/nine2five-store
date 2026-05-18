@@ -9,6 +9,7 @@ interface OrderItem {
 
 interface OrderConfirmationData {
   order_number: number;
+  order_date?: string;
   customer_name: string;
   items: OrderItem[];
   subtotal: number;
@@ -23,6 +24,7 @@ interface OrderConfirmationData {
 export function orderConfirmationHtml(data: OrderConfirmationData): string {
   const {
     order_number,
+    order_date,
     customer_name,
     items,
     subtotal,
@@ -33,7 +35,13 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
     shipping_address: addr,
   } = data;
 
+  const GST_NUMBER = "143-838-005";
   const fmt = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  const gstAmount = Math.round(total * 3 / 23);
+  const exGst = total - gstAmount;
+  const dateStr = order_date
+    ? new Date(order_date).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })
+    : new Date().toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" });
 
   const itemRows = items
     .map(
@@ -65,9 +73,20 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
 
           <!-- Header -->
           <tr>
-            <td style="text-align:center;padding-bottom:32px;">
-              <p style="margin:0;font-size:20px;font-weight:900;letter-spacing:-0.5px;color:#ffffff;">NINE2FIVE</p>
-              <p style="margin:4px 0 0;font-size:11px;color:#525252;text-transform:uppercase;letter-spacing:0.15em;">Māori Grip Socks</p>
+            <td style="padding-bottom:32px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <p style="margin:0;font-size:20px;font-weight:900;letter-spacing:-0.5px;color:#ffffff;">NINE2FIVE</p>
+                    <p style="margin:4px 0 0;font-size:11px;color:#525252;text-transform:uppercase;letter-spacing:0.15em;">Māori Grip Socks</p>
+                  </td>
+                  <td style="text-align:right;vertical-align:top;">
+                    <p style="margin:0;font-size:13px;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:0.05em;">Tax Invoice</p>
+                    <p style="margin:4px 0 0;font-size:11px;color:#525252;">GST No. ${GST_NUMBER}</p>
+                    <p style="margin:2px 0 0;font-size:11px;color:#525252;">${dateStr}</p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
@@ -113,8 +132,16 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
                   <td style="font-size:13px;color:#737373;text-align:right;padding:4px 0;">${shipping_cost === 0 ? "Free" : fmt(shipping_cost)}</td>
                 </tr>
                 <tr>
-                  <td style="font-size:15px;font-weight:700;color:#ffffff;padding:12px 0 0;border-top:1px solid #1e1e1e;">Total</td>
-                  <td style="font-size:15px;font-weight:700;color:#ffffff;text-align:right;padding:12px 0 0;border-top:1px solid #1e1e1e;">${fmt(total)} NZD</td>
+                  <td style="font-size:15px;font-weight:700;color:#ffffff;padding:12px 0 4px;border-top:1px solid #1e1e1e;">Total (incl. GST)</td>
+                  <td style="font-size:15px;font-weight:700;color:#ffffff;text-align:right;padding:12px 0 4px;border-top:1px solid #1e1e1e;">${fmt(total)} NZD</td>
+                </tr>
+                <tr>
+                  <td style="font-size:11px;color:#525252;padding:2px 0;">GST 15% included</td>
+                  <td style="font-size:11px;color:#525252;text-align:right;padding:2px 0;">${fmt(gstAmount)}</td>
+                </tr>
+                <tr>
+                  <td style="font-size:11px;color:#525252;padding:2px 0;">Excl. GST</td>
+                  <td style="font-size:11px;color:#525252;text-align:right;padding:2px 0;">${fmt(exGst)}</td>
                 </tr>
               </table>
             </td>
