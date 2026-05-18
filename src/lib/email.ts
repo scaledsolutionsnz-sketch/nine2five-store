@@ -7,5 +7,5 @@ export function getResend(): Resend {
   return _resend;
 }
 
-export const FROM_EMAIL = "Nine2Five <orders@nine2five.co.nz>";
-export const REPLY_TO = "hello@nine2five.co.nz";
+export const FROM_EMAIL = "Nine2Five <orders@mail.nine2five.nz>";
+export const REPLY_TO = "hello@nine2five.nz";
