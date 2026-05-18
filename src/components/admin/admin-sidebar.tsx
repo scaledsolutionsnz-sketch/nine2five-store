@@ -81,41 +81,39 @@ export function AdminSidebar({ email }: { email: string }) {
       <div className="mx-6 mb-3 h-px bg-white/[0.06]" />
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-2 px-3">
+      <nav className="flex-1 px-3 flex flex-col py-2">
         {SECTIONS.map((section, si) => (
-          <div key={si} className={si > 0 ? "mt-1" : ""}>
+          <div key={si} className="flex flex-col">
             {section.label && si > 0 && (
-              <div className="mx-3 my-3 h-px bg-white/[0.06]" />
+              <div className="mx-3 my-1 h-px bg-white/[0.06]" />
             )}
-            <div className="flex flex-col">
-              {section.items.map(({ href, label, icon: Icon }) => {
-                const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={cn(
-                      "group relative flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[15px] font-medium transition-all duration-100",
-                      active
-                        ? "bg-[#4ade80]/[0.08] text-white"
-                        : "text-white/40 hover:bg-white/[0.04] hover:text-white/75"
-                    )}
-                  >
-                    {active && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[22px] rounded-r-full bg-[#4ade80]" />
-                    )}
-                    <Icon
-                      className="shrink-0 transition-colors duration-100"
-                      style={{
-                        width: 18, height: 18,
-                        color: active ? "#4ade80" : "rgba(255,255,255,0.3)",
-                      }}
-                    />
-                    <span className="leading-none">{label}</span>
-                  </Link>
-                );
-              })}
-            </div>
+            {section.items.map(({ href, label, icon: Icon }) => {
+              const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "group relative flex items-center gap-3.5 px-4 rounded-xl text-[15px] font-medium transition-all duration-100 flex-1 min-h-[52px]",
+                    active
+                      ? "bg-[#4ade80]/[0.08] text-white"
+                      : "text-white/40 hover:bg-white/[0.04] hover:text-white/75"
+                  )}
+                >
+                  {active && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[22px] rounded-r-full bg-[#4ade80]" />
+                  )}
+                  <Icon
+                    className="shrink-0 transition-colors duration-100"
+                    style={{
+                      width: 18, height: 18,
+                      color: active ? "#4ade80" : "rgba(255,255,255,0.3)",
+                    }}
+                  />
+                  <span className="leading-none">{label}</span>
+                </Link>
+              );
+            })}
           </div>
         ))}
       </nav>
