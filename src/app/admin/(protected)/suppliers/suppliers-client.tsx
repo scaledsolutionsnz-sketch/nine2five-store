@@ -48,7 +48,7 @@ function SupplierForm({
   }
 
   return (
-    <div className="p-6 bg-[#F3F5F8] border border-[#E2E8F0] rounded-xl space-y-3">
+    <div className="p-6 bg-white border border-[#E2E8F0] rounded-[14px] space-y-3">
       <h3 className="font-semibold text-sm text-[#1F2937] mb-2">{initial?.id ? "Edit Supplier" : "New Supplier"}</h3>
       <input placeholder="Company name *" value={form.name} onChange={set("name")} className={inputClass} />
       <div className="grid grid-cols-2 gap-3">
@@ -127,12 +127,12 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
       )}
 
       {/* Active suppliers */}
-      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
               {["Supplier", "Contact", "Email", "Phone", ""].map((h) => (
-                <th key={h} className="text-left px-4 h-[52px] text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">{h}</th>
+                <th key={h} className="text-left px-[18px] h-[52px] text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">{h}</th>
               ))}
             </tr>
           </thead>
@@ -146,11 +146,11 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
                 </tr>
               ) : (
                 <tr key={s.id} className="border-b border-[#E5EAF1] last:border-0 hover:bg-[#F6FAFF] transition-colors">
-                  <td className="px-4 py-3.5 font-medium text-[#1F2937]">{s.name}</td>
-                  <td className="px-4 py-3.5 text-[#334155]">{s.contact_name ?? "—"}</td>
-                  <td className="px-4 py-3.5 text-[#6B7280]">{s.email ?? "—"}</td>
-                  <td className="px-4 py-3.5 text-[#6B7280]">{s.phone ?? "—"}</td>
-                  <td className="px-4 py-3.5">
+                  <td className="px-[18px] py-[14px] font-medium text-[#1F2937]">{s.name}</td>
+                  <td className="px-[18px] py-[14px] text-[#334155]">{s.contact_name ?? "—"}</td>
+                  <td className="px-[18px] py-[14px] text-[#6B7280]">{s.email ?? "—"}</td>
+                  <td className="px-[18px] py-[14px] text-[#6B7280]">{s.phone ?? "—"}</td>
+                  <td className="px-[18px] py-[14px]">
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => setEditing(s.id)}

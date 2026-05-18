@@ -36,7 +36,7 @@ export function EShipButton({ orderId, existingTracking }: {
 
   if (result) {
     return (
-      <div className="p-5 rounded-xl bg-white border border-[#E2E8F0] space-y-3" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="p-5 rounded-[14px] bg-white border border-[#E2E8F0] space-y-3" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <div className="flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-[#166B3B]" />
           <h2 className="text-sm font-semibold text-[#1F2937]">Order sent to eShip</h2>
@@ -77,7 +77,7 @@ export function EShipButton({ orderId, existingTracking }: {
 
   if (existingTracking && !result) {
     return (
-      <div className="p-5 rounded-xl bg-white border border-[#E2E8F0] space-y-3" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="p-5 rounded-[14px] bg-white border border-[#E2E8F0] space-y-3" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[#6B7280]">NZ Post eShip</h2>
         <p className="text-sm text-[#6B7280]">Shipment already created. Re-send to eShip?</p>
         <div className="flex gap-2">
@@ -96,7 +96,7 @@ export function EShipButton({ orderId, existingTracking }: {
   }
 
   return (
-    <div className="p-5 rounded-xl bg-white border border-[#E2E8F0] space-y-3" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-5 rounded-[14px] bg-white border border-[#E2E8F0] space-y-3" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center justify-between">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[#6B7280]">NZ Post eShip</h2>
         <span className="text-[10px] text-[#6B7280] bg-[#F3F5F8] border border-[#E2E8F0] rounded-full px-2 py-0.5">

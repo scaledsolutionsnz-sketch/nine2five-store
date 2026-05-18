@@ -4,7 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { Order } from "@/types/database";
-import { ChevronDown, Filter, SlidersHorizontal, Search, Plus } from "lucide-react";
+import { Filter, SlidersHorizontal, Search, Plus, ChevronDown } from "lucide-react";
 
 const PAGE_SIZE = 50;
 
@@ -62,23 +62,36 @@ function StatusBadge({ bg, color, label }: { bg: string; color: string; label: s
 }
 
 type OrderWithCount = Order & { order_items: { quantity: number }[] };
+// order_items used only for the join; quantity is not displayed
 
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; search?: string }>;
 }) {
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, search: rawSearch } = await searchParams;
+  const search = rawSearch?.trim() ?? "";
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
   const supabase = await createServiceClient();
-  const { data, count } = await supabase
+
+  let query = supabase
     .from("orders")
     .select("*, order_items(quantity)", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .range(from, to);
+    .order("created_at", { ascending: false });
+
+  if (search) {
+    const num = parseInt(search.replace(/^#/, ""), 10);
+    if (!isNaN(num)) {
+      query = query.eq("order_number", num);
+    } else {
+      query = query.ilike("guest_email", `%${search}%`);
+    }
+  }
+
+  const { data, count } = await query.range(from, to);
 
   const orders = (data ?? []) as OrderWithCount[];
   const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
@@ -92,10 +105,10 @@ export default async function OrdersPage({
           <h1 className="text-[22px] font-semibold text-[#1F2937]">Orders</h1>
           <p className="text-[14px] text-[#64748B] mt-1">View and manage all customer orders.</p>
         </div>
-        <button className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] hover:bg-[#0D5FE0] text-white text-[14px] font-semibold transition-colors shadow-sm">
+        <Link href="/admin/pos" className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] hover:bg-[#0D5FE0] text-white text-[14px] font-semibold transition-colors shadow-sm">
           <Plus style={{ width: 16, height: 16 }} strokeWidth={2.5} />
           Add New Order
-        </button>
+        </Link>
       </div>
 
       {/* Orders card */}
@@ -129,18 +142,20 @@ export default async function OrdersPage({
             <button className="h-9 w-9 rounded-full border border-[#D8E2F0] bg-white hover:bg-[#F4F8FF] flex items-center justify-center text-[#6B7280] transition-colors">
               <SlidersHorizontal style={{ width: 14, height: 14 }} strokeWidth={2} />
             </button>
-            <div className="relative hidden sm:flex items-center">
+            <form action="/admin/orders" method="get" className="hidden sm:flex items-center gap-2 h-9 px-3.5 w-[280px] bg-white border border-[#D8E2F0] rounded-full transition-colors focus-within:border-[#116DFF]/50">
               <Search
-                className="absolute left-3.5 pointer-events-none"
+                className="pointer-events-none shrink-0"
                 style={{ width: 13, height: 13, color: "#9CA3AF" }}
                 strokeWidth={2}
               />
               <input
                 type="text"
-                placeholder="Search..."
-                className="h-9 w-[280px] pl-9 pr-4 text-[13px] rounded-full border border-[#D8E2F0] bg-white text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
+                name="search"
+                defaultValue={search}
+                placeholder="Search orders or email…"
+                className="flex-1 text-[13px] bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none min-w-0"
               />
-            </div>
+            </form>
           </div>
         </div>
 
@@ -165,7 +180,6 @@ export default async function OrdersPage({
                   { label: "Payment",      w: 150 },
                   { label: "Fulfillment",  w: 160 },
                   { label: "Total",        w: 130 },
-                  { label: "Items",        w: 90  },
                   { label: "View",         w: 100 },
                 ].map(({ label, w }, i, arr) => (
                   <th
@@ -189,30 +203,31 @@ export default async function OrdersPage({
                 const fulfillmentKey = getFulfillment(order.status);
                 const payment = PAYMENT_BADGE[paymentKey];
                 const fulfillment = FULFILLMENT_BADGE[fulfillmentKey];
-                const totalPairs = order.order_items.reduce((s, i) => s + i.quantity, 0);
                 const customerName = [addr?.first_name, addr?.last_name].filter(Boolean).join(" ");
                 const isNew = now - new Date(order.created_at).getTime() < 24 * 60 * 60 * 1000;
 
                 return (
                   <tr
                     key={order.id}
-                    className="hover:bg-[#F6FAFF] transition-colors duration-100"
-                    style={{ borderBottom: "1px solid #E5EAF1" }}
+                    className="hover:bg-[#F6FAFF] transition-colors duration-100 cursor-pointer"
+                    style={{ borderBottom: "1px solid #E5EAF1", position: "relative" }}
                   >
-                    <td className="w-[52px] px-4 py-3.5 text-center">
+                    {/* Checkbox — above overlay */}
+                    <td className="w-[52px] px-4 py-3.5 text-center" style={{ position: "relative", zIndex: 1 }}>
                       <input
                         type="checkbox"
                         className="w-4 h-4 rounded cursor-pointer accent-[#116DFF]"
                       />
                     </td>
 
-                    {/* Order # */}
-                    <td className="px-4 py-3.5" style={{ width: 120 }}>
-                      <span className="text-[14px] font-medium text-[#3B4558]">
+                    {/* Order # — contains the full-row overlay link */}
+                    <td className="px-4 py-3.5" style={{ width: 120, position: "relative" }}>
+                      <Link href={`/admin/orders/${order.id}`} className="absolute inset-0" aria-label={`View order #${order.order_number}`} style={{ zIndex: 0 }} />
+                      <span className="relative text-[14px] font-medium text-[#3B4558]" style={{ zIndex: 1 }}>
                         #{order.order_number}
                       </span>
                       {isNew && (
-                        <div className="mt-1">
+                        <div className="mt-1 relative" style={{ zIndex: 1 }}>
                           <span
                             className="inline-flex items-center px-1.5 py-0.5 text-[11px] font-semibold text-white"
                             style={{ backgroundColor: "#116DFF", borderRadius: 4 }}
@@ -259,20 +274,8 @@ export default async function OrdersPage({
                       </span>
                     </td>
 
-                    {/* Items */}
-                    <td className="px-4 py-3.5 text-center" style={{ width: 90 }}>
-                      {totalPairs > 0 ? (
-                        <span className="inline-flex items-center gap-1 text-[14px] font-medium text-[#116DFF]">
-                          {totalPairs}
-                          <ChevronDown style={{ width: 12, height: 12 }} strokeWidth={2.5} />
-                        </span>
-                      ) : (
-                        <span className="text-[14px] text-[#C4CAD4]">—</span>
-                      )}
-                    </td>
-
                     {/* View */}
-                    <td className="px-4 py-3.5 text-center" style={{ width: 100 }}>
+                    <td className="px-4 py-3.5 text-center" style={{ width: 100, position: "relative", zIndex: 1 }}>
                       <Link
                         href={`/admin/orders/${order.id}`}
                         className="text-[14px] font-medium text-[#116DFF] hover:underline transition-colors"

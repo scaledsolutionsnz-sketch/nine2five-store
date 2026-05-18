@@ -119,7 +119,8 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
 
       {/* ── Page header ── */}
       <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-semibold text-[#1F2937]">Discount Codes</h1>
+        <h1 className="text-[22px] font-semibold text-[#1F2937]">Discount Codes</h1>
+        <p className="text-[14px] text-[#64748B] mt-1">Create and manage promotional codes for your store.</p>
         <button
           onClick={() => setShowCreate(true)}
           className="flex items-center gap-2 h-11 px-6 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all"
@@ -138,7 +139,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
         ].map(({ label, value, sub, icon: Icon, iconColor, iconBg }) => (
           <div
             key={label}
-            className="rounded-xl bg-white border border-[#E2E8F0] p-6"
+            className="rounded-[14px] bg-white border border-[#E2E8F0] p-6"
             style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
           >
             <div className="flex items-start justify-between mb-4">
@@ -158,7 +159,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
       </div>
 
       {/* ── Table ── */}
-      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         {/* Table header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
           <div>

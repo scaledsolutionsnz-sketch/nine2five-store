@@ -56,7 +56,7 @@ export function NzPostLabel({ order }: { order: OrderWithItems }) {
   }
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-semibold text-sm text-[#1F2937]">NZ Post Label</h2>
         <button

@@ -89,7 +89,7 @@ export function CampaignManager({
           { label: "Subscribed",    value: subscribedCount, icon: Mail,       color: "#166B3B", bg: "bg-[#D5F1E2]" },
           { label: "High-value",    value: highValueCount,  icon: TrendingUp, color: "#92400E", bg: "bg-[#FEF3C7]" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div key={label} className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center mb-3", bg)}>
               <Icon className="h-4 w-4" style={{ color }} />
             </div>
@@ -100,7 +100,7 @@ export function CampaignManager({
       </div>
 
       {/* Compose */}
-      <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <h2 className="font-semibold text-sm text-[#1F2937] mb-5 flex items-center gap-2">
           <Plus className="h-4 w-4" /> New Campaign
         </h2>
@@ -186,7 +186,7 @@ export function CampaignManager({
           const openRate = c.recipient_count ? Math.round((c.opens / c.recipient_count) * 100) : 0;
           const clickRate = c.recipient_count ? Math.round((c.clicks / c.recipient_count) * 100) : 0;
           return (
-            <div key={c.id} className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+            <div key={c.id} className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">

@@ -32,7 +32,7 @@ function RegionCard({
   tiers: Tier[];
 }) {
   return (
-    <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       {/* Header */}
       <div className="px-6 py-5 flex items-center gap-3 border-b border-[#E2E8F0]">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base bg-[#EAF2FF] border border-[#BBD3FF]">
@@ -87,7 +87,7 @@ export function ShippingSettingsClient() {
   return (
     <div className="space-y-6">
       {/* Shipping section */}
-      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <div className="px-7 py-5 flex items-center gap-3 border-b border-[#E2E8F0]">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#EAF2FF] border border-[#BBD3FF]">
             <Globe style={{ width: 16, height: 16, color: "#116DFF" }} strokeWidth={1.8} />

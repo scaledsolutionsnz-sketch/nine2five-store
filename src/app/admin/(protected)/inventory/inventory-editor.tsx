@@ -294,7 +294,7 @@ export function InventoryEditor({
     <div className="space-y-5">
       {/* Low stock alert */}
       {lowStock.length > 0 && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-[#FEF3C7] border border-[#FDE68A]">
+        <div className="flex items-start gap-3 p-4 rounded-[14px] bg-[#FEF3C7] border border-[#FDE68A]">
           <AlertTriangle className="h-4 w-4 text-[#92400E] shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-[#92400E]">
@@ -308,7 +308,7 @@ export function InventoryEditor({
       )}
 
       {/* Inventory table */}
-      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>

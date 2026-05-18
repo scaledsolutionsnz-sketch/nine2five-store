@@ -55,7 +55,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <div className="grid lg:grid-cols-[1fr_300px] gap-6">
         <div className="space-y-6">
           {/* Items */}
-          <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <h2 className="font-semibold text-sm text-[#1F2937] mb-4">Items</h2>
             <div className="space-y-3">
               {o.order_items.map((item) => (
@@ -89,14 +89,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
         {/* Customer + Address */}
         <div className="space-y-4">
-          <div className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <h2 className="text-xs font-semibold uppercase tracking-widest text-[#6B7280] mb-3">Customer</h2>
             <p className="text-sm font-medium text-[#1F2937]">{addr.first_name} {addr.last_name}</p>
             <p className="text-xs text-[#6B7280] mt-1">{o.guest_email}</p>
             {addr.phone && <p className="text-xs text-[#6B7280] mt-0.5">{addr.phone}</p>}
           </div>
 
-          <div className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <h2 className="text-xs font-semibold uppercase tracking-widest text-[#6B7280] mb-3">Shipping Address</h2>
             <div className="text-sm text-[#334155] space-y-0.5">
               <p>{addr.first_name} {addr.last_name}</p>
@@ -109,7 +109,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
 
           {o.tracking_number && (
-            <div className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+            <div className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[#6B7280] mb-2">Tracking</h2>
               <p className="text-sm font-mono text-[#116DFF] font-semibold">{o.tracking_number}</p>
             </div>

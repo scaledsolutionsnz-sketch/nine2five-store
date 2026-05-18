@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Search, ShoppingCart, X, Plus, Minus, Tag, Check,
-  Loader2, User, ChevronDown, ChevronUp, Pencil,
+  Loader2, User, ChevronDown, ChevronUp,
   Banknote, CreditCard, Building2, Smartphone, ClipboardList,
   ArrowRight, RotateCcw, Package,
 } from "lucide-react";
@@ -55,9 +55,9 @@ function ProductCard({
   const variants = (product.product_variants ?? []).sort((a, b) => a.size.localeCompare(b.size));
 
   return (
-    <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden flex flex-col" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="rounded-[14px] bg-white border border-[#E2E8F0] flex flex-col" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       {/* Image */}
-      <div className="relative aspect-square bg-[#F3F5F8]">
+      <div className="relative aspect-square bg-[#F3F5F8] rounded-t-[13px] overflow-hidden">
         {product.image_urls?.[0] ? (
           <Image
             src={product.image_urls[0]}
@@ -73,8 +73,8 @@ function ProductCard({
       </div>
 
       {/* Info + size buttons */}
-      <div className="p-2.5">
-        <p className="text-[12px] font-semibold text-[#1F2937] leading-tight mb-1 line-clamp-2">
+      <div className="p-3">
+        <p className="text-[13px] font-semibold text-[#1F2937] leading-snug mb-1.5 line-clamp-2">
           {product.name}
         </p>
         <p className="text-[13px] font-bold text-[#1F2937] mb-2 font-mono">
@@ -586,11 +586,11 @@ export function POSClient({ products }: { products: Product[] }) {
   }
 
   const paymentMethods: Array<{ id: PaymentMethod; label: string; icon: React.ReactNode }> = [
-    { id: "cash",          label: "Cash",     icon: <Banknote style={{ width: 13, height: 13 }} /> },
-    { id: "eftpos",        label: "EFTPOS",   icon: <CreditCard style={{ width: 13, height: 13 }} /> },
-    { id: "stripe",        label: "Card",     icon: <Smartphone style={{ width: 13, height: 13 }} /> },
-    { id: "bank_transfer", label: "Transfer", icon: <Building2 style={{ width: 13, height: 13 }} /> },
-    { id: "manual",        label: "Manual",   icon: <ClipboardList style={{ width: 13, height: 13 }} /> },
+    { id: "cash",          label: "Cash",     icon: <Banknote style={{ width: 16, height: 16 }} /> },
+    { id: "eftpos",        label: "EFTPOS",   icon: <CreditCard style={{ width: 16, height: 16 }} /> },
+    { id: "stripe",        label: "Card",     icon: <Smartphone style={{ width: 16, height: 16 }} /> },
+    { id: "bank_transfer", label: "Transfer", icon: <Building2 style={{ width: 16, height: 16 }} /> },
+    { id: "manual",        label: "Manual",   icon: <ClipboardList style={{ width: 16, height: 16 }} /> },
   ];
 
   const totalPairs = cart.reduce((s, i) => s + i.quantity, 0);
@@ -601,14 +601,14 @@ export function POSClient({ products }: { products: Product[] }) {
       {/* ── LEFT: Product Grid ────────────────────────────────── */}
       <div className="flex-1 flex flex-col gap-3 overflow-hidden">
         {/* Search */}
-        <div className="relative shrink-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2" style={{ width: 14, height: 14, color: "#8A94A6" }} />
+        <div className="shrink-0 flex items-center gap-2 h-10 px-3.5 bg-white border border-[#E2E8F0] rounded-full transition-colors focus-within:border-[#116DFF]/50">
+          <Search style={{ width: 14, height: 14, color: "#8A94A6", flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search products..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full h-10 pl-9 pr-3.5 text-[13px] bg-white border border-[#E2E8F0] rounded-xl text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
+            className="flex-1 text-[13px] bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none min-w-0"
           />
         </div>
 
@@ -617,7 +617,7 @@ export function POSClient({ products }: { products: Product[] }) {
           className="flex-1 overflow-y-auto pb-2"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(155px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
             gap: 10,
             alignContent: "start",
           }}
@@ -641,7 +641,7 @@ export function POSClient({ products }: { products: Product[] }) {
       </div>
 
       {/* ── RIGHT: Cart ──────────────────────────────────────── */}
-      <div className="w-[364px] flex flex-col bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shrink-0" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="w-[364px] flex flex-col bg-white border border-[#E2E8F0] rounded-[14px] overflow-hidden shrink-0" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         {/* Cart header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0] shrink-0">
           <div className="flex items-center gap-1.5">
@@ -712,15 +712,15 @@ export function POSClient({ products }: { products: Product[] }) {
               <div className="flex flex-col gap-1.5">
                 {/* Code input */}
                 <div className="flex gap-1.5">
-                  <div className="relative flex-1">
-                    <Tag style={{ position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)", width: 10, height: 10, color: "#8A94A6" }} />
+                  <div className="flex-1 flex items-center gap-1.5 h-[30px] px-2.5 bg-white border border-[#E2E8F0] rounded-lg transition-colors focus-within:border-[#116DFF]/50">
+                    <Tag style={{ width: 10, height: 10, color: "#8A94A6", flexShrink: 0 }} />
                     <input
                       type="text"
                       placeholder="Discount code"
                       value={discountCode}
                       onChange={e => { setDiscountCode(e.target.value.toUpperCase()); setDiscountError(""); }}
                       onKeyDown={e => e.key === "Enter" && applyDiscountCode()}
-                      className="w-full h-[30px] pl-6 pr-2 text-[11px] font-mono bg-white border border-[#E2E8F0] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
+                      className="flex-1 text-[11px] font-mono bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none min-w-0"
                     />
                   </div>
                   <button
@@ -849,25 +849,25 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Payment method */}
-          <div className="px-4 py-2 border-b border-[#E5EAF1]">
-            <p className="text-[10px] font-semibold text-[#8A94A6] uppercase tracking-wider mb-1.5">
+          <div className="px-4 py-3.5 border-b border-[#E5EAF1]">
+            <p className="text-[10px] font-semibold text-[#8A94A6] uppercase tracking-wider mb-2.5">
               Payment
             </p>
-            <div className="flex gap-1.5 flex-wrap">
+            <div className="flex gap-2">
               {paymentMethods.map(pm => {
                 const active = paymentMethod === pm.id;
                 return (
                   <button
                     key={pm.id}
                     onClick={() => setPaymentMethod(pm.id)}
-                    className="flex items-center gap-1 h-[28px] px-2.5 rounded-full text-[11px] font-semibold transition-all duration-100"
+                    className="flex-1 flex flex-col items-center justify-center gap-1 h-[56px] rounded-[14px] text-[11px] font-semibold transition-all duration-100"
                     style={{
                       backgroundColor: active ? "#EAF2FF" : "#F3F5F8",
                       color: active ? "#116DFF" : "#6B7280",
-                      border: active ? "1px solid #BBD3FF" : "1px solid #E2E8F0",
+                      border: active ? "1.5px solid #BBD3FF" : "1.5px solid #E2E8F0",
                     }}
                   >
-                    {pm.icon}
+                    <span style={{ opacity: active ? 1 : 0.6 }}>{pm.icon}</span>
                     {pm.label}
                   </button>
                 );
@@ -876,20 +876,21 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Error + CTA */}
-          <div className="px-3.5 py-3">
+          <div className="px-4 py-4">
             {saleError && (
-              <p className="text-[11px] text-[#991B1B] mb-2 px-2.5 py-1.5 bg-[#FEE2E2] rounded-lg border border-[#FCA5A5]">
+              <p className="text-[11px] text-[#991B1B] mb-3 px-2.5 py-1.5 bg-[#FEE2E2] rounded-lg border border-[#FCA5A5]">
                 {saleError}
               </p>
             )}
             <button
               onClick={() => completeSale()}
               disabled={cart.length === 0 || processing || stripeLoading}
-              className="w-full h-12 rounded-xl text-[14px] font-bold text-white transition-all duration-150 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
+              className="w-full h-13 rounded-[14px] text-[14px] font-bold text-white transition-all duration-150 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: cart.length === 0 ? "#E2E8F0" : "#116DFF",
                 color: cart.length === 0 ? "#8A94A6" : "white",
                 boxShadow: cart.length > 0 ? "0 4px 16px rgba(17,109,255,0.25)" : "none",
+                height: 52,
               }}
             >
               {processing || stripeLoading ? (
@@ -908,5 +909,3 @@ export function POSClient({ products }: { products: Product[] }) {
   );
 }
 
-// Suppress unused import warning for Pencil
-void Pencil;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Download, Loader2, TrendingUp, RefreshCw, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -62,7 +63,7 @@ function StripePanel() {
   };
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-semibold text-sm text-[#1F2937]">Stripe Account</h2>
         <button
@@ -84,14 +85,14 @@ function StripePanel() {
       {balance && (
         <>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="p-4 rounded-xl bg-[#F3F5F8] border border-[#E2E8F0]">
+            <div className="p-4 rounded-[14px] bg-[#F3F5F8] border border-[#E2E8F0]">
               <p className="text-xs text-[#6B7280] mb-1">Available</p>
               <p className="font-bold text-2xl text-[#1F2937] font-mono">
                 {dollars(balance.available_cents)}
               </p>
               <p className="text-xs text-[#8A94A6] mt-0.5 uppercase">{balance.currency}</p>
             </div>
-            <div className="p-4 rounded-xl bg-[#F3F5F8] border border-[#E2E8F0]">
+            <div className="p-4 rounded-[14px] bg-[#F3F5F8] border border-[#E2E8F0]">
               <p className="text-xs text-[#6B7280] mb-1">Pending</p>
               <p className="font-bold text-2xl text-[#6B7280] font-mono">
                 {dollars(balance.pending_cents)}
@@ -149,7 +150,7 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
   const total = rows.reduce((s, r) => s + r.revenue_cents, 0);
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <h2 className="font-semibold text-sm text-[#1F2937] mb-5 flex items-center gap-2">
         <TrendingUp className="h-4 w-4 text-[#116DFF]" />
         Monthly Revenue — last 12 months
@@ -160,7 +161,7 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
               {["Month", "Orders", "Revenue (incl. GST)", "GST (15%)", "Revenue (excl. GST)", "Refunds", "Discounts"].map((h) => (
-                <th key={h} className="text-left px-3 h-[52px] text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap first:pl-0 last:pr-0">
+                <th key={h} className="text-left px-[18px] h-[52px] text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -172,28 +173,28 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
               const exGstAmt = exGst(r.revenue_cents);
               return (
                 <tr key={r.month} className="border-b border-[#E5EAF1] last:border-0 hover:bg-[#F6FAFF] transition-colors">
-                  <td className="px-3 py-3 font-medium text-[#1F2937] whitespace-nowrap first:pl-0">
+                  <td className="px-[18px] py-[14px] font-medium text-[#1F2937] whitespace-nowrap">
                     {new Date(r.month).toLocaleDateString("en-NZ", { month: "short", year: "numeric" })}
                   </td>
-                  <td className="px-3 py-3 text-[#334155] font-mono">{r.order_count}</td>
-                  <td className="px-3 py-3 font-medium text-[#1F2937] font-mono">{dollars(r.revenue_cents)}</td>
-                  <td className="px-3 py-3 text-[#334155] font-mono">{dollars(gstAmt)}</td>
-                  <td className="px-3 py-3 text-[#334155] font-mono">{dollars(exGstAmt)}</td>
-                  <td className="px-3 py-3 text-[#991B1B] text-xs font-mono">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
-                  <td className="px-3 py-3 text-[#6B7280] text-xs font-mono last:pr-0">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
+                  <td className="px-[18px] py-[14px] text-[#334155] font-mono">{r.order_count}</td>
+                  <td className="px-[18px] py-[14px] font-medium text-[#1F2937] font-mono">{dollars(r.revenue_cents)}</td>
+                  <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(gstAmt)}</td>
+                  <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(exGstAmt)}</td>
+                  <td className="px-[18px] py-[14px] text-[#991B1B] text-xs font-mono">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
+                  <td className="px-[18px] py-[14px] text-[#6B7280] text-xs font-mono">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
             <tr style={{ borderTop: "2px solid #BBD3FF" }}>
-              <td className="px-3 py-3 font-bold text-[#1F2937] first:pl-0">Total</td>
-              <td className="px-3 py-3 text-[#334155] font-mono">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
-              <td className="px-3 py-3 font-bold text-[#116DFF] font-mono">{dollars(total)}</td>
-              <td className="px-3 py-3 text-[#334155] font-mono">{dollars(gst(total))}</td>
-              <td className="px-3 py-3 text-[#334155] font-mono">{dollars(exGst(total))}</td>
-              <td className="px-3 py-3 text-[#991B1B] font-mono">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
-              <td className="px-3 py-3 text-[#6B7280] font-mono last:pr-0">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
+              <td className="px-[18px] py-[14px] font-bold text-[#1F2937]">Total</td>
+              <td className="px-[18px] py-[14px] text-[#334155] font-mono">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
+              <td className="px-[18px] py-[14px] font-bold text-[#116DFF] font-mono">{dollars(total)}</td>
+              <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(gst(total))}</td>
+              <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(exGst(total))}</td>
+              <td className="px-[18px] py-[14px] text-[#991B1B] font-mono">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
+              <td className="px-[18px] py-[14px] text-[#6B7280] font-mono">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
             </tr>
           </tfoot>
         </table>
@@ -223,22 +224,25 @@ function ExportPanel() {
 
   async function download() {
     setLoading(true);
-    const res = await fetch(`/api/admin/accounting/export?from=${from}&to=${to}&format=${format}`);
-    setLoading(false);
-    if (!res.ok) { return; }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = res.headers.get("content-disposition")?.split('filename="')[1]?.replace('"', "") ?? "export.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    try {
+      const res = await fetch(`/api/admin/accounting/export?from=${from}&to=${to}&format=${format}`);
+      if (!res.ok) { toast.error("Export failed. Please try again."); return; }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = res.headers.get("content-disposition")?.split('filename="')[1]?.replace('"', "") ?? "export.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const inputClass = "h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <h2 className="font-semibold text-sm text-[#1F2937] mb-1">Export</h2>
       <p className="text-xs text-[#6B7280] mb-5">
         Download accounting data for MYOB, Xero, or your accountant. All amounts in NZD.

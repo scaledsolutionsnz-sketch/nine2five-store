@@ -65,6 +65,12 @@ export default async function AdminDashboard() {
   const supabase = await createServiceClient();
   const now = new Date();
 
+  const { data: authData } = await supabase.auth.getUser();
+  const meta = authData?.user?.user_metadata;
+  const firstName = (meta?.full_name ?? meta?.name ?? authData?.user?.email ?? "")
+    .split(/[\s@]/)[0]
+    .replace(/^./, (c: string) => c.toUpperCase());
+
   const todayStart     = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const yesterdayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
   const monthStart     = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -140,8 +146,6 @@ export default async function AdminDashboard() {
   const orders = (recent   ?? []) as unknown as Order[];
   const stocks = (lowStock ?? []) as unknown as Stock[];
 
-  void pending;
-
   const metrics = [
     { label: "Revenue",       value: money(revMon),           change: revPct,  todayV: moneyShort(revToday),  yestV: moneyShort(revYest),  sparkline: last14.map(d => d.rev), icon: DollarSign, primary: true },
     { label: "Orders",        value: ordMon.toLocaleString(), change: ordPct,  todayV: todayOs.length.toString(), yestV: yestOs.length.toString(), sparkline: last14.map(d => d.cnt), icon: ShoppingBag, primary: false },
@@ -156,10 +160,11 @@ export default async function AdminDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-[24px] font-bold text-[#1F2937] tracking-tight leading-none">
-            Welcome back, Wiremu
+            Welcome back{firstName ? `, ${firstName}` : ""}
           </h2>
           <p className="text-[14px] text-[#6B7280] mt-2 font-normal">
             {now.toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            {(pending ?? 0) > 0 && <span className="ml-2 text-[#9A5B00] font-medium">· {pending} order{pending !== 1 ? "s" : ""} pending</span>}
           </p>
         </div>
         <div className="flex items-center gap-3">

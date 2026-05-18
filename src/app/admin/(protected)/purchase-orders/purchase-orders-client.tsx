@@ -144,13 +144,13 @@ function CreatePOModal({
                     onChange={(e) => setLine(i, "quantity_ordered", parseInt(e.target.value) || 1)}
                     className={cn(inputClass, "text-center text-xs font-mono")}
                   />
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A94A6] text-xs">$</span>
+                  <div className={cn(inputClass, "flex items-center gap-1")}>
+                    <span className="text-[#8A94A6] text-xs pointer-events-none select-none shrink-0">$</span>
                     <input
                       type="number" min={0} step={0.01} placeholder="Unit cost"
                       value={line.unit_cost_cents / 100 || ""}
                       onChange={(e) => setLine(i, "unit_cost_cents", Math.round(parseFloat(e.target.value) * 100) || 0)}
-                      className={cn(inputClass, "pl-6 text-xs font-mono")}
+                      className="flex-1 min-w-0 text-xs font-mono bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none"
                     />
                   </div>
                   <button
@@ -243,7 +243,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
   }
 
   return (
-    <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center gap-4 p-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -388,7 +388,7 @@ export function PurchaseOrdersClient({
       )}
 
       {orders.length === 0 && !creating && (
-        <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+        <div className="flex flex-col items-center justify-center py-20 text-center rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
           <Package className="h-10 w-10 text-[#C4CAD4] mb-4" />
           <p className="text-[#6B7280] text-sm">No purchase orders yet.</p>
           <p className="text-[#8A94A6] text-xs mt-1">Create one to track stock orders from suppliers.</p>

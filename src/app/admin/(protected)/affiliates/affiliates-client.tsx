@@ -50,7 +50,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
   }
 
   function copyLink(code: string) {
-    navigator.clipboard.writeText(`https://nine2five.co.nz?ref=${code}`);
+    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.co.nz"}?ref=${code}`);
     toast.success("Referral link copied");
   }
 
@@ -66,7 +66,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
           { label: "Commission Owed", value: fmt(totals.commission - totals.paid),          icon: DollarSign,   color: "#92400E",  bg: "bg-[#FEF3C7]" },
           { label: "Affiliates",      value: affiliates.length.toString(),                  icon: Users,        color: "#7C3AED",  bg: "bg-[#EDE9FE]" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="p-5 rounded-xl bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div key={label} className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <div className="flex items-center justify-between mb-3">
               <p className="text-xs text-[#6B7280] font-medium">{label}</p>
               <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", bg)}>
@@ -91,12 +91,12 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
       </div>
 
       {/* Table */}
-      <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
               {["Affiliate", "Code", "Status", "Clicks", "Conversions", "Commission", "Rate", "Actions"].map((h) => (
-                <th key={h} className="px-4 h-[52px] text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">
+                <th key={h} className="px-[18px] h-[52px] text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -105,18 +105,18 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
           <tbody className="divide-y divide-[#E5EAF1]">
             {affiliates.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-[#8A94A6] text-sm">
+                <td colSpan={8} className="px-[18px] py-10 text-center text-[#8A94A6] text-sm">
                   No affiliates yet. Add your first referral partner.
                 </td>
               </tr>
             )}
             {affiliates.map((a) => (
               <tr key={a.id} className="hover:bg-[#F6FAFF] transition-colors">
-                <td className="px-4 py-3.5">
+                <td className="px-[18px] py-[14px]">
                   <p className="font-medium text-[#1F2937]">{a.name}</p>
                   <p className="text-xs text-[#6B7280] mt-0.5">{a.email}</p>
                 </td>
-                <td className="px-4 py-3.5">
+                <td className="px-[18px] py-[14px]">
                   <div className="flex items-center gap-2">
                     <code className="text-xs bg-[#EAF2FF] border border-[#BBD3FF] px-2 py-0.5 rounded text-[#116DFF] font-mono">
                       {a.referral_code}
@@ -129,7 +129,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                     </button>
                   </div>
                 </td>
-                <td className="px-4 py-3.5">
+                <td className="px-[18px] py-[14px]">
                   <span className={cn(
                     "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium",
                     STATUS[a.status].cls
@@ -137,9 +137,9 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                     {STATUS[a.status].label}
                   </span>
                 </td>
-                <td className="px-4 py-3.5 text-[#334155] font-mono">{a.total_clicks.toLocaleString()}</td>
-                <td className="px-4 py-3.5 text-[#334155] font-mono">{a.total_conversions.toLocaleString()}</td>
-                <td className="px-4 py-3.5 font-semibold text-[#1F2937] font-mono">
+                <td className="px-[18px] py-[14px] text-[#334155] font-mono">{a.total_clicks.toLocaleString()}</td>
+                <td className="px-[18px] py-[14px] text-[#334155] font-mono">{a.total_conversions.toLocaleString()}</td>
+                <td className="px-[18px] py-[14px] font-semibold text-[#1F2937] font-mono">
                   {fmt(a.total_commission_cents)}
                   {a.total_paid_cents > 0 && (
                     <span className="block text-[10px] text-[#6B7280] font-normal mt-0.5">
@@ -147,8 +147,8 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3.5 text-[#334155] font-mono">{a.commission_rate}%</td>
-                <td className="px-4 py-3.5">
+                <td className="px-[18px] py-[14px] text-[#334155] font-mono">{a.commission_rate}%</td>
+                <td className="px-[18px] py-[14px]">
                   <div className="flex items-center gap-1">
                     {a.status === "pending" && (
                       <button
@@ -359,7 +359,7 @@ function AffiliateDetailModal({
     setSaving(false);
   }
 
-  const link = `https://nine2five.co.nz?ref=${affiliate.referral_code}`;
+  const link = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.co.nz"}?ref=${affiliate.referral_code}`;
   const pending = affiliate.total_commission_cents - affiliate.total_paid_cents;
 
   return (
