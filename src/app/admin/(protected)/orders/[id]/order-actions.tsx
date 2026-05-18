@@ -41,7 +41,7 @@ export function OrderActions({
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value as OrderStatus)}
-        className="h-9 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#16a34a]"
+        className="h-9 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
       >
         {STATUSES.map((s) => (
           <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
@@ -51,12 +51,12 @@ export function OrderActions({
         placeholder="Tracking number"
         value={tracking}
         onChange={(e) => setTracking(e.target.value)}
-        className="h-9 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#16a34a] w-48"
+        className="h-9 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors w-48"
       />
       <button
         onClick={save}
         disabled={saving}
-        className="h-9 px-4 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
+        className="h-9 px-4 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] transition-colors disabled:opacity-50"
       >
         {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
       </button>

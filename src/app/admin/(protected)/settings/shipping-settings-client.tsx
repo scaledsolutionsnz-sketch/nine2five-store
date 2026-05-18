@@ -32,17 +32,17 @@ function RegionCard({
   tiers: Tier[];
 }) {
   return (
-    <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       {/* Header */}
-      <div className="px-6 py-5 flex items-center gap-3 border-b border-white/[0.06]">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base bg-[#4ade80]/[0.08] border border-[#4ade80]/20">
+      <div className="px-6 py-5 flex items-center gap-3 border-b border-[#E2E7EF]">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base bg-[#EAF2FF] border border-[#BBD3FF]">
           {flag}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[14px] text-white leading-none">{region}</p>
-          <p className="text-[12px] text-white/40 mt-0.5 leading-none">{sublabel}</p>
+          <p className="font-semibold text-[14px] text-[#1F2937] leading-none">{region}</p>
+          <p className="text-[12px] text-[#6B7280] mt-0.5 leading-none">{sublabel}</p>
         </div>
-        <div className="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-[#4ade80]/[0.08] text-[#4ade80] border border-[#4ade80]/20">
+        <div className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#CDEEDC] text-[#166B3B]">
           {delivery}
         </div>
       </div>
@@ -54,29 +54,29 @@ function RegionCard({
             <div
               key={i}
               className="flex items-center justify-between py-2.5 px-3 rounded-xl"
-              style={{ backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent" }}
+              style={{ backgroundColor: i % 2 === 0 ? "#F3F5F8" : "transparent" }}
             >
               <div className="flex items-center gap-2.5">
-                <Package style={{ width: 13, height: 13, color: "rgba(244,244,245,0.25)" }} strokeWidth={1.8} />
-                <span className="text-[13px] text-white/60">{tier.label}</span>
+                <Package style={{ width: 13, height: 13, color: "#8A94A6" }} strokeWidth={1.8} />
+                <span className="text-[13px] text-[#334155]">{tier.label}</span>
               </div>
-              <span className="text-[13px] font-semibold text-white font-mono">
+              <span className="text-[13px] font-semibold text-[#1F2937] font-mono">
                 ${(tier.cost / 100).toFixed(2)} NZD
               </span>
             </div>
           ))}
-          <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-red-400/[0.06] border border-red-400/15">
+          <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-[#FEE2E2] border border-[#FCA5A5]">
             <div className="flex items-center gap-2.5">
-              <Package style={{ width: 13, height: 13, color: "#f87171" }} strokeWidth={1.8} />
-              <span className="text-[13px] text-red-400">13+ pairs</span>
+              <Package style={{ width: 13, height: 13, color: "#991B1B" }} strokeWidth={1.8} />
+              <span className="text-[13px] text-[#991B1B]">13+ pairs</span>
             </div>
-            <span className="text-[12px] font-medium text-red-400/70">Contact for rates</span>
+            <span className="text-[12px] font-medium text-[#991B1B]/80">Contact for rates</span>
           </div>
         </div>
       </div>
 
       {/* Footer note */}
-      <div className="px-6 py-3 rounded-b-xl text-[11px] text-white/25 border-t border-white/[0.04] bg-white/[0.01]">
+      <div className="px-6 py-3 rounded-b-xl text-[11px] text-[#8A94A6] border-t border-[#E2E7EF] bg-[#F3F5F8]">
         Based on 70g per pair · automatic weight calculation
       </div>
     </div>
@@ -85,22 +85,16 @@ function RegionCard({
 
 export function ShippingSettingsClient() {
   return (
-    <div className="space-y-8">
-      {/* Page header */}
-      <div>
-        <h2 className="text-[22px] font-bold text-white leading-none tracking-tight">Settings</h2>
-        <p className="text-[13px] text-white/40 mt-1.5 leading-none">Manage your store configuration</p>
-      </div>
-
+    <div className="space-y-6">
       {/* Shipping section */}
-      <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
-        <div className="px-7 py-5 flex items-center gap-3 border-b border-white/[0.06]">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#4ade80]/[0.08] border border-[#4ade80]/20">
-            <Globe style={{ width: 16, height: 16, color: "#4ade80" }} strokeWidth={1.8} />
+      <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+        <div className="px-7 py-5 flex items-center gap-3 border-b border-[#E2E7EF]">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#EAF2FF] border border-[#BBD3FF]">
+            <Globe style={{ width: 16, height: 16, color: "#116DFF" }} strokeWidth={1.8} />
           </div>
           <div>
-            <p className="font-semibold text-[15px] text-white leading-none">Shipping rates</p>
-            <p className="text-[12px] text-white/40 mt-0.5 leading-none">
+            <p className="font-semibold text-[15px] text-[#1F2937] leading-none">Shipping rates</p>
+            <p className="text-[12px] text-[#6B7280] mt-0.5 leading-none">
               Weight-based tiered rates · 70g per pair
             </p>
           </div>

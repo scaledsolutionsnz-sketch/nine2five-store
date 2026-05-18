@@ -32,11 +32,11 @@ interface PO {
 }
 
 const STATUS_CONFIG: Record<PurchaseOrderStatus, { label: string; color: string; icon: React.ElementType }> = {
-  draft:      { label: "Draft",      color: "bg-white/[0.06] text-white/50 border border-white/[0.08]",          icon: FileText },
-  ordered:    { label: "Ordered",    color: "bg-blue-400/10 text-blue-400 border border-blue-400/20",             icon: Package },
-  in_transit: { label: "In Transit", color: "bg-amber-400/10 text-amber-400 border border-amber-400/20",          icon: Truck },
-  received:   { label: "Received",   color: "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",          icon: CheckCircle },
-  cancelled:  { label: "Cancelled",  color: "bg-red-400/10 text-red-400 border border-red-400/20",                icon: AlertCircle },
+  draft:      { label: "Draft",      color: "bg-[#F3F4F6] text-[#6B7280]",       icon: FileText },
+  ordered:    { label: "Ordered",    color: "bg-[#DBEAFE] text-[#1E40AF]",        icon: Package },
+  in_transit: { label: "In Transit", color: "bg-[#FEF3C7] text-[#92400E]",        icon: Truck },
+  received:   { label: "Received",   color: "bg-[#CDEEDC] text-[#166B3B]",        icon: CheckCircle },
+  cancelled:  { label: "Cancelled",  color: "bg-[#FEE2E2] text-[#991B1B]",        icon: AlertCircle },
 };
 
 const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderStatus; label: string }>> = {
@@ -46,7 +46,7 @@ const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderSt
 };
 
 const inputClass =
-  "w-full h-10 px-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 transition-colors";
+  "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E7EF] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
 interface LineItemDraft { variant_id: string; quantity_ordered: number; unit_cost_cents: number; }
 
@@ -98,38 +98,38 @@ function CreatePOModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-xl bg-[#111113] border border-white/[0.1] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
-          <h2 className="font-semibold text-base text-white">New Purchase Order</h2>
-          <button onClick={onClose} className="text-white/30 hover:text-white/60 transition-colors">✕</button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="w-full max-w-xl bg-white border border-[#E2E7EF] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
+        <div className="flex items-center justify-between p-5 border-b border-[#E2E7EF]">
+          <h2 className="font-semibold text-base text-[#1F2937]">New Purchase Order</h2>
+          <button onClick={onClose} className="text-[#6B7280] hover:text-[#334155] transition-colors">✕</button>
         </div>
 
         <div className="p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-white/40 mb-1.5">Supplier</label>
-              <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} className={cn(inputClass, "appearance-none bg-[#18181b]")}>
+              <label className="block text-xs text-[#6B7280] mb-1.5">Supplier</label>
+              <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} className={cn(inputClass, "appearance-none")}>
                 <option value="">No supplier</option>
                 {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-white/40 mb-1.5">Expected by</label>
-              <input type="date" value={expectedAt} onChange={(e) => setExpectedAt(e.target.value)} className={cn(inputClass, "bg-[#18181b]")} />
+              <label className="block text-xs text-[#6B7280] mb-1.5">Expected by</label>
+              <input type="date" value={expectedAt} onChange={(e) => setExpectedAt(e.target.value)} className={inputClass} />
             </div>
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-xs text-white/40 mb-2">Line Items</label>
+            <label className="block text-xs text-[#6B7280] mb-2">Line Items</label>
             <div className="space-y-2">
               {lines.map((line, i) => (
                 <div key={i} className="grid grid-cols-[1fr_80px_100px_28px] gap-2 items-center">
                   <select
                     value={line.variant_id}
                     onChange={(e) => setLine(i, "variant_id", e.target.value)}
-                    className={cn(inputClass, "appearance-none text-xs bg-[#18181b]")}
+                    className={cn(inputClass, "appearance-none text-xs")}
                   >
                     <option value="">Select variant…</option>
                     {variants.map((v) => (
@@ -145,7 +145,7 @@ function CreatePOModal({
                     className={cn(inputClass, "text-center text-xs font-mono")}
                   />
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 text-xs">$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A94A6] text-xs">$</span>
                     <input
                       type="number" min={0} step={0.01} placeholder="Unit cost"
                       value={line.unit_cost_cents / 100 || ""}
@@ -156,14 +156,14 @@ function CreatePOModal({
                   <button
                     onClick={() => setLines((prev) => prev.filter((_, idx) => idx !== i))}
                     disabled={lines.length === 1}
-                    className="h-10 w-7 flex items-center justify-center text-white/30 hover:text-red-400 disabled:opacity-20 transition-colors"
+                    className="h-10 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#991B1B] disabled:opacity-20 transition-colors"
                   >✕</button>
                 </div>
               ))}
             </div>
             <button
               onClick={() => setLines((prev) => [...prev, { variant_id: "", quantity_ordered: 1, unit_cost_cents: 0 }])}
-              className="mt-2 flex items-center gap-1.5 text-xs text-[#4ade80] hover:opacity-80 transition-opacity"
+              className="mt-2 flex items-center gap-1.5 text-xs text-[#116DFF] hover:opacity-80 transition-opacity"
             >
               <Plus className="h-3.5 w-3.5" /> Add line
             </button>
@@ -171,18 +171,18 @@ function CreatePOModal({
 
           <input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} className={inputClass} />
 
-          <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
-            <p className="text-sm text-white/40">
-              Total: <span className="text-white font-semibold font-mono">${(totalCents / 100).toFixed(2)}</span>
+          <div className="flex items-center justify-between pt-2 border-t border-[#E2E7EF]">
+            <p className="text-sm text-[#6B7280]">
+              Total: <span className="text-[#1F2937] font-semibold font-mono">${(totalCents / 100).toFixed(2)}</span>
             </p>
             <div className="flex gap-2">
-              <button onClick={onClose} className="h-9 px-4 rounded-lg bg-white/[0.06] border border-white/[0.08] text-sm text-white/60 hover:text-white hover:bg-white/[0.1] transition-colors">
+              <button onClick={onClose} className="h-9 px-4 rounded-full bg-white border border-[#E2E7EF] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
                 Cancel
               </button>
               <button
                 onClick={save}
                 disabled={saving}
-                className="flex items-center gap-2 h-9 px-4 rounded-lg bg-[#4ade80] text-black text-sm font-semibold hover:bg-[#86efac] disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 h-9 px-4 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
               >
                 {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
                 Create PO
@@ -243,17 +243,17 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
   }
 
   return (
-    <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="rounded-xl bg-white border border-[#E2E7EF] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       <div className="flex items-center gap-4 p-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold", cfg.color)}>
+            <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[13px] font-medium", cfg.color)}>
               <StatusIcon className="h-3 w-3" />
               {cfg.label}
             </span>
-            <span className="text-xs text-white/30 font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
+            <span className="text-xs text-[#8A94A6] font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-white/40">
+          <div className="flex items-center gap-4 text-xs text-[#6B7280]">
             <span>{po.suppliers?.name ?? "No supplier"}</span>
             <span>{po.purchase_order_items.length} item{po.purchase_order_items.length !== 1 ? "s" : ""}</span>
             {po.total_cost_cents ? <span className="font-mono">${(po.total_cost_cents / 100).toFixed(2)}</span> : null}
@@ -267,10 +267,10 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               onClick={advance}
               disabled={acting}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50",
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-50",
                 po.status === "in_transit"
-                  ? "bg-[#4ade80] text-black hover:bg-[#86efac]"
-                  : "bg-white/[0.06] text-white/70 border border-white/[0.08] hover:bg-white/[0.1]"
+                  ? "bg-[#116DFF] text-white hover:bg-[#0D5FE0]"
+                  : "bg-white border border-[#E2E7EF] text-[#334155] hover:bg-[#F6FAFF]"
               )}
             >
               {acting ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
@@ -281,14 +281,14 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
             <button
               onClick={cancel}
               disabled={acting}
-              className="h-7 px-2.5 rounded-lg text-xs text-white/30 hover:text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-40"
+              className="h-7 px-2.5 rounded-full text-xs text-[#6B7280] hover:text-[#991B1B] hover:bg-[#FEE2E2] transition-colors disabled:opacity-40"
             >
               Cancel
             </button>
           )}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="h-7 w-7 flex items-center justify-center text-white/30 hover:text-white/60 transition-colors"
+            className="h-7 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#334155] transition-colors"
           >
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
@@ -296,28 +296,28 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
       </div>
 
       {expanded && (
-        <div className="border-t border-white/[0.06] bg-white/[0.02] px-4 py-3">
+        <div className="border-t border-[#E2E7EF] bg-[#F3F5F8] px-4 py-3">
           {po.purchase_order_items.length === 0 ? (
-            <p className="text-xs text-white/30">No line items.</p>
+            <p className="text-xs text-[#6B7280]">No line items.</p>
           ) : (
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-white/30 border-b border-white/[0.06]">
-                  <th className="text-left pb-2">Variant</th>
-                  <th className="text-right pb-2">Ordered</th>
-                  <th className="text-right pb-2">Received</th>
-                  <th className="text-right pb-2">Unit cost</th>
+                <tr style={{ borderBottom: "1px solid #E2E7EF" }}>
+                  <th className="text-left pb-2 text-[#6B7280] font-medium">Variant</th>
+                  <th className="text-right pb-2 text-[#6B7280] font-medium">Ordered</th>
+                  <th className="text-right pb-2 text-[#6B7280] font-medium">Received</th>
+                  <th className="text-right pb-2 text-[#6B7280] font-medium">Unit cost</th>
                 </tr>
               </thead>
               <tbody>
                 {po.purchase_order_items.map((item) => (
-                  <tr key={item.id} className="border-b border-white/[0.04] last:border-0">
-                    <td className="py-2 text-white/60">
+                  <tr key={item.id} className="border-b border-[#E5EAF1] last:border-0">
+                    <td className="py-2 text-[#334155]">
                       {item.product_variants?.products?.name ?? "Unknown"} · Size {item.product_variants?.size ?? "—"}
                     </td>
-                    <td className="py-2 text-right text-white font-mono">{item.quantity_ordered}</td>
-                    <td className="py-2 text-right text-white/40 font-mono">{item.quantity_received}</td>
-                    <td className="py-2 text-right text-white/40 font-mono">
+                    <td className="py-2 text-right text-[#1F2937] font-mono">{item.quantity_ordered}</td>
+                    <td className="py-2 text-right text-[#6B7280] font-mono">{item.quantity_received}</td>
+                    <td className="py-2 text-right text-[#6B7280] font-mono">
                       {item.unit_cost_cents ? `$${(item.unit_cost_cents / 100).toFixed(2)}` : "—"}
                     </td>
                   </tr>
@@ -325,7 +325,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               </tbody>
             </table>
           )}
-          {po.notes && <p className="mt-3 text-xs text-white/30">Note: {po.notes}</p>}
+          {po.notes && <p className="mt-3 text-xs text-[#6B7280]">Note: {po.notes}</p>}
         </div>
       )}
     </div>
@@ -355,7 +355,7 @@ export function PurchaseOrdersClient({
       <div className="flex justify-end">
         <button
           onClick={() => setCreating(true)}
-          className="flex items-center gap-2 h-9 px-4 rounded-lg bg-[#4ade80] text-black text-sm font-semibold hover:bg-[#86efac] transition-colors"
+          className="flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] transition-colors"
         >
           <Plus className="h-4 w-4" /> New Order
         </button>
@@ -378,20 +378,20 @@ export function PurchaseOrdersClient({
 
       {closed.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-white/25 mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#8A94A6] mb-3">
             Completed / Cancelled
           </p>
-          <div className="space-y-3 opacity-50">
+          <div className="space-y-3 opacity-60">
             {closed.map((po) => <PORow key={po.id} po={po} onUpdate={handleUpdated} />)}
           </div>
         </div>
       )}
 
       {orders.length === 0 && !creating && (
-        <div className="flex flex-col items-center justify-center py-20 text-center bg-[#111113] border border-white/[0.06] rounded-xl">
-          <Package className="h-10 w-10 text-white/10 mb-4" />
-          <p className="text-white/40 text-sm">No purchase orders yet.</p>
-          <p className="text-white/25 text-xs mt-1">Create one to track stock orders from suppliers.</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl bg-white border border-[#E2E7EF]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <Package className="h-10 w-10 text-[#C4CAD4] mb-4" />
+          <p className="text-[#6B7280] text-sm">No purchase orders yet.</p>
+          <p className="text-[#8A94A6] text-xs mt-1">Create one to track stock orders from suppliers.</p>
         </div>
       )}
     </div>

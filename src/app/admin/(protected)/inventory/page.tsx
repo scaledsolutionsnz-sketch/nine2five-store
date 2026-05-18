@@ -12,10 +12,9 @@ export default async function InventoryPage() {
   ]);
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-bold text-xl text-white">Inventory</h1>
-        <p className="text-sm text-white/45 mt-1">Manage stock, log adjustments, and track movements.</p>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[20px] font-semibold text-[#1F2937]">Inventory</h1>
       </div>
       <InventoryEditor
         initialProducts={products ?? []}

@@ -32,10 +32,9 @@ export default async function AnalyticsPage() {
   const summaryRow = Array.isArray(summaryRes.data) ? summaryRes.data[0] : summaryRes.data;
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-bold text-xl text-white">Analytics</h1>
-        <p className="text-sm text-white/45 mt-1">Revenue, conversions, and tracking pixel status.</p>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[20px] font-semibold text-[#1F2937]">Analytics</h1>
       </div>
       <AnalyticsClient
         chartData={(chartRes.data ?? []) as DayRevenue[]}

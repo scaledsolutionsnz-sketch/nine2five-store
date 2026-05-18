@@ -13,12 +13,9 @@ export default async function AccountingPage() {
   const { data } = await supabase.rpc("get_monthly_revenue", { p_months: 12 });
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-bold text-xl text-white">Accounting</h1>
-        <p className="text-sm text-white/45 mt-1">
-          Revenue, GST, and exports for MYOB, Xero, or your accountant.
-        </p>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[20px] font-semibold text-[#1F2937]">Accounting</h1>
       </div>
       <AccountingClient monthlyData={(data ?? []) as MonthlyRow[]} />
     </div>

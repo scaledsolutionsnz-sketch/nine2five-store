@@ -13,15 +13,9 @@ export default async function AffiliatesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4ade80] mb-1">Growth</p>
-          <h1 className="font-bold text-xl text-white">Affiliates</h1>
-          <p className="text-sm text-white/45 mt-1">
-            Manage referral partners and track commissions
-          </p>
-        </div>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[20px] font-semibold text-[#1F2937]">Affiliates</h1>
       </div>
       <AffiliatesClient affiliates={(affiliates ?? []) as Affiliate[]} />
     </div>
