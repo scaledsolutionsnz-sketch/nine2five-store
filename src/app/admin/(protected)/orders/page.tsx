@@ -7,14 +7,38 @@ import type { Order } from "@/types/database";
 
 const PAGE_SIZE = 50;
 
-const STATUS_COLORS: Record<string, string> = {
-  pending:    "bg-white/[0.06] text-white/50 border border-white/[0.08]",
-  processing: "bg-blue-400/10 text-blue-400 border border-blue-400/20",
-  shipped:    "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
-  delivered:  "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
-  cancelled:  "bg-red-400/10 text-red-400 border border-red-400/20",
-  refunded:   "bg-amber-400/10 text-amber-400 border border-amber-400/20",
+const PAYMENT_COLORS: Record<string, string> = {
+  paid:      "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+  pending:   "bg-amber-400/10 text-amber-400 border border-amber-400/20",
+  refunded:  "bg-white/[0.06] text-white/50 border border-white/[0.08]",
+  cancelled: "bg-red-400/10 text-red-400 border border-red-400/20",
 };
+
+const FULFILLMENT_COLORS: Record<string, string> = {
+  unfulfilled: "bg-amber-400/10 text-amber-400 border border-amber-400/20",
+  shipped:     "bg-blue-400/10 text-blue-400 border border-blue-400/20",
+  fulfilled:   "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+  cancelled:   "bg-red-400/10 text-red-400 border border-red-400/20",
+  returned:    "bg-white/[0.06] text-white/50 border border-white/[0.08]",
+};
+
+function getPayment(status: string): string {
+  if (status === "cancelled") return "cancelled";
+  if (status === "refunded") return "refunded";
+  if (status === "pending") return "pending";
+  return "paid";
+}
+
+function getFulfillment(status: string): string {
+  if (status === "pending" || status === "processing") return "unfulfilled";
+  if (status === "shipped") return "shipped";
+  if (status === "delivered") return "fulfilled";
+  if (status === "cancelled") return "cancelled";
+  if (status === "refunded") return "returned";
+  return "unfulfilled";
+}
+
+type OrderWithCount = Order & { order_items: { quantity: number }[] };
 
 export default async function OrdersPage({
   searchParams,
@@ -29,11 +53,11 @@ export default async function OrdersPage({
   const supabase = await createServiceClient();
   const { data, count } = await supabase
     .from("orders")
-    .select("*", { count: "exact" })
+    .select("*, order_items(quantity)", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to);
 
-  const orders = (data ?? []) as Order[];
+  const orders = (data ?? []) as OrderWithCount[];
   const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
 
   return (
@@ -53,40 +77,57 @@ export default async function OrdersPage({
       <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-white/[0.06] bg-[#111113]">
-              {["Order", "Customer", "Date", "Total", "Status", ""].map((h) => (
-                <th key={h} className="text-left px-6 py-5 text-white/40 text-sm font-semibold uppercase tracking-wider">
+            <tr className="border-b border-white/[0.06]">
+              {["Order", "Date Created", "Customer", "Payment", "Fulfillment", "Total", "Items"].map((h) => (
+                <th key={h} className="text-left px-6 py-5 text-white/40 text-sm font-semibold uppercase tracking-wider whitespace-nowrap">
                   {h}
                 </th>
               ))}
+              <th className="px-6 py-5" />
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => {
               const addr = order.shipping_address as { first_name?: string; last_name?: string };
+              const payment = getPayment(order.status);
+              const fulfillment = getFulfillment(order.status);
+              const totalPairs = order.order_items.reduce((s, i) => s + i.quantity, 0);
               return (
                 <tr key={order.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-14 font-mono font-bold text-white text-2xl">#{order.order_number}</td>
+                  <td className="px-6 py-14 font-mono font-bold text-white text-2xl whitespace-nowrap">
+                    #{order.order_number}
+                  </td>
+                  <td className="px-6 py-14 text-white/40 text-xl whitespace-nowrap">
+                    {new Date(order.created_at).toLocaleDateString("en-NZ")}
+                  </td>
                   <td className="px-6 py-14 text-white/80 text-2xl">
                     {addr?.first_name} {addr?.last_name}
                     {order.guest_email && <p className="text-base text-white/30 mt-1">{order.guest_email}</p>}
                   </td>
-                  <td className="px-6 py-14 text-white/40 text-xl">
-                    {new Date(order.created_at).toLocaleDateString("en-NZ")}
-                  </td>
-                  <td className="px-6 py-14 font-mono font-semibold text-white text-2xl">
-                    ${(order.total / 100).toFixed(2)}
-                  </td>
                   <td className="px-6 py-14">
                     <span className={cn(
-                      "inline-flex items-center px-4 py-2 rounded-full text-lg font-medium",
-                      STATUS_COLORS[order.status] ?? STATUS_COLORS.pending
+                      "inline-flex items-center px-4 py-2 rounded-full text-lg font-medium whitespace-nowrap",
+                      PAYMENT_COLORS[payment]
                     )}>
-                      {order.status}
+                      {payment}
                     </span>
                   </td>
                   <td className="px-6 py-14">
-                    <Link href={`/admin/orders/${order.id}`} className="text-lg text-[#4ade80] hover:text-[#86efac] font-medium transition-colors">
+                    <span className={cn(
+                      "inline-flex items-center px-4 py-2 rounded-full text-lg font-medium whitespace-nowrap",
+                      FULFILLMENT_COLORS[fulfillment]
+                    )}>
+                      {fulfillment}
+                    </span>
+                  </td>
+                  <td className="px-6 py-14 font-mono font-semibold text-white text-2xl whitespace-nowrap">
+                    ${(order.total / 100).toFixed(2)}
+                  </td>
+                  <td className="px-6 py-14 font-mono text-white/60 text-xl">
+                    {totalPairs} {totalPairs === 1 ? "pair" : "pairs"}
+                  </td>
+                  <td className="px-6 py-14">
+                    <Link href={`/admin/orders/${order.id}`} className="text-lg text-[#4ade80] hover:text-[#86efac] font-medium transition-colors whitespace-nowrap">
                       View →
                     </Link>
                   </td>
