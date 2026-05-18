@@ -1,73 +1,113 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Search, Bell, ExternalLink } from "lucide-react";
-
-const LABELS: Record<string, string> = {
-  "/admin":                 "Dashboard",
-  "/admin/analytics":       "Analytics",
-  "/admin/orders":          "Orders",
-  "/admin/customers":       "Customers",
-  "/admin/inventory":       "Inventory",
-  "/admin/pos":             "POS Checkout",
-  "/admin/discounts":       "Discounts",
-  "/admin/affiliates":      "Affiliates",
-  "/admin/campaigns":       "Email Campaigns",
-  "/admin/suppliers":       "Suppliers",
-  "/admin/purchase-orders": "Purchase Orders",
-  "/admin/accounting":      "Accounting",
-  "/admin/settings":        "Settings",
-};
+import { Search, Bell, MessageSquare, ExternalLink } from "lucide-react";
 
 export function AdminTopbar() {
-  const pathname = usePathname();
-  const base = "/" + pathname.split("/").slice(1, 3).join("/");
-  const label = LABELS[base] ?? "Admin";
-
   return (
-    <header className="shrink-0 flex items-center justify-between gap-6 sticky top-0 z-20 h-[72px] px-8 bg-[#09090b]/95 backdrop-blur-md border-b border-white/[0.06]">
-      {/* Left: page title */}
-      <h1 className="font-bold text-[18px] text-white leading-none whitespace-nowrap shrink-0">
-        {label}
-      </h1>
+    <header
+      className="shrink-0 flex items-center justify-between gap-4 sticky top-0 z-20 h-[64px] px-6"
+      style={{ backgroundColor: "#171C26", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+    >
+      {/* Left: brand label */}
+      <div className="flex items-center gap-2.5 shrink-0">
+        <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-[#4ade80]">
+          <span className="font-bold text-black text-[9px] tracking-tight leading-none">N2F</span>
+        </div>
+        <span className="text-[14px] font-semibold" style={{ color: "rgba(255,255,255,0.75)" }}>
+          Nine2Five
+        </span>
+      </div>
 
-      {/* Right: controls */}
-      <div className="flex items-center gap-2.5">
-        {/* Search */}
+      {/* Right: search + icons */}
+      <div className="flex items-center gap-2">
+        {/* Search pill */}
         <div className="relative hidden md:flex items-center">
           <Search
-            className="absolute left-3.5 pointer-events-none"
-            style={{ width: 14, height: 14, color: "rgba(244,244,245,0.3)" }}
+            className="absolute left-4 pointer-events-none"
+            style={{ width: 14, height: 14, color: "rgba(255,255,255,0.3)" }}
             strokeWidth={2}
           />
           <input
             type="text"
             placeholder="Search..."
-            className="h-9 w-48 pl-9 pr-10 text-[13px] bg-white/[0.04] border border-white/[0.08] rounded-xl placeholder:text-white/20 text-white focus:outline-none focus:border-[#4ade80]/40 transition-all"
+            className="h-10 w-[380px] pl-10 pr-4 text-[13px] rounded-full placeholder:text-white/25 text-white focus:outline-none transition-all"
+            style={{
+              backgroundColor: "#202633",
+              border: "1px solid #363D4A",
+            }}
+            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(74,222,128,0.4)"; }}
+            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = "#363D4A"; }}
           />
-          <kbd className="absolute right-2.5 text-[10px] text-white/20 bg-white/[0.04] border border-white/[0.08] rounded-md px-1.5 py-0.5 leading-none font-mono hidden lg:block">
-            ⌘K
-          </kbd>
         </div>
 
-        <div className="h-5 w-px bg-white/[0.08] hidden md:block" />
+        <div className="h-5 w-px hidden md:block mx-1" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
 
         {/* View store */}
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white/70 text-[13px] font-medium hover:bg-white/[0.1] hover:text-white transition-all"
+          className="flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[13px] font-medium transition-all"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            color: "rgba(255,255,255,0.6)",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.1)";
+            (e.currentTarget as HTMLElement).style.color = "#fff";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.06)";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.6)";
+          }}
         >
           <ExternalLink style={{ width: 13, height: 13 }} strokeWidth={2} />
           Store
         </Link>
 
-        <button className="h-9 w-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/50 hover:bg-white/[0.1] hover:text-white/80 transition-all">
+        {/* Messages */}
+        <button
+          className="h-9 w-9 rounded-full flex items-center justify-center transition-all"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.5)",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.1)";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.8)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.06)";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.5)";
+          }}
+        >
+          <MessageSquare style={{ width: 15, height: 15 }} strokeWidth={1.8} />
+        </button>
+
+        {/* Notifications */}
+        <button
+          className="h-9 w-9 rounded-full flex items-center justify-center transition-all"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.5)",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.1)";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.8)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.06)";
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.5)";
+          }}
+        >
           <Bell style={{ width: 15, height: 15 }} strokeWidth={1.8} />
         </button>
 
-        <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0 cursor-pointer bg-[#4ade80]">
+        {/* Avatar */}
+        <div className="h-9 w-9 rounded-full flex items-center justify-center shrink-0 cursor-pointer bg-[#4ade80]">
           <span className="text-[12px] text-black font-bold leading-none">W</span>
         </div>
       </div>

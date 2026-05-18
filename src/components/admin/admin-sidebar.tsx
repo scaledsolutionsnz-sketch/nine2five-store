@@ -59,33 +59,37 @@ export function AdminSidebar({ email }: { email: string }) {
   const initials = username.slice(0, 2).toUpperCase();
 
   return (
-    <aside className="w-[280px] shrink-0 flex flex-col h-screen sticky top-0 bg-[#0c0c0e] border-r border-white/[0.05]">
+    <aside className="w-[260px] shrink-0 flex flex-col h-screen sticky top-0 bg-[#11161F]">
       {/* Logo */}
-      <div className="px-6 pt-7 pb-6 shrink-0">
+      <div className="px-5 pt-6 pb-5 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#4ade80]">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#4ade80]">
             <span className="font-bold text-black text-[11px] tracking-tight leading-none">N2F</span>
           </div>
           <div>
-            <p className="font-bold text-[15px] text-white tracking-wide leading-none">
+            <p className="font-semibold text-[14px] text-white tracking-wide leading-none">
               NINE2FIVE
             </p>
-            <p className="text-[12px] mt-1 leading-none text-white/30">
+            <p className="text-[11px] mt-1 leading-none" style={{ color: "#A9B0BC" }}>
               Admin
             </p>
           </div>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="mx-6 mb-3 h-px bg-white/[0.06]" />
+      <div className="mx-4 mb-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
 
       {/* Nav */}
-      <nav className="flex-1 px-3 flex flex-col py-2">
+      <nav className="flex-1 px-3 py-2 overflow-y-auto">
         {SECTIONS.map((section, si) => (
-          <div key={si} className="flex flex-col">
-            {section.label && si > 0 && (
-              <div className="mx-3 my-1 h-px bg-white/[0.06]" />
+          <div key={si} className="mb-0.5">
+            {section.label && (
+              <p
+                className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: "#5A6478" }}
+              >
+                {section.label}
+              </p>
             )}
             {section.items.map(({ href, label, icon: Icon }) => {
               const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
@@ -94,20 +98,28 @@ export function AdminSidebar({ email }: { email: string }) {
                   key={href}
                   href={href}
                   className={cn(
-                    "group relative flex items-center gap-3.5 px-4 rounded-xl text-[15px] font-medium transition-all duration-100 flex-1 min-h-[52px]",
+                    "flex items-center gap-3 px-3 rounded-lg text-[14px] font-medium transition-colors duration-100 min-h-[44px]",
                     active
-                      ? "bg-[#4ade80]/[0.08] text-white"
-                      : "text-white/40 hover:bg-white/[0.04] hover:text-white/75"
+                      ? "text-white"
+                      : "hover:text-white"
                   )}
+                  style={{
+                    backgroundColor: active ? "#343946" : undefined,
+                    color: active ? "#FFFFFF" : "#C5CBD5",
+                  }}
+                  onMouseEnter={e => {
+                    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)";
+                  }}
+                  onMouseLeave={e => {
+                    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = "";
+                  }}
                 >
-                  {active && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[22px] rounded-r-full bg-[#4ade80]" />
-                  )}
                   <Icon
-                    className="shrink-0 transition-colors duration-100"
+                    className="shrink-0"
                     style={{
-                      width: 18, height: 18,
-                      color: active ? "#4ade80" : "rgba(255,255,255,0.3)",
+                      width: 16,
+                      height: 16,
+                      color: active ? "#FFFFFF" : "#A9B0BC",
                     }}
                   />
                   <span className="leading-none">{label}</span>
@@ -119,37 +131,50 @@ export function AdminSidebar({ email }: { email: string }) {
       </nav>
 
       {/* Footer */}
-      <div className="shrink-0 px-3 pb-5">
-        <div className="mx-3 mb-2 h-px bg-white/[0.06]" />
+      <div className="shrink-0 px-3 pb-4">
+        <div className="mx-1 mb-2 h-px" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
 
-        <div className="flex flex-col">
-          <Link
-            href="/admin/settings"
-            className="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[15px] font-medium transition-all duration-100 text-white/40 hover:bg-white/[0.04] hover:text-white/75"
-          >
-            <Settings style={{ width: 18, height: 18, color: "rgba(255,255,255,0.3)", flexShrink: 0 }} />
-            <span className="leading-none">Settings</span>
-          </Link>
+        <Link
+          href="/admin/settings"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-colors duration-100 min-h-[44px]"
+          style={{ color: "#C5CBD5" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ""; }}
+        >
+          <Settings style={{ width: 16, height: 16, color: "#A9B0BC", flexShrink: 0 }} />
+          <span className="leading-none">Settings</span>
+        </Link>
 
-          <button
-            onClick={signOut}
-            className="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[15px] font-medium transition-all duration-100 w-full text-left text-white/40 hover:bg-red-500/[0.08] hover:text-red-300/70"
-          >
-            <LogOut style={{ width: 18, height: 18, flexShrink: 0, color: "rgba(255,255,255,0.3)" }} />
-            <span className="leading-none">Sign out</span>
-          </button>
-        </div>
+        <button
+          onClick={signOut}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-colors duration-100 w-full text-left min-h-[44px]"
+          style={{ color: "#C5CBD5" }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(239,68,68,0.08)";
+            (e.currentTarget as HTMLElement).style.color = "rgb(252,165,165)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "";
+            (e.currentTarget as HTMLElement).style.color = "#C5CBD5";
+          }}
+        >
+          <LogOut style={{ width: 16, height: 16, flexShrink: 0, color: "#A9B0BC" }} />
+          <span className="leading-none">Sign out</span>
+        </button>
 
         {/* User chip */}
-        <div className="flex items-center gap-3 px-4 pt-4 mt-1 border-t border-white/[0.06]">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#4ade80]">
-            <span className="text-[11px] text-black font-bold leading-none">{initials}</span>
+        <div
+          className="flex items-center gap-3 px-3 pt-3 mt-1"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-[#4ade80]">
+            <span className="text-[10px] text-black font-bold leading-none">{initials}</span>
           </div>
           <div className="min-w-0">
-            <p className="text-[13px] font-medium truncate leading-none text-white/60">
+            <p className="text-[12px] font-medium truncate leading-none" style={{ color: "#C5CBD5" }}>
               {email}
             </p>
-            <p className="text-[11px] mt-1 leading-none text-white/25">
+            <p className="text-[10px] mt-1 leading-none" style={{ color: "#5A6478" }}>
               Administrator
             </p>
           </div>
