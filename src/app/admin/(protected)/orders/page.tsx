@@ -84,28 +84,12 @@ export default async function OrdersPage({
   const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
   const now = Date.now();
 
-  const COLUMNS = [
-    { label: "Order",        width: 120 },
-    { label: "Date created", width: 200 },
-    { label: "Customer",     width: 0   },
-    { label: "Payment",      width: 150 },
-    { label: "Fulfillment",  width: 160 },
-    { label: "Total",        width: 130 },
-    { label: "Items",        width: 90  },
-    { label: "View",         width: 100 },
-  ];
-
   return (
     <div className="space-y-5">
       {/* Page header */}
       <div className="flex items-center justify-between">
         <h1 className="text-[20px] font-semibold text-[#1F2937]">Orders</h1>
-        <button
-          className="inline-flex items-center gap-2 h-11 px-6 rounded-full text-white text-[14px] font-semibold transition-colors shadow-sm"
-          style={{ backgroundColor: "#116DFF" }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#0D5FE0"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#116DFF"; }}
-        >
+        <button className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] hover:bg-[#0D5FE0] text-white text-[14px] font-semibold transition-colors shadow-sm">
           <Plus style={{ width: 16, height: 16 }} strokeWidth={2.5} />
           Add New Order
         </button>
@@ -114,10 +98,7 @@ export default async function OrdersPage({
       {/* Orders card */}
       <div
         className="rounded-xl bg-white overflow-hidden"
-        style={{
-          border: "1px solid #E2E7EF",
-          boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
-        }}
+        style={{ border: "1px solid #E2E7EF", boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
       >
         {/* Toolbar */}
         <div
@@ -126,38 +107,23 @@ export default async function OrdersPage({
         >
           {/* Left */}
           <div className="flex items-center gap-3">
-            <button
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-medium transition-colors"
-              style={{ border: "1px solid #D8E2F0", backgroundColor: "#fff", color: "#27364A" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#F4F8FF"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#fff"; }}
-            >
+            <button className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-[#D8E2F0] bg-white hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-colors">
               All items
               <ChevronDown style={{ width: 14, height: 14, color: "#6B7280" }} />
             </button>
-            <span className="text-[13px]" style={{ color: "#8A94A6" }}>({count ?? 0})</span>
-            <button className="text-[13px] font-medium ml-1 hover:underline" style={{ color: "#116DFF" }}>
+            <span className="text-[13px] text-[#8A94A6]">({count ?? 0})</span>
+            <button className="text-[13px] font-medium ml-1 text-[#116DFF] hover:underline transition-colors">
               Manage View
             </button>
           </div>
 
           {/* Right */}
           <div className="flex items-center gap-2.5">
-            <button
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-medium transition-colors"
-              style={{ border: "1px solid #D8E2F0", backgroundColor: "#fff", color: "#116DFF" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#F4F8FF"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#fff"; }}
-            >
+            <button className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-[#D8E2F0] bg-white hover:bg-[#F4F8FF] text-[#116DFF] text-[13px] font-medium transition-colors">
               <Filter style={{ width: 13, height: 13 }} strokeWidth={2} />
               Filter
             </button>
-            <button
-              className="h-9 w-9 rounded-full flex items-center justify-center transition-colors"
-              style={{ border: "1px solid #D8E2F0", backgroundColor: "#fff", color: "#6B7280" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#F4F8FF"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#fff"; }}
-            >
+            <button className="h-9 w-9 rounded-full border border-[#D8E2F0] bg-white hover:bg-[#F4F8FF] flex items-center justify-center text-[#6B7280] transition-colors">
               <SlidersHorizontal style={{ width: 14, height: 14 }} strokeWidth={2} />
             </button>
             <div className="relative hidden sm:flex items-center">
@@ -169,15 +135,7 @@ export default async function OrdersPage({
               <input
                 type="text"
                 placeholder="Search..."
-                className="h-9 w-[280px] pl-9 pr-4 text-[13px] rounded-full transition-all"
-                style={{
-                  border: "1px solid #D8E2F0",
-                  backgroundColor: "#fff",
-                  color: "#334155",
-                  outline: "none",
-                }}
-                onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(17,109,255,0.5)"; }}
-                onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = "#D8E2F0"; }}
+                className="h-9 w-[280px] pl-9 pr-4 text-[13px] rounded-full border border-[#D8E2F0] bg-white text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors"
               />
             </div>
           </div>
@@ -188,26 +146,32 @@ export default async function OrdersPage({
           <table className="w-full" style={{ minWidth: 1100 }}>
             <thead>
               <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
-                {/* Checkbox header */}
-                <th className="w-[52px] px-4" style={{ height: 52, borderRight: "1px solid #C7DAF8" }}>
+                <th
+                  className="w-[52px] px-4 text-center"
+                  style={{ height: 52, borderRight: "1px solid #C7DAF8" }}
+                >
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded cursor-pointer"
-                    style={{ accentColor: "#116DFF" }}
+                    className="w-4 h-4 rounded cursor-pointer accent-[#116DFF]"
                   />
                 </th>
-                {COLUMNS.map(({ label, width }, i) => (
+                {[
+                  { label: "Order",        w: 120 },
+                  { label: "Date created", w: 200 },
+                  { label: "Customer",     w: 0   },
+                  { label: "Payment",      w: 150 },
+                  { label: "Fulfillment",  w: 160 },
+                  { label: "Total",        w: 130 },
+                  { label: "Items",        w: 90  },
+                  { label: "View",         w: 100 },
+                ].map(({ label, w }, i, arr) => (
                   <th
                     key={label}
-                    className={cn(
-                      "px-4 text-[14px] font-medium text-left whitespace-nowrap",
-                      i < COLUMNS.length - 1 ? "" : ""
-                    )}
+                    className="px-4 text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap"
                     style={{
                       height: 52,
-                      width: width || undefined,
-                      color: "#1F2D3D",
-                      borderRight: i < COLUMNS.length - 1 ? "1px solid #C7DAF8" : undefined,
+                      width: w || undefined,
+                      borderRight: i < arr.length - 1 ? "1px solid #C7DAF8" : undefined,
                     }}
                   >
                     {label}
@@ -229,23 +193,19 @@ export default async function OrdersPage({
                 return (
                   <tr
                     key={order.id}
-                    className="transition-colors duration-100"
+                    className="hover:bg-[#F6FAFF] transition-colors duration-100"
                     style={{ borderBottom: "1px solid #E5EAF1" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "#F6FAFF"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ""; }}
                   >
-                    {/* Checkbox */}
-                    <td className="w-[52px] px-4" style={{ paddingTop: 14, paddingBottom: 14 }}>
+                    <td className="w-[52px] px-4 py-3.5 text-center">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 rounded cursor-pointer"
-                        style={{ accentColor: "#116DFF" }}
+                        className="w-4 h-4 rounded cursor-pointer accent-[#116DFF]"
                       />
                     </td>
 
                     {/* Order # */}
-                    <td className="px-4" style={{ paddingTop: 14, paddingBottom: 14, width: 120 }}>
-                      <span className="text-[14px] font-medium" style={{ color: "#3B4558" }}>
+                    <td className="px-4 py-3.5" style={{ width: 120 }}>
+                      <span className="text-[14px] font-medium text-[#3B4558]">
                         #{order.order_number}
                       </span>
                       {isNew && (
@@ -261,65 +221,58 @@ export default async function OrdersPage({
                     </td>
 
                     {/* Date */}
-                    <td className="px-4" style={{ paddingTop: 14, paddingBottom: 14, width: 200 }}>
-                      <span className="text-[14px] whitespace-nowrap" style={{ color: "#4A5568" }}>
+                    <td className="px-4 py-3.5" style={{ width: 200 }}>
+                      <span className="text-[14px] text-[#4A5568] whitespace-nowrap">
                         {formatDate(order.created_at)}
                       </span>
                     </td>
 
                     {/* Customer */}
-                    <td className="px-4" style={{ paddingTop: 14, paddingBottom: 14 }}>
-                      <p className="text-[14px] font-medium whitespace-nowrap" style={{ color: "#3F4A5F" }}>
-                        {customerName || <span style={{ color: "#9CA3AF" }}>Guest</span>}
+                    <td className="px-4 py-3.5">
+                      <p className="text-[14px] font-medium text-[#3F4A5F] whitespace-nowrap">
+                        {customerName || <span className="text-[#9CA3AF]">Guest</span>}
                       </p>
                       {order.guest_email && (
-                        <p
-                          className="text-[13px] mt-0.5 max-w-[200px] truncate"
-                          style={{ color: "#8A94A6" }}
-                        >
+                        <p className="text-[13px] text-[#8A94A6] mt-0.5 max-w-[200px] truncate">
                           {order.guest_email}
                         </p>
                       )}
                     </td>
 
                     {/* Payment */}
-                    <td className="px-4" style={{ paddingTop: 14, paddingBottom: 14, width: 150 }}>
+                    <td className="px-4 py-3.5" style={{ width: 150 }}>
                       <StatusBadge {...payment} />
                     </td>
 
                     {/* Fulfillment */}
-                    <td className="px-4" style={{ paddingTop: 14, paddingBottom: 14, width: 160 }}>
+                    <td className="px-4 py-3.5" style={{ width: 160 }}>
                       <StatusBadge {...fulfillment} />
                     </td>
 
                     {/* Total */}
-                    <td className="px-4" style={{ paddingTop: 14, paddingBottom: 14, width: 130 }}>
-                      <span className="text-[14px] font-medium" style={{ color: "#334155" }}>
+                    <td className="px-4 py-3.5" style={{ width: 130 }}>
+                      <span className="text-[14px] font-medium text-[#334155]">
                         NZ${(order.total / 100).toFixed(2)}
                       </span>
                     </td>
 
                     {/* Items */}
-                    <td className="px-4 text-center" style={{ paddingTop: 14, paddingBottom: 14, width: 90 }}>
+                    <td className="px-4 py-3.5 text-center" style={{ width: 90 }}>
                       {totalPairs > 0 ? (
-                        <button
-                          className="inline-flex items-center gap-1 text-[14px] font-medium hover:underline"
-                          style={{ color: "#116DFF" }}
-                        >
+                        <span className="inline-flex items-center gap-1 text-[14px] font-medium text-[#116DFF]">
                           {totalPairs}
                           <ChevronDown style={{ width: 12, height: 12 }} strokeWidth={2.5} />
-                        </button>
+                        </span>
                       ) : (
-                        <span className="text-[14px]" style={{ color: "#C4CAD4" }}>—</span>
+                        <span className="text-[14px] text-[#C4CAD4]">—</span>
                       )}
                     </td>
 
                     {/* View */}
-                    <td className="px-4 text-center" style={{ paddingTop: 14, paddingBottom: 14, width: 100 }}>
+                    <td className="px-4 py-3.5 text-center" style={{ width: 100 }}>
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="text-[14px] font-medium hover:underline transition-colors"
-                        style={{ color: "#116DFF" }}
+                        className="text-[14px] font-medium text-[#116DFF] hover:underline transition-colors"
                       >
                         View
                       </Link>
@@ -332,7 +285,7 @@ export default async function OrdersPage({
         </div>
 
         {orders.length === 0 && (
-          <div className="text-center py-20 text-[14px]" style={{ color: "#9CA3AF" }}>
+          <div className="text-center py-20 text-[14px] text-[#9CA3AF]">
             No orders found.
           </div>
         )}
@@ -341,32 +294,22 @@ export default async function OrdersPage({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between py-1">
-          <p className="text-[13px]" style={{ color: "#6B7280" }}>
+          <p className="text-[13px] text-[#6B7280]">
             Showing {from + 1}–{Math.min(to + 1, count ?? 0)} of {count ?? 0} orders
           </p>
           <div className="flex items-center gap-2">
             {page > 1 && (
               <Link
                 href={`/admin/orders?page=${page - 1}`}
-                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white transition-colors"
-                style={{ border: "1px solid #E2E7EF", color: "#334155" }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#F6FAFF";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#C7DAF8";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#fff";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#E2E7EF";
-                }}
+                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E7EF] hover:border-[#C7DAF8] text-[#334155] transition-colors"
               >
                 ← Previous
               </Link>
             )}
             <span
-              className="px-4 py-2 rounded-full text-[13px] font-semibold"
+              className="px-4 py-2 rounded-full text-[13px] font-semibold text-[#116DFF]"
               style={{
                 backgroundColor: "rgba(17,109,255,0.08)",
-                color: "#116DFF",
                 border: "1px solid rgba(17,109,255,0.2)",
               }}
             >
@@ -375,16 +318,7 @@ export default async function OrdersPage({
             {page < totalPages && (
               <Link
                 href={`/admin/orders?page=${page + 1}`}
-                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white transition-colors"
-                style={{ border: "1px solid #E2E7EF", color: "#334155" }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#F6FAFF";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#C7DAF8";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#fff";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#E2E7EF";
-                }}
+                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E7EF] hover:border-[#C7DAF8] text-[#334155] transition-colors"
               >
                 Next →
               </Link>
