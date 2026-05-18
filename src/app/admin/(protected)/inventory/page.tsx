@@ -14,8 +14,8 @@ export default async function InventoryPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Inventory</h1>
-        <p className="text-sm text-gray-400 mt-1">Manage stock, log adjustments, and track movements.</p>
+        <h1 className="font-bold text-xl text-white">Inventory</h1>
+        <p className="text-sm text-white/45 mt-1">Manage stock, log adjustments, and track movements.</p>
       </div>
       <InventoryEditor
         initialProducts={products ?? []}

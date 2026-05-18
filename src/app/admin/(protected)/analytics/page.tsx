@@ -34,8 +34,8 @@ export default async function AnalyticsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Analytics</h1>
-        <p className="text-sm text-gray-400 mt-1">Revenue, conversions, and tracking pixel status.</p>
+        <h1 className="font-bold text-xl text-white">Analytics</h1>
+        <p className="text-sm text-white/45 mt-1">Revenue, conversions, and tracking pixel status.</p>
       </div>
       <AnalyticsClient
         chartData={(chartRes.data ?? []) as DayRevenue[]}

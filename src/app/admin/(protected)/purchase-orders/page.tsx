@@ -18,8 +18,8 @@ export default async function PurchaseOrdersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Purchase Orders</h1>
-        <p className="text-sm text-gray-400 mt-1">Order stock from suppliers and receive into inventory.</p>
+        <h1 className="font-bold text-xl text-white">Purchase Orders</h1>
+        <p className="text-sm text-white/45 mt-1">Order stock from suppliers and receive into inventory.</p>
       </div>
       <PurchaseOrdersClient
         initialOrders={orders ?? []}

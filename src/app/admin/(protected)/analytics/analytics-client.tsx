@@ -57,8 +57,8 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ overflow: "visible" }}>
       <defs>
         <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#16a34a" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#16a34a" stopOpacity="0" />
+          <stop offset="0%"   stopColor="#4ade80" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#4ade80" stopOpacity="0" />
         </linearGradient>
       </defs>
 
@@ -67,8 +67,8 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
         const y = PADY + chartH - t * chartH;
         return (
           <g key={t}>
-            <line x1={PADX} y1={y} x2={W} y2={y} stroke="#f1f5f9" strokeWidth="1" />
-            <text x={PADX - 8} y={y + 4} textAnchor="end" fontSize="11" fill="#94a3b8" fontFamily="Inter, sans-serif">
+            <line x1={PADX} y1={y} x2={W} y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+            <text x={PADX - 8} y={y + 4} textAnchor="end" fontSize="11" fill="rgba(244,244,245,0.3)" fontFamily="ui-monospace, monospace">
               ${((maxVal * t) / 100).toFixed(0)}
             </text>
           </g>
@@ -82,7 +82,7 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
       <polyline
         points={linePts}
         fill="none"
-        stroke="#16a34a"
+        stroke="#4ade80"
         strokeWidth="2"
         strokeLinejoin="round"
         strokeLinecap="round"
@@ -91,7 +91,7 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
       {/* Data points */}
       {data.map((d, i) => (
         <g key={i}>
-          <circle cx={toX(i)} cy={toY(d.revenue_cents)} r="3" fill="#16a34a" stroke="white" strokeWidth="1.5" />
+          <circle cx={toX(i)} cy={toY(d.revenue_cents)} r="3" fill="#4ade80" stroke="#111113" strokeWidth="1.5" />
           <title>${(d.revenue_cents / 100).toFixed(2)} · {d.order_count} orders · {formatDay(d.day)}</title>
         </g>
       ))}
@@ -103,8 +103,8 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
           x={toX(i)} y={H - 4}
           textAnchor="middle"
           fontSize="11"
-          fill="#94a3b8"
-          fontFamily="Inter, sans-serif"
+          fill="rgba(244,244,245,0.3)"
+          fontFamily="ui-monospace, monospace"
         >
           {formatDay(data[i].day)}
         </text>
@@ -118,17 +118,17 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
 function HBarChart({ rows, format }: { rows: { label: string; value: number }[]; format: (v: number) => string }) {
   const max = Math.max(...rows.map((r) => r.value), 1);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="flex flex-col gap-4">
       {rows.map((row, i) => {
         const pct = (row.value / max) * 100;
         return (
           <div key={i}>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-[13px] text-gray-700 font-medium truncate pr-3">{row.label}</span>
-              <span className="text-[13px] text-gray-500 font-semibold shrink-0">{format(row.value)}</span>
+              <span className="text-[13px] text-white/70 font-medium truncate pr-3">{row.label}</span>
+              <span className="text-[13px] text-white/50 font-semibold shrink-0 font-mono">{format(row.value)}</span>
             </div>
-            <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-              <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${pct}%` }} />
+            <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+              <div className="h-full rounded-full bg-[#4ade80] transition-all duration-500" style={{ width: `${pct}%` }} />
             </div>
           </div>
         );
@@ -143,21 +143,25 @@ function PixelCard({ name, configured, id, guide }: { name: string; configured: 
   return (
     <div className={cn(
       "p-6 rounded-2xl border",
-      configured ? "border-emerald-200 bg-emerald-50/40" : "border-gray-200 bg-gray-50/60"
+      configured
+        ? "border-[#4ade80]/20 bg-[#4ade80]/[0.04]"
+        : "border-white/[0.06] bg-white/[0.02]"
     )}>
       <div className="flex items-center justify-between mb-3">
-        <p className="font-semibold text-[14px] text-gray-900">{name}</p>
+        <p className="font-semibold text-[14px] text-white">{name}</p>
         <span className={cn(
-          "text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full",
-          configured ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-500"
+          "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+          configured
+            ? "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20"
+            : "bg-white/[0.06] text-white/50 border border-white/[0.08]"
         )}>
           {configured ? "Active" : "Not set"}
         </span>
       </div>
       {configured ? (
-        <p className="text-[12px] text-gray-500 font-mono bg-white/70 px-3 py-2 rounded-lg border border-gray-200/50 mt-2">{id}</p>
+        <p className="text-[12px] text-white/40 font-mono bg-white/[0.04] px-3 py-2 rounded-lg border border-white/[0.06] mt-2">{id}</p>
       ) : (
-        <p className="text-[12px] text-gray-400 leading-relaxed">{guide}</p>
+        <p className="text-[12px] text-white/30 leading-relaxed">{guide}</p>
       )}
     </div>
   );
@@ -209,38 +213,34 @@ export function AnalyticsClient({
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+    <div className="flex flex-col gap-8">
 
       {/* ── Stat cards ── */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
         {statCards.map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl border border-gray-200/70 p-7 shadow-sm"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
+            className="bg-[#111113] border border-white/[0.06] rounded-xl p-7"
           >
-            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-4">
+            <p className="text-[11px] font-semibold text-white/40 uppercase tracking-widest leading-none mb-4">
               {s.label}
             </p>
-            <p className="font-display font-bold text-[30px] text-gray-900 tracking-tight leading-none mb-2">
+            <p className="font-bold text-[30px] text-white tracking-tight leading-none mb-2 font-mono">
               {s.value}
             </p>
-            <p className="text-[12px] text-gray-400 font-medium leading-snug">{s.sub}</p>
+            <p className="text-[12px] text-white/40 font-medium leading-snug">{s.sub}</p>
           </div>
         ))}
       </div>
 
       {/* ── Revenue chart ── */}
-      <div
-        className="bg-white rounded-2xl border border-gray-200/70 shadow-sm"
-        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-      >
-        <div className="flex items-start justify-between px-8 pt-7 pb-6 border-b border-gray-100">
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl">
+        <div className="flex items-start justify-between px-8 pt-7 pb-6 border-b border-white/[0.06]">
           <div>
-            <h3 className="font-display font-bold text-[17px] text-gray-900 leading-none">
+            <h3 className="font-bold text-[17px] text-white leading-none">
               Revenue — last 30 days
             </h3>
-            <p className="text-[13px] text-gray-400 mt-2 font-medium">
+            <p className="text-[13px] text-white/40 mt-2 font-medium font-mono">
               ${(chartData.reduce((s, d) => s + d.revenue_cents, 0) / 100).toFixed(2)} NZD total
               · {chartData.reduce((s, d) => s + d.order_count, 0)} orders
             </p>
@@ -250,7 +250,7 @@ export function AnalyticsClient({
           {chartData.length > 0 ? (
             <RevenueChart data={chartData} />
           ) : (
-            <div className="h-40 flex items-center justify-center text-gray-400 text-[13px]">
+            <div className="h-40 flex items-center justify-center text-white/30 text-[13px]">
               No order data yet
             </div>
           )}
@@ -259,13 +259,10 @@ export function AnalyticsClient({
 
       {/* ── Top Products + Revenue by Region ── */}
       <div className="grid md:grid-cols-2 gap-6">
-        <div
-          className="bg-white rounded-2xl border border-gray-200/70 shadow-sm"
-          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-        >
-          <div className="px-7 pt-7 pb-5 border-b border-gray-100">
-            <h3 className="font-display font-bold text-[17px] text-gray-900 leading-none">Top Products</h3>
-            <p className="text-[12px] text-gray-400 mt-1.5 font-medium">By revenue, all time</p>
+        <div className="bg-[#111113] border border-white/[0.06] rounded-xl">
+          <div className="px-7 pt-7 pb-5 border-b border-white/[0.06]">
+            <h3 className="font-bold text-[17px] text-white leading-none">Top Products</h3>
+            <p className="text-[12px] text-white/40 mt-1.5 font-medium">By revenue, all time</p>
           </div>
           <div className="px-7 py-6">
             {topProducts.length > 0 ? (
@@ -274,18 +271,15 @@ export function AnalyticsClient({
                 format={(v) => `$${(v / 100).toFixed(0)}`}
               />
             ) : (
-              <p className="text-[13px] text-gray-400 py-4">No sales yet</p>
+              <p className="text-[13px] text-white/30 py-4">No sales yet</p>
             )}
           </div>
         </div>
 
-        <div
-          className="bg-white rounded-2xl border border-gray-200/70 shadow-sm"
-          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-        >
-          <div className="px-7 pt-7 pb-5 border-b border-gray-100">
-            <h3 className="font-display font-bold text-[17px] text-gray-900 leading-none">Revenue by Region</h3>
-            <p className="text-[12px] text-gray-400 mt-1.5 font-medium">Shipping destination breakdown</p>
+        <div className="bg-[#111113] border border-white/[0.06] rounded-xl">
+          <div className="px-7 pt-7 pb-5 border-b border-white/[0.06]">
+            <h3 className="font-bold text-[17px] text-white leading-none">Revenue by Region</h3>
+            <p className="text-[12px] text-white/40 mt-1.5 font-medium">Shipping destination breakdown</p>
           </div>
           <div className="px-7 py-6">
             {byRegion.length > 0 ? (
@@ -294,20 +288,17 @@ export function AnalyticsClient({
                 format={(v) => `$${(v / 100).toFixed(0)}`}
               />
             ) : (
-              <p className="text-[13px] text-gray-400 py-4">No orders yet</p>
+              <p className="text-[13px] text-white/30 py-4">No orders yet</p>
             )}
           </div>
         </div>
       </div>
 
       {/* ── Tracking pixels ── */}
-      <div
-        className="bg-white rounded-2xl border border-gray-200/70 shadow-sm"
-        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-      >
-        <div className="px-8 pt-7 pb-5 border-b border-gray-100">
-          <h3 className="font-display font-bold text-[17px] text-gray-900 leading-none">Tracking Pixels</h3>
-          <p className="text-[13px] text-gray-400 mt-2 font-medium">
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl">
+        <div className="px-8 pt-7 pb-5 border-b border-white/[0.06]">
+          <h3 className="font-bold text-[17px] text-white leading-none">Tracking Pixels</h3>
+          <p className="text-[13px] text-white/40 mt-2 font-medium">
             Set pixel IDs as environment variables in Vercel. Purchase events fire automatically on order confirmation.
           </p>
         </div>
@@ -332,11 +323,11 @@ export function AnalyticsClient({
               guide="Add NEXT_PUBLIC_TIKTOK_PIXEL_ID to your Vercel environment variables"
             />
           </div>
-          <div className="mt-6 pt-5 border-t border-gray-100">
-            <p className="text-[12px] text-gray-400 font-medium">
+          <div className="mt-6 pt-5 border-t border-white/[0.06]">
+            <p className="text-[12px] text-white/30 font-medium">
               Events fired:{" "}
-              <span className="text-gray-600 font-semibold">PageView</span> on every page ·{" "}
-              <span className="text-gray-600 font-semibold">Purchase</span> on order confirmation (value, currency, items)
+              <span className="text-white/50 font-semibold">PageView</span> on every page ·{" "}
+              <span className="text-white/50 font-semibold">Purchase</span> on order confirmation (value, currency, items)
             </p>
           </div>
         </div>

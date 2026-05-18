@@ -88,23 +88,23 @@ function VariantRow({
   }
 
   const stockColor =
-    qty === 0 ? "text-red-500" :
-    qty < 10  ? "text-amber-600" :
-                "text-gray-900";
+    qty === 0 ? "text-red-400" :
+    qty < 10  ? "text-amber-400" :
+                "text-white";
 
   return (
     <>
       <tr className={cn(
-        "border-b border-gray-50 hover:bg-gray-50/50 transition-colors",
-        showName ? "border-t border-gray-100" : ""
+        "border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors",
+        showName ? "border-t border-white/[0.06]" : ""
       )}>
         {/* Product name — only shown on first variant row */}
-        <td className="py-3 px-4 font-semibold text-gray-900 align-top">
+        <td className="py-3 px-4 font-semibold text-white align-top">
           {showName ? productName : ""}
         </td>
 
         {/* Size */}
-        <td className="py-3 px-4 text-gray-500 align-middle">{variant.size}</td>
+        <td className="py-3 px-4 text-white/50 align-middle">{variant.size}</td>
 
         {/* Stock input */}
         <td className="py-3 px-4 align-middle">
@@ -116,17 +116,19 @@ function VariantRow({
               onBlur={save}
               onKeyDown={(e) => e.key === "Enter" && save()}
               className={cn(
-                "w-20 h-9 text-center rounded-lg border text-sm font-semibold focus:outline-none focus:border-[#16a34a] transition-colors",
-                dirty ? "border-[#16a34a] bg-green-50" : "border-gray-200 bg-white",
-                stockColor
+                "w-20 h-9 text-center rounded-lg border text-sm font-semibold focus:outline-none transition-colors font-mono",
+                dirty
+                  ? "border-[#4ade80] bg-[#4ade80]/5 text-[#4ade80]"
+                  : "border-white/[0.08] bg-white/[0.04] text-white",
+                !dirty && stockColor
               )}
             />
-            {saving && <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-400" />}
+            {saving && <Loader2 className="h-3.5 w-3.5 animate-spin text-white/30" />}
             {!saving && qty === 0 && (
-              <span className="text-[10px] font-bold uppercase text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">Out</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-400/10 text-red-400 border border-red-400/20">Out</span>
             )}
             {!saving && qty > 0 && qty < 10 && (
-              <span className="text-[10px] font-bold uppercase text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">Low</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-400/10 text-amber-400 border border-amber-400/20">Low</span>
             )}
           </div>
         </td>
@@ -139,7 +141,9 @@ function VariantRow({
               title="Adjust stock"
               className={cn(
                 "h-8 w-8 rounded-lg flex items-center justify-center transition-colors",
-                panel === "adjust" ? "bg-gray-200 text-gray-900" : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+                panel === "adjust"
+                  ? "bg-white/[0.1] text-white"
+                  : "bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/70"
               )}
             >
               <Plus className="h-3.5 w-3.5" />
@@ -149,7 +153,9 @@ function VariantRow({
               title="Movement history"
               className={cn(
                 "h-8 w-8 rounded-lg flex items-center justify-center transition-colors",
-                panel === "history" ? "bg-gray-200 text-gray-900" : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900"
+                panel === "history"
+                  ? "bg-white/[0.1] text-white"
+                  : "bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/70"
               )}
             >
               {loadingHistory ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <History className="h-3.5 w-3.5" />}
@@ -160,34 +166,34 @@ function VariantRow({
 
       {/* Adjust panel */}
       {panel === "adjust" && (
-        <tr className="bg-gray-50 border-b border-gray-100">
+        <tr className="bg-white/[0.02] border-b border-white/[0.04]">
           <td colSpan={4} className="px-4 py-3">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setDelta(d => Math.max(1, d - 1))}
-                  className="h-8 w-8 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 flex items-center justify-center"
+                  className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] flex items-center justify-center"
                 >
-                  <Minus className="h-3.5 w-3.5 text-gray-600" />
+                  <Minus className="h-3.5 w-3.5 text-white/60" />
                 </button>
                 <input
                   type="number" min={1}
                   value={delta}
                   onChange={(e) => setDelta(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 h-8 text-center rounded-lg border border-gray-200 bg-white text-sm font-semibold focus:outline-none focus:border-[#16a34a]"
+                  className="w-16 h-8 text-center rounded-lg border border-white/[0.08] bg-white/[0.04] text-white text-sm font-semibold focus:outline-none focus:border-[#4ade80]/40 font-mono"
                 />
                 <button
                   onClick={() => setDelta(d => d + 1)}
-                  className="h-8 w-8 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 flex items-center justify-center"
+                  className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] flex items-center justify-center"
                 >
-                  <Plus className="h-3.5 w-3.5 text-gray-600" />
+                  <Plus className="h-3.5 w-3.5 text-white/60" />
                 </button>
               </div>
 
               <select
                 value={adjType}
                 onChange={(e) => setAdjType(e.target.value as AdjType)}
-                className="h-8 px-2 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 focus:outline-none focus:border-[#16a34a]"
+                className="h-8 px-2 rounded-lg border border-white/[0.08] bg-white/[0.04] text-sm text-white focus:outline-none focus:border-[#4ade80]/40"
               >
                 {ADJUSTMENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
@@ -196,17 +202,17 @@ function VariantRow({
                 placeholder="Note (optional)"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                className="h-8 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder-gray-400 focus:outline-none focus:border-[#16a34a] w-44"
+                className="h-8 px-3 rounded-lg border border-white/[0.08] bg-white/[0.04] text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 w-44"
               />
 
               <div className="flex items-center gap-2 ml-auto">
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-white/30">
                   Remove → {Math.max(0, qty - delta)} &nbsp;·&nbsp; Add → {qty + delta}
                 </span>
                 <button
                   onClick={() => applyAdjustment(-1)}
                   disabled={applying}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-100 text-xs font-semibold hover:bg-red-100 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-semibold hover:bg-red-500/20 transition-colors disabled:opacity-50"
                 >
                   {applying ? <Loader2 className="h-3 w-3 animate-spin" /> : <Minus className="h-3 w-3" />}
                   Remove
@@ -214,7 +220,7 @@ function VariantRow({
                 <button
                   onClick={() => applyAdjustment(1)}
                   disabled={applying}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#16a34a] text-white text-xs font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#4ade80] text-black text-xs font-semibold hover:bg-[#86efac] transition-colors disabled:opacity-50"
                 >
                   {applying ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
                   Add
@@ -227,16 +233,16 @@ function VariantRow({
 
       {/* History panel */}
       {panel === "history" && (
-        <tr className="bg-gray-50 border-b border-gray-100">
+        <tr className="bg-white/[0.02] border-b border-white/[0.04]">
           <td colSpan={4} className="px-4 py-3">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Recent movements</p>
-              <button onClick={() => setPanel(null)} className="text-gray-400 hover:text-gray-700">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Recent movements</p>
+              <button onClick={() => setPanel(null)} className="text-white/30 hover:text-white/60">
                 <ChevronUp className="h-3.5 w-3.5" />
               </button>
             </div>
             {!movements || movements.length === 0 ? (
-              <p className="text-xs text-gray-400">No movements yet.</p>
+              <p className="text-xs text-white/30">No movements yet.</p>
             ) : (
               <div className="space-y-1.5">
                 {movements.map((m) => (
@@ -244,14 +250,16 @@ function VariantRow({
                     <div className="flex items-center gap-2">
                       <span className={cn(
                         "px-1.5 py-0.5 rounded text-[10px] font-bold",
-                        m.quantity > 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"
+                        m.quantity > 0
+                          ? "bg-[#4ade80]/10 text-[#4ade80]"
+                          : "bg-red-400/10 text-red-400"
                       )}>
                         {m.quantity > 0 ? "+" : ""}{m.quantity}
                       </span>
-                      <span className="text-gray-500 capitalize">{m.type}</span>
-                      {m.note && <span className="text-gray-400">· {m.note}</span>}
+                      <span className="text-white/50 capitalize">{m.type}</span>
+                      {m.note && <span className="text-white/30">· {m.note}</span>}
                     </div>
-                    <span className="text-gray-400">{new Date(m.created_at).toLocaleDateString("en-NZ")}</span>
+                    <span className="text-white/30 font-mono">{new Date(m.created_at).toLocaleDateString("en-NZ")}</span>
                   </div>
                 ))}
               </div>
@@ -286,13 +294,13 @@ export function InventoryEditor({
     <div className="space-y-5">
       {/* Low stock alert */}
       {lowStock.length > 0 && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 border border-amber-100">
-          <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-400/[0.08] border border-amber-400/20">
+          <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-amber-800">
+            <p className="text-sm font-semibold text-amber-400">
               {lowStock.length} variant{lowStock.length !== 1 ? "s" : ""} need restocking
             </p>
-            <p className="text-xs text-amber-700 mt-0.5">
+            <p className="text-xs text-amber-400/70 mt-0.5">
               {lowStock.map((v) => `${v.product_name} (${v.size})`).join(" · ")}
             </p>
           </div>
@@ -300,13 +308,13 @@ export function InventoryEditor({
       )}
 
       {/* Inventory table */}
-      <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-gray-400">Product</th>
-              <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-gray-400">Size</th>
-              <th className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-widest text-gray-400">Stock</th>
+            <tr className="bg-[#111113] border-b border-white/[0.04]">
+              <th className="text-left px-4 py-2.5 text-white/40 text-xs font-medium uppercase tracking-wider">Product</th>
+              <th className="text-left px-4 py-2.5 text-white/40 text-xs font-medium uppercase tracking-wider">Size</th>
+              <th className="text-left px-4 py-2.5 text-white/40 text-xs font-medium uppercase tracking-wider">Stock</th>
               <th className="px-4 py-2.5" />
             </tr>
           </thead>

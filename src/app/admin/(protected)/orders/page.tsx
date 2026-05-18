@@ -6,12 +6,12 @@ import { cn } from "@/lib/utils";
 import type { Order } from "@/types/database";
 
 const STATUS_COLORS: Record<string, string> = {
-  pending:    "bg-gray-100 text-gray-500 border-gray-200",
-  processing: "bg-blue-50 text-blue-600 border-blue-100",
-  shipped:    "bg-green-50 text-green-600 border-green-100",
-  delivered:  "bg-emerald-50 text-emerald-600 border-emerald-100",
-  cancelled:  "bg-red-50 text-red-500 border-red-100",
-  refunded:   "bg-amber-50 text-amber-600 border-amber-100",
+  pending:    "bg-white/[0.06] text-white/50 border border-white/[0.08]",
+  processing: "bg-blue-400/10 text-blue-400 border border-blue-400/20",
+  shipped:    "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+  delivered:  "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+  cancelled:  "bg-red-400/10 text-red-400 border border-red-400/20",
+  refunded:   "bg-amber-400/10 text-amber-400 border border-amber-400/20",
 };
 
 export default async function OrdersPage() {
@@ -26,16 +26,16 @@ export default async function OrdersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl text-gray-900">Orders</h1>
-        <p className="text-sm text-gray-400 mt-1">{orders.length} total orders</p>
+        <h1 className="font-bold text-xl text-white">Orders</h1>
+        <p className="text-sm text-white/45 mt-1">{orders.length} total orders</p>
       </div>
 
-      <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
+            <tr className="border-b border-white/[0.04] bg-[#111113]">
               {["Order", "Customer", "Date", "Total", "Status", ""].map((h) => (
-                <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
+                <th key={h} className="text-left px-4 py-3 text-white/40 text-xs font-medium uppercase tracking-wider">
                   {h}
                 </th>
               ))}
@@ -45,28 +45,28 @@ export default async function OrdersPage() {
             {orders.map((order) => {
               const addr = order.shipping_address as { first_name?: string; last_name?: string };
               return (
-                <tr key={order.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3.5 font-display font-bold text-gray-900">#{order.order_number}</td>
-                  <td className="px-4 py-3.5 text-gray-700">
+                <tr key={order.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
+                  <td className="px-4 py-3.5 font-mono font-bold text-white">#{order.order_number}</td>
+                  <td className="px-4 py-3.5 text-white/70">
                     {addr?.first_name} {addr?.last_name}
-                    {order.guest_email && <p className="text-xs text-gray-400">{order.guest_email}</p>}
+                    {order.guest_email && <p className="text-xs text-white/30">{order.guest_email}</p>}
                   </td>
-                  <td className="px-4 py-3.5 text-gray-400 text-xs">
+                  <td className="px-4 py-3.5 text-white/40 text-xs">
                     {new Date(order.created_at).toLocaleDateString("en-NZ")}
                   </td>
-                  <td className="px-4 py-3.5 font-display font-semibold text-gray-900">
+                  <td className="px-4 py-3.5 font-mono font-semibold text-white">
                     ${(order.total / 100).toFixed(2)}
                   </td>
                   <td className="px-4 py-3.5">
                     <span className={cn(
-                      "text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border",
+                      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
                       STATUS_COLORS[order.status] ?? STATUS_COLORS.pending
                     )}>
                       {order.status}
                     </span>
                   </td>
                   <td className="px-4 py-3.5">
-                    <Link href={`/admin/orders/${order.id}`} className="text-xs text-[#16a34a] hover:underline font-medium">
+                    <Link href={`/admin/orders/${order.id}`} className="text-xs text-[#4ade80] hover:text-[#86efac] font-medium transition-colors">
                       View →
                     </Link>
                   </td>
@@ -76,7 +76,7 @@ export default async function OrdersPage() {
           </tbody>
         </table>
         {orders.length === 0 && (
-          <div className="text-center py-16 text-gray-400 text-sm">No orders yet.</div>
+          <div className="text-center py-16 text-white/30 text-sm">No orders yet.</div>
         )}
       </div>
     </div>

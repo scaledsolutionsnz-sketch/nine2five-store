@@ -15,35 +15,35 @@ export default async function CustomersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl text-gray-900">Customers</h1>
-        <p className="text-sm text-gray-400 mt-1">{customers.length} registered customers</p>
+        <h1 className="font-bold text-xl text-white">Customers</h1>
+        <p className="text-sm text-white/45 mt-1">{customers.length} registered customers</p>
       </div>
 
-      <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
+            <tr className="border-b border-white/[0.04] bg-[#111113]">
               {["Name", "Email", "Phone", "Joined", "Orders"].map((h) => (
-                <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-gray-400">{h}</th>
+                <th key={h} className="text-left px-4 py-3 text-white/40 text-xs font-medium uppercase tracking-wider">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {customers.map((c) => (
-              <tr key={c.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3.5 font-medium text-gray-900">{c.first_name} {c.last_name}</td>
-                <td className="px-4 py-3.5 text-gray-500">{c.email}</td>
-                <td className="px-4 py-3.5 text-gray-500">{c.phone ?? "—"}</td>
-                <td className="px-4 py-3.5 text-gray-400 text-xs">
+              <tr key={c.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
+                <td className="px-4 py-3.5 font-medium text-white">{c.first_name} {c.last_name}</td>
+                <td className="px-4 py-3.5 text-white/50">{c.email}</td>
+                <td className="px-4 py-3.5 text-white/50">{c.phone ?? "—"}</td>
+                <td className="px-4 py-3.5 text-white/40 text-xs font-mono">
                   {new Date(c.created_at).toLocaleDateString("en-NZ")}
                 </td>
-                <td className="px-4 py-3.5 text-gray-400">—</td>
+                <td className="px-4 py-3.5 text-white/40">—</td>
               </tr>
             ))}
           </tbody>
         </table>
         {customers.length === 0 && (
-          <div className="text-center py-16 text-gray-400 text-sm">No customers yet.</div>
+          <div className="text-center py-16 text-white/30 text-sm">No customers yet.</div>
         )}
       </div>
     </div>

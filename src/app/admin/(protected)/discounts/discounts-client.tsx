@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { DiscountCode } from "@/types/database";
-import { Plus, X, Copy, Tag, Hash, BarChart2, MoreHorizontal, Check, Pencil, Trash2 } from "lucide-react";
+import { Plus, X, Copy, Tag, Hash, BarChart2, MoreHorizontal, Check, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -44,36 +44,33 @@ function ActionMenu({ code, onToggle, onDelete }: {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="h-7 w-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all"
+        className="h-7 w-7 rounded-lg flex items-center justify-center text-white/30 hover:bg-white/[0.06] hover:text-white/60 transition-all"
       >
         <MoreHorizontal style={{ width: 15, height: 15 }} />
       </button>
 
       {open && (
-        <div
-          className="absolute right-0 top-8 w-44 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 overflow-hidden"
-          style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06)" }}
-        >
+        <div className="absolute right-0 top-8 w-44 bg-[#18181b] border border-white/[0.1] rounded-xl shadow-2xl z-50 py-1 overflow-hidden">
           <button
             onClick={() => { navigator.clipboard.writeText(code.code); toast.success("Copied"); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-gray-50 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors text-left"
           >
-            <Copy style={{ width: 13, height: 13, color: "#6b7280" }} />
+            <Copy style={{ width: 13, height: 13 }} />
             Copy code
           </button>
           <button
             onClick={() => { onToggle(); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-gray-50 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors text-left"
           >
             {code.active
-              ? <><X style={{ width: 13, height: 13, color: "#6b7280" }} /> Deactivate</>
-              : <><Check style={{ width: 13, height: 13, color: "#16a34a" }} /> Activate</>
+              ? <><X style={{ width: 13, height: 13 }} /> Deactivate</>
+              : <><Check style={{ width: 13, height: 13, color: "#4ade80" }} /> Activate</>
             }
           </button>
-          <div className="h-px bg-gray-100 my-1" />
+          <div className="h-px bg-white/[0.06] my-1" />
           <button
             onClick={() => { onDelete(); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-red-600 hover:bg-red-50 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-red-400 hover:bg-red-500/10 transition-colors text-left"
           >
             <Trash2 style={{ width: 13, height: 13 }} />
             Delete
@@ -123,17 +120,16 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
       {/* ── Page header ── */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-[24px] font-bold text-gray-900 tracking-tight leading-none">
+          <h2 className="text-[24px] font-bold text-white tracking-tight leading-none">
             Discount Codes
           </h2>
-          <p className="text-[14px] text-gray-400 mt-2">
+          <p className="text-[14px] text-white/45 mt-2">
             Create and manage promo codes for your campaigns
           </p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 h-9 px-4 rounded-xl text-[13px] font-semibold text-white transition-all hover:opacity-90"
-          style={{ backgroundColor: "#16a34a" }}
+          className="flex items-center gap-2 h-9 px-4 rounded-xl text-[13px] font-semibold text-black bg-[#4ade80] hover:bg-[#86efac] transition-all"
         >
           <Plus style={{ width: 15, height: 15 }} strokeWidth={2.5} />
           New Code
@@ -143,56 +139,52 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
       {/* ── Stats ── */}
       <div className="grid grid-cols-3 gap-5">
         {[
-          { label: "Active Codes",  value: activeCodes.toString(),  sub: `${totalCodes} total`,                        icon: Tag,      iconBg: "bg-emerald-50", iconColor: "#16a34a" },
-          { label: "Total Uses",    value: totalUses.toString(),    sub: "across all codes",                            icon: BarChart2, iconBg: "bg-blue-50",    iconColor: "#3b82f6" },
-          { label: "Total Codes",   value: totalCodes.toString(),   sub: `${codes.length - activeCodes} inactive`,      icon: Hash,     iconBg: "bg-violet-50",  iconColor: "#7c3aed" },
-        ].map(({ label, value, sub, icon: Icon, iconBg, iconColor }) => (
+          { label: "Active Codes",  value: activeCodes.toString(),  sub: `${totalCodes} total`,                        icon: Tag,      iconColor: "#4ade80",  iconBg: "bg-[#4ade80]/[0.08]" },
+          { label: "Total Uses",    value: totalUses.toString(),    sub: "across all codes",                            icon: BarChart2, iconColor: "#60a5fa",  iconBg: "bg-blue-400/[0.08]" },
+          { label: "Total Codes",   value: totalCodes.toString(),   sub: `${codes.length - activeCodes} inactive`,      icon: Hash,     iconColor: "#a78bfa",  iconBg: "bg-violet-400/[0.08]" },
+        ].map(({ label, value, sub, icon: Icon, iconColor, iconBg }) => (
           <div
             key={label}
-            className="bg-white rounded-2xl border border-gray-200/80 p-6"
-            style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+            className="bg-[#111113] border border-white/[0.06] rounded-xl p-6"
           >
             <div className="flex items-start justify-between mb-4">
-              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none">
+              <p className="text-[11px] font-semibold text-white/40 uppercase tracking-widest leading-none">
                 {label}
               </p>
               <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center shrink-0", iconBg)}>
                 <Icon style={{ width: 15, height: 15, color: iconColor }} strokeWidth={1.8} />
               </div>
             </div>
-            <p className="text-[30px] font-bold text-gray-900 tracking-tight leading-none mb-1.5">
+            <p className="text-[30px] font-bold text-white tracking-tight leading-none mb-1.5 font-mono">
               {value}
             </p>
-            <p className="text-[12px] text-gray-400 font-medium">{sub}</p>
+            <p className="text-[12px] text-white/40 font-medium">{sub}</p>
           </div>
         ))}
       </div>
 
       {/* ── Table ── */}
-      <div
-        className="bg-white rounded-2xl border border-gray-200/80"
-        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-      >
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl">
         {/* Table header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 rounded-t-2xl">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06] rounded-t-xl">
           <div>
-            <h3 className="text-[15px] font-semibold text-gray-900 leading-none">All Codes</h3>
-            <p className="text-[12px] text-gray-400 mt-1">{totalCodes} discount codes</p>
+            <h3 className="text-[15px] font-semibold text-white leading-none">All Codes</h3>
+            <p className="text-[12px] text-white/40 mt-1">{totalCodes} discount codes</p>
           </div>
         </div>
 
         {codes.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4">
-              <Tag style={{ width: 22, height: 22, color: "#d1d5db" }} strokeWidth={1.5} />
+            <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
+              <Tag style={{ width: 22, height: 22, color: "rgba(244,244,245,0.2)" }} strokeWidth={1.5} />
             </div>
-            <p className="text-[14px] font-medium text-gray-500">No discount codes yet</p>
-            <p className="text-[13px] text-gray-400 mt-1">Create your first code to get started</p>
+            <p className="text-[14px] font-medium text-white/50">No discount codes yet</p>
+            <p className="text-[13px] text-white/30 mt-1">Create your first code to get started</p>
           </div>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-100" style={{ backgroundColor: "#fafafa" }}>
+              <tr className="border-b border-white/[0.04] bg-[#111113]">
                 {[
                   { label: "Code",      cls: "pl-6 pr-4 py-3.5 text-left" },
                   { label: "Type",      cls: "px-4 py-3.5 text-left hidden sm:table-cell" },
@@ -203,7 +195,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                   { label: "Status",    cls: "px-4 py-3.5 text-left" },
                   { label: "",          cls: "pl-4 pr-6 py-3.5 text-right w-10" },
                 ].map((h, i) => (
-                  <th key={i} className={cn(h.cls, "text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap")}>
+                  <th key={i} className={cn(h.cls, "text-white/40 text-xs font-medium uppercase tracking-wider whitespace-nowrap")}>
                     {h.label}
                   </th>
                 ))}
@@ -216,18 +208,18 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                 return (
                   <tr
                     key={c.id}
-                    className="hover:bg-gray-50/70 transition-colors"
-                    style={{ borderBottom: i < codes.length - 1 ? "1px solid #f9fafb" : "none" }}
+                    className="hover:bg-white/[0.02] transition-colors"
+                    style={{ borderBottom: i < codes.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}
                   >
                     {/* Code */}
                     <td className="pl-6 pr-4 py-4">
                       <div className="flex items-center gap-2">
-                        <code className="font-mono font-bold text-[13px] text-gray-900 tracking-wide">
+                        <code className="font-mono font-bold text-[13px] text-white tracking-wide">
                           {c.code}
                         </code>
                         <button
                           onClick={() => { navigator.clipboard.writeText(c.code); toast.success("Copied"); }}
-                          className="text-gray-300 hover:text-gray-500 transition-colors"
+                          className="text-white/20 hover:text-white/50 transition-colors"
                         >
                           <Copy style={{ width: 12, height: 12 }} />
                         </button>
@@ -236,16 +228,16 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
 
                     {/* Type */}
                     <td className="px-4 py-4 hidden sm:table-cell">
-                      <span className="text-[13px] text-gray-500 capitalize">
+                      <span className="text-[13px] text-white/50 capitalize">
                         {c.type === "fixed" && c.value === 0 ? "Free shipping" : c.type}
                       </span>
                     </td>
 
                     {/* Value */}
                     <td className="px-4 py-4">
-                      <span className="text-[14px] font-semibold text-gray-900">
+                      <span className="text-[14px] font-semibold text-white font-mono">
                         {c.type === "fixed" && c.value === 0
-                          ? <span className="text-blue-600">Free shipping</span>
+                          ? <span className="text-blue-400">Free shipping</span>
                           : c.type === "percentage"
                             ? `${c.value}%`
                             : `$${(c.value / 100).toFixed(2)}`}
@@ -254,39 +246,39 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
 
                     {/* Min order */}
                     <td className="px-4 py-4 hidden md:table-cell">
-                      <span className="text-[13px] text-gray-500">
+                      <span className="text-[13px] text-white/50 font-mono">
                         {c.min_order_cents ? `$${(c.min_order_cents / 100).toFixed(0)}` : "—"}
                       </span>
                     </td>
 
                     {/* Uses */}
                     <td className="px-4 py-4 hidden md:table-cell">
-                      <span className="text-[13px] text-gray-700 font-medium">
+                      <span className="text-[13px] text-white/70 font-medium font-mono">
                         {c.uses}
-                        {c.max_uses ? <span className="text-gray-400 font-normal"> / {c.max_uses}</span> : ""}
+                        {c.max_uses ? <span className="text-white/30 font-normal"> / {c.max_uses}</span> : ""}
                       </span>
                     </td>
 
                     {/* Expires */}
                     <td className="px-4 py-4 hidden lg:table-cell">
-                      <span className="text-[13px] text-gray-500">
+                      <span className="text-[13px] text-white/50">
                         {c.expires_at
                           ? new Date(c.expires_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })
-                          : <span className="text-gray-400">Never</span>}
+                          : <span className="text-white/30">Never</span>}
                       </span>
                     </td>
 
                     {/* Status */}
                     <td className="px-4 py-4">
                       <span className={cn(
-                        "inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-full",
+                        "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
                         active
-                          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                          ? "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20"
                           : status === "Expired"
-                            ? "bg-orange-50 text-orange-600 ring-1 ring-orange-200"
-                            : "bg-gray-100 text-gray-500 ring-1 ring-gray-200"
+                            ? "bg-amber-400/10 text-amber-400 border border-amber-400/20"
+                            : "bg-white/[0.06] text-white/50 border border-white/[0.08]"
                       )}>
-                        {active && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5" />}
+                        {active && <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80] mr-1.5" />}
                         {status}
                       </span>
                     </td>
@@ -327,7 +319,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const field = "w-full h-10 px-3.5 rounded-xl bg-gray-50 border border-gray-200 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 transition-all";
+  const field = "w-full h-10 px-3.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[13px] text-white placeholder:text-white/20 focus:outline-none focus:border-[#4ade80]/40 transition-all";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -357,24 +349,21 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div
-        className="bg-white rounded-2xl border border-gray-200 w-full max-w-md overflow-hidden"
-        style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}
-      >
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="bg-[#111113] border border-white/[0.1] rounded-2xl w-full max-w-md overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
           <div>
-            <h2 className="text-[16px] font-semibold text-gray-900 leading-none">New Discount Code</h2>
-            <p className="text-[12px] text-gray-400 mt-1">Create a promo code for your store</p>
+            <h2 className="text-[16px] font-semibold text-white leading-none">New Discount Code</h2>
+            <p className="text-[12px] text-white/40 mt-1">Create a promo code for your store</p>
           </div>
-          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all">
+          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-white/30 hover:bg-white/[0.06] hover:text-white/60 transition-all">
             <X style={{ width: 16, height: 16 }} />
           </button>
         </div>
 
         <form onSubmit={submit} className="p-6 space-y-4">
           <div>
-            <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Code</label>
+            <label className="block text-[12px] font-medium text-white/50 mb-1.5">Code</label>
             <input
               required
               value={form.code}
@@ -386,8 +375,8 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Type</label>
-              <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" | "free_shipping" }))} className={field}>
+              <label className="block text-[12px] font-medium text-white/50 mb-1.5">Type</label>
+              <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" | "free_shipping" }))} className={cn(field, "bg-[#18181b]")}>
                 <option value="percentage">Percentage off</option>
                 <option value="fixed">Fixed amount off</option>
                 <option value="free_shipping">Free shipping</option>
@@ -395,7 +384,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             </div>
             {form.type !== "free_shipping" && (
               <div>
-                <label className="block text-[12px] font-medium text-gray-600 mb-1.5">
+                <label className="block text-[12px] font-medium text-white/50 mb-1.5">
                   {form.type === "percentage" ? "Discount %" : "Amount ($)"}
                 </label>
                 <input
@@ -413,24 +402,24 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Min Order ($)</label>
+              <label className="block text-[12px] font-medium text-white/50 mb-1.5">Min Order ($)</label>
               <input type="number" value={form.min_order} onChange={e => setForm(f => ({ ...f, min_order: e.target.value }))} placeholder="0" className={field} />
             </div>
             <div>
-              <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Max Uses</label>
+              <label className="block text-[12px] font-medium text-white/50 mb-1.5">Max Uses</label>
               <input type="number" value={form.max_uses} onChange={e => setForm(f => ({ ...f, max_uses: e.target.value }))} placeholder="Unlimited" className={field} />
             </div>
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Expiry date (optional)</label>
-            <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))} className={field} />
+            <label className="block text-[12px] font-medium text-white/50 mb-1.5">Expiry date (optional)</label>
+            <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))} className={cn(field, "bg-[#18181b]")} />
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-              <X style={{ width: 14, height: 14, color: "#ef4444", marginTop: 1, flexShrink: 0 }} />
-              <p className="text-[12px] text-red-600">{error}</p>
+            <div className="flex items-start gap-2 bg-red-400/[0.08] border border-red-400/20 rounded-xl px-4 py-3">
+              <X style={{ width: 14, height: 14, color: "#f87171", marginTop: 1, flexShrink: 0 }} />
+              <p className="text-[12px] text-red-400">{error}</p>
             </div>
           )}
 
@@ -438,15 +427,14 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-10 rounded-xl border border-gray-200 text-[13px] font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all"
+              className="flex-1 h-10 rounded-xl bg-white/[0.06] border border-white/[0.08] text-[13px] font-medium text-white/70 hover:bg-white/[0.1] hover:text-white transition-all"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 h-10 rounded-xl text-[13px] font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: "#16a34a" }}
+              className="flex-1 h-10 rounded-xl text-[13px] font-semibold text-black bg-[#4ade80] hover:bg-[#86efac] transition-all disabled:opacity-50"
             >
               {loading ? "Creating…" : "Create code"}
             </button>

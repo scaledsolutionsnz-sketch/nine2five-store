@@ -54,28 +54,28 @@ function StripePanel() {
   useEffect(() => { load(); }, []);
 
   const statusColor: Record<string, string> = {
-    paid:        "text-green-600 bg-green-50",
-    in_transit:  "text-amber-600 bg-amber-50",
-    pending:     "text-gray-500 bg-gray-100",
-    failed:      "text-red-500 bg-red-50",
-    canceled:    "text-red-500 bg-red-50",
+    paid:        "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+    in_transit:  "bg-amber-400/10 text-amber-400 border border-amber-400/20",
+    pending:     "bg-white/[0.06] text-white/50 border border-white/[0.08]",
+    failed:      "bg-red-400/10 text-red-400 border border-red-400/20",
+    canceled:    "bg-red-400/10 text-red-400 border border-red-400/20",
   };
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
+    <div className="p-6 bg-[#111113] border border-white/[0.06] rounded-xl">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-display font-semibold text-sm text-gray-900">Stripe Account</h2>
+        <h2 className="font-semibold text-sm text-white">Stripe Account</h2>
         <button
           onClick={load}
           disabled={loading}
-          className="h-7 w-7 flex items-center justify-center text-gray-400 hover:text-gray-700 rounded hover:bg-gray-100 transition-colors disabled:opacity-40"
+          className="h-7 w-7 flex items-center justify-center text-white/30 hover:text-white/70 rounded hover:bg-white/[0.06] transition-colors disabled:opacity-40"
         >
           <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
         </button>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 px-3 py-2 rounded-lg mb-4">
+        <div className="flex items-center gap-2 text-sm text-amber-400 bg-amber-400/[0.08] border border-amber-400/20 px-3 py-2 rounded-lg mb-4">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error === "Unauthorized" ? "Not authorised" : "Could not load Stripe balance — check your STRIPE_SECRET_KEY env var"}
         </div>
@@ -84,41 +84,41 @@ function StripePanel() {
       {balance && (
         <>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-              <p className="text-xs text-gray-400 mb-1">Available</p>
-              <p className="font-display font-bold text-2xl text-gray-900">
+            <div className="p-4 rounded-xl bg-white/[0.04] border border-white/[0.06]">
+              <p className="text-xs text-white/40 mb-1">Available</p>
+              <p className="font-bold text-2xl text-white font-mono">
                 {dollars(balance.available_cents)}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">{balance.currency}</p>
+              <p className="text-xs text-white/30 mt-0.5 uppercase">{balance.currency}</p>
             </div>
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-              <p className="text-xs text-gray-400 mb-1">Pending</p>
-              <p className="font-display font-bold text-2xl text-gray-500">
+            <div className="p-4 rounded-xl bg-white/[0.04] border border-white/[0.06]">
+              <p className="text-xs text-white/40 mb-1">Pending</p>
+              <p className="font-bold text-2xl text-white/50 font-mono">
                 {dollars(balance.pending_cents)}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">Clearing</p>
+              <p className="text-xs text-white/30 mt-0.5">Clearing</p>
             </div>
           </div>
 
           {balance.payouts.length > 0 && (
             <>
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3">
                 Recent Payouts
               </p>
               <div className="space-y-2">
                 {balance.payouts.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                  <div key={p.id} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
                     <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {dollars(p.amount)} <span className="text-gray-400 font-normal text-xs">{p.currency}</span>
+                      <p className="text-sm font-medium text-white font-mono">
+                        {dollars(p.amount)} <span className="text-white/30 font-normal text-xs uppercase">{p.currency}</span>
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-white/30">
                         {new Date(p.arrival_date * 1000).toLocaleDateString("en-NZ")}
                       </p>
                     </div>
                     <span className={cn(
-                      "text-[10px] font-bold uppercase px-2 py-0.5 rounded-full",
-                      statusColor[p.status] ?? "text-gray-500 bg-gray-100"
+                      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+                      statusColor[p.status] ?? "bg-white/[0.06] text-white/50 border border-white/[0.08]"
                     )}>
                       {p.status.replace("_", " ")}
                     </span>
@@ -129,14 +129,14 @@ function StripePanel() {
           )}
 
           {balance.payouts.length === 0 && (
-            <p className="text-sm text-gray-400">No payouts yet.</p>
+            <p className="text-sm text-white/30">No payouts yet.</p>
           )}
         </>
       )}
 
       {loading && !balance && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
+          <Loader2 className="h-5 w-5 animate-spin text-white/20" />
         </div>
       )}
     </div>
@@ -149,18 +149,18 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
   const total = rows.reduce((s, r) => s + r.revenue_cents, 0);
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
-      <h2 className="font-display font-semibold text-sm text-gray-900 mb-5 flex items-center gap-2">
-        <TrendingUp className="h-4 w-4 text-[#16a34a]" />
+    <div className="p-6 bg-[#111113] border border-white/[0.06] rounded-xl">
+      <h2 className="font-semibold text-sm text-white mb-5 flex items-center gap-2">
+        <TrendingUp className="h-4 w-4 text-[#4ade80]" />
         Monthly Revenue — last 12 months
       </h2>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100">
+            <tr className="border-b border-white/[0.06]">
               {["Month", "Orders", "Revenue (incl. GST)", "GST (15%)", "Revenue (excl. GST)", "Refunds", "Discounts"].map((h) => (
-                <th key={h} className="text-left px-3 py-2 text-xs font-semibold uppercase tracking-widest text-gray-400 whitespace-nowrap first:pl-0 last:pr-0">
+                <th key={h} className="text-left px-3 py-2 text-white/40 text-xs font-medium uppercase tracking-wider whitespace-nowrap first:pl-0 last:pr-0">
                   {h}
                 </th>
               ))}
@@ -171,29 +171,29 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
               const gstAmt   = gst(r.revenue_cents);
               const exGstAmt = exGst(r.revenue_cents);
               return (
-                <tr key={r.month} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-3 font-medium text-gray-900 whitespace-nowrap first:pl-0">
+                <tr key={r.month} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
+                  <td className="px-3 py-3 font-medium text-white whitespace-nowrap first:pl-0">
                     {new Date(r.month).toLocaleDateString("en-NZ", { month: "short", year: "numeric" })}
                   </td>
-                  <td className="px-3 py-3 text-gray-500">{r.order_count}</td>
-                  <td className="px-3 py-3 font-medium text-gray-900">{dollars(r.revenue_cents)}</td>
-                  <td className="px-3 py-3 text-gray-500">{dollars(gstAmt)}</td>
-                  <td className="px-3 py-3 text-gray-500">{dollars(exGstAmt)}</td>
-                  <td className="px-3 py-3 text-red-500 text-xs">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
-                  <td className="px-3 py-3 text-gray-400 text-xs last:pr-0">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
+                  <td className="px-3 py-3 text-white/50 font-mono">{r.order_count}</td>
+                  <td className="px-3 py-3 font-medium text-white font-mono">{dollars(r.revenue_cents)}</td>
+                  <td className="px-3 py-3 text-white/50 font-mono">{dollars(gstAmt)}</td>
+                  <td className="px-3 py-3 text-white/50 font-mono">{dollars(exGstAmt)}</td>
+                  <td className="px-3 py-3 text-red-400 text-xs font-mono">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
+                  <td className="px-3 py-3 text-white/30 text-xs font-mono last:pr-0">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
-            <tr className="border-t border-gray-200">
-              <td className="px-3 py-3 font-bold text-gray-900 first:pl-0">Total</td>
-              <td className="px-3 py-3 text-gray-500">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
-              <td className="px-3 py-3 font-bold text-[#16a34a]">{dollars(total)}</td>
-              <td className="px-3 py-3 text-gray-500">{dollars(gst(total))}</td>
-              <td className="px-3 py-3 text-gray-500">{dollars(exGst(total))}</td>
-              <td className="px-3 py-3 text-red-500">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
-              <td className="px-3 py-3 text-gray-400 last:pr-0">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
+            <tr className="border-t border-white/[0.1]">
+              <td className="px-3 py-3 font-bold text-white first:pl-0">Total</td>
+              <td className="px-3 py-3 text-white/50 font-mono">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
+              <td className="px-3 py-3 font-bold text-[#4ade80] font-mono">{dollars(total)}</td>
+              <td className="px-3 py-3 text-white/50 font-mono">{dollars(gst(total))}</td>
+              <td className="px-3 py-3 text-white/50 font-mono">{dollars(exGst(total))}</td>
+              <td className="px-3 py-3 text-red-400 font-mono">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
+              <td className="px-3 py-3 text-white/30 font-mono last:pr-0">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
             </tr>
           </tfoot>
         </table>
@@ -235,12 +235,12 @@ function ExportPanel() {
     URL.revokeObjectURL(url);
   }
 
-  const inputClass = "h-10 px-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "h-10 px-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-sm text-white focus:outline-none focus:border-[#4ade80]/40 transition-colors";
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
-      <h2 className="font-display font-semibold text-sm text-gray-900 mb-1">Export</h2>
-      <p className="text-xs text-gray-400 mb-5">
+    <div className="p-6 bg-[#111113] border border-white/[0.06] rounded-xl">
+      <h2 className="font-semibold text-sm text-white mb-1">Export</h2>
+      <p className="text-xs text-white/40 mb-5">
         Download accounting data for MYOB, Xero, or your accountant. All amounts in NZD.
       </p>
 
@@ -253,14 +253,14 @@ function ExportPanel() {
             className={cn(
               "p-3 rounded-xl border text-left transition-colors",
               format === f.value
-                ? "border-[#16a34a] bg-[#16a34a]/5"
-                : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                ? "border-[#4ade80]/30 bg-[#4ade80]/[0.06]"
+                : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1]"
             )}
           >
-            <p className={cn("text-sm font-semibold", format === f.value ? "text-[#16a34a]" : "text-gray-900")}>
+            <p className={cn("text-sm font-semibold", format === f.value ? "text-[#4ade80]" : "text-white/80")}>
               {f.label}
             </p>
-            <p className="text-xs text-gray-400 mt-0.5">{f.desc}</p>
+            <p className="text-xs text-white/30 mt-0.5">{f.desc}</p>
           </button>
         ))}
       </div>
@@ -268,18 +268,18 @@ function ExportPanel() {
       {/* Date range */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1">
-          <label className="block text-xs text-gray-500 mb-1.5">From</label>
+          <label className="block text-xs text-white/40 mb-1.5">From</label>
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={cn(inputClass, "w-full")} />
         </div>
         <div className="flex-1">
-          <label className="block text-xs text-gray-500 mb-1.5">To</label>
+          <label className="block text-xs text-white/40 mb-1.5">To</label>
           <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={cn(inputClass, "w-full")} />
         </div>
         <div className="pt-5">
           <button
             onClick={download}
             disabled={loading || !from || !to}
-            className="flex items-center gap-2 h-10 px-5 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors whitespace-nowrap"
+            className="flex items-center gap-2 h-10 px-5 rounded-lg bg-[#4ade80] text-black text-sm font-semibold hover:bg-[#86efac] disabled:opacity-50 transition-colors whitespace-nowrap"
           >
             {loading
               ? <Loader2 className="h-4 w-4 animate-spin" />
@@ -289,7 +289,7 @@ function ExportPanel() {
         </div>
       </div>
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-white/30">
         GST calculated at 15% (tax-inclusive) · NZ GST formula: amount × 3/23
       </p>
     </div>

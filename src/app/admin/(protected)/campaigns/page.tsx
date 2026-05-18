@@ -22,8 +22,8 @@ export default async function CampaignsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Email Campaigns</h1>
-        <p className="text-sm text-gray-400 mt-1">Segment, personalise, and track your emails</p>
+        <h1 className="font-bold text-xl text-white">Email Campaigns</h1>
+        <p className="text-sm text-white/45 mt-1">Segment, personalise, and track your emails</p>
       </div>
       <CampaignManager
         initialCampaigns={(campaigns ?? []) as EmailCampaign[]}

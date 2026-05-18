@@ -24,27 +24,27 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const addr = o.shipping_address as ShippingAddress;
 
   const STATUS_COLORS: Record<string, string> = {
-    pending:    "bg-gray-100 text-gray-500 border-gray-200",
-    processing: "bg-blue-50 text-blue-600 border-blue-100",
-    shipped:    "bg-green-50 text-green-600 border-green-100",
-    delivered:  "bg-emerald-50 text-emerald-600 border-emerald-100",
-    cancelled:  "bg-red-50 text-red-500 border-red-100",
-    refunded:   "bg-amber-50 text-amber-600 border-amber-100",
+    pending:    "bg-white/[0.06] text-white/50 border border-white/[0.08]",
+    processing: "bg-blue-400/10 text-blue-400 border border-blue-400/20",
+    shipped:    "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+    delivered:  "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20",
+    cancelled:  "bg-red-400/10 text-red-400 border border-red-400/20",
+    refunded:   "bg-amber-400/10 text-amber-400 border border-amber-400/20",
   };
 
   return (
     <div>
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="font-display font-bold text-2xl text-gray-900">Order #{o.order_number}</h1>
+          <h1 className="font-bold text-2xl text-white font-mono">Order #{o.order_number}</h1>
           <div className="flex items-center gap-3 mt-2">
             <span className={cn(
-              "text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border",
+              "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
               STATUS_COLORS[o.status] ?? STATUS_COLORS.pending
             )}>
               {o.status}
             </span>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-white/40">
               {new Date(o.created_at).toLocaleDateString("en-NZ", { dateStyle: "long" })}
             </span>
           </div>
@@ -55,30 +55,30 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <div className="grid lg:grid-cols-[1fr_300px] gap-6">
         <div className="space-y-6">
           {/* Items */}
-          <div className="p-6 rounded-xl bg-white border border-gray-100 shadow-sm">
-            <h2 className="font-display font-semibold text-sm text-gray-900 mb-4">Items</h2>
+          <div className="p-6 bg-[#111113] border border-white/[0.06] rounded-xl">
+            <h2 className="font-semibold text-sm text-white mb-4">Items</h2>
             <div className="space-y-3">
               {o.order_items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
+                <div key={item.id} className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{item.product_name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Size {item.size} × {item.quantity}</p>
+                    <p className="text-sm font-medium text-white">{item.product_name}</p>
+                    <p className="text-xs text-white/30 mt-0.5">Size {item.size} × {item.quantity}</p>
                   </div>
-                  <p className="text-sm font-display font-semibold text-gray-900">
+                  <p className="text-sm font-semibold text-white font-mono">
                     ${((item.unit_price * item.quantity) / 100).toFixed(2)}
                   </p>
                 </div>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-gray-100 space-y-2 text-sm">
-              <div className="flex justify-between text-gray-500">
-                <span>Subtotal</span><span>${(o.subtotal / 100).toFixed(2)}</span>
+            <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-2 text-sm">
+              <div className="flex justify-between text-white/40">
+                <span>Subtotal</span><span className="font-mono">${(o.subtotal / 100).toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-500">
-                <span>Shipping</span><span>{o.shipping_cost === 0 ? "Free" : `$${(o.shipping_cost / 100).toFixed(2)}`}</span>
+              <div className="flex justify-between text-white/40">
+                <span>Shipping</span><span className="font-mono">{o.shipping_cost === 0 ? "Free" : `$${(o.shipping_cost / 100).toFixed(2)}`}</span>
               </div>
-              <div className="flex justify-between font-display font-bold text-base text-gray-900 pt-1 border-t border-gray-100">
-                <span>Total</span><span>${(o.total / 100).toFixed(2)} NZD</span>
+              <div className="flex justify-between font-bold text-base text-white pt-1 border-t border-white/[0.06]">
+                <span>Total</span><span className="font-mono">${(o.total / 100).toFixed(2)} NZD</span>
               </div>
             </div>
           </div>
@@ -89,16 +89,16 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
         {/* Customer + Address */}
         <div className="space-y-4">
-          <div className="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Customer</h2>
-            <p className="text-sm font-medium text-gray-900">{addr.first_name} {addr.last_name}</p>
-            <p className="text-xs text-gray-500 mt-1">{o.guest_email}</p>
-            {addr.phone && <p className="text-xs text-gray-500 mt-0.5">{addr.phone}</p>}
+          <div className="p-5 bg-[#111113] border border-white/[0.06] rounded-xl">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3">Customer</h2>
+            <p className="text-sm font-medium text-white">{addr.first_name} {addr.last_name}</p>
+            <p className="text-xs text-white/40 mt-1">{o.guest_email}</p>
+            {addr.phone && <p className="text-xs text-white/40 mt-0.5">{addr.phone}</p>}
           </div>
 
-          <div className="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Shipping Address</h2>
-            <div className="text-sm text-gray-600 space-y-0.5">
+          <div className="p-5 bg-[#111113] border border-white/[0.06] rounded-xl">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3">Shipping Address</h2>
+            <div className="text-sm text-white/60 space-y-0.5">
               <p>{addr.first_name} {addr.last_name}</p>
               <p>{addr.line1}</p>
               {addr.line2 && <p>{addr.line2}</p>}
@@ -109,9 +109,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
 
           {o.tracking_number && (
-            <div className="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Tracking</h2>
-              <p className="text-sm font-mono text-[#16a34a] font-semibold">{o.tracking_number}</p>
+            <div className="p-5 bg-[#111113] border border-white/[0.06] rounded-xl">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Tracking</h2>
+              <p className="text-sm font-mono text-[#4ade80] font-semibold">{o.tracking_number}</p>
             </div>
           )}
 

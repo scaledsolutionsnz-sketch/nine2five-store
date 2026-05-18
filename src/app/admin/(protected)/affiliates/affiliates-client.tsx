@@ -13,10 +13,10 @@ function fmt(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-const STATUS: Record<AffiliateStatus, { label: string; class: string }> = {
-  pending:   { label: "Pending",   class: "bg-amber-50 text-amber-600 border-amber-100" },
-  active:    { label: "Active",    class: "bg-green-50 text-green-600 border-green-100" },
-  suspended: { label: "Suspended", class: "bg-red-50 text-red-500 border-red-100" },
+const STATUS: Record<AffiliateStatus, { label: string; cls: string }> = {
+  pending:   { label: "Pending",   cls: "bg-amber-400/10 text-amber-400 border border-amber-400/20" },
+  active:    { label: "Active",    cls: "bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20" },
+  suspended: { label: "Suspended", cls: "bg-red-400/10 text-red-400 border border-red-400/20" },
 };
 
 interface Props { affiliates: Affiliate[] }
@@ -54,34 +54,36 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
     toast.success("Referral link copied");
   }
 
+  void startTransition;
+
   return (
     <div className="space-y-6">
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Clicks",    value: totals.clicks.toLocaleString(),                       icon: MousePointer },
-          { label: "Conversions",     value: totals.conversions.toLocaleString(),                  icon: TrendingUp },
-          { label: "Commission Owed", value: fmt(totals.commission - totals.paid),                 icon: DollarSign },
-          { label: "Affiliates",      value: affiliates.length.toString(),                         icon: Users },
-        ].map(({ label, value, icon: Icon }) => (
-          <div key={label} className="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
+          { label: "Total Clicks",    value: totals.clicks.toLocaleString(),                icon: MousePointer, color: "#60a5fa",  bg: "bg-blue-400/[0.08]" },
+          { label: "Conversions",     value: totals.conversions.toLocaleString(),           icon: TrendingUp,   color: "#4ade80",  bg: "bg-[#4ade80]/[0.08]" },
+          { label: "Commission Owed", value: fmt(totals.commission - totals.paid),          icon: DollarSign,   color: "#fb923c",  bg: "bg-amber-400/[0.08]" },
+          { label: "Affiliates",      value: affiliates.length.toString(),                  icon: Users,        color: "#a78bfa",  bg: "bg-violet-400/[0.08]" },
+        ].map(({ label, value, icon: Icon, color, bg }) => (
+          <div key={label} className="p-5 bg-[#111113] border border-white/[0.06] rounded-xl">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs text-gray-400 font-medium">{label}</p>
-              <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center">
-                <Icon className="h-4 w-4 text-gray-400" />
+              <p className="text-xs text-white/40 font-medium">{label}</p>
+              <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", bg)}>
+                <Icon style={{ width: 15, height: 15, color }} strokeWidth={1.8} />
               </div>
             </div>
-            <p className="font-display font-bold text-2xl text-gray-900">{value}</p>
+            <p className="font-bold text-2xl text-white font-mono">{value}</p>
           </div>
         ))}
       </div>
 
       {/* Actions */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
+        <p className="text-sm text-white/40">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#4ade80] text-black text-sm font-semibold hover:bg-[#86efac] transition-colors"
         >
           <Plus className="h-4 w-4" />
           Add Affiliate
@@ -89,39 +91,39 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
+            <tr className="border-b border-white/[0.04] bg-[#111113]">
               {["Affiliate", "Code", "Status", "Clicks", "Conversions", "Commission", "Rate", "Actions"].map((h) => (
-                <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                <th key={h} className="px-4 py-3 text-left text-white/40 text-xs font-medium uppercase tracking-wider">
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-white/[0.04]">
             {affiliates.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-gray-400 text-sm">
+                <td colSpan={8} className="px-4 py-10 text-center text-white/30 text-sm">
                   No affiliates yet. Add your first referral partner.
                 </td>
               </tr>
             )}
             {affiliates.map((a) => (
-              <tr key={a.id} className="hover:bg-gray-50 transition-colors">
+              <tr key={a.id} className="hover:bg-white/[0.02] transition-colors">
                 <td className="px-4 py-3.5">
-                  <p className="font-medium text-gray-900">{a.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{a.email}</p>
+                  <p className="font-medium text-white">{a.name}</p>
+                  <p className="text-xs text-white/30 mt-0.5">{a.email}</p>
                 </td>
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-2">
-                    <code className="text-xs bg-gray-100 px-2 py-0.5 rounded text-[#16a34a] font-mono">
+                    <code className="text-xs bg-white/[0.06] border border-white/[0.08] px-2 py-0.5 rounded text-[#4ade80] font-mono">
                       {a.referral_code}
                     </code>
                     <button
                       onClick={() => copyLink(a.referral_code)}
-                      className="text-gray-400 hover:text-gray-700 transition-colors"
+                      className="text-white/20 hover:text-white/50 transition-colors"
                     >
                       <Copy className="h-3 w-3" />
                     </button>
@@ -129,30 +131,30 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                 </td>
                 <td className="px-4 py-3.5">
                   <span className={cn(
-                    "text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border",
-                    STATUS[a.status].class
+                    "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+                    STATUS[a.status].cls
                   )}>
                     {STATUS[a.status].label}
                   </span>
                 </td>
-                <td className="px-4 py-3.5 text-gray-600">{a.total_clicks.toLocaleString()}</td>
-                <td className="px-4 py-3.5 text-gray-600">{a.total_conversions.toLocaleString()}</td>
-                <td className="px-4 py-3.5 font-display font-semibold text-gray-900">
+                <td className="px-4 py-3.5 text-white/50 font-mono">{a.total_clicks.toLocaleString()}</td>
+                <td className="px-4 py-3.5 text-white/50 font-mono">{a.total_conversions.toLocaleString()}</td>
+                <td className="px-4 py-3.5 font-semibold text-white font-mono">
                   {fmt(a.total_commission_cents)}
                   {a.total_paid_cents > 0 && (
-                    <span className="block text-[10px] text-gray-400 font-normal mt-0.5">
+                    <span className="block text-[10px] text-white/30 font-normal mt-0.5">
                       {fmt(a.total_paid_cents)} paid
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3.5 text-gray-600">{a.commission_rate}%</td>
+                <td className="px-4 py-3.5 text-white/50 font-mono">{a.commission_rate}%</td>
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-1">
                     {a.status === "pending" && (
                       <button
                         onClick={() => updateStatus(a.id, "active")}
                         title="Approve"
-                        className="p-1.5 rounded-lg hover:bg-green-50 text-gray-400 hover:text-green-600 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[#4ade80]/10 text-white/30 hover:text-[#4ade80] transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
@@ -161,7 +163,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                       <button
                         onClick={() => updateStatus(a.id, "suspended")}
                         title="Suspend"
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-red-400/10 text-white/30 hover:text-red-400 transition-colors"
                       >
                         <Pause className="h-3.5 w-3.5" />
                       </button>
@@ -170,14 +172,14 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                       <button
                         onClick={() => updateStatus(a.id, "active")}
                         title="Reactivate"
-                        className="p-1.5 rounded-lg hover:bg-green-50 text-gray-400 hover:text-green-600 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[#4ade80]/10 text-white/30 hover:text-[#4ade80] transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
                     )}
                     <button
                       onClick={() => setSelected(a)}
-                      className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
                     </button>
@@ -250,20 +252,20 @@ function CreateAffiliateModal({
     toast.success("Affiliate created");
   }
 
-  const inputClass = "w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:border-[#16a34a] transition-colors";
+  const inputClass = "w-full h-10 px-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 transition-colors";
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white border border-gray-200 rounded-xl shadow-xl w-full max-w-md">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="font-display font-semibold text-base text-gray-900">New Affiliate</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-[#111113] border border-white/[0.1] rounded-2xl w-full max-w-md">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
+          <h2 className="font-semibold text-base text-white">New Affiliate</h2>
+          <button onClick={onClose} className="text-white/30 hover:text-white/60 transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
         <form onSubmit={submit} className="p-5 space-y-4">
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">Full Name</label>
+            <label className="block text-xs text-white/40 mb-1.5">Full Name</label>
             <input
               required
               value={form.name}
@@ -276,7 +278,7 @@ function CreateAffiliateModal({
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">Email</label>
+            <label className="block text-xs text-white/40 mb-1.5">Email</label>
             <input
               required
               type="email"
@@ -287,20 +289,20 @@ function CreateAffiliateModal({
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">Referral Code</label>
+            <label className="block text-xs text-white/40 mb-1.5">Referral Code</label>
             <input
               required
               value={form.referral_code}
               onChange={(e) => setForm((f) => ({ ...f, referral_code: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "") }))}
               placeholder="wiremu10"
-              className={inputClass}
+              className={cn(inputClass, "font-mono")}
             />
-            <p className="text-[10px] text-gray-400 mt-1">
+            <p className="text-[10px] text-white/25 mt-1">
               Link: nine2five.co.nz?ref={form.referral_code || "code"}
             </p>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">Commission Rate (%)</label>
+            <label className="block text-xs text-white/40 mb-1.5">Commission Rate (%)</label>
             <input
               required
               type="number"
@@ -312,13 +314,13 @@ function CreateAffiliateModal({
             />
           </div>
           {error && (
-            <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+            <p className="text-xs text-red-400 bg-red-400/[0.08] border border-red-400/20 px-3 py-2 rounded-lg">{error}</p>
           )}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-lg border border-gray-200 text-sm text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors">
+            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-lg bg-white/[0.06] border border-white/[0.08] text-sm text-white/60 hover:text-white hover:bg-white/[0.1] transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="flex-1 h-10 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors">
+            <button type="submit" disabled={loading} className="flex-1 h-10 rounded-lg bg-[#4ade80] text-black text-sm font-semibold hover:bg-[#86efac] disabled:opacity-50 transition-colors">
               {loading ? "Creating…" : "Create Affiliate"}
             </button>
           </div>
@@ -361,14 +363,14 @@ function AffiliateDetailModal({
   const pending = affiliate.total_commission_cents - affiliate.total_paid_cents;
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-white border border-gray-200 rounded-xl shadow-xl w-full max-w-lg">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-[#111113] border border-white/[0.1] rounded-2xl w-full max-w-lg">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
           <div>
-            <h2 className="font-display font-semibold text-base text-gray-900">{affiliate.name}</h2>
-            <p className="text-xs text-gray-400 mt-0.5">{affiliate.email}</p>
+            <h2 className="font-semibold text-base text-white">{affiliate.name}</h2>
+            <p className="text-xs text-white/30 mt-0.5">{affiliate.email}</p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700">
+          <button onClick={onClose} className="text-white/30 hover:text-white/60 transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -380,23 +382,23 @@ function AffiliateDetailModal({
               { label: "Conversions", value: affiliate.total_conversions.toLocaleString() },
               { label: "Pending Pay", value: fmt(pending) },
             ].map(({ label, value }) => (
-              <div key={label} className="p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
-                <p className="text-xs text-gray-400 mb-1">{label}</p>
-                <p className="font-display font-bold text-base text-gray-900">{value}</p>
+              <div key={label} className="p-3 bg-white/[0.04] border border-white/[0.06] rounded-xl text-center">
+                <p className="text-xs text-white/30 mb-1">{label}</p>
+                <p className="font-bold text-base text-white font-mono">{value}</p>
               </div>
             ))}
           </div>
 
           {/* Referral link */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">Referral Link</label>
+            <label className="block text-xs text-white/40 mb-1.5">Referral Link</label>
             <div className="flex items-center gap-2">
-              <code className="flex-1 text-xs bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-[#16a34a] overflow-hidden overflow-ellipsis whitespace-nowrap font-mono">
+              <code className="flex-1 text-xs bg-white/[0.04] border border-white/[0.08] px-3 py-2 rounded-lg text-[#4ade80] overflow-hidden text-ellipsis whitespace-nowrap font-mono">
                 {link}
               </code>
               <button
                 onClick={() => { navigator.clipboard.writeText(link); toast.success("Copied"); }}
-                className="px-3 py-2 rounded-lg border border-gray-200 text-xs text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-colors"
+                className="px-3 py-2 rounded-lg border border-white/[0.08] bg-white/[0.04] text-xs text-white/50 hover:text-white hover:border-white/[0.15] transition-colors"
               >
                 Copy
               </button>
@@ -405,7 +407,7 @@ function AffiliateDetailModal({
 
           {/* Commission rate */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">Commission Rate (%)</label>
+            <label className="block text-xs text-white/40 mb-1.5">Commission Rate (%)</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -413,12 +415,12 @@ function AffiliateDetailModal({
                 max="50"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
-                className="w-24 h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#16a34a]"
+                className="w-24 h-10 px-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-[#4ade80]/40 font-mono"
               />
               <button
                 onClick={saveRate}
                 disabled={saving || parseInt(rate) === affiliate.commission_rate}
-                className="px-4 h-10 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors"
+                className="px-4 h-10 rounded-lg bg-[#4ade80] text-black text-sm font-semibold hover:bg-[#86efac] disabled:opacity-50 transition-colors"
               >
                 {saving ? "Saving…" : "Save"}
               </button>
@@ -426,7 +428,7 @@ function AffiliateDetailModal({
           </div>
 
           {/* Joined */}
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-white/25">
             Joined {new Date(affiliate.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
             {affiliate.approved_at && ` · Approved ${new Date(affiliate.approved_at).toLocaleDateString("en-NZ")}`}
           </p>

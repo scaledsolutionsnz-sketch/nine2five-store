@@ -32,26 +32,17 @@ function RegionCard({
   tiers: Tier[];
 }) {
   return (
-    <div
-      className="bg-white rounded-2xl border border-gray-200/80"
-      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)" }}
-    >
+    <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-5 flex items-center gap-3" style={{ borderBottom: "1px solid #f0f2f5" }}>
-        <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base"
-          style={{ backgroundColor: "#f0fdf4", border: "1px solid #dcfce7" }}
-        >
+      <div className="px-6 py-5 flex items-center gap-3 border-b border-white/[0.06]">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base bg-[#4ade80]/[0.08] border border-[#4ade80]/20">
           {flag}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[14px] text-gray-900 leading-none">{region}</p>
-          <p className="text-[12px] text-gray-400 mt-0.5 leading-none">{sublabel}</p>
+          <p className="font-semibold text-[14px] text-white leading-none">{region}</p>
+          <p className="text-[12px] text-white/40 mt-0.5 leading-none">{sublabel}</p>
         </div>
-        <div
-          className="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-medium"
-          style={{ backgroundColor: "#f0fdf4", color: "#16a34a", border: "1px solid #dcfce7" }}
-        >
+        <div className="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-[#4ade80]/[0.08] text-[#4ade80] border border-[#4ade80]/20">
           {delivery}
         </div>
       </div>
@@ -63,35 +54,29 @@ function RegionCard({
             <div
               key={i}
               className="flex items-center justify-between py-2.5 px-3 rounded-xl"
-              style={{ backgroundColor: i % 2 === 0 ? "#fafafa" : "transparent" }}
+              style={{ backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent" }}
             >
               <div className="flex items-center gap-2.5">
-                <Package style={{ width: 13, height: 13, color: "#9ca3af" }} strokeWidth={1.8} />
-                <span className="text-[13px] text-gray-600">{tier.label}</span>
+                <Package style={{ width: 13, height: 13, color: "rgba(244,244,245,0.25)" }} strokeWidth={1.8} />
+                <span className="text-[13px] text-white/60">{tier.label}</span>
               </div>
-              <span className="text-[13px] font-semibold text-gray-900">
+              <span className="text-[13px] font-semibold text-white font-mono">
                 ${(tier.cost / 100).toFixed(2)} NZD
               </span>
             </div>
           ))}
-          <div
-            className="flex items-center justify-between py-2.5 px-3 rounded-xl"
-            style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca" }}
-          >
+          <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-red-400/[0.06] border border-red-400/15">
             <div className="flex items-center gap-2.5">
-              <Package style={{ width: 13, height: 13, color: "#ef4444" }} strokeWidth={1.8} />
-              <span className="text-[13px] text-red-600">13+ pairs</span>
+              <Package style={{ width: 13, height: 13, color: "#f87171" }} strokeWidth={1.8} />
+              <span className="text-[13px] text-red-400">13+ pairs</span>
             </div>
-            <span className="text-[12px] font-medium text-red-500">Contact for rates</span>
+            <span className="text-[12px] font-medium text-red-400/70">Contact for rates</span>
           </div>
         </div>
       </div>
 
       {/* Footer note */}
-      <div
-        className="px-6 py-3 rounded-b-2xl text-[11px] text-gray-400"
-        style={{ borderTop: "1px solid #f0f2f5", backgroundColor: "#fafbfc" }}
-      >
+      <div className="px-6 py-3 rounded-b-xl text-[11px] text-white/25 border-t border-white/[0.04] bg-white/[0.01]">
         Based on 70g per pair · automatic weight calculation
       </div>
     </div>
@@ -103,25 +88,19 @@ export function ShippingSettingsClient() {
     <div className="space-y-8">
       {/* Page header */}
       <div>
-        <h2 className="text-[22px] font-bold text-gray-900 leading-none tracking-tight">Settings</h2>
-        <p className="text-[13px] text-gray-400 mt-1.5 leading-none">Manage your store configuration</p>
+        <h2 className="text-[22px] font-bold text-white leading-none tracking-tight">Settings</h2>
+        <p className="text-[13px] text-white/40 mt-1.5 leading-none">Manage your store configuration</p>
       </div>
 
       {/* Shipping section */}
-      <div
-        className="bg-white rounded-2xl border border-gray-200/80"
-        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)" }}
-      >
-        <div className="px-7 py-5 flex items-center gap-3" style={{ borderBottom: "1px solid #f0f2f5" }}>
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ backgroundColor: "#f0fdf4", border: "1px solid #dcfce7" }}
-          >
-            <Globe style={{ width: 16, height: 16, color: "#16a34a" }} strokeWidth={1.8} />
+      <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="px-7 py-5 flex items-center gap-3 border-b border-white/[0.06]">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#4ade80]/[0.08] border border-[#4ade80]/20">
+            <Globe style={{ width: 16, height: 16, color: "#4ade80" }} strokeWidth={1.8} />
           </div>
           <div>
-            <p className="font-semibold text-[15px] text-gray-900 leading-none">Shipping rates</p>
-            <p className="text-[12px] text-gray-400 mt-0.5 leading-none">
+            <p className="font-semibold text-[15px] text-white leading-none">Shipping rates</p>
+            <p className="text-[12px] text-white/40 mt-0.5 leading-none">
               Weight-based tiered rates · 70g per pair
             </p>
           </div>

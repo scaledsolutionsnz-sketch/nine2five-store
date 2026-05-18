@@ -55,19 +55,9 @@ function ProductCard({
   const variants = (product.product_variants ?? []).sort((a, b) => a.size.localeCompare(b.size));
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: 12,
-        border: "1px solid #e5e7eb",
-        overflow: "hidden",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden flex flex-col">
       {/* Image */}
-      <div style={{ position: "relative", aspectRatio: "1", backgroundColor: "#f9fafb" }}>
+      <div className="relative aspect-square bg-white/[0.04]">
         {product.image_urls?.[0] ? (
           <Image
             src={product.image_urls[0]}
@@ -76,31 +66,22 @@ function ProductCard({
             className="object-cover"
           />
         ) : (
-          <div
-            style={{
-              position: "absolute", inset: 0, display: "flex",
-              alignItems: "center", justifyContent: "center",
-            }}
-          >
-            <Package style={{ width: 28, height: 28, color: "#d1d5db" }} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Package style={{ width: 28, height: 28, color: "rgba(244,244,245,0.15)" }} />
           </div>
         )}
       </div>
 
       {/* Info + size buttons */}
-      <div style={{ padding: "10px 10px 10px" }}>
-        <p style={{
-          fontSize: 12, fontWeight: 600, color: "#111827",
-          lineHeight: 1.3, marginBottom: 2, overflow: "hidden",
-          display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-        }}>
+      <div className="p-2.5">
+        <p className="text-[12px] font-semibold text-white leading-tight mb-1 line-clamp-2">
           {product.name}
         </p>
-        <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 8 }}>
+        <p className="text-[13px] font-bold text-white mb-2 font-mono">
           ${(product.price / 100).toFixed(2)}
         </p>
 
-        <div style={{ display: "flex", gap: 6 }}>
+        <div className="flex gap-1.5">
           {variants.map(variant => {
             const inCart = cartItems.find(i => i.variantId === variant.id);
             const outOfStock = variant.stock_quantity === 0;
@@ -109,19 +90,19 @@ function ProductCard({
                 key={variant.id}
                 onClick={() => !outOfStock && onAdd(product, variant)}
                 disabled={outOfStock}
+                className="flex-1 h-[30px] rounded-lg text-[11px] font-bold transition-all duration-100 disabled:cursor-not-allowed"
                 style={{
-                  flex: 1,
-                  height: 30,
-                  borderRadius: 8,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  cursor: outOfStock ? "not-allowed" : "pointer",
-                  transition: "all 0.1s",
-                  backgroundColor: outOfStock ? "#f3f4f6" : inCart ? "#dcfce7" : "#f0fdf4",
-                  color: outOfStock ? "#9ca3af" : inCart ? "#15803d" : "#16a34a",
+                  backgroundColor: outOfStock
+                    ? "rgba(255,255,255,0.04)"
+                    : inCart
+                      ? "rgba(74,222,128,0.15)"
+                      : "rgba(74,222,128,0.08)",
+                  color: outOfStock ? "rgba(244,244,245,0.2)" : inCart ? "#4ade80" : "rgba(74,222,128,0.8)",
                   border: outOfStock
-                    ? "1px solid #e5e7eb"
-                    : inCart ? "1.5px solid #86efac" : "1px solid #bbf7d0",
+                    ? "1px solid rgba(255,255,255,0.06)"
+                    : inCart
+                      ? "1.5px solid rgba(74,222,128,0.4)"
+                      : "1px solid rgba(74,222,128,0.2)",
                 }}
               >
                 {variant.size}{inCart ? ` ×${inCart.quantity}` : ""}
@@ -131,14 +112,18 @@ function ProductCard({
         </div>
 
         {/* Stock labels */}
-        <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+        <div className="flex gap-1.5 mt-1">
           {variants.map(v => (
-            <div key={v.id} style={{ flex: 1, textAlign: "center" }}>
+            <div key={v.id} className="flex-1 text-center">
               <span style={{
                 fontSize: 9, fontWeight: 500,
-                color: v.stock_quantity === 0 ? "#ef4444" : v.stock_quantity <= 3 ? "#f59e0b" : "#9ca3af",
+                color: v.stock_quantity === 0
+                  ? "#f87171"
+                  : v.stock_quantity <= 3
+                    ? "#fb923c"
+                    : "rgba(244,244,245,0.25)",
               }}>
-                {v.stock_quantity === 0 ? "Out of stock" : `${v.stock_quantity} left`}
+                {v.stock_quantity === 0 ? "Out" : `${v.stock_quantity}`}
               </span>
             </div>
           ))}
@@ -172,55 +157,38 @@ function CartItemRow({
   }
 
   return (
-    <div style={{
-      padding: "10px 14px",
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      borderBottom: "1px solid #f9fafb",
-    }}>
+    <div className="flex items-center gap-2.5 px-3.5 py-2.5 border-b border-white/[0.04]">
       {/* Name + size */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: "#111827", lineHeight: 1.2, marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {item.productName}
-        </p>
-        <p style={{ fontSize: 10, color: "#9ca3af", lineHeight: 1 }}>Size {item.size}</p>
+      <div className="flex-1 min-w-0">
+        <p className="text-[12px] font-semibold text-white leading-tight truncate">{item.productName}</p>
+        <p className="text-[10px] text-white/30 leading-none mt-0.5">Size {item.size}</p>
       </div>
 
       {/* Qty controls */}
-      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+      <div className="flex items-center gap-1">
         <button
           onClick={() => onQty(item.variantId, -1)}
-          style={{
-            width: 22, height: 22, borderRadius: 6, border: "1px solid #e5e7eb",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", backgroundColor: "white",
-          }}
+          className="w-[22px] h-[22px] rounded-md border border-white/[0.08] bg-white/[0.04] flex items-center justify-center hover:bg-white/[0.08] transition-colors"
         >
-          <Minus style={{ width: 9, height: 9 }} />
+          <Minus style={{ width: 9, height: 9, color: "rgba(244,244,245,0.5)" }} />
         </button>
-        <span style={{ fontSize: 12, fontWeight: 700, width: 18, textAlign: "center" }}>
+        <span className="text-[12px] font-bold text-white w-[18px] text-center font-mono">
           {item.quantity}
         </span>
         <button
           onClick={() => onQty(item.variantId, 1)}
           disabled={item.quantity >= item.maxQty}
-          style={{
-            width: 22, height: 22, borderRadius: 6, border: "1px solid #e5e7eb",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: item.quantity >= item.maxQty ? "not-allowed" : "pointer",
-            backgroundColor: "white", opacity: item.quantity >= item.maxQty ? 0.4 : 1,
-          }}
+          className="w-[22px] h-[22px] rounded-md border border-white/[0.08] bg-white/[0.04] flex items-center justify-center hover:bg-white/[0.08] transition-colors disabled:opacity-30"
         >
-          <Plus style={{ width: 9, height: 9 }} />
+          <Plus style={{ width: 9, height: 9, color: "rgba(244,244,245,0.5)" }} />
         </button>
       </div>
 
       {/* Price (editable) */}
-      <div style={{ width: 58, textAlign: "right" }}>
+      <div className="w-[58px] text-right">
         {editing ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <span style={{ fontSize: 10, color: "#9ca3af" }}>$</span>
+          <div className="flex items-center gap-0.5 justify-end">
+            <span className="text-[10px] text-white/30">$</span>
             <input
               type="number"
               min="0"
@@ -230,24 +198,20 @@ function CartItemRow({
               onBlur={commitPrice}
               onKeyDown={e => e.key === "Enter" && commitPrice()}
               autoFocus
-              style={{
-                width: 46, fontSize: 12, fontWeight: 700, textAlign: "right",
-                border: "none", borderBottom: "1.5px solid #10b981",
-                outline: "none", backgroundColor: "transparent",
-              }}
+              className="w-[46px] text-[12px] font-bold text-right bg-transparent border-b border-[#4ade80]/60 outline-none text-white font-mono"
             />
           </div>
         ) : (
           <button
             onClick={() => { setEditing(true); setPriceInput((item.unitPrice / 100).toFixed(2)); }}
             title="Click to override price"
-            style={{ textAlign: "right", cursor: "pointer", background: "none", border: "none", padding: 0 }}
+            className="text-right cursor-pointer"
           >
-            <p style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.2, color: overridden ? "#059669" : "#111827" }}>
+            <p className="text-[12px] font-bold leading-tight font-mono" style={{ color: overridden ? "#4ade80" : "rgba(244,244,245,0.9)" }}>
               ${((item.unitPrice * item.quantity) / 100).toFixed(2)}
             </p>
             {overridden && (
-              <p style={{ fontSize: 9, color: "#9ca3af", textDecoration: "line-through", lineHeight: 1 }}>
+              <p className="text-[9px] text-white/20 line-through leading-none font-mono">
                 ${((item.originalPrice * item.quantity) / 100).toFixed(2)}
               </p>
             )}
@@ -258,13 +222,7 @@ function CartItemRow({
       {/* Remove */}
       <button
         onClick={() => onRemove(item.variantId)}
-        style={{
-          width: 20, height: 20, display: "flex", alignItems: "center",
-          justifyContent: "center", cursor: "pointer", color: "#d1d5db",
-          background: "none", border: "none",
-        }}
-        onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
-        onMouseLeave={e => (e.currentTarget.style.color = "#d1d5db")}
+        className="w-5 h-5 flex items-center justify-center text-white/20 hover:text-red-400 transition-colors"
       >
         <X style={{ width: 11, height: 11 }} />
       </button>
@@ -307,31 +265,23 @@ function StripeForm({
   }
 
   return (
-    <form onSubmit={handlePay} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <form onSubmit={handlePay} className="flex flex-col gap-4">
       <PaymentElement />
       {error && (
-        <p style={{ fontSize: 12, color: "#ef4444", margin: 0 }}>{error}</p>
+        <p className="text-[12px] text-red-400">{error}</p>
       )}
-      <div style={{ display: "flex", gap: 10 }}>
+      <div className="flex gap-2.5">
         <button
           type="button"
           onClick={onCancel}
-          style={{
-            flex: 1, height: 44, borderRadius: 10, border: "1px solid #e5e7eb",
-            fontSize: 13, fontWeight: 500, cursor: "pointer", backgroundColor: "white",
-          }}
+          className="flex-1 h-11 rounded-xl bg-white/[0.06] border border-white/[0.08] text-[13px] font-medium text-white/70 hover:bg-white/[0.1] hover:text-white transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={submitting || !stripe}
-          style={{
-            flex: 1, height: 44, borderRadius: 10, border: "none",
-            fontSize: 13, fontWeight: 700, cursor: submitting ? "default" : "pointer",
-            backgroundColor: "#16a34a", color: "white", opacity: submitting ? 0.7 : 1,
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-          }}
+          className="flex-1 h-11 rounded-xl bg-[#4ade80] text-black text-[13px] font-bold hover:bg-[#86efac] disabled:opacity-60 transition-colors flex items-center justify-center gap-1.5"
         >
           {submitting
             ? <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" />
@@ -361,48 +311,35 @@ function SuccessScreen({
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-      <div style={{ textAlign: "center", maxWidth: 360 }}>
-        <div style={{
-          width: 80, height: 80, borderRadius: "50%", backgroundColor: "#dcfce7",
-          display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px",
-        }}>
-          <Check style={{ width: 36, height: 36, color: "#16a34a" }} strokeWidth={2.5} />
+    <div className="flex items-center justify-center h-full">
+      <div className="text-center max-w-[360px]">
+        <div className="w-20 h-20 rounded-full bg-[#4ade80]/[0.12] border border-[#4ade80]/20 flex items-center justify-center mx-auto mb-6">
+          <Check style={{ width: 36, height: 36, color: "#4ade80" }} strokeWidth={2.5} />
         </div>
 
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: "#111827", marginBottom: 6 }}>
+        <h2 className="text-[28px] font-bold text-white mb-1.5">
           Sale Complete
         </h2>
-        <p style={{ fontSize: 15, color: "#6b7280", marginBottom: 4 }}>
+        <p className="text-[15px] text-white/50 mb-1">
           Order #{orderNumber}
         </p>
-        <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 20 }}>
+        <p className="text-[13px] text-white/30 mb-5">
           {labels[paymentMethod]} · Collected in-person
         </p>
-        <p style={{ fontSize: 32, fontWeight: 800, color: "#111827", marginBottom: 32 }}>
-          ${(total / 100).toFixed(2)} <span style={{ fontSize: 16, fontWeight: 500, color: "#9ca3af" }}>NZD</span>
+        <p className="text-[32px] font-bold text-white mb-8 font-mono">
+          ${(total / 100).toFixed(2)} <span className="text-[16px] font-normal text-white/30">NZD</span>
         </p>
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div className="flex gap-2.5">
           <Link
             href="/admin/orders"
-            style={{
-              flex: 1, height: 44, borderRadius: 10, border: "1px solid #e5e7eb",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 13, fontWeight: 500, color: "#374151", textDecoration: "none",
-              backgroundColor: "white",
-            }}
+            className="flex-1 h-11 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-[13px] font-medium text-white/70 hover:bg-white/[0.1] hover:text-white transition-colors"
           >
             View Order
           </Link>
           <button
             onClick={onNewSale}
-            style={{
-              flex: 1, height: 44, borderRadius: 10, border: "none",
-              fontSize: 13, fontWeight: 700, color: "white", cursor: "pointer",
-              backgroundColor: "#16a34a",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            }}
+            className="flex-1 h-11 rounded-xl bg-[#4ade80] text-black text-[13px] font-bold hover:bg-[#86efac] transition-colors flex items-center justify-center gap-1.5"
           >
             <RotateCcw style={{ width: 13, height: 13 }} />
             New Sale
@@ -613,26 +550,18 @@ export function POSClient({ products }: { products: Product[] }) {
   // ── Stripe card modal ─────────────────────────────────────────────
   if (stripeSecret) {
     return (
-      <div style={{
-        height: "calc(100vh - 136px)", minHeight: 600,
-        display: "flex", alignItems: "center", justifyContent: "center",
-      }}>
-        <div style={{
-          backgroundColor: "white", borderRadius: 16,
-          border: "1px solid #e5e7eb", padding: 28,
-          width: "100%", maxWidth: 460,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-        }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div style={{ height: "calc(100vh - 136px)", minHeight: 600 }} className="flex items-center justify-center">
+        <div className="bg-[#111113] border border-white/[0.1] rounded-2xl p-7 w-full max-w-[460px]">
+          <div className="flex justify-between items-center mb-5">
             <div>
-              <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Card Payment</h3>
-              <p style={{ fontSize: 12, color: "#6b7280", margin: "4px 0 0" }}>
+              <h3 className="text-[16px] font-bold text-white">Card Payment</h3>
+              <p className="text-[12px] text-white/40 mt-1">
                 {cart.reduce((s, i) => s + i.quantity, 0)} item{cart.reduce((s, i) => s + i.quantity, 0) !== 1 ? "s" : ""}
               </p>
             </div>
-            <p style={{ fontSize: 24, fontWeight: 800, margin: 0 }}>
+            <p className="text-[24px] font-bold text-white font-mono">
               ${(total / 100).toFixed(2)}
-              <span style={{ fontSize: 13, fontWeight: 400, color: "#9ca3af" }}> NZD</span>
+              <span className="text-[13px] font-normal text-white/30"> NZD</span>
             </p>
           </div>
           <Elements
@@ -640,8 +569,8 @@ export function POSClient({ products }: { products: Product[] }) {
             options={{
               clientSecret: stripeSecret,
               appearance: {
-                theme: "stripe",
-                variables: { colorPrimary: "#16a34a", borderRadius: "10px" },
+                theme: "night",
+                variables: { colorPrimary: "#4ade80", borderRadius: "10px", colorBackground: "#111113" },
               },
             }}
           >
@@ -668,51 +597,35 @@ export function POSClient({ products }: { products: Product[] }) {
 
   // ── Main layout ───────────────────────────────────────────────────
   return (
-    <div style={{
-      height: "calc(100vh - 136px)",
-      minHeight: 620,
-      display: "flex",
-      gap: 16,
-      overflow: "hidden",
-    }}>
+    <div style={{ height: "calc(100vh - 136px)", minHeight: 620 }} className="flex gap-4 overflow-hidden">
       {/* ── LEFT: Product Grid ────────────────────────────────── */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, overflow: "hidden" }}>
+      <div className="flex-1 flex flex-col gap-3 overflow-hidden">
         {/* Search */}
-        <div style={{ position: "relative", flexShrink: 0 }}>
-          <Search
-            style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 14, height: 14, color: "#9ca3af" }}
-          />
+        <div className="relative shrink-0">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2" style={{ width: 14, height: 14, color: "rgba(244,244,245,0.3)" }} />
           <input
             type="text"
             placeholder="Search products..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{
-              width: "100%", height: 40, paddingLeft: 36, paddingRight: 14,
-              fontSize: 13, backgroundColor: "white", border: "1px solid #e5e7eb",
-              borderRadius: 10, outline: "none", boxSizing: "border-box",
-            }}
+            className="w-full h-10 pl-9 pr-3.5 text-[13px] bg-white/[0.04] border border-white/[0.08] rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#4ade80]/40 transition-colors"
           />
         </div>
 
         {/* Grid */}
-        <div style={{
-          flex: 1,
-          overflowY: "auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(155px, 1fr))",
-          gap: 10,
-          alignContent: "start",
-          paddingBottom: 8,
-        }}>
+        <div
+          className="flex-1 overflow-y-auto pb-2"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(155px, 1fr))",
+            gap: 10,
+            alignContent: "start",
+          }}
+        >
           {filteredProducts.length === 0 ? (
-            <div style={{
-              gridColumn: "1/-1", display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center",
-              paddingTop: 60, color: "#9ca3af", gap: 8,
-            }}>
-              <Package style={{ width: 32, height: 32, color: "#e5e7eb" }} />
-              <p style={{ fontSize: 13 }}>No products found</p>
+            <div style={{ gridColumn: "1/-1" }} className="flex flex-col items-center justify-center pt-16 text-white/20 gap-2">
+              <Package style={{ width: 32, height: 32 }} />
+              <p className="text-[13px]">No products found</p>
             </div>
           ) : (
             filteredProducts.map(product => (
@@ -728,34 +641,14 @@ export function POSClient({ products }: { products: Product[] }) {
       </div>
 
       {/* ── RIGHT: Cart ──────────────────────────────────────── */}
-      <div style={{
-        width: 364,
-        display: "flex",
-        flexDirection: "column",
-        borderRadius: 14,
-        border: "1px solid #e5e7eb",
-        backgroundColor: "white",
-        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-        overflow: "hidden",
-        flexShrink: 0,
-      }}>
+      <div className="w-[364px] flex flex-col bg-[#111113] border border-white/[0.06] rounded-xl overflow-hidden shrink-0">
         {/* Cart header */}
-        <div style={{
-          padding: "13px 16px",
-          borderBottom: "1px solid #f3f4f6",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexShrink: 0,
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <ShoppingCart style={{ width: 15, height: 15, color: "#6b7280" }} />
-            <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>Cart</span>
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] shrink-0">
+          <div className="flex items-center gap-1.5">
+            <ShoppingCart style={{ width: 15, height: 15, color: "rgba(244,244,245,0.4)" }} />
+            <span className="text-[14px] font-bold text-white">Cart</span>
             {totalPairs > 0 && (
-              <span style={{
-                fontSize: 11, fontWeight: 700, padding: "1px 7px",
-                borderRadius: 20, backgroundColor: "#dcfce7", color: "#15803d",
-              }}>
+              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20">
                 {totalPairs} pair{totalPairs !== 1 ? "s" : ""}
               </span>
             )}
@@ -763,9 +656,7 @@ export function POSClient({ products }: { products: Product[] }) {
           {cart.length > 0 && (
             <button
               onClick={() => setCart([])}
-              style={{ fontSize: 11, color: "#9ca3af", cursor: "pointer", background: "none", border: "none" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
-              onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}
+              className="text-[11px] text-white/30 hover:text-red-400 transition-colors"
             >
               Clear all
             </button>
@@ -773,14 +664,11 @@ export function POSClient({ products }: { products: Product[] }) {
         </div>
 
         {/* Cart items (scrollable) */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
+        <div className="flex-1 overflow-y-auto">
           {cart.length === 0 ? (
-            <div style={{
-              display: "flex", flexDirection: "column", alignItems: "center",
-              justifyContent: "center", height: "100%", padding: 24, textAlign: "center",
-            }}>
-              <ShoppingCart style={{ width: 32, height: 32, color: "#e5e7eb", marginBottom: 10 }} />
-              <p style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5 }}>
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+              <ShoppingCart style={{ width: 32, height: 32, color: "rgba(244,244,245,0.1)" }} className="mb-2.5" />
+              <p className="text-[12px] text-white/30 leading-relaxed">
                 Tap a size on any product<br />to add it to the cart
               </p>
             </div>
@@ -798,78 +686,60 @@ export function POSClient({ products }: { products: Product[] }) {
         </div>
 
         {/* ── Fixed bottom ─────────────────────────────────────── */}
-        <div style={{ flexShrink: 0, borderTop: "1px solid #f3f4f6" }}>
+        <div className="shrink-0 border-t border-white/[0.06]">
 
           {/* Discount section */}
-          <div style={{ padding: "10px 14px", borderBottom: "1px solid #f3f4f6" }}>
+          <div className="px-3.5 py-2.5 border-b border-white/[0.04]">
             {appliedDiscount ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Tag style={{ width: 11, height: 11, color: "#16a34a" }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#16a34a", fontFamily: "monospace" }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Tag style={{ width: 11, height: 11, color: "#4ade80" }} />
+                  <span className="text-[12px] font-bold text-[#4ade80] font-mono">
                     {appliedDiscount.code}
                   </span>
-                  <span style={{ fontSize: 11, color: "#4ade80" }}>
+                  <span className="text-[11px] text-[#4ade80]/60 font-mono">
                     −${(appliedDiscount.amount / 100).toFixed(2)}
                   </span>
                 </div>
                 <button
                   onClick={() => setAppliedDiscount(null)}
-                  style={{ cursor: "pointer", color: "#9ca3af", background: "none", border: "none" }}
+                  className="text-white/20 hover:text-white/50 transition-colors"
                 >
                   <X style={{ width: 11, height: 11 }} />
                 </button>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div className="flex flex-col gap-1.5">
                 {/* Code input */}
-                <div style={{ display: "flex", gap: 6 }}>
-                  <div style={{ position: "relative", flex: 1 }}>
-                    <Tag style={{
-                      position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)",
-                      width: 10, height: 10, color: "#9ca3af",
-                    }} />
+                <div className="flex gap-1.5">
+                  <div className="relative flex-1">
+                    <Tag style={{ position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)", width: 10, height: 10, color: "rgba(244,244,245,0.25)" }} />
                     <input
                       type="text"
                       placeholder="Discount code"
                       value={discountCode}
                       onChange={e => { setDiscountCode(e.target.value.toUpperCase()); setDiscountError(""); }}
                       onKeyDown={e => e.key === "Enter" && applyDiscountCode()}
-                      style={{
-                        width: "100%", height: 30, paddingLeft: 24, paddingRight: 8,
-                        fontSize: 11, fontFamily: "monospace", backgroundColor: "#f9fafb",
-                        border: "1px solid #e5e7eb", borderRadius: 7, outline: "none",
-                        boxSizing: "border-box",
-                      }}
+                      className="w-full h-[30px] pl-6 pr-2 text-[11px] font-mono bg-white/[0.04] border border-white/[0.08] rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-[#4ade80]/40"
                     />
                   </div>
                   <button
                     onClick={applyDiscountCode}
                     disabled={discountLoading || !discountCode.trim()}
-                    style={{
-                      height: 30, paddingLeft: 10, paddingRight: 10, borderRadius: 7,
-                      fontSize: 11, fontWeight: 600, cursor: "pointer",
-                      backgroundColor: "#f0fdf4", color: "#16a34a",
-                      border: "1px solid #bbf7d0", opacity: discountLoading || !discountCode.trim() ? 0.5 : 1,
-                      display: "flex", alignItems: "center", gap: 4,
-                    }}
+                    className="h-[30px] px-2.5 rounded-lg text-[11px] font-semibold bg-[#4ade80]/[0.08] text-[#4ade80] border border-[#4ade80]/20 hover:bg-[#4ade80]/[0.15] disabled:opacity-40 transition-colors flex items-center gap-1"
                   >
                     {discountLoading ? <Loader2 style={{ width: 10, height: 10 }} className="animate-spin" /> : "Apply"}
                   </button>
                 </div>
-                {discountError && <p style={{ fontSize: 10, color: "#ef4444", margin: 0 }}>{discountError}</p>}
+                {discountError && <p className="text-[10px] text-red-400">{discountError}</p>}
 
                 {/* Manual discount */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontSize: 10, color: "#9ca3af", whiteSpace: "nowrap" }}>Manual:</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-white/30 whitespace-nowrap">Manual:</span>
                   <select
                     value={manualDiscType}
                     onChange={e => setManualDiscType(e.target.value as "none" | "pct" | "fixed")}
-                    style={{
-                      height: 26, paddingLeft: 4, paddingRight: 4, fontSize: 10,
-                      backgroundColor: "#f9fafb", border: "1px solid #e5e7eb",
-                      borderRadius: 6, outline: "none", cursor: "pointer",
-                    }}
+                    className="h-[26px] px-1 text-[10px] bg-white/[0.04] border border-white/[0.08] rounded-md text-white focus:outline-none"
                   >
                     <option value="none">None</option>
                     <option value="pct">%</option>
@@ -884,14 +754,10 @@ export function POSClient({ products }: { products: Product[] }) {
                         value={manualDiscValue}
                         onChange={e => setManualDiscValue(e.target.value)}
                         placeholder={manualDiscType === "pct" ? "%" : "$"}
-                        style={{
-                          width: 52, height: 26, textAlign: "center", fontSize: 11,
-                          backgroundColor: "#f9fafb", border: "1px solid #e5e7eb",
-                          borderRadius: 6, outline: "none",
-                        }}
+                        className="w-[52px] h-[26px] text-center text-[11px] bg-white/[0.04] border border-white/[0.08] rounded-md text-white focus:outline-none font-mono"
                       />
                       {manualDiscAmount > 0 && (
-                        <span style={{ fontSize: 10, color: "#16a34a", fontWeight: 600 }}>
+                        <span className="text-[10px] text-[#4ade80] font-semibold font-mono">
                           −${(manualDiscAmount / 100).toFixed(2)}
                         </span>
                       )}
@@ -903,57 +769,51 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Totals */}
-          <div style={{ padding: "10px 16px", borderBottom: "1px solid #f3f4f6" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#6b7280" }}>Subtotal</span>
-                <span style={{ fontSize: 12, color: "#6b7280" }}>${(subtotal / 100).toFixed(2)}</span>
+          <div className="px-4 py-2.5 border-b border-white/[0.04]">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex justify-between">
+                <span className="text-[12px] text-white/40">Subtotal</span>
+                <span className="text-[12px] text-white/40 font-mono">${(subtotal / 100).toFixed(2)}</span>
               </div>
               {totalDiscountAmount > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 12, color: "#16a34a" }}>Discount</span>
-                  <span style={{ fontSize: 12, color: "#16a34a" }}>−${(totalDiscountAmount / 100).toFixed(2)}</span>
+                <div className="flex justify-between">
+                  <span className="text-[12px] text-[#4ade80]">Discount</span>
+                  <span className="text-[12px] text-[#4ade80] font-mono">−${(totalDiscountAmount / 100).toFixed(2)}</span>
                 </div>
               )}
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 11, color: "#9ca3af" }}>Incl. GST (15%)</span>
-                <span style={{ fontSize: 11, color: "#9ca3af" }}>${(gstIncluded / 100).toFixed(2)}</span>
+              <div className="flex justify-between">
+                <span className="text-[11px] text-white/25">Incl. GST (15%)</span>
+                <span className="text-[11px] text-white/25 font-mono">${(gstIncluded / 100).toFixed(2)}</span>
               </div>
             </div>
-            <div style={{
-              display: "flex", justifyContent: "space-between", alignItems: "baseline",
-              marginTop: 10, paddingTop: 10, borderTop: "1px solid #f3f4f6",
-            }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>Total</span>
-              <span style={{ fontSize: 22, fontWeight: 800, color: "#111827" }}>
+            <div className="flex justify-between items-baseline mt-2.5 pt-2.5 border-t border-white/[0.04]">
+              <span className="text-[14px] font-bold text-white">Total</span>
+              <span className="text-[22px] font-bold text-white font-mono">
                 ${(total / 100).toFixed(2)}
-                <span style={{ fontSize: 12, fontWeight: 400, color: "#9ca3af" }}> NZD</span>
+                <span className="text-[12px] font-normal text-white/30"> NZD</span>
               </span>
             </div>
           </div>
 
           {/* Customer (collapsible) */}
-          <div style={{ padding: "8px 16px", borderBottom: "1px solid #f3f4f6" }}>
+          <div className="px-4 py-2 border-b border-white/[0.04]">
             <button
               onClick={() => setShowCustomer(v => !v)}
-              style={{
-                width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-                cursor: "pointer", background: "none", border: "none", padding: 0,
-              }}
+              className="w-full flex items-center justify-between"
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <User style={{ width: 11, height: 11, color: "#9ca3af" }} />
-                <span style={{ fontSize: 11, color: "#6b7280" }}>
+              <div className="flex items-center gap-1.5">
+                <User style={{ width: 11, height: 11, color: "rgba(244,244,245,0.25)" }} />
+                <span className="text-[11px] text-white/40">
                   {showCustomer ? "Customer details" : "Add customer (optional)"}
                 </span>
               </div>
               {showCustomer
-                ? <ChevronUp style={{ width: 11, height: 11, color: "#9ca3af" }} />
-                : <ChevronDown style={{ width: 11, height: 11, color: "#9ca3af" }} />}
+                ? <ChevronUp style={{ width: 11, height: 11, color: "rgba(244,244,245,0.25)" }} />
+                : <ChevronDown style={{ width: 11, height: 11, color: "rgba(244,244,245,0.25)" }} />}
             </button>
 
             {showCustomer && (
-              <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 5 }}>
+              <div className="mt-2 flex flex-col gap-1.5">
                 {(["name", "email", "phone"] as const).map(field => (
                   <input
                     key={field}
@@ -961,11 +821,7 @@ export function POSClient({ products }: { products: Product[] }) {
                     placeholder={field === "name" ? "Full name" : field === "email" ? "Email (for receipt)" : "Phone"}
                     value={customer[field]}
                     onChange={e => setCustomer(c => ({ ...c, [field]: e.target.value }))}
-                    style={{
-                      width: "100%", height: 30, padding: "0 10px", fontSize: 11,
-                      backgroundColor: "#f9fafb", border: "1px solid #e5e7eb",
-                      borderRadius: 7, outline: "none", boxSizing: "border-box",
-                    }}
+                    className="w-full h-[30px] px-2.5 text-[11px] bg-white/[0.04] border border-white/[0.08] rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-[#4ade80]/40"
                   />
                 ))}
                 <input
@@ -973,21 +829,17 @@ export function POSClient({ products }: { products: Product[] }) {
                   placeholder="Notes (optional)"
                   value={posNotes}
                   onChange={e => setPosNotes(e.target.value)}
-                  style={{
-                    width: "100%", height: 30, padding: "0 10px", fontSize: 11,
-                    backgroundColor: "#f9fafb", border: "1px solid #e5e7eb",
-                    borderRadius: 7, outline: "none", boxSizing: "border-box",
-                  }}
+                  className="w-full h-[30px] px-2.5 text-[11px] bg-white/[0.04] border border-white/[0.08] rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-[#4ade80]/40"
                 />
                 {customer.email && (
-                  <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={sendReceipt}
                       onChange={e => setSendReceipt(e.target.checked)}
-                      style={{ width: 12, height: 12, accentColor: "#16a34a" }}
+                      className="w-3 h-3 accent-[#4ade80]"
                     />
-                    <span style={{ fontSize: 10, color: "#6b7280" }}>
+                    <span className="text-[10px] text-white/40">
                       Email receipt to {customer.email}
                     </span>
                   </label>
@@ -997,28 +849,22 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Payment method */}
-          <div style={{ padding: "8px 16px", borderBottom: "1px solid #f3f4f6" }}>
-            <p style={{
-              fontSize: 10, fontWeight: 600, color: "#9ca3af",
-              textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6,
-            }}>
+          <div className="px-4 py-2 border-b border-white/[0.04]">
+            <p className="text-[10px] font-semibold text-white/25 uppercase tracking-wider mb-1.5">
               Payment
             </p>
-            <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+            <div className="flex gap-1.5 flex-wrap">
               {paymentMethods.map(pm => {
                 const active = paymentMethod === pm.id;
                 return (
                   <button
                     key={pm.id}
                     onClick={() => setPaymentMethod(pm.id)}
+                    className="flex items-center gap-1 h-[28px] px-2.5 rounded-lg text-[11px] font-semibold transition-all duration-100"
                     style={{
-                      display: "flex", alignItems: "center", gap: 4,
-                      height: 28, paddingLeft: 10, paddingRight: 10,
-                      borderRadius: 7, fontSize: 11, fontWeight: 600,
-                      cursor: "pointer", transition: "all 0.1s",
-                      backgroundColor: active ? "#0f1a12" : "#f3f4f6",
-                      color: active ? "white" : "#6b7280",
-                      border: active ? "1px solid transparent" : "1px solid #e5e7eb",
+                      backgroundColor: active ? "#0c0c0e" : "rgba(255,255,255,0.04)",
+                      color: active ? "white" : "rgba(244,244,245,0.4)",
+                      border: active ? "1px solid rgba(74,222,128,0.3)" : "1px solid rgba(255,255,255,0.06)",
                     }}
                   >
                     {pm.icon}
@@ -1030,31 +876,20 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Error + CTA */}
-          <div style={{ padding: "12px 14px" }}>
+          <div className="px-3.5 py-3">
             {saleError && (
-              <p style={{ fontSize: 11, color: "#ef4444", marginBottom: 8, padding: "6px 10px", backgroundColor: "#fef2f2", borderRadius: 7 }}>
+              <p className="text-[11px] text-red-400 mb-2 px-2.5 py-1.5 bg-red-400/[0.08] rounded-lg border border-red-400/20">
                 {saleError}
               </p>
             )}
             <button
               onClick={() => completeSale()}
               disabled={cart.length === 0 || processing || stripeLoading}
+              className="w-full h-12 rounded-xl text-[14px] font-bold text-black transition-all duration-150 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
               style={{
-                width: "100%",
-                height: 48,
-                borderRadius: 10,
-                border: "none",
-                fontSize: 14,
-                fontWeight: 700,
-                color: "white",
-                cursor: cart.length === 0 || processing || stripeLoading ? "not-allowed" : "pointer",
-                backgroundColor: cart.length === 0 ? "#9ca3af" : "#16a34a",
-                boxShadow: cart.length > 0 ? "0 4px 14px rgba(22,163,74,0.3)" : "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                transition: "all 0.15s",
+                backgroundColor: cart.length === 0 ? "rgba(244,244,245,0.08)" : "#4ade80",
+                color: cart.length === 0 ? "rgba(244,244,245,0.2)" : "black",
+                boxShadow: cart.length > 0 ? "0 4px 16px rgba(74,222,128,0.2)" : "none",
               }}
             >
               {processing || stripeLoading ? (
@@ -1072,3 +907,6 @@ export function POSClient({ products }: { products: Product[] }) {
     </div>
   );
 }
+
+// Suppress unused import warning for Pencil
+void Pencil;

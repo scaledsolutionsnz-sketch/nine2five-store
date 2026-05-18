@@ -11,8 +11,8 @@ export default async function SuppliersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl">Suppliers</h1>
-        <p className="text-sm text-gray-400 mt-1">Manage your stock suppliers and contacts.</p>
+        <h1 className="font-bold text-xl text-white">Suppliers</h1>
+        <p className="text-sm text-white/45 mt-1">Manage your stock suppliers and contacts.</p>
       </div>
       <SuppliersClient initialSuppliers={(data ?? []) as Supplier[]} />
     </div>
