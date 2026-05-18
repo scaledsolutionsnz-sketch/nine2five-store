@@ -55,7 +55,7 @@ export default async function OrdersPage({
           <thead>
             <tr className="border-b border-white/[0.06] bg-[#111113]">
               {["Order", "Customer", "Date", "Total", "Status", ""].map((h) => (
-                <th key={h} className="text-left px-5 py-4 text-white/40 text-xs font-semibold uppercase tracking-wider">
+                <th key={h} className="text-left px-6 py-5 text-white/40 text-sm font-semibold uppercase tracking-wider">
                   {h}
                 </th>
               ))}
@@ -66,27 +66,27 @@ export default async function OrdersPage({
               const addr = order.shipping_address as { first_name?: string; last_name?: string };
               return (
                 <tr key={order.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
-                  <td className="px-5 py-5 font-mono font-bold text-white text-base">#{order.order_number}</td>
-                  <td className="px-5 py-5 text-white/80 text-base">
+                  <td className="px-6 py-7 font-mono font-bold text-white text-xl">#{order.order_number}</td>
+                  <td className="px-6 py-7 text-white/80 text-lg">
                     {addr?.first_name} {addr?.last_name}
-                    {order.guest_email && <p className="text-sm text-white/30 mt-0.5">{order.guest_email}</p>}
+                    {order.guest_email && <p className="text-sm text-white/30 mt-1">{order.guest_email}</p>}
                   </td>
-                  <td className="px-5 py-5 text-white/40 text-sm">
+                  <td className="px-6 py-7 text-white/40 text-base">
                     {new Date(order.created_at).toLocaleDateString("en-NZ")}
                   </td>
-                  <td className="px-5 py-5 font-mono font-semibold text-white text-base">
+                  <td className="px-6 py-7 font-mono font-semibold text-white text-xl">
                     ${(order.total / 100).toFixed(2)}
                   </td>
-                  <td className="px-5 py-5">
+                  <td className="px-6 py-7">
                     <span className={cn(
-                      "inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium",
+                      "inline-flex items-center px-3 py-1.5 rounded-full text-base font-medium",
                       STATUS_COLORS[order.status] ?? STATUS_COLORS.pending
                     )}>
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-5 py-5">
-                    <Link href={`/admin/orders/${order.id}`} className="text-sm text-[#4ade80] hover:text-[#86efac] font-medium transition-colors">
+                  <td className="px-6 py-7">
+                    <Link href={`/admin/orders/${order.id}`} className="text-base text-[#4ade80] hover:text-[#86efac] font-medium transition-colors">
                       View →
                     </Link>
                   </td>
