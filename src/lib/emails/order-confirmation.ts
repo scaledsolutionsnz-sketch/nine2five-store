@@ -152,7 +152,7 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
           <!-- Footer -->
           <tr>
             <td style="text-align:center;border-top:1px solid #1e1e1e;padding-top:24px;">
-              <p style="margin:0;font-size:12px;color:#525252;">Nine2Five Limited · Christchurch, New Zealand</p>
+              <p style="margin:0;font-size:12px;color:#525252;">Nine2Five Limited · Masterton, New Zealand</p>
               <p style="margin:6px 0 0;font-size:12px;color:#525252;">
                 Questions? Reply to this email or visit
                 <a href="https://nine2five.co.nz" style="color:#16a34a;text-decoration:none;">nine2five.co.nz</a>
@@ -193,7 +193,7 @@ export function orderConfirmationText(data: OrderConfirmationData): string {
     ``,
     `View your order: https://nine2five.co.nz/account/orders`,
     ``,
-    `Nine2Five Limited · Christchurch, New Zealand`,
+    `Nine2Five Limited · Masterton, New Zealand`,
   ].filter((l) => l !== null);
   return lines.join("\n");
 }
