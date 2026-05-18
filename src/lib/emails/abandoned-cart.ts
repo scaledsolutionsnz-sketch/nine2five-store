@@ -1,11 +1,14 @@
 import type { CartItem } from "@/types/database";
+import { unsubscribeUrl } from "@/lib/email-tracking";
 
 export function abandonedCartHtml(opts: {
   firstName: string | null;
   items: CartItem[];
   recoveryUrl: string;
+  email: string;
 }): string {
-  const { firstName, items, recoveryUrl } = opts;
+  const { firstName, items, recoveryUrl, email } = opts;
+  const unsub = unsubscribeUrl(email);
   const greeting = firstName ? `Kia ora ${firstName},` : "Kia ora,";
 
   const itemRows = items
@@ -81,7 +84,11 @@ export function abandonedCartHtml(opts: {
       <!-- Footer -->
       <tr><td style="padding:24px 40px;border-top:1px solid #1e1e1e;">
         <p style="margin:0;font-size:12px;color:#525252;line-height:1.7;">
-          Nine2Five · Christchurch, New Zealand · <a href="https://nine2five.co.nz" style="color:#16a34a;text-decoration:none;">nine2five.co.nz</a>
+          Nine2Five Limited · Masterton, New Zealand · <a href="https://nine2five.co.nz" style="color:#16a34a;text-decoration:none;">nine2five.co.nz</a>
+        </p>
+        <p style="margin:6px 0 0;font-size:11px;color:#3a3a3a;">
+          You received this because you started a purchase at nine2five.co.nz. ·
+          <a href="${unsub}" style="color:#3a3a3a;text-decoration:underline;">Unsubscribe</a>
         </p>
       </td></tr>
 

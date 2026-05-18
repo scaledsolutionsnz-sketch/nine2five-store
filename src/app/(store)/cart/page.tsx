@@ -27,7 +27,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-black min-h-screen max-w-screen-xl mx-auto" style={{ paddingTop: "5rem", paddingBottom: "6rem", paddingLeft: "5rem", paddingRight: "5rem" }}>
+    <div className="bg-black min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
       <h1 className="font-display font-black text-4xl text-white mb-12">Your Cart</h1>
 
       <div className="grid md:grid-cols-[1fr_380px] gap-10">

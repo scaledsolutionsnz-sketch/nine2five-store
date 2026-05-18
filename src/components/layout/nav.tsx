@@ -37,7 +37,7 @@ export function Nav() {
           : "bg-transparent"
       )}
     >
-      <nav className="flex items-center justify-between h-16" style={{ paddingLeft: "5rem", paddingRight: "2.5rem" }}>
+      <nav className="flex items-center justify-between h-16 px-4 sm:px-8 md:px-16 lg:px-20">
         <Link href="/" className="font-display font-black text-xl tracking-tight text-white">
           NINE<span style={{ color: "#4ade80" }}>2</span>FIVE
         </Link>

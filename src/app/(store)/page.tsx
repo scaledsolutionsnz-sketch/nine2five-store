@@ -490,7 +490,7 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             BRAND STORY — split layout
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#0a0a0a" }}>
+        <section id="vision" style={{ backgroundColor: "#0a0a0a" }}>
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Left: image */}
             <div className="relative" style={{ minHeight: 520 }}>

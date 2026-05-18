@@ -77,7 +77,7 @@ function InteractiveCard({ product }: { product: Product }) {
               src={img}
               alt={product.name}
               fill
-              className="object-cover group-hover:scale-108 transition-transform duration-600"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">

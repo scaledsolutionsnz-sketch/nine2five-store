@@ -54,6 +54,7 @@ export async function PATCH(req: NextRequest) {
       discount_amount?: number;
       affiliate_code?: string | null;
       session_id?: string | null;
+      accepts_marketing?: boolean;
     };
 
     const piId = body.clientSecret.split("_secret_")[0];
@@ -85,6 +86,7 @@ export async function PATCH(req: NextRequest) {
         discount_amount: String(discountAmt),
         affiliate_code: body.affiliate_code || "",
         session_id: body.session_id || "",
+        accepts_marketing: body.accepts_marketing ? "1" : "0",
       },
     });
 

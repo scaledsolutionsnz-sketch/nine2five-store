@@ -155,6 +155,8 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               <ul className="space-y-3">
                 <li><a href="/#vision" className="ft-link text-sm">Our Vision</a></li>
                 <li><a href="/shipping" className="ft-link text-sm">Shipping</a></li>
+                <li><a href="/returns" className="ft-link text-sm">Returns</a></li>
+                <li><a href="/privacy" className="ft-link text-sm">Privacy Policy</a></li>
                 <li><a href="mailto:nine2five.co.nz@gmail.com" className="ft-link text-sm">Contact</a></li>
               </ul>
             </div>

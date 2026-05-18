@@ -41,6 +41,7 @@ export default function CheckoutPage() {
   const [discounts, setDiscounts] = useState<Array<{ code: string; amount: number; free_shipping: boolean }>>([]);
 
   const [email, setEmail] = useState("");
+  const [acceptsMarketing, setAcceptsMarketing] = useState(false);
   const [address, setAddress] = useState<Partial<ShippingAddress>>({
     first_name: "", last_name: "", line1: "", line2: "",
     city: "", region: "", postcode: "", phone: "",
@@ -188,7 +189,7 @@ export default function CheckoutPage() {
     !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
 
   return (
-    <div className="bg-black min-h-screen max-w-screen-xl mx-auto" style={{ paddingTop: "5rem", paddingBottom: "6rem", paddingLeft: "5rem", paddingRight: "5rem" }}>
+    <div className="bg-black min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
       <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition-colors mb-6">
         <ChevronLeft className="h-4 w-4" /> Back to Cart
       </Link>
@@ -348,6 +349,18 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
+                  <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={acceptsMarketing}
+                      onChange={(e) => setAcceptsMarketing(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/[0.04] accent-[#4ade80] shrink-0"
+                    />
+                    <span className="text-xs text-white/40 leading-relaxed">
+                      Send me updates about new drops and restocks. You can unsubscribe any time.
+                    </span>
+                  </label>
+
                   <button
                     onClick={() => setStep(2)}
                     disabled={!step1Valid}
@@ -448,6 +461,7 @@ export default function CheckoutPage() {
                     email={email}
                     address={{ ...address, country } as ShippingAddress}
                     sessionId={sessionIdRef.current}
+                    acceptsMarketing={acceptsMarketing}
                     onBack={() => setStep(2)}
                   />
                 </Elements>
@@ -607,6 +621,7 @@ function PaymentStep({
   email,
   address,
   sessionId,
+  acceptsMarketing,
   onBack,
 }: {
   items: ReturnType<typeof useCart>["items"];
@@ -616,6 +631,7 @@ function PaymentStep({
   email: string;
   address: ShippingAddress;
   sessionId: string;
+  acceptsMarketing: boolean;
   onBack: () => void;
 }) {
   const stripe = useStripe();
@@ -652,6 +668,7 @@ function PaymentStep({
         discount_amount: discounts.reduce((s, d) => s + d.amount, 0),
         affiliate_code: affiliateCode,
         session_id: sessionId,
+        accepts_marketing: acceptsMarketing,
       }),
     });
 

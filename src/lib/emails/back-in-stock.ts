@@ -1,4 +1,7 @@
-export function backInStockHtml(productName: string, productUrl: string, size: string): string {
+import { unsubscribeUrl } from "@/lib/email-tracking";
+
+export function backInStockHtml(productName: string, productUrl: string, size: string, email: string): string {
+  const unsub = unsubscribeUrl(email);
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"/><title>Back in stock — ${productName}</title></head>
@@ -28,7 +31,11 @@ export function backInStockHtml(productName: string, productUrl: string, size: s
           </tr>
           <tr>
             <td style="text-align:center;padding-top:24px;">
-              <p style="margin:0;font-size:12px;color:#525252;">Nine2Five · Christchurch, New Zealand</p>
+              <p style="margin:0;font-size:12px;color:#525252;">Nine2Five Limited · Masterton, New Zealand</p>
+              <p style="margin:6px 0 0;font-size:11px;color:#3a3a3a;">
+                You signed up for stock alerts at nine2five.co.nz. ·
+                <a href="${unsub}" style="color:#3a3a3a;text-decoration:underline;">Unsubscribe</a>
+              </p>
             </td>
           </tr>
         </table>

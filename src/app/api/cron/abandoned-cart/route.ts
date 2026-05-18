@@ -56,6 +56,7 @@ export async function GET(req: NextRequest) {
           firstName: customer?.first_name ?? null,
           items,
           recoveryUrl,
+          email: cart.email,
         }),
         text: abandonedCartText({
           firstName: customer?.first_name ?? null,

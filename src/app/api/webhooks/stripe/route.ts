@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
               first_name: shippingAddress.first_name || "",
               last_name: shippingAddress.last_name || "",
               phone: shippingAddress.phone || null,
+              accepts_marketing: meta.accepts_marketing === "1",
             })
             .select("id")
             .single();
