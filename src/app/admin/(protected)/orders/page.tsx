@@ -124,7 +124,7 @@ export default async function OrdersPage({
                     ${(order.total / 100).toFixed(2)}
                   </td>
                   <td className="px-6 py-16 font-mono text-white/60 text-sm">
-                    {totalPairs} {totalPairs === 1 ? "pair" : "pairs"}
+                    {totalPairs > 0 ? `${totalPairs} ${totalPairs === 1 ? "pair" : "pairs"}` : <span className="text-white/20">—</span>}
                   </td>
                   <td className="px-6 py-16">
                     <Link href={`/admin/orders/${order.id}`} className="text-sm text-[#4ade80] hover:text-[#86efac] font-medium transition-colors whitespace-nowrap">
