@@ -48,15 +48,20 @@ export default function CheckoutPage() {
 
   const sessionIdRef = useRef<string>("");
   const addressLine1Ref = useRef<HTMLInputElement>(null);
+  const acInitialized = useRef(false);
 
-  // Google Places autocomplete on address line 1
+  // Google Places autocomplete — re-runs when form becomes visible
   useEffect(() => {
+    if (step !== 1 || loading || isBulk || acInitialized.current) return;
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     if (!apiKey) return;
 
-    function init() {
+    function attach() {
       const input = addressLine1Ref.current;
-      if (!input || !(window as any).google?.maps?.places) return;
+      if (!input || acInitialized.current) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (!(window as any).google?.maps?.places) return;
+      acInitialized.current = true;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const ac = new (window as any).google.maps.places.Autocomplete(input, {
         types: ["address"],
@@ -69,34 +74,32 @@ export default function CheckoutPage() {
         const get = (t: string) =>
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           place.address_components.find((c: any) => c.types.includes(t))?.long_name ?? "";
-        const streetNumber = get("street_number");
-        const route = get("route");
-        const subpremise = get("subpremise");
-        const line1 = [subpremise, streetNumber, route].filter(Boolean).join(" ");
-        const city =
-          get("locality") || get("sublocality_level_1") || get("administrative_area_level_2");
-        const postcode = get("postal_code");
-        const region = get("administrative_area_level_1");
-        setAddress(a => ({ ...a, line1, city, postcode, region }));
+        const line1 = [get("subpremise"), get("street_number"), get("route")].filter(Boolean).join(" ");
+        const city = get("locality") || get("sublocality_level_1") || get("administrative_area_level_2");
+        setAddress(a => ({ ...a, line1, city, postcode: get("postal_code"), region: get("administrative_area_level_1") }));
       });
     }
 
-    if ((window as any).google?.maps?.places) {
-      init();
-    } else {
-      const existing = document.getElementById("gplaces-script");
-      if (!existing) {
-        const s = document.createElement("script");
-        s.id = "gplaces-script";
-        s.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-        s.async = true;
-        s.onload = init;
-        document.head.appendChild(s);
+    // Small delay so React finishes rendering the input before we attach
+    const timer = setTimeout(() => {
+      if ((window as any).google?.maps?.places) {
+        attach();
       } else {
-        existing.addEventListener("load", init);
+        const existing = document.getElementById("gplaces-script");
+        if (!existing) {
+          const s = document.createElement("script");
+          s.id = "gplaces-script";
+          s.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+          s.async = true;
+          s.onload = attach;
+          document.head.appendChild(s);
+        } else {
+          existing.addEventListener("load", attach);
+        }
       }
-    }
-  }, []);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [step, loading, isBulk]);
   useEffect(() => {
     const stored = sessionStorage.getItem("n2f_session");
     if (stored) {
