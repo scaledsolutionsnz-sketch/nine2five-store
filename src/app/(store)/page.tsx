@@ -749,9 +749,9 @@ export default async function HomePage() {
                 {
                   img: "/athletes/rossana-perales.jpg",
                   name: "Rossana Perales",
-                  role: "Athlete",
+                  role: "Fitness Coach",
                   team: "New Zealand",
-                  detail: "Representing Nine2Five with pride.",
+                  detail: "Empowering movement and performance. Training the next generation.",
                 },
                 {
                   img: "/athletes/reuben-cherrington.png",
