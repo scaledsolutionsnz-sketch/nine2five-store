@@ -166,7 +166,7 @@ export default function CheckoutPage() {
 
   if (count === 0) {
     return (
-      <div className="bg-black min-h-screen flex flex-col items-center justify-center px-8 text-center">
+      <div className="bg-[#112016] min-h-screen flex flex-col items-center justify-center px-8 text-center">
         <p className="text-white/50 mb-4">Your cart is empty.</p>
         <Link
           href="/shop"
@@ -189,7 +189,7 @@ export default function CheckoutPage() {
     !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
 
   return (
-    <div className="bg-black min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
+    <div className="bg-[#112016] min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
       <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition-colors mb-6">
         <ChevronLeft className="h-4 w-4" /> Back to Cart
       </Link>
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
                   "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
                   isActive && "bg-[#4ade80] text-black",
                   isDone && "bg-[#4ade80]/15 text-[#4ade80] border border-[#4ade80]/30",
-                  !isActive && !isDone && "bg-[#111] border border-white/[0.08] text-white/30",
+                  !isActive && !isDone && "bg-[#192d1e] border border-white/[0.08] text-white/30",
                 )}>
                   {isDone ? <Check className="h-3.5 w-3.5" /> : num}
                 </div>
@@ -247,7 +247,7 @@ export default function CheckoutPage() {
               )}
 
               {isBulk && !loading && (
-                <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 text-center space-y-4">
+                <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8 text-center space-y-4">
                   <p className="text-sm text-white/50 leading-relaxed">
                     Your order contains more than 12 pairs.<br />
                     Please contact us directly for bulk shipping rates.
@@ -377,7 +377,7 @@ export default function CheckoutPage() {
           {step === 2 && (
             <div className="space-y-6">
               {/* Summary of step 1 */}
-              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#111] border border-white/[0.08] text-sm">
+              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#192d1e] border border-white/[0.08] text-sm">
                 <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-white truncate">{address.first_name} {address.last_name}</p>
@@ -389,9 +389,9 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+              <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
                 <h2 className="font-display font-bold text-base text-white mb-4">Delivery Method</h2>
-                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#111] border border-[#4ade80]/30 ring-1 ring-[#4ade80]/10">
+                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#192d1e] border border-[#4ade80]/30 ring-1 ring-[#4ade80]/10">
                   <div className="h-4 w-4 rounded-full border-2 border-[#4ade80] flex items-center justify-center shrink-0">
                     <div className="h-2 w-2 rounded-full bg-[#4ade80]" />
                   </div>
@@ -472,7 +472,7 @@ export default function CheckoutPage() {
 
         {/* ── Right column — Order summary ── */}
         <div className="space-y-7">
-          <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+          <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
             <h2 className="font-display font-bold text-base text-white mb-5">Order Summary</h2>
             <div className="space-y-3 mb-5">
               {items.map((item) => (
@@ -595,7 +595,7 @@ function DiscountInput({
             onChange={(e) => { setCode(e.target.value.toUpperCase()); setError(""); }}
             onKeyDown={(e) => e.key === "Enter" && apply()}
             placeholder="Discount code"
-            className="flex-1 h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors font-mono"
+            className="flex-1 h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors font-mono"
           />
           <button
             onClick={apply}
@@ -711,7 +711,7 @@ function PaymentStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Delivery summary pill */}
-      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#111] border border-white/[0.08] text-sm">
+      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#192d1e] border border-white/[0.08] text-sm">
         <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-white truncate">{address.first_name} {address.last_name}</p>
@@ -723,7 +723,7 @@ function PaymentStep({
         </button>
       </div>
 
-      <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+      <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
         <h2 className="font-display font-bold text-base text-white mb-4">Payment</h2>
         <PaymentElement />
       </div>

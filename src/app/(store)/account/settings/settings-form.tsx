@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-const inputClass = "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
+const inputClass = "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
 export function SettingsForm({ customer, email }: { customer: Customer | null; email: string }) {
   const router = useRouter();
@@ -60,7 +60,7 @@ export function SettingsForm({ customer, email }: { customer: Customer | null; e
   return (
     <div className="space-y-6">
       {/* Profile */}
-      <form onSubmit={saveProfile} className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
+      <form onSubmit={saveProfile} className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8 space-y-4">
         <h2 className="font-display font-semibold text-sm text-white">Personal Details</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -102,7 +102,7 @@ export function SettingsForm({ customer, email }: { customer: Customer | null; e
       </form>
 
       {/* Password */}
-      <form onSubmit={changePassword} className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
+      <form onSubmit={changePassword} className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8 space-y-4">
         <h2 className="font-display font-semibold text-sm text-white">Change Password</h2>
         <div>
           <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">New Password</label>

@@ -44,10 +44,10 @@ function LoginForm() {
     toast.success("Magic link sent — check your email");
   }
 
-  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
+  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
   return (
-    <div className="bg-black min-h-screen flex items-center justify-center px-6">
+    <div className="bg-[#112016] min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link href="/" className="font-display font-black text-2xl tracking-tight text-white inline-block mb-1">
@@ -56,7 +56,7 @@ function LoginForm() {
           <p className="text-white/40 text-sm">Sign in to your account</p>
         </div>
 
-        <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8">
+        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Email</label>
@@ -92,7 +92,7 @@ function LoginForm() {
               <div className="w-full border-t border-white/[0.08]" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-3 bg-[#111] text-xs text-white/30">or</span>
+              <span className="px-3 bg-[#192d1e] text-xs text-white/30">or</span>
             </div>
           </div>
 

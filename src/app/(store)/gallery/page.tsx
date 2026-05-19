@@ -39,7 +39,7 @@ const GALLERY = [
 
 export default function GalleryPage() {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-[#112016] min-h-screen">
 
       {/* Hero header */}
       <div className="relative overflow-hidden" style={{ height: "55vh", minHeight: "400px" }}>
@@ -73,7 +73,7 @@ export default function GalleryPage() {
           {GALLERY.map((item, i) => (
             <div
               key={i}
-              className="group relative break-inside-avoid mb-4 rounded-xl overflow-hidden bg-[#111]"
+              className="group relative break-inside-avoid mb-4 rounded-xl overflow-hidden bg-[#192d1e]"
             >
               <div className={`relative w-full ${item.aspect}`}>
                 <Image
@@ -83,7 +83,7 @@ export default function GalleryPage() {
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/[0.15] text-white/80 text-[10px] font-black uppercase tracking-widest">
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-[#112016]/50 backdrop-blur-sm border border-white/[0.15] text-white/80 text-[10px] font-black uppercase tracking-widest">
                   {item.tag}
                 </span>
               </div>

@@ -71,7 +71,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const isOnSale = p.compare_at_price && p.compare_at_price > p.price;
 
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-[#112016] min-h-screen">
       <div className="pt-24 md:pt-32 pb-24 px-8 md:px-16 max-w-screen-xl mx-auto">
         <Link
           href="/shop"
@@ -83,7 +83,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
           {/* Image */}
           <div>
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#111]">
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#192d1e]">
               {p.image_urls?.[0] ? (
                 <Image
                   src={p.image_urls[0]}
@@ -93,7 +93,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   priority
                 />
               ) : (
-                <div className="absolute inset-0 bg-[#111] flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#192d1e] flex items-center justify-center">
                   <span className="text-white/20 text-sm">No image</span>
                 </div>
               )}

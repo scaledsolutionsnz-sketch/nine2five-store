@@ -12,7 +12,7 @@ export default function CartPage() {
 
   if (count === 0) {
     return (
-      <div className="bg-black min-h-screen flex flex-col items-center justify-center px-8 md:px-16 text-center">
+      <div className="bg-[#112016] min-h-screen flex flex-col items-center justify-center px-8 md:px-16 text-center">
         <ShoppingBag className="h-12 w-12 text-white/20 mx-auto mb-4" />
         <h1 className="font-display font-black text-3xl text-white mb-2">Your cart is empty</h1>
         <p className="text-white/50 mb-8">Add some grip socks to get started.</p>
@@ -27,7 +27,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-black min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
+    <div className="bg-[#112016] min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
       <h1 className="font-display font-black text-4xl text-white mb-12">Your Cart</h1>
 
       <div className="grid md:grid-cols-[1fr_380px] gap-10">
@@ -36,7 +36,7 @@ export default function CartPage() {
           {items.map((item) => (
             <div
               key={`${item.productId}-${item.size}`}
-              className="bg-[#111] border border-white/[0.08] rounded-2xl p-5 flex gap-5"
+              className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-5 flex gap-5"
             >
               <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-[#1a1a1a] shrink-0">
                 {item.imageUrl ? (
@@ -82,7 +82,7 @@ export default function CartPage() {
         </div>
 
         {/* Summary */}
-        <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 h-fit">
+        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8 h-fit">
           <h2 className="font-display font-bold text-xl text-white mb-8">Order Summary</h2>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">

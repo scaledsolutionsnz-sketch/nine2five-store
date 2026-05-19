@@ -119,7 +119,7 @@ export default async function HomePage() {
           text-decoration: none;
           overflow: hidden;
           border-radius: 1rem;
-          background-color: #111111;
+          background-color: #192d1e;
           transition: transform 0.5s cubic-bezier(0.16,1,0.3,1),
                       box-shadow 0.5s cubic-bezier(0.16,1,0.3,1);
         }
@@ -135,7 +135,7 @@ export default async function HomePage() {
         /* CTA button hover */
         .btn-green {
           display: inline-flex; align-items: center; gap: 0.5rem;
-          background-color: #4ade80; color: #000000; text-decoration: none;
+          background-color: #4ade80; color: #0a1a0e; text-decoration: none;
           font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
           letter-spacing: 0.08em; border-radius: 9999px;
           padding: 1rem 2rem;
@@ -158,7 +158,7 @@ export default async function HomePage() {
 
         .btn-green-sm {
           display: inline-flex; align-items: center; gap: 0.5rem;
-          background-color: #4ade80; color: #000000; text-decoration: none;
+          background-color: #4ade80; color: #0a1a0e; text-decoration: none;
           font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
           letter-spacing: 0.08em; border-radius: 9999px;
           padding: 1rem 2rem; align-self: flex-start;
@@ -168,7 +168,7 @@ export default async function HomePage() {
 
         .btn-green-lg {
           display: inline-flex; align-items: center; gap: 0.5rem;
-          background-color: #4ade80; color: #000000; text-decoration: none;
+          background-color: #4ade80; color: #0a1a0e; text-decoration: none;
           font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
           letter-spacing: 0.08em; border-radius: 9999px;
           padding: 1.1rem 2.6rem;
@@ -194,7 +194,7 @@ export default async function HomePage() {
         .social-link:hover { color: #ffffff; }
       `}</style>
 
-      <div style={{ backgroundColor: "#000000", color: "#ffffff" }}>
+      <div style={{ backgroundColor: "#112016", color: "#ffffff" }}>
 
         {/* ════════════════════════════════════════════
             HERO
@@ -215,7 +215,7 @@ export default async function HomePage() {
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.65) 38%, rgba(0,0,0,0.18) 100%)",
+                  "linear-gradient(to top, #112016 0%, rgba(0,0,0,0.65) 38%, rgba(0,0,0,0.18) 100%)",
               }}
             />
             <div
@@ -371,7 +371,7 @@ export default async function HomePage() {
                     style={{
                       fontSize: 11,
                       letterSpacing: "0.2em",
-                      color: "#000000",
+                      color: "#112016",
                       textTransform: "uppercase",
                       whiteSpace: "nowrap",
                       padding: "0 2.5rem",
@@ -389,7 +389,7 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             COLLECTIONS
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#000000", padding: "7rem 0" }}>
+        <section style={{ backgroundColor: "#112016", padding: "7rem 0" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16">
 
             <div className="mb-14">
@@ -490,7 +490,7 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             BRAND STORY — split layout
         ════════════════════════════════════════════ */}
-        <section id="vision" style={{ backgroundColor: "#0a0a0a" }}>
+        <section id="vision" style={{ backgroundColor: "#112016" }}>
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Left: image */}
             <div className="relative" style={{ minHeight: 520 }}>
@@ -509,7 +509,7 @@ export default async function HomePage() {
                 className="absolute inset-0 hidden md:block"
                 style={{
                   background:
-                    "linear-gradient(to right, transparent 55%, #0a0a0a 100%)",
+                    "linear-gradient(to right, transparent 55%, #112016 100%)",
                 }}
               />
             </div>
@@ -582,7 +582,7 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             PRODUCT GRID
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#000000", padding: "7rem 0" }}>
+        <section style={{ backgroundColor: "#112016", padding: "7rem 0" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16">
 
             <div className="flex items-end justify-between mb-12">
@@ -626,7 +626,7 @@ export default async function HomePage() {
         ════════════════════════════════════════════ */}
         <section
           style={{
-            backgroundColor: "#0a0a0a",
+            backgroundColor: "#112016",
             borderTop: "1px solid rgba(255,255,255,0.07)",
             borderBottom: "1px solid rgba(255,255,255,0.07)",
           }}
@@ -678,7 +678,7 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             ATHLETES
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#000", padding: "6rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <section style={{ backgroundColor: "#112016", padding: "6rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16">
             <div className="mb-12 text-center">
               <p style={{ fontSize: 11, letterSpacing: "0.4em", color: "#4ade80", fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>
@@ -721,7 +721,7 @@ export default async function HomePage() {
               ].map((a) => (
                 <div key={a.name} className="flex flex-col items-center text-center group">
                   <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#4ade80]/20 group-hover:ring-[#4ade80]/60 transition-all duration-300"
-                    style={{ background: "#111" }}>
+                    style={{ background: "#192d1e" }}>
                     <Image
                       src={a.img}
                       alt={a.name}
@@ -743,7 +743,7 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             GALLERY PREVIEW
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#000", padding: "5rem 0 0" }}>
+        <section style={{ backgroundColor: "#112016", padding: "5rem 0 0" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16 mb-8 flex items-end justify-between">
             <div>
               <p style={{ fontSize: 11, letterSpacing: "0.35em", color: "#4ade80", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>
@@ -759,7 +759,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1">
             {[2,4,6,8,10,13,16,19,21,23,25,27,5,9,11,15].map((n) => (
-              <Link key={n} href="/gallery" className="relative aspect-square overflow-hidden bg-[#111] group">
+              <Link key={n} href="/gallery" className="relative aspect-square overflow-hidden bg-[#192d1e] group">
                 <Image src={`/gallery/${n}.png`} alt="Nine2Five lifestyle" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
               </Link>
             ))}
@@ -771,7 +771,7 @@ export default async function HomePage() {
         ════════════════════════════════════════════ */}
         <section
           style={{
-            backgroundColor: "#0a0a0a",
+            backgroundColor: "#112016",
             padding: "5rem 0",
             borderTop: "1px solid rgba(255,255,255,0.06)",
           }}
@@ -870,7 +870,7 @@ export default async function HomePage() {
         ════════════════════════════════════════════ */}
         <section
           style={{
-            backgroundColor: "#000000",
+            backgroundColor: "#112016",
             padding: "9rem 0",
             borderTop: "1px solid rgba(255,255,255,0.07)",
           }}
@@ -989,7 +989,7 @@ function LiveCard({ product }: { product: Product }) {
             className="absolute top-3 left-3 font-black uppercase"
             style={{
               backgroundColor: "#ffffff",
-              color: "#000000",
+              color: "#112016",
               fontSize: 10,
               letterSpacing: "0.1em",
               padding: "0.25rem 0.7rem",
@@ -1052,7 +1052,7 @@ function FallbackCard({
             className="absolute top-3 left-3 font-black uppercase"
             style={{
               backgroundColor: "#ffffff",
-              color: "#000000",
+              color: "#112016",
               fontSize: 10,
               letterSpacing: "0.1em",
               padding: "0.25rem 0.7rem",

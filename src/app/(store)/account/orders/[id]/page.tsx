@@ -72,7 +72,7 @@ export default async function OrderDetailPage({
 
       {/* Tracking progress */}
       {!["cancelled", "refunded"].includes(order.status) && (
-        <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-5">
+        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-5">
           <div className="flex items-center gap-0">
             {STATUS_STEPS.map((step, i) => {
               const done = stepIndex >= i;
@@ -84,7 +84,7 @@ export default async function OrderDetailPage({
                       "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-colors",
                       done
                         ? "bg-[#4ade80] border-[#4ade80] text-black"
-                        : "bg-[#111] border-white/[0.08] text-white/30"
+                        : "bg-[#192d1e] border-white/[0.08] text-white/30"
                     )}>
                       {done ? "✓" : i + 1}
                     </div>
@@ -108,7 +108,7 @@ export default async function OrderDetailPage({
       )}
 
       {/* Items */}
-      <div className="bg-[#111] border border-white/[0.08] rounded-2xl overflow-hidden">
+      <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-white/[0.06]">
           <h2 className="font-display font-semibold text-sm text-white">Items</h2>
         </div>
@@ -156,7 +156,7 @@ export default async function OrderDetailPage({
       </div>
 
       {/* Shipping address */}
-      <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-5">
+      <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-5">
         <h2 className="font-display font-semibold text-sm text-white mb-3">Shipping Address</h2>
         <div className="text-sm text-white/40 space-y-0.5">
           <p className="text-white font-medium">{addr.first_name} {addr.last_name}</p>

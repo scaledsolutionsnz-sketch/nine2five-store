@@ -37,7 +37,7 @@ export function AccountNav({ email }: { email: string }) {
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all",
               active
-                ? "bg-[#111] border border-white/[0.08] text-white"
+                ? "bg-[#192d1e] border border-white/[0.08] text-white"
                 : "text-white/50 hover:text-white hover:bg-white/[0.05]"
             )}
           >

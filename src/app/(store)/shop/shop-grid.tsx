@@ -67,11 +67,11 @@ function InteractiveCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="group relative rounded-xl overflow-hidden bg-[#111] border border-white/[0.07] hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50 transition-all duration-400 cursor-pointer">
+    <div className="group relative rounded-xl overflow-hidden bg-[#192d1e] border border-white/[0.07] hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50 transition-all duration-400 cursor-pointer">
 
       {/* Image */}
       <Link href={`/shop/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden bg-[#1a1a1a]">
+        <div className="relative aspect-square overflow-hidden bg-[#192d1e]">
           {img ? (
             <Image
               src={img}
@@ -86,7 +86,7 @@ function InteractiveCard({ product }: { product: Product }) {
           )}
 
           {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-400" />
+          <div className="absolute inset-0 bg-[#112016]/0 group-hover:bg-[#112016]/25 transition-all duration-400" />
 
           {/* Sale badge */}
           {isOnSale && (
@@ -106,7 +106,7 @@ function InteractiveCard({ product }: { product: Product }) {
               </button>
             )}
             {mode === "loading" && (
-              <div className="w-full flex items-center justify-center gap-2 bg-[#111]/90 backdrop-blur-sm border border-white/10 text-white/50 text-xs py-2.5 rounded-lg">
+              <div className="w-full flex items-center justify-center gap-2 bg-[#192d1e]/90 backdrop-blur-sm border border-white/10 text-white/50 text-xs py-2.5 rounded-lg">
                 <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading…
               </div>
             )}
@@ -121,7 +121,7 @@ function InteractiveCard({ product }: { product: Product }) {
 
       {/* Size picker panel — slides up from bottom, image stays visible */}
       {mode === "picking" && (
-        <div className="absolute bottom-0 left-0 right-0 bg-[#0d0d0d]/95 backdrop-blur-sm p-3 z-10" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="absolute bottom-0 left-0 right-0 bg-[#0e1e12]/95 backdrop-blur-sm p-3 z-10" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <button
             onClick={(e) => { e.preventDefault(); setMode("idle"); }}
             className="absolute top-2 right-2 text-white/30 hover:text-white text-xs"

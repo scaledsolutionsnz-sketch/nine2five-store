@@ -26,7 +26,7 @@ export function AddressForm({ customer }: { customer: Customer | null }) {
   });
   const [saving, setSaving] = useState(false);
 
-  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
+  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -43,7 +43,7 @@ export function AddressForm({ customer }: { customer: Customer | null }) {
 
   return (
     <form onSubmit={save}>
-      <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 space-y-4">
+      <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8 space-y-4">
         <h2 className="font-display font-semibold text-sm text-white mb-2">Default Shipping Address</h2>
 
         <div>

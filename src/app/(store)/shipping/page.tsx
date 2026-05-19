@@ -21,7 +21,7 @@ const AU_RATES = [
 
 export default function ShippingPage() {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-[#112016] min-h-screen">
       <div className="max-w-2xl mx-auto px-6 py-24">
         <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors uppercase tracking-widest">
           ← Back to Nine2Five

@@ -5,7 +5,7 @@ import { ArrowUpRight, MapPin, Mail } from "lucide-react";
 import Image from "next/image";
 
 const inputClass =
-  "w-full h-12 px-4 rounded-xl bg-[#111] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
+  "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -35,7 +35,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-[#112016] min-h-screen">
 
       {/* Hero header */}
       <div className="relative overflow-hidden border-b border-white/[0.06]" style={{ height: "42vh", minHeight: "320px" }}>
@@ -79,7 +79,7 @@ export default function ContactPage() {
 
             <div className="space-y-5">
               <div className="flex items-start gap-4">
-                <div className="h-11 w-11 rounded-xl bg-[#111] border border-white/[0.08] flex items-center justify-center shrink-0">
+                <div className="h-11 w-11 rounded-xl bg-[#192d1e] border border-white/[0.08] flex items-center justify-center shrink-0">
                   <MapPin className="h-4 w-4 text-[#4ade80]" />
                 </div>
                 <div>
@@ -89,7 +89,7 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="h-11 w-11 rounded-xl bg-[#111] border border-white/[0.08] flex items-center justify-center shrink-0">
+                <div className="h-11 w-11 rounded-xl bg-[#192d1e] border border-white/[0.08] flex items-center justify-center shrink-0">
                   <Mail className="h-4 w-4 text-[#4ade80]" />
                 </div>
                 <div>
@@ -104,7 +104,7 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="h-11 w-11 rounded-xl bg-[#111] border border-white/[0.08] flex items-center justify-center shrink-0 text-[#4ade80]">
+                <div className="h-11 w-11 rounded-xl bg-[#192d1e] border border-white/[0.08] flex items-center justify-center shrink-0 text-[#4ade80]">
                   <span className="text-[10px] font-black">IG</span>
                 </div>
                 <div>
@@ -122,7 +122,7 @@ export default function ContactPage() {
             </div>
 
             {/* Teamwear callout */}
-            <div className="p-7 rounded-2xl bg-[#0a0a0a] border border-white/[0.08]"
+            <div className="p-7 rounded-2xl bg-[#112016] border border-white/[0.08]"
               style={{ background: "linear-gradient(135deg, rgba(74,222,128,0.04) 0%, rgba(0,0,0,0) 60%)" }}>
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#4ade80] mb-3">
                 Teamwear &amp; Bulk Orders
@@ -146,7 +146,7 @@ export default function ContactPage() {
                 </p>
               </div>
             ) : (
-              <div className="p-8 md:p-10 rounded-2xl bg-[#0a0a0a] border border-white/[0.08]">
+              <div className="p-8 md:p-10 rounded-2xl bg-[#112016] border border-white/[0.08]">
                 <h3 className="font-display font-black text-xl text-white mb-8">Send a Message</h3>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid sm:grid-cols-2 gap-5">

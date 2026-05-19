@@ -65,7 +65,7 @@ export default async function AccountPage() {
           <Link
             key={label}
             href={href}
-            className="bg-[#111] border border-white/[0.08] rounded-2xl p-6 hover:border-[#4ade80]/20 transition-colors group"
+            className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-6 hover:border-[#4ade80]/20 transition-colors group"
           >
             <Icon className="h-4 w-4 text-white/20 group-hover:text-[#4ade80] mb-2 transition-colors" />
             <p className="font-display font-black text-2xl text-white">{value}</p>
@@ -80,7 +80,7 @@ export default async function AccountPage() {
           <h2 className="font-display font-semibold text-lg text-white">Recent Orders</h2>
           <Link href="/account/orders" className="text-xs text-[#4ade80] hover:underline">View all →</Link>
         </div>
-        <div className="bg-[#111] border border-white/[0.08] rounded-2xl overflow-hidden">
+        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl overflow-hidden">
           {recentOrders.length === 0 ? (
             <div className="px-5 py-10 text-center">
               <ShoppingBag className="h-8 w-8 text-white/20 mx-auto mb-3" />

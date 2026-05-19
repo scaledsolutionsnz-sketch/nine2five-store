@@ -31,7 +31,7 @@ export default async function WishlistPage() {
       </div>
 
       {wishlistItems.length === 0 ? (
-        <div className="bg-[#111] border border-white/[0.08] rounded-2xl px-5 py-16 text-center">
+        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl px-5 py-16 text-center">
           <Heart className="h-10 w-10 text-white/20 mx-auto mb-4" />
           <p className="text-white/40 mb-4">Your wishlist is empty</p>
           <Link
@@ -49,7 +49,7 @@ export default async function WishlistPage() {
             const img = p.image_urls?.[0];
             const onSale = p.compare_at_price && p.compare_at_price > p.price;
             return (
-              <div key={item.product_id} className="group relative bg-[#111] border border-white/[0.08] rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#4ade80]/5 transition-all duration-500">
+              <div key={item.product_id} className="group relative bg-[#192d1e] border border-white/[0.08] rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#4ade80]/5 transition-all duration-500">
                 <Link href={`/shop/${p.slug}`}>
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {img && (

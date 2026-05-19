@@ -36,7 +36,7 @@ export default async function AccountOrdersPage() {
       </div>
 
       {typedOrders.length === 0 ? (
-        <div className="bg-[#111] border border-white/[0.08] rounded-2xl px-5 py-16 text-center">
+        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl px-5 py-16 text-center">
           <ShoppingBag className="h-10 w-10 text-white/20 mx-auto mb-4" />
           <p className="text-white/40 mb-4">You haven&apos;t placed any orders yet</p>
           <Link
@@ -52,7 +52,7 @@ export default async function AccountOrdersPage() {
             <Link
               key={order.id}
               href={`/account/orders/${order.id}`}
-              className="block bg-[#111] border border-white/[0.08] rounded-2xl px-5 py-4 hover:border-[#4ade80]/20 transition-colors group"
+              className="block bg-[#192d1e] border border-white/[0.08] rounded-2xl px-5 py-4 hover:border-[#4ade80]/20 transition-colors group"
             >
               <div className="flex items-start justify-between">
                 <div>
