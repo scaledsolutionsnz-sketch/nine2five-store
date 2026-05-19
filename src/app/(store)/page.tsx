@@ -688,12 +688,12 @@ export default async function HomePage() {
                 OUR ATHLETES
               </h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
               {[
                 {
                   img: "/athletes/ruben-love.png",
                   name: "Ruben Love",
-                  role: "Fullback / First Five-Eighth",
+                  role: "Fullback / First-Five",
                   team: "Hurricanes & All Blacks",
                   detail: "All Blacks squad 2024. Heir to a proud rugby lineage.",
                 },
@@ -717,6 +717,55 @@ export default async function HomePage() {
                   role: "Centre",
                   team: "Queensland Reds",
                   detail: "2024 U20s Player of the Year. Super Rugby rising star.",
+                },
+                {
+                  img: "/athletes/ben-odonovan.jpg",
+                  name: "Ben O'Donovan",
+                  role: "Scrum-half",
+                  team: "Munster Rugby",
+                  detail: "Former Crusaders Academy. NZ U20 rep turned professional in Ireland.",
+                },
+                {
+                  img: "/athletes/flora-devonshire.jpg",
+                  name: "Flora Devonshire",
+                  role: "Allrounder",
+                  team: "White Ferns & Central Hinds",
+                  detail: "Left-arm seamer and batter. Called up to the White Ferns 2025.",
+                },
+                {
+                  img: "/athletes/leon-tuiloma.jpg",
+                  name: "Leon Tuiloma",
+                  role: "Flanker / Hooker",
+                  team: "Hurricanes Development",
+                  detail: "From Masterton, Rathkeale College. NZ Barbarians U21 rep.",
+                },
+                {
+                  img: "/athletes/ocean-bartlett.jpg",
+                  name: "Ocean Bartlett",
+                  role: "Leg-spinner / Batter",
+                  team: "White Ferns & Central Hinds",
+                  detail: "NZ Women's Development squad. Rising star in domestic T20 cricket.",
+                },
+                {
+                  img: "/athletes/reuben-cherrington.png",
+                  name: "Reuben Cherrington",
+                  role: "Rugby League",
+                  team: "Māori Ferns / NRL",
+                  detail: "NRL talent representing Māori culture at the highest level.",
+                },
+                {
+                  img: "/athletes/tiaki-freeman.jpeg",
+                  name: "Tiaki Freeman",
+                  role: "Powerlifter",
+                  team: "NZ National Team",
+                  detail: "317.5kg deadlift. NZ Junior World Championship competitor.",
+                },
+                {
+                  img: "/athletes/will-cole.jpg",
+                  name: "Will Cole",
+                  role: "Fly-half",
+                  team: "Hurricanes WTG",
+                  detail: "NZ U20 World Championship finalist 2025. Hurricanes next gen.",
                 },
               ].map((a) => (
                 <div key={a.name} className="flex flex-col items-center text-center group">
