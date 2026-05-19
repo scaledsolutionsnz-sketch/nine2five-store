@@ -747,6 +747,13 @@ export default async function HomePage() {
                   detail: "NZ Women's Development squad. Rising star in domestic T20 cricket.",
                 },
                 {
+                  img: "/athletes/rossana-perales.jpg",
+                  name: "Rossana Perales",
+                  role: "Athlete",
+                  team: "New Zealand",
+                  detail: "Representing Nine2Five with pride.",
+                },
+                {
                   img: "/athletes/reuben-cherrington.png",
                   name: "Reuben Cherrington",
                   role: "Rugby League",
