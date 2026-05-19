@@ -24,28 +24,28 @@ const COLLECTIONS = [
     tag: "Signature",
     desc: "Our original. Crafted from deep cultural roots and worn with pride.",
     href: "/shop?collection=kahotea",
-    image: "https://images.unsplash.com/photo-1614632537190-23e4e1fef59a?w=800&q=80",
+    image: "/products/black-kahotea/2.avif",
   },
   {
     name: "Limited Drops",
     tag: "Drop",
     desc: "Rare releases. Once they're gone, they're gone.",
     href: "/shop?collection=limited",
-    image: "https://images.unsplash.com/photo-1556906781-9a412961a28c?w=800&q=80",
+    image: "/products/pasifika/1.avif",
   },
   {
     name: "Performance Range",
     tag: "Training",
     desc: "Built for the gym, track, and the field. Grip where it matters.",
     href: "/shop?collection=performance",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+    image: "/gallery/3.png",
   },
   {
     name: "Teamwear",
     tag: "Custom",
     desc: "Kit your whole crew. Custom orders available.",
     href: "/shop?collection=teamwear",
-    image: "https://images.unsplash.com/photo-1529518969858-8baa65152fc8?w=800&q=80",
+    image: "/gallery/7.png",
   },
 ];
 
@@ -204,7 +204,7 @@ export default async function HomePage() {
           {/* Full-bleed image */}
           <div className="absolute inset-0">
             <Image
-              src="https://static.wixstatic.com/media/0d9f9d_8ccff4ed0c7140d9855c18abbd3f7553~mv2.jpeg/v1/fill/w_1400,h_1800,al_c,q_85/0d9f9d_8ccff4ed0c7140d9855c18abbd3f7553~mv2.jpeg"
+              src="/gallery/1.png"
               alt="Nine2Five athlete wearing Māori grip socks"
               fill
               className="object-cover object-center"
@@ -495,8 +495,8 @@ export default async function HomePage() {
             {/* Left: image */}
             <div className="relative" style={{ minHeight: 520 }}>
               <Image
-                src="https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=800&q=80"
-                alt="Athlete in motion representing the Nine2Five identity"
+                src="/gallery/12.png"
+                alt="Nine2Five socks in action"
                 fill
                 className="object-cover object-center"
                 unoptimized
@@ -672,6 +672,32 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════
+            GALLERY PREVIEW
+        ════════════════════════════════════════════ */}
+        <section style={{ backgroundColor: "#000", padding: "5rem 0 0" }}>
+          <div className="max-w-screen-xl mx-auto px-8 md:px-16 mb-8 flex items-end justify-between">
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: "0.35em", color: "#4ade80", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>
+                In The Wild
+              </p>
+              <h2 className="font-display font-black text-white" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", lineHeight: 0.95 }}>
+                THE GALLERY
+              </h2>
+            </div>
+            <Link href="/gallery" className="text-[11px] font-bold uppercase tracking-widest text-white/40 hover:text-[#4ade80] transition-colors pb-1">
+              View All →
+            </Link>
+          </div>
+          <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1">
+            {[2,4,6,8,10,13,16,19,21,23,25,27,5,9,11,15].map((n) => (
+              <Link key={n} href="/gallery" className="relative aspect-square overflow-hidden bg-[#111] group">
+                <Image src={`/gallery/${n}.png`} alt="Nine2Five lifestyle" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              </Link>
+            ))}
           </div>
         </section>
 
