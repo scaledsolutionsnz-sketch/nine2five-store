@@ -17,14 +17,14 @@ export function backInStockHtml(productName: string, productUrl: string, size: s
           </tr>
           <tr>
             <td style="background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:32px;text-align:center;">
-              <div style="width:48px;height:48px;background:#16a34a;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+              <div style="width:48px;height:48px;background:#2d6b1a;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
                 <span style="font-size:24px;">✓</span>
               </div>
               <p style="margin:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#737373;">Back in Stock</p>
               <p style="margin:12px 0 0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">${productName}</p>
               <p style="margin:8px 0 0;font-size:14px;color:#737373;">Size ${size} is available again. Grab it before it sells out.</p>
               <a href="${productUrl}"
-                 style="display:inline-block;margin-top:24px;background:#16a34a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;">
+                 style="display:inline-block;margin-top:24px;background:#2d6b1a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;">
                 Shop Now →
               </a>
             </td>

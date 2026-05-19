@@ -53,10 +53,10 @@ export default function GalleryPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(74,222,128,0.10) 0%, transparent 60%)" }}
+          style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(58,119,34,0.10) 0%, transparent 60%)" }}
         />
         <div className="absolute bottom-0 left-0 right-0 px-10 md:px-20 pb-12">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#4ade80] mb-3">Nine2Five</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#3a7722] mb-3">Nine2Five</p>
           <h1 className="font-display font-black text-white leading-none"
             style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}>
             THE GALLERY
@@ -94,7 +94,7 @@ export default function GalleryPage() {
 
       {/* Bottom CTA */}
       <div className="border-t border-white/[0.06] py-24 text-center px-10">
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#4ade80] mb-5">
+        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#3a7722] mb-5">
           Ready to Represent
         </p>
         <h2 className="font-display font-black text-white leading-none mb-8"
@@ -103,7 +103,7 @@ export default function GalleryPage() {
         </h2>
         <Link
           href="/shop"
-          className="inline-flex items-center gap-2 bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-10 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300"
+          className="inline-flex items-center gap-2 bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-10 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300"
         >
           Shop Collection
         </Link>

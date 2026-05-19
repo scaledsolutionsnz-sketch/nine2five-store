@@ -11,7 +11,7 @@ export function AdminTopbar() {
     >
       {/* Left: brand label */}
       <div className="flex items-center gap-2.5 shrink-0">
-        <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-[#4ade80]">
+        <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-[#3a7722]">
           <span className="font-bold text-black text-[9px] tracking-tight leading-none">N2F</span>
         </div>
         <span className="text-[14px] font-semibold" style={{ color: "rgba(255,255,255,0.75)" }}>

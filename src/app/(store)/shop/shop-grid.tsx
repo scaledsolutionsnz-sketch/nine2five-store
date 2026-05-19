@@ -100,7 +100,7 @@ function InteractiveCard({ product }: { product: Product }) {
             {mode === "idle" && (
               <button
                 onClick={openPicker}
-                className="w-full flex items-center justify-center gap-2 bg-[#4ade80] text-black text-xs font-black uppercase tracking-widest py-2.5 rounded-lg hover:bg-[#86efac] transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-[#3a7722] text-white text-xs font-black uppercase tracking-widest py-2.5 rounded-lg hover:bg-[#4d9e2e] transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" /> Quick Add
               </button>
@@ -111,7 +111,7 @@ function InteractiveCard({ product }: { product: Product }) {
               </div>
             )}
             {mode === "done" && (
-              <div className="w-full flex items-center justify-center gap-2 bg-[#4ade80] text-black text-xs font-black uppercase tracking-widest py-2.5 rounded-lg">
+              <div className="w-full flex items-center justify-center gap-2 bg-[#3a7722] text-white text-xs font-black uppercase tracking-widest py-2.5 rounded-lg">
                 <Check className="h-3.5 w-3.5" /> Added!
               </div>
             )}
@@ -140,10 +140,10 @@ function InteractiveCard({ product }: { product: Product }) {
                   disabled={v.stock_quantity !== null && v.stock_quantity <= 0}
                   className={`h-8 min-w-[2rem] px-2 rounded-lg text-xs font-bold border transition-all ${
                     selectedSize === v.size
-                      ? "bg-[#4ade80] text-black border-[#4ade80]"
+                      ? "bg-[#3a7722] text-white border-[#3a7722]"
                       : v.stock_quantity !== null && v.stock_quantity <= 0
                       ? "border-white/10 text-white/20 cursor-not-allowed"
-                      : "border-white/15 text-white hover:border-[#4ade80]/50"
+                      : "border-white/15 text-white hover:border-[#3a7722]/50"
                   }`}
                 >
                   {v.size}
@@ -154,7 +154,7 @@ function InteractiveCard({ product }: { product: Product }) {
           <button
             onClick={addToCart}
             disabled={!selectedSize}
-            className="w-full bg-[#4ade80] text-black text-xs font-black uppercase tracking-widest py-2.5 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#86efac] transition-colors"
+            className="w-full bg-[#3a7722] text-white text-xs font-black uppercase tracking-widest py-2.5 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#4d9e2e] transition-colors"
           >
             Add to Cart
           </button>
@@ -166,7 +166,7 @@ function InteractiveCard({ product }: { product: Product }) {
         <div className="px-3 py-3">
           <p className="font-semibold text-white text-sm leading-tight truncate">{product.name}</p>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-[#4ade80] font-bold text-sm">${(product.price / 100).toFixed(2)}</span>
+            <span className="text-[#3a7722] font-bold text-sm">${(product.price / 100).toFixed(2)}</span>
             {isOnSale && (
               <span className="text-white/25 line-through text-xs">${(product.compare_at_price! / 100).toFixed(2)}</span>
             )}

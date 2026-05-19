@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-const inputClass = "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors";
+const inputClass = "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#3a7722]/50 transition-colors";
 
 export function SettingsForm({ customer, email }: { customer: Customer | null; email: string }) {
   const router = useRouter();
@@ -88,14 +88,14 @@ export function SettingsForm({ customer, email }: { customer: Customer | null; e
               onChange={(e) => setForm((f) => ({ ...f, accepts_marketing: e.target.checked }))}
               className="sr-only peer"
             />
-            <div className="w-10 h-5 bg-white/[0.08] peer-checked:bg-[#4ade80] rounded-full transition-colors" />
+            <div className="w-10 h-5 bg-white/[0.08] peer-checked:bg-[#3a7722] rounded-full transition-colors" />
             <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
           </div>
           <span className="text-sm text-white/40">Receive marketing emails from Nine2Five</span>
         </label>
         <button
           type="submit" disabled={saving}
-          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 disabled:opacity-50 flex items-center gap-2"
+          className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 disabled:opacity-50 flex items-center gap-2"
         >
           {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : "Save Changes"}
         </button>

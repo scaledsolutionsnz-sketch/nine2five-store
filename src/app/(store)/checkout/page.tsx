@@ -27,7 +27,7 @@ const COUNTRIES = [
 const STEP_LABELS = ["Information", "Shipping", "Payment"];
 
 const inputClass =
-  "w-full h-14 px-4 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#4ade80]/40 focus:bg-white/[0.06] transition-all";
+  "w-full h-14 px-4 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#3a7722]/40 focus:bg-white/[0.06] transition-all";
 
 export default function CheckoutPage() {
   const { items, total, count } = useCart();
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
         <p className="text-white/50 mb-4">Your cart is empty.</p>
         <Link
           href="/shop"
-          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300"
+          className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300"
         >
           Shop Now
         </Link>
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
           return (
             <div key={label} className="flex items-center">
               {i > 0 && (
-                <div className={cn("h-px w-8 md:w-12 transition-colors", isDone ? "bg-[#4ade80]" : "bg-white/[0.08]")} />
+                <div className={cn("h-px w-8 md:w-12 transition-colors", isDone ? "bg-[#3a7722]" : "bg-white/[0.08]")} />
               )}
               <button
                 type="button"
@@ -214,8 +214,8 @@ export default function CheckoutPage() {
               >
                 <div className={cn(
                   "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                  isActive && "bg-[#4ade80] text-black",
-                  isDone && "bg-[#4ade80]/15 text-[#4ade80] border border-[#4ade80]/30",
+                  isActive && "bg-[#3a7722] text-white",
+                  isDone && "bg-[#3a7722]/15 text-[#3a7722] border border-[#3a7722]/30",
                   !isActive && !isDone && "bg-[#192d1e] border border-white/[0.08] text-white/30",
                 )}>
                   {isDone ? <Check className="h-3.5 w-3.5" /> : num}
@@ -223,7 +223,7 @@ export default function CheckoutPage() {
                 <span className={cn(
                   "text-xs hidden sm:block transition-colors",
                   isActive && "text-white font-semibold",
-                  isDone && "text-[#4ade80]",
+                  isDone && "text-[#3a7722]",
                   !isActive && !isDone && "text-white/40",
                 )}>
                   {label}
@@ -242,7 +242,7 @@ export default function CheckoutPage() {
             <div className="space-y-6">
               {loading && (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#4ade80]" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[#3a7722]" />
                 </div>
               )}
 
@@ -254,7 +254,7 @@ export default function CheckoutPage() {
                   </p>
                   <a
                     href="mailto:nine2five.co.nz@gmail.com"
-                    className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 inline-block"
+                    className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 inline-block"
                   >
                     Contact Us
                   </a>
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
 
                     {/* Contact */}
                     <div className="pb-6">
-                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Contact</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#3a7722] mb-5">Contact</p>
                       <div className="space-y-7">
                         <div>
                           <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Country</label>
@@ -297,7 +297,7 @@ export default function CheckoutPage() {
 
                     {/* Shipping Address */}
                     <div className="pt-6 pb-8">
-                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#4ade80] mb-5">Shipping Address</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#3a7722] mb-5">Shipping Address</p>
                       <div className="space-y-7">
                         <div className="grid grid-cols-2 gap-3">
                           <div>
@@ -354,7 +354,7 @@ export default function CheckoutPage() {
                       type="checkbox"
                       checked={acceptsMarketing}
                       onChange={(e) => setAcceptsMarketing(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/[0.04] accent-[#4ade80] shrink-0"
+                      className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/[0.04] accent-[#3a7722] shrink-0"
                     />
                     <span className="text-xs text-white/40 leading-relaxed">
                       Send me updates about new drops and restocks. You can unsubscribe any time.
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                   <button
                     onClick={() => setStep(2)}
                     disabled={!step1Valid}
-                    className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 w-full disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Continue to Shipping
                   </button>
@@ -384,16 +384,16 @@ export default function CheckoutPage() {
                   <p className="text-white/40 truncate">{address.line1}{address.line2 ? `, ${address.line2}` : ""}, {address.city} {address.postcode}</p>
                   <p className="text-white/40">{email}</p>
                 </div>
-                <button type="button" onClick={() => setStep(1)} className="text-xs text-[#4ade80] hover:underline shrink-0">
+                <button type="button" onClick={() => setStep(1)} className="text-xs text-[#3a7722] hover:underline shrink-0">
                   Change
                 </button>
               </div>
 
               <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
                 <h2 className="font-display font-bold text-base text-white mb-4">Delivery Method</h2>
-                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#192d1e] border border-[#4ade80]/30 ring-1 ring-[#4ade80]/10">
-                  <div className="h-4 w-4 rounded-full border-2 border-[#4ade80] flex items-center justify-center shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-[#4ade80]" />
+                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#192d1e] border border-[#3a7722]/30 ring-1 ring-[#3a7722]/10">
+                  <div className="h-4 w-4 rounded-full border-2 border-[#3a7722] flex items-center justify-center shrink-0">
+                    <div className="h-2 w-2 rounded-full bg-[#3a7722]" />
                   </div>
                   <Package className="h-5 w-5 text-white/40 shrink-0" />
                   <div className="flex-1">
@@ -402,7 +402,7 @@ export default function CheckoutPage() {
                   </div>
                   <p className="text-sm font-semibold text-white">
                     {effectiveShipping === 0
-                      ? <span className="text-[#4ade80]">Free</span>
+                      ? <span className="text-[#3a7722]">Free</span>
                       : `$${(effectiveShipping / 100).toFixed(2)}`}
                   </p>
                 </div>
@@ -419,7 +419,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 flex-1"
+                  className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 flex-1"
                 >
                   Continue to payment
                 </button>
@@ -432,7 +432,7 @@ export default function CheckoutPage() {
             <>
               {loading && (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#4ade80]" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[#3a7722]" />
                 </div>
               )}
               {clientSecret && !loading && (
@@ -443,7 +443,7 @@ export default function CheckoutPage() {
                     appearance: {
                       theme: "night",
                       variables: {
-                        colorPrimary: "#4ade80",
+                        colorPrimary: "#3a7722",
                         colorBackground: "#111111",
                         colorText: "#fafafa",
                         colorDanger: "#ef4444",
@@ -481,7 +481,7 @@ export default function CheckoutPage() {
                     {item.imageUrl && (
                       <Image src={item.imageUrl} alt={item.productName} fill className="object-cover" />
                     )}
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4ade80] text-black text-[10px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#3a7722] text-white text-[10px] font-bold flex items-center justify-center">
                       {item.quantity}
                     </span>
                   </div>
@@ -500,7 +500,7 @@ export default function CheckoutPage() {
                 <span>${(total / 100).toFixed(2)}</span>
               </div>
               {discounts.map((d) => (
-                <div key={d.code} className="flex justify-between text-[#4ade80]">
+                <div key={d.code} className="flex justify-between text-[#3a7722]">
                   <span className="flex items-center gap-1.5">
                     <Tag className="h-3 w-3" /> {d.code}
                   </span>
@@ -513,7 +513,7 @@ export default function CheckoutPage() {
                   {isBulk
                     ? <span className="text-red-400 text-xs">Bulk order</span>
                     : effectiveShipping === 0
-                      ? <span className="text-[#4ade80]">Free</span>
+                      ? <span className="text-[#3a7722]">Free</span>
                       : `$${(effectiveShipping / 100).toFixed(2)}`}
                 </span>
               </div>
@@ -577,13 +577,13 @@ function DiscountInput({
   return (
     <div className="space-y-2">
       {discounts.map((d) => (
-        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#4ade80]/10 border border-[#4ade80]/20">
+        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#3a7722]/10 border border-[#3a7722]/20">
           <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-[#4ade80]" />
-            <span className="text-sm font-semibold text-[#4ade80] font-mono">{d.code}</span>
-            <span className="text-xs text-[#4ade80]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
+            <Check className="h-4 w-4 text-[#3a7722]" />
+            <span className="text-sm font-semibold text-[#3a7722] font-mono">{d.code}</span>
+            <span className="text-xs text-[#3a7722]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
           </div>
-          <button onClick={() => onRemove(d.code)} className="text-[#4ade80] hover:opacity-70 transition-opacity">
+          <button onClick={() => onRemove(d.code)} className="text-[#3a7722] hover:opacity-70 transition-opacity">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -595,12 +595,12 @@ function DiscountInput({
             onChange={(e) => { setCode(e.target.value.toUpperCase()); setError(""); }}
             onKeyDown={(e) => e.key === "Enter" && apply()}
             placeholder="Discount code"
-            className="flex-1 h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#4ade80]/50 transition-colors font-mono"
+            className="flex-1 h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#3a7722]/50 transition-colors font-mono"
           />
           <button
             onClick={apply}
             disabled={loading || !code.trim()}
-            className="h-12 px-5 rounded-xl bg-[#4ade80] text-black font-bold text-sm hover:bg-[#86efac] disabled:opacity-40 transition-all"
+            className="h-12 px-5 rounded-xl bg-[#3a7722] text-white font-bold text-sm hover:bg-[#4d9e2e] disabled:opacity-40 transition-all"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
           </button>
@@ -718,7 +718,7 @@ function PaymentStep({
           <p className="text-white/40 truncate">{address.line1}, {address.city} {address.postcode}</p>
           <p className="text-white/40">{email}</p>
         </div>
-        <button type="button" onClick={onBack} className="text-xs text-[#4ade80] hover:underline shrink-0">
+        <button type="button" onClick={onBack} className="text-xs text-[#3a7722] hover:underline shrink-0">
           Change
         </button>
       </div>
@@ -743,7 +743,7 @@ function PaymentStep({
         <button
           type="submit"
           disabled={submitting || !stripe}
-          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <span className="flex items-center justify-center gap-2">

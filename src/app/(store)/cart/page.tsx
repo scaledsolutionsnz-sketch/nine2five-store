@@ -18,7 +18,7 @@ export default function CartPage() {
         <p className="text-white/50 mb-8">Add some grip socks to get started.</p>
         <Link
           href="/shop"
-          className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300"
+          className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300"
         >
           Browse Shop
         </Link>
@@ -115,14 +115,14 @@ export default function CartPage() {
           {isBulk ? (
             <a
               href="mailto:nine2five.co.nz@gmail.com"
-              className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full mt-6 text-center block"
+              className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 w-full mt-6 text-center block"
             >
               Contact Us for Bulk Rates
             </a>
           ) : (
             <Link
               href="/checkout"
-              className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 w-full mt-6 text-center block"
+              className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 w-full mt-6 text-center block"
             >
               Checkout
             </Link>

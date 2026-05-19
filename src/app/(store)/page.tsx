@@ -125,7 +125,7 @@ export default async function HomePage() {
         }
         .prod-card:hover {
           transform: translateY(-8px);
-          box-shadow: 0 28px 56px rgba(74,222,128,0.06);
+          box-shadow: 0 28px 56px rgba(58,119,34,0.06);
         }
         .prod-card img {
           transition: transform 0.7s cubic-bezier(0.16,1,0.3,1) !important;
@@ -135,13 +135,13 @@ export default async function HomePage() {
         /* CTA button hover */
         .btn-green {
           display: inline-flex; align-items: center; gap: 0.5rem;
-          background-color: #4ade80; color: #0a1a0e; text-decoration: none;
+          background-color: #3a7722; color: #ffffff; text-decoration: none;
           font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
           letter-spacing: 0.08em; border-radius: 9999px;
           padding: 1rem 2rem;
           transition: background-color 0.3s;
         }
-        .btn-green:hover { background-color: #86efac; }
+        .btn-green:hover { background-color: #4d9e2e; }
 
         .btn-outline-hero {
           display: inline-flex; align-items: center; gap: 0.5rem;
@@ -158,23 +158,23 @@ export default async function HomePage() {
 
         .btn-green-sm {
           display: inline-flex; align-items: center; gap: 0.5rem;
-          background-color: #4ade80; color: #0a1a0e; text-decoration: none;
+          background-color: #3a7722; color: #ffffff; text-decoration: none;
           font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
           letter-spacing: 0.08em; border-radius: 9999px;
           padding: 1rem 2rem; align-self: flex-start;
           transition: background-color 0.3s;
         }
-        .btn-green-sm:hover { background-color: #86efac; }
+        .btn-green-sm:hover { background-color: #4d9e2e; }
 
         .btn-green-lg {
           display: inline-flex; align-items: center; gap: 0.5rem;
-          background-color: #4ade80; color: #0a1a0e; text-decoration: none;
+          background-color: #3a7722; color: #ffffff; text-decoration: none;
           font-weight: 700; font-size: 0.8125rem; text-transform: uppercase;
           letter-spacing: 0.08em; border-radius: 9999px;
           padding: 1.1rem 2.6rem;
           transition: background-color 0.3s;
         }
-        .btn-green-lg:hover { background-color: #86efac; }
+        .btn-green-lg:hover { background-color: #4d9e2e; }
 
         /* Inline link hover (View All etc.) */
         .link-ghost {
@@ -184,7 +184,7 @@ export default async function HomePage() {
           letter-spacing: 0.06em;
           transition: color 0.25s;
         }
-        .link-ghost:hover { color: #4ade80; }
+        .link-ghost:hover { color: #3a7722; }
 
         .social-link {
           color: rgba(255,255,255,0.25); text-decoration: none;
@@ -238,7 +238,7 @@ export default async function HomePage() {
               height: 420,
               borderRadius: "50%",
               background:
-                "radial-gradient(ellipse, rgba(74,222,128,0.09) 0%, transparent 70%)",
+                "radial-gradient(ellipse, rgba(58,119,34,0.09) 0%, transparent 70%)",
               filter: "blur(48px)",
             }}
           />
@@ -259,7 +259,7 @@ export default async function HomePage() {
                   width: 6,
                   height: 6,
                   borderRadius: "50%",
-                  backgroundColor: "#4ade80",
+                  backgroundColor: "#3a7722",
                   display: "inline-block",
                   flexShrink: 0,
                 }}
@@ -268,7 +268,7 @@ export default async function HomePage() {
                 style={{
                   fontSize: 10,
                   letterSpacing: "0.4em",
-                  color: "#4ade80",
+                  color: "#3a7722",
                   fontWeight: 700,
                   textTransform: "uppercase",
                 }}
@@ -324,7 +324,7 @@ export default async function HomePage() {
               style={{
                 width: 1,
                 height: 64,
-                background: "linear-gradient(to bottom, rgba(74,222,128,0.7), transparent)",
+                background: "linear-gradient(to bottom, rgba(58,119,34,0.7), transparent)",
               }}
             />
             <span
@@ -346,7 +346,7 @@ export default async function HomePage() {
         ════════════════════════════════════════════ */}
         <div
           style={{
-            backgroundColor: "#4ade80",
+            backgroundColor: "#3a7722",
             overflow: "hidden",
             padding: "13px 0",
           }}
@@ -371,7 +371,7 @@ export default async function HomePage() {
                     style={{
                       fontSize: 11,
                       letterSpacing: "0.2em",
-                      color: "#112016",
+                      color: "#ffffff",
                       textTransform: "uppercase",
                       whiteSpace: "nowrap",
                       padding: "0 2.5rem",
@@ -397,7 +397,7 @@ export default async function HomePage() {
                 style={{
                   fontSize: 11,
                   letterSpacing: "0.35em",
-                  color: "#4ade80",
+                  color: "#3a7722",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   marginBottom: 14,
@@ -444,7 +444,7 @@ export default async function HomePage() {
                       style={{
                         fontSize: 10,
                         letterSpacing: "0.3em",
-                        color: "#4ade80",
+                        color: "#3a7722",
                         fontWeight: 700,
                         textTransform: "uppercase",
                         marginBottom: 10,
@@ -503,7 +503,7 @@ export default async function HomePage() {
               />
               <div
                 className="absolute inset-0"
-                style={{ background: "rgba(74,222,128,0.03)" }}
+                style={{ background: "rgba(58,119,34,0.03)" }}
               />
               <div
                 className="absolute inset-0 hidden md:block"
@@ -520,7 +520,7 @@ export default async function HomePage() {
                 style={{
                   fontSize: 11,
                   letterSpacing: "0.35em",
-                  color: "#4ade80",
+                  color: "#3a7722",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   marginBottom: 18,
@@ -545,7 +545,7 @@ export default async function HomePage() {
                   fontSize: "clamp(2rem, 4vw, 3.25rem)",
                   lineHeight: 0.95,
                   letterSpacing: "-0.01em",
-                  color: "#4ade80",
+                  color: "#3a7722",
                   marginBottom: 28,
                 }}
               >
@@ -591,7 +591,7 @@ export default async function HomePage() {
                   style={{
                     fontSize: 11,
                     letterSpacing: "0.35em",
-                    color: "#4ade80",
+                    color: "#3a7722",
                     fontWeight: 700,
                     textTransform: "uppercase",
                     marginBottom: 14,
@@ -651,7 +651,7 @@ export default async function HomePage() {
                     className="font-display font-black"
                     style={{
                       fontSize: "clamp(1.6rem, 3vw, 2.25rem)",
-                      color: "#4ade80",
+                      color: "#3a7722",
                       lineHeight: 1,
                       marginBottom: 8,
                     }}
@@ -681,7 +681,7 @@ export default async function HomePage() {
         <section style={{ backgroundColor: "#112016", padding: "6rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16">
             <div className="mb-12 text-center">
-              <p style={{ fontSize: 11, letterSpacing: "0.4em", color: "#4ade80", fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>
+              <p style={{ fontSize: 11, letterSpacing: "0.4em", color: "#3a7722", fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>
                 Worn By The Best
               </p>
               <h2 className="font-display font-black text-white" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95, letterSpacing: "-0.01em" }}>
@@ -720,7 +720,7 @@ export default async function HomePage() {
                 },
               ].map((a) => (
                 <div key={a.name} className="flex flex-col items-center text-center group">
-                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#4ade80]/20 group-hover:ring-[#4ade80]/60 transition-all duration-300"
+                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#3a7722]/20 group-hover:ring-[#3a7722]/60 transition-all duration-300"
                     style={{ background: "#192d1e" }}>
                     <Image
                       src={a.img}
@@ -728,10 +728,10 @@ export default async function HomePage() {
                       fill
                       className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 50% 120%, rgba(74,222,128,0.08) 0%, transparent 70%)" }} />
+                    <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 50% 120%, rgba(58,119,34,0.08) 0%, transparent 70%)" }} />
                   </div>
                   <p className="font-display font-black text-white text-lg md:text-xl leading-tight mb-1">{a.name}</p>
-                  <p className="text-[#4ade80] text-[11px] font-bold uppercase tracking-widest mb-1">{a.role}</p>
+                  <p className="text-[#3a7722] text-[11px] font-bold uppercase tracking-widest mb-1">{a.role}</p>
                   <p className="text-white/40 text-[11px] font-medium mb-2">{a.team}</p>
                   <p className="text-white/30 text-[12px] leading-relaxed max-w-[180px]">{a.detail}</p>
                 </div>
@@ -746,14 +746,14 @@ export default async function HomePage() {
         <section style={{ backgroundColor: "#112016", padding: "5rem 0 0" }}>
           <div className="max-w-screen-xl mx-auto px-8 md:px-16 mb-8 flex items-end justify-between">
             <div>
-              <p style={{ fontSize: 11, letterSpacing: "0.35em", color: "#4ade80", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>
+              <p style={{ fontSize: 11, letterSpacing: "0.35em", color: "#3a7722", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>
                 In The Wild
               </p>
               <h2 className="font-display font-black text-white" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", lineHeight: 0.95 }}>
                 THE GALLERY
               </h2>
             </div>
-            <Link href="/gallery" className="text-[11px] font-bold uppercase tracking-widest text-white/40 hover:text-[#4ade80] transition-colors pb-1">
+            <Link href="/gallery" className="text-[11px] font-bold uppercase tracking-widest text-white/40 hover:text-[#3a7722] transition-colors pb-1">
               View All →
             </Link>
           </div>
@@ -781,7 +781,7 @@ export default async function HomePage() {
               style={{
                 fontSize: 11,
                 letterSpacing: "0.35em",
-                color: "#4ade80",
+                color: "#3a7722",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 marginBottom: 14,
@@ -830,7 +830,7 @@ export default async function HomePage() {
                     <Star
                       key={j}
                       className="fill-current"
-                      style={{ color: "#4ade80", width: 13, height: 13 }}
+                      style={{ color: "#3a7722", width: 13, height: 13 }}
                     />
                   ))}
                 </div>
@@ -853,7 +853,7 @@ export default async function HomePage() {
                       fontSize: 10,
                       letterSpacing: "0.14em",
                       textTransform: "uppercase",
-                      color: "#4ade80",
+                      color: "#3a7722",
                       marginTop: 3,
                     }}
                   >
@@ -880,7 +880,7 @@ export default async function HomePage() {
               style={{
                 fontSize: 11,
                 letterSpacing: "0.35em",
-                color: "#4ade80",
+                color: "#3a7722",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 marginBottom: 24,
@@ -964,7 +964,7 @@ function LiveCard({ product }: { product: Product }) {
         style={{
           aspectRatio: "4 / 5",
           background:
-            "radial-gradient(ellipse at 50% 88%, rgba(74,222,128,0.13) 0%, #0d0d0d 62%)",
+            "radial-gradient(ellipse at 50% 88%, rgba(58,119,34,0.13) 0%, #0d0d0d 62%)",
         }}
       >
         {img ? (
@@ -989,7 +989,7 @@ function LiveCard({ product }: { product: Product }) {
             className="absolute top-3 left-3 font-black uppercase"
             style={{
               backgroundColor: "#ffffff",
-              color: "#112016",
+              color: "#ffffff",
               fontSize: 10,
               letterSpacing: "0.1em",
               padding: "0.25rem 0.7rem",
@@ -1008,7 +1008,7 @@ function LiveCard({ product }: { product: Product }) {
           {product.name}
         </p>
         <div className="flex items-center gap-2">
-          <p className="font-bold text-sm" style={{ color: "#4ade80" }}>
+          <p className="font-bold text-sm" style={{ color: "#3a7722" }}>
             ${(product.price / 100).toFixed(2)}
           </p>
           {isOnSale && (
@@ -1044,7 +1044,7 @@ function FallbackCard({
         style={{
           aspectRatio: "4 / 5",
           background:
-            "radial-gradient(ellipse at 50% 85%, rgba(74,222,128,0.14) 0%, #0d0d0d 60%)",
+            "radial-gradient(ellipse at 50% 85%, rgba(58,119,34,0.14) 0%, #0d0d0d 60%)",
         }}
       >
         {badge && (
@@ -1052,7 +1052,7 @@ function FallbackCard({
             className="absolute top-3 left-3 font-black uppercase"
             style={{
               backgroundColor: "#ffffff",
-              color: "#112016",
+              color: "#ffffff",
               fontSize: 10,
               letterSpacing: "0.1em",
               padding: "0.25rem 0.7rem",
@@ -1077,7 +1077,7 @@ function FallbackCard({
           {name}
         </p>
         <div className="flex items-center gap-2">
-          <p className="font-bold text-sm" style={{ color: "#4ade80" }}>
+          <p className="font-bold text-sm" style={{ color: "#3a7722" }}>
             ${(price / 100).toFixed(2)}
           </p>
           {compare && (

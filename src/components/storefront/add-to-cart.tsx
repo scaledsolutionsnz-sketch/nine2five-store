@@ -70,7 +70,7 @@ export function AddToCart({
                   selectedSize === size
                     ? outOfStock
                       ? "border-red-500/30 bg-red-500/5 text-red-400"
-                      : "border-[#16a34a] bg-[#16a34a]/10 text-[#16a34a]"
+                      : "border-[#2d6b1a] bg-[#2d6b1a]/10 text-[#2d6b1a]"
                     : "border-[#262626] text-[#a3a3a3] hover:border-[#404040] hover:text-white"
                 )}
               >

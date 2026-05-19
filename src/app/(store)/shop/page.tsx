@@ -21,7 +21,7 @@ export default async function ShopPage() {
   return (
     <div className="bg-[#112016] min-h-screen">
       <div className="px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-10">
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#4ade80] mb-2">Collection</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#3a7722] mb-2">Collection</p>
         <h1 className="font-display font-black text-4xl md:text-5xl text-white leading-none">All Products</h1>
         <p className="text-white/30 mt-2 text-sm">{products.length} designs available</p>
       </div>

@@ -39,7 +39,7 @@ export function Nav() {
     >
       <nav className="flex items-center justify-between h-16 px-4 sm:px-8 md:px-16 lg:px-20">
         <Link href="/" className="font-display font-black text-xl tracking-tight text-white">
-          NINE<span style={{ color: "#4ade80" }}>2</span>FIVE
+          NINE<span style={{ color: "#3a7722" }}>2</span>FIVE
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
@@ -63,7 +63,7 @@ export function Nav() {
           >
             <User className="h-5 w-5" />
             {loggedIn && (
-              <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-[#16a34a]" />
+              <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-[#2d6b1a]" />
             )}
           </Link>
 
@@ -74,7 +74,7 @@ export function Nav() {
           >
             <ShoppingBag className="h-5 w-5" />
             {count > 0 && (
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#16a34a] text-white text-[10px] font-bold flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#2d6b1a] text-white text-[10px] font-bold flex items-center justify-center">
                 {count > 9 ? "9+" : count}
               </span>
             )}

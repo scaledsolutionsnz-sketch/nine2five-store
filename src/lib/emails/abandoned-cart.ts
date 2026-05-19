@@ -69,7 +69,7 @@ export function abandonedCartHtml(opts: {
 
         <!-- CTA -->
         <table cellpadding="0" cellspacing="0" style="margin-top:32px;">
-          <tr><td style="background:#16a34a;border-radius:10px;">
+          <tr><td style="background:#2d6b1a;border-radius:10px;">
             <a href="${recoveryUrl}" style="display:inline-block;padding:14px 32px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:-0.3px;">
               Complete Your Order →
             </a>
@@ -84,7 +84,7 @@ export function abandonedCartHtml(opts: {
       <!-- Footer -->
       <tr><td style="padding:24px 40px;border-top:1px solid #1e1e1e;">
         <p style="margin:0;font-size:12px;color:#525252;line-height:1.7;">
-          Nine2Five Limited · Masterton, New Zealand · <a href="https://nine2five.co.nz" style="color:#16a34a;text-decoration:none;">nine2five.co.nz</a>
+          Nine2Five Limited · Masterton, New Zealand · <a href="https://nine2five.co.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.co.nz</a>
         </p>
         <p style="margin:6px 0 0;font-size:11px;color:#3a3a3a;">
           You received this because you started a purchase at nine2five.co.nz. ·

@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Unsubscribed — Nine2Five</title>
 <style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#fafafa;font-family:Inter,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-.card{max-width:440px;width:100%;text-align:center}.logo{font-size:20px;font-weight:900;letter-spacing:-0.5px;margin-bottom:32px}.title{font-size:24px;font-weight:700;margin-bottom:12px}.sub{font-size:15px;color:#737373;line-height:1.6;margin-bottom:28px}.btn{display:inline-block;padding:12px 28px;background:#16a34a;color:#fff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600}
+.card{max-width:440px;width:100%;text-align:center}.logo{font-size:20px;font-weight:900;letter-spacing:-0.5px;margin-bottom:32px}.title{font-size:24px;font-weight:700;margin-bottom:12px}.sub{font-size:15px;color:#737373;line-height:1.6;margin-bottom:28px}.btn{display:inline-block;padding:12px 28px;background:#2d6b1a;color:#fff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600}
 </style></head>
 <body>
 <div class="card">

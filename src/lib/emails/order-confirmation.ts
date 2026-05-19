@@ -92,7 +92,7 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
 
           <!-- Order confirmed banner -->
           <tr>
-            <td style="background:#16a34a;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;">
+            <td style="background:#2d6b1a;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;">
               <p style="margin:0;font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.1em;">Order Confirmed</p>
               <p style="margin:8px 0 0;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">#${order_number}</p>
             </td>
@@ -124,8 +124,8 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
                 </tr>
                 ${discount_code && discount_amount_cents > 0 ? `
                 <tr>
-                  <td style="font-size:13px;color:#16a34a;padding:4px 0;">Discount (${discount_code})</td>
-                  <td style="font-size:13px;color:#16a34a;text-align:right;padding:4px 0;">−${fmt(discount_amount_cents)}</td>
+                  <td style="font-size:13px;color:#2d6b1a;padding:4px 0;">Discount (${discount_code})</td>
+                  <td style="font-size:13px;color:#2d6b1a;text-align:right;padding:4px 0;">−${fmt(discount_amount_cents)}</td>
                 </tr>` : ""}
                 <tr>
                   <td style="font-size:13px;color:#737373;padding:4px 0;">Shipping</td>
@@ -168,7 +168,7 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
           <tr>
             <td style="text-align:center;">
               <a href="https://nine2five.co.nz/account/orders"
-                 style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;letter-spacing:0.02em;">
+                 style="display:inline-block;background:#2d6b1a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;letter-spacing:0.02em;">
                 View Your Order
               </a>
             </td>
@@ -182,7 +182,7 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
               <p style="margin:0;font-size:12px;color:#525252;">Nine2Five Limited · Masterton, New Zealand</p>
               <p style="margin:6px 0 0;font-size:12px;color:#525252;">
                 Questions? Reply to this email or visit
-                <a href="https://nine2five.co.nz" style="color:#16a34a;text-decoration:none;">nine2five.co.nz</a>
+                <a href="https://nine2five.co.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.co.nz</a>
               </p>
               <p style="margin:12px 0 0;font-size:11px;font-weight:900;letter-spacing:0.05em;color:#262626;">NINE2FIVE</p>
             </td>

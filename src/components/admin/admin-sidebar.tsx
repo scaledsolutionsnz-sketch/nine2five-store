@@ -63,7 +63,7 @@ export function AdminSidebar({ email }: { email: string }) {
       {/* Logo */}
       <div className="px-5 pt-7 pb-6 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#4ade80]">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#3a7722]">
             <span className="font-black text-black text-[11px] tracking-tight leading-none">N2F</span>
           </div>
           <div>
@@ -142,7 +142,7 @@ export function AdminSidebar({ email }: { email: string }) {
 
         {/* User chip */}
         <div className="flex items-center gap-3 mt-4 px-3 py-3 rounded-lg" style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#4ade80]">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#3a7722]">
             <span className="text-[11px] text-black font-bold leading-none">{initials}</span>
           </div>
           <div className="min-w-0 flex-1">

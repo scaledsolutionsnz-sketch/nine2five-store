@@ -46,7 +46,7 @@ export function AdminNav({ email }: { email: string }) {
             className={cn(
               "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors",
               isActive(href)
-                ? "bg-[#16a34a]/10 text-[#16a34a]"
+                ? "bg-[#2d6b1a]/10 text-[#2d6b1a]"
                 : "text-[#737373] hover:text-white hover:bg-white/[0.04]"
             )}
           >

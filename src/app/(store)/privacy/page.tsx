@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             </p>
             <p className="mt-2">
               If you have any privacy questions, contact us at{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">nine2five.co.nz@gmail.com</a>.
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">nine2five.co.nz@gmail.com</a>.
             </p>
           </section>
 
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
               We only send marketing emails to customers who have given explicit consent (opt-in checkbox at checkout,
               or via your account settings). Every marketing email includes an unsubscribe link. You can also
               unsubscribe at any time by emailing{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">nine2five.co.nz@gmail.com</a>.
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">nine2five.co.nz@gmail.com</a>.
             </p>
             <p className="mt-2">
               Order confirmation and transactional emails (receipts, shipping updates) are sent regardless of marketing
@@ -102,7 +102,7 @@ export default function PrivacyPage() {
             </ul>
             <p className="mt-3">
               To exercise these rights, email{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">nine2five.co.nz@gmail.com</a>.
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">nine2five.co.nz@gmail.com</a>.
             </p>
           </section>
 

@@ -107,7 +107,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           {/* Details */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#4ade80] mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#3a7722] mb-2">
               Māori Grip Socks
             </p>
             <h1 className="font-display font-black text-3xl md:text-4xl text-white mb-3">
@@ -144,7 +144,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 { icon: RotateCcw, label: "Easy returns", sub: "7-day policy" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="text-center">
-                  <Icon className="h-5 w-5 text-[#4ade80] mx-auto mb-1.5" />
+                  <Icon className="h-5 w-5 text-[#3a7722] mx-auto mb-1.5" />
                   <p className="text-xs font-semibold text-white">{label}</p>
                   <p className="text-xs text-white/40 mt-0.5">{sub}</p>
                 </div>

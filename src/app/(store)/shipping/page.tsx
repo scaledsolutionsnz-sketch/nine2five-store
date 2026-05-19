@@ -93,7 +93,7 @@ export default function ShippingPage() {
             <p className="text-white/50 leading-relaxed">
               For bulk orders of more than 12 pairs, please contact us directly for a shipping quote.
               Email{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">
                 nine2five.co.nz@gmail.com
               </a>
               {" "}with your order details.
@@ -123,7 +123,7 @@ export default function ShippingPage() {
             <h2 className="text-white font-bold text-base mb-2">Questions?</h2>
             <p className="text-white/50 leading-relaxed">
               Email us at{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">
                 nine2five.co.nz@gmail.com
               </a>
               {" "}and we'll get back to you within one business day.

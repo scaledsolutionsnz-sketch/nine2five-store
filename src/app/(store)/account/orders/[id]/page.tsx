@@ -83,24 +83,24 @@ export default async function OrderDetailPage({
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-colors",
                       done
-                        ? "bg-[#4ade80] border-[#4ade80] text-black"
+                        ? "bg-[#3a7722] border-[#3a7722] text-black"
                         : "bg-[#192d1e] border-white/[0.08] text-white/30"
                     )}>
                       {done ? "✓" : i + 1}
                     </div>
-                    <p className={cn("text-[10px] mt-1 capitalize font-medium", done ? "text-[#4ade80]" : "text-white/30")}>
+                    <p className={cn("text-[10px] mt-1 capitalize font-medium", done ? "text-[#3a7722]" : "text-white/30")}>
                       {step}
                     </p>
                   </div>
                   {i < STATUS_STEPS.length - 1 && (
-                    <div className={cn("flex-1 h-0.5 mx-2 mb-4", done && stepIndex > i ? "bg-[#4ade80]" : "bg-white/[0.08]")} />
+                    <div className={cn("flex-1 h-0.5 mx-2 mb-4", done && stepIndex > i ? "bg-[#3a7722]" : "bg-white/[0.08]")} />
                   )}
                 </div>
               );
             })}
           </div>
           {order.tracking_number && (
-            <p className="text-xs text-[#4ade80] mt-3 pt-3 border-t border-white/[0.06]">
+            <p className="text-xs text-[#3a7722] mt-3 pt-3 border-t border-white/[0.06]">
               Tracking: <span className="font-mono">{order.tracking_number}</span>
             </p>
           )}
@@ -139,7 +139,7 @@ export default async function OrderDetailPage({
             <span>${(order.subtotal / 100).toFixed(2)}</span>
           </div>
           {order.discount_amount_cents > 0 && (
-            <div className="flex justify-between text-[#4ade80]">
+            <div className="flex justify-between text-[#3a7722]">
               <span>Discount ({order.discount_code})</span>
               <span>−${(order.discount_amount_cents / 100).toFixed(2)}</span>
             </div>

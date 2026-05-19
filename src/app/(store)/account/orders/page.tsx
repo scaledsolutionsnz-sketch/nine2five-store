@@ -41,7 +41,7 @@ export default async function AccountOrdersPage() {
           <p className="text-white/40 mb-4">You haven&apos;t placed any orders yet</p>
           <Link
             href="/shop"
-            className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 inline-block"
+            className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 inline-block"
           >
             Shop Now
           </Link>
@@ -52,11 +52,11 @@ export default async function AccountOrdersPage() {
             <Link
               key={order.id}
               href={`/account/orders/${order.id}`}
-              className="block bg-[#192d1e] border border-white/[0.08] rounded-2xl px-5 py-4 hover:border-[#4ade80]/20 transition-colors group"
+              className="block bg-[#192d1e] border border-white/[0.08] rounded-2xl px-5 py-4 hover:border-[#3a7722]/20 transition-colors group"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-display font-semibold text-white group-hover:text-[#4ade80] transition-colors">
+                  <p className="font-display font-semibold text-white group-hover:text-[#3a7722] transition-colors">
                     Order #{order.order_number}
                   </p>
                   <p className="text-xs text-white/40 mt-1">
@@ -65,7 +65,7 @@ export default async function AccountOrdersPage() {
                     })}
                   </p>
                   {order.tracking_number && (
-                    <p className="text-xs text-[#4ade80] mt-1">
+                    <p className="text-xs text-[#3a7722] mt-1">
                       Tracking: {order.tracking_number}
                     </p>
                   )}

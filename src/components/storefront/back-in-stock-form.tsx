@@ -35,9 +35,9 @@ export function BackInStockForm({ productId, variantId, size }: Props) {
 
   if (done) {
     return (
-      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#16a34a]/10 border border-[#16a34a]/20">
-        <Check className="h-4 w-4 text-[#16a34a] shrink-0" />
-        <p className="text-sm text-[#16a34a]">
+      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#2d6b1a]/10 border border-[#2d6b1a]/20">
+        <Check className="h-4 w-4 text-[#2d6b1a] shrink-0" />
+        <p className="text-sm text-[#2d6b1a]">
           We&apos;ll email you when size {size} is back in stock.
         </p>
       </div>
@@ -57,12 +57,12 @@ export function BackInStockForm({ productId, variantId, size }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
-          className="flex-1 h-10 px-3 rounded-lg bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#16a34a] transition-colors"
+          className="flex-1 h-10 px-3 rounded-lg bg-[#141414] border border-[#262626] text-white text-sm placeholder-[#525252] focus:outline-none focus:border-[#2d6b1a] transition-colors"
         />
         <button
           type="submit"
           disabled={loading}
-          className="h-10 px-4 rounded-lg bg-[#16a34a] text-white text-sm font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors flex items-center gap-1.5"
+          className="h-10 px-4 rounded-lg bg-[#2d6b1a] text-white text-sm font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors flex items-center gap-1.5"
         >
           {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Notify Me"}
         </button>

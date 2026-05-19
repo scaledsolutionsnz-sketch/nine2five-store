@@ -32,13 +32,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
           text-decoration: none;
           transition: color 0.25s;
         }
-        .ft-link-green:hover { color: #4ade80; }
+        .ft-link-green:hover { color: #3a7722; }
         .ft-social {
           color: rgba(255,255,255,0.25);
           text-decoration: none;
           transition: color 0.25s;
         }
-        .ft-social:hover { color: #4ade80; }
+        .ft-social:hover { color: #3a7722; }
         .ft-bottom-social {
           color: rgba(255,255,255,0.2);
           text-decoration: none;

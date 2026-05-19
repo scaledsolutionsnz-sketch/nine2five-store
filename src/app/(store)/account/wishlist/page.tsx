@@ -36,7 +36,7 @@ export default async function WishlistPage() {
           <p className="text-white/40 mb-4">Your wishlist is empty</p>
           <Link
             href="/shop"
-            className="bg-[#4ade80] text-black font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#86efac] transition-all duration-300 inline-block"
+            className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 inline-block"
           >
             Browse Products
           </Link>
@@ -49,7 +49,7 @@ export default async function WishlistPage() {
             const img = p.image_urls?.[0];
             const onSale = p.compare_at_price && p.compare_at_price > p.price;
             return (
-              <div key={item.product_id} className="group relative bg-[#192d1e] border border-white/[0.08] rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#4ade80]/5 transition-all duration-500">
+              <div key={item.product_id} className="group relative bg-[#192d1e] border border-white/[0.08] rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#3a7722]/5 transition-all duration-500">
                 <Link href={`/shop/${p.slug}`}>
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {img && (
@@ -67,7 +67,7 @@ export default async function WishlistPage() {
                   <div className="px-5 py-4">
                     <p className="font-bold text-white text-base">{p.name}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <p className="text-[#4ade80] font-bold">${(p.price / 100).toFixed(2)}</p>
+                      <p className="text-[#3a7722] font-bold">${(p.price / 100).toFixed(2)}</p>
                       {onSale && (
                         <p className="text-white/25 line-through text-sm">${(p.compare_at_price! / 100).toFixed(2)}</p>
                       )}

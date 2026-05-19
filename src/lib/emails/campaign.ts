@@ -43,7 +43,7 @@ export function campaignHtml(opts: {
 
         <!-- CTA -->
         <table cellpadding="0" cellspacing="0" style="margin-top:36px;">
-          <tr><td style="background:#16a34a;border-radius:10px;">
+          <tr><td style="background:#2d6b1a;border-radius:10px;">
             <a href="${shopUrl}" style="display:inline-block;padding:14px 32px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:-0.3px;">
               Shop Now →
             </a>
@@ -55,7 +55,7 @@ export function campaignHtml(opts: {
       <tr><td style="padding:24px 40px;border-top:1px solid #1e1e1e;">
         <p style="margin:0;font-size:12px;color:#525252;line-height:1.7;">
           You're receiving this because you've ordered from Nine2Five or opted in to marketing emails.<br/>
-          Nine2Five · Christchurch, New Zealand · <a href="https://nine2five.co.nz" style="color:#16a34a;text-decoration:none;">nine2five.co.nz</a><br/>
+          Nine2Five · Christchurch, New Zealand · <a href="https://nine2five.co.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.co.nz</a><br/>
           <a href="${unsub}" style="color:#525252;text-decoration:underline;">Unsubscribe</a>
         </p>
       </td></tr>

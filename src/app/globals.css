@@ -9,9 +9,9 @@
   --border: rgba(255,255,255,0.1);
   --foreground: #f0fdf4;
   --muted: rgba(240,253,244,0.5);
-  --accent: #4ade80;
-  --accent-hover: #86efac;
-  --accent-light: rgba(74,222,128,0.12);
+  --accent: #3a7722;
+  --accent-hover: #4d9e2e;
+  --accent-light: rgba(58,119,34,0.12);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,11 +29,11 @@ h1, h2, h3, h4, h5, h6 { font-family: "Outfit", sans-serif; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--background); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-::selection { background: var(--accent); color: #0a1a0e; }
+::selection { background: var(--accent); color: #ffffff; }
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  background: var(--accent); color: #0a1a0e; font-family: "Outfit", sans-serif;
+  background: var(--accent); color: #ffffff; font-family: "Outfit", sans-serif;
   font-weight: 700; font-size: 0.875rem; padding: 0.75rem 1.5rem;
   border-radius: 999px; border: none; cursor: pointer;
   transition: background 0.15s, transform 0.1s; text-decoration: none;

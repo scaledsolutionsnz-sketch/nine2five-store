@@ -31,7 +31,7 @@ export default function ReturnsPage() {
             <ol className="list-decimal list-inside space-y-2">
               <li>
                 Email{" "}
-                <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">nine2five.co.nz@gmail.com</a>{" "}
+                <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">nine2five.co.nz@gmail.com</a>{" "}
                 with your order number and reason for return.
               </li>
               <li>We'll confirm the return and provide a return address within 1–2 business days.</li>
@@ -63,7 +63,7 @@ export default function ReturnsPage() {
             <h2 className="text-white font-bold text-base mb-3">Faulty or incorrect items</h2>
             <p>
               If you receive a faulty or incorrect item, email us at{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">nine2five.co.nz@gmail.com</a>{" "}
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">nine2five.co.nz@gmail.com</a>{" "}
               with a photo and your order number. We'll cover return shipping and send a replacement or
               issue a full refund — your choice.
             </p>
@@ -92,7 +92,7 @@ export default function ReturnsPage() {
             <h2 className="text-white font-bold text-base mb-3">Contact</h2>
             <p>
               Questions about a return or refund? Email{" "}
-              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#4ade80] hover:underline">nine2five.co.nz@gmail.com</a>{" "}
+              <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">nine2five.co.nz@gmail.com</a>{" "}
               and we'll get back to you within 1 business day.
             </p>
           </section>
