@@ -676,6 +676,71 @@ export default async function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════
+            ATHLETES
+        ════════════════════════════════════════════ */}
+        <section style={{ backgroundColor: "#000", padding: "6rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="max-w-screen-xl mx-auto px-8 md:px-16">
+            <div className="mb-12 text-center">
+              <p style={{ fontSize: 11, letterSpacing: "0.4em", color: "#4ade80", fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>
+                Worn By The Best
+              </p>
+              <h2 className="font-display font-black text-white" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95, letterSpacing: "-0.01em" }}>
+                OUR ATHLETES
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+              {[
+                {
+                  img: "/athletes/ruben-love.png",
+                  name: "Ruben Love",
+                  role: "Fullback / First Five-Eighth",
+                  team: "Hurricanes & All Blacks",
+                  detail: "All Blacks squad 2024. Heir to a proud rugby lineage.",
+                },
+                {
+                  img: "/athletes/asafo-aumua.jpg",
+                  name: "Asafo Aumua",
+                  role: "Hooker",
+                  team: "Hurricanes & All Blacks",
+                  detail: "U20 World Cup winner 2017. All Blacks Test debut 2020.",
+                },
+                {
+                  img: "/athletes/haze-dunster.png",
+                  name: "Haze Dunster",
+                  role: "Wing",
+                  team: "Parramatta Eels",
+                  detail: "NRL flyer born in Rotorua. Taking his culture to Australia.",
+                },
+                {
+                  img: "/athletes/dre-pakeho.png",
+                  name: "Dre Pakeho",
+                  role: "Centre",
+                  team: "Queensland Reds",
+                  detail: "2024 U20s Player of the Year. Super Rugby rising star.",
+                },
+              ].map((a) => (
+                <div key={a.name} className="flex flex-col items-center text-center group">
+                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#4ade80]/20 group-hover:ring-[#4ade80]/60 transition-all duration-300"
+                    style={{ background: "#111" }}>
+                    <Image
+                      src={a.img}
+                      alt={a.name}
+                      fill
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 50% 120%, rgba(74,222,128,0.08) 0%, transparent 70%)" }} />
+                  </div>
+                  <p className="font-display font-black text-white text-lg md:text-xl leading-tight mb-1">{a.name}</p>
+                  <p className="text-[#4ade80] text-[11px] font-bold uppercase tracking-widest mb-1">{a.role}</p>
+                  <p className="text-white/40 text-[11px] font-medium mb-2">{a.team}</p>
+                  <p className="text-white/30 text-[12px] leading-relaxed max-w-[180px]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════
             GALLERY PREVIEW
         ════════════════════════════════════════════ */}
         <section style={{ backgroundColor: "#000", padding: "5rem 0 0" }}>
