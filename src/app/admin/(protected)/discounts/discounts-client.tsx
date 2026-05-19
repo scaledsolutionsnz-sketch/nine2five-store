@@ -118,12 +118,14 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
     <div className="space-y-6">
 
       {/* ── Page header ── */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-[22px] font-semibold text-[#1F2937]">Discount Codes</h1>
-        <p className="text-[14px] text-[#64748B] mt-1">Create and manage promotional codes for your store.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Discount Codes</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">Create and manage promotional codes for your store.</p>
+        </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 h-11 px-6 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all"
+          className="flex items-center gap-2 h-10 px-5 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all"
         >
           <Plus style={{ width: 15, height: 15 }} strokeWidth={2.5} />
           New Code
@@ -139,18 +141,18 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
         ].map(({ label, value, sub, icon: Icon, iconColor, iconBg }) => (
           <div
             key={label}
-            className="rounded-[14px] bg-white border border-[#E2E8F0] p-6"
+            className="p-5 rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0]"
             style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
           >
             <div className="flex items-start justify-between mb-4">
-              <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-widest leading-none">
+              <p className="text-[11px] uppercase tracking-widest text-[#8A94A6] leading-none">
                 {label}
               </p>
               <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center shrink-0", iconBg)}>
                 <Icon style={{ width: 15, height: 15, color: iconColor }} strokeWidth={1.8} />
               </div>
             </div>
-            <p className="text-[30px] font-bold text-[#1F2937] tracking-tight leading-none mb-1.5 font-mono">
+            <p className="text-[24px] font-bold font-mono text-[#1F2937] tracking-tight leading-none mb-1.5">
               {value}
             </p>
             <p className="text-[12px] text-[#6B7280] font-medium">{sub}</p>
@@ -160,12 +162,9 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
 
       {/* ── Table ── */}
       <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        {/* Table header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
-          <div>
-            <h3 className="text-[15px] font-semibold text-[#1F2937] leading-none">All Codes</h3>
-            <p className="text-[12px] text-[#6B7280] mt-1">{totalCodes} discount codes</p>
-          </div>
+        <div className="px-6 py-4 border-b border-[#E2E8F0]">
+          <h3 className="text-[14px] font-semibold text-[#1F2937] leading-none">All Codes</h3>
+          <p className="text-[12px] text-[#6B7280] mt-1">{totalCodes} discount codes</p>
         </div>
 
         {codes.length === 0 ? (
@@ -182,15 +181,15 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
               <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
                 {[
                   { label: "Code",      cls: "pl-6 pr-4 h-[52px] text-left" },
-                  { label: "Type",      cls: "px-4 h-[52px] text-left hidden sm:table-cell" },
-                  { label: "Value",     cls: "px-4 h-[52px] text-left" },
-                  { label: "Min Order", cls: "px-4 h-[52px] text-left hidden md:table-cell" },
-                  { label: "Uses",      cls: "px-4 h-[52px] text-left hidden md:table-cell" },
-                  { label: "Expires",   cls: "px-4 h-[52px] text-left hidden lg:table-cell" },
-                  { label: "Status",    cls: "px-4 h-[52px] text-left" },
+                  { label: "Type",      cls: "px-[18px] h-[52px] text-left hidden sm:table-cell" },
+                  { label: "Value",     cls: "px-[18px] h-[52px] text-left" },
+                  { label: "Min Order", cls: "px-[18px] h-[52px] text-left hidden md:table-cell" },
+                  { label: "Uses",      cls: "px-[18px] h-[52px] text-left hidden md:table-cell" },
+                  { label: "Expires",   cls: "px-[18px] h-[52px] text-left hidden lg:table-cell" },
+                  { label: "Status",    cls: "px-[18px] h-[52px] text-left" },
                   { label: "",          cls: "pl-4 pr-6 h-[52px] text-right w-10" },
                 ].map((h, i) => (
-                  <th key={i} className={cn(h.cls, "text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap")}>
+                  <th key={i} className={cn(h.cls, "text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap")}>
                     {h.label}
                   </th>
                 ))}
@@ -207,7 +206,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                     style={{ borderBottom: i < codes.length - 1 ? "1px solid #E5EAF1" : "none" }}
                   >
                     {/* Code */}
-                    <td className="pl-6 pr-4 py-4">
+                    <td className="pl-6 pr-4 px-[18px] py-[14px]">
                       <div className="flex items-center gap-2">
                         <code className="font-mono font-bold text-[13px] text-[#1F2937] tracking-wide">
                           {c.code}
@@ -222,15 +221,15 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                     </td>
 
                     {/* Type */}
-                    <td className="px-4 py-4 hidden sm:table-cell">
+                    <td className="px-[18px] py-[14px] hidden sm:table-cell">
                       <span className="text-[13px] text-[#6B7280] capitalize">
                         {c.type === "fixed" && c.value === 0 ? "Free shipping" : c.type}
                       </span>
                     </td>
 
                     {/* Value */}
-                    <td className="px-4 py-4">
-                      <span className="text-[14px] font-semibold text-[#1F2937] font-mono">
+                    <td className="px-[18px] py-[14px]">
+                      <span className="text-[13px] font-semibold text-[#1F2937] font-mono">
                         {c.type === "fixed" && c.value === 0
                           ? <span className="text-[#116DFF]">Free shipping</span>
                           : c.type === "percentage"
@@ -240,14 +239,14 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                     </td>
 
                     {/* Min order */}
-                    <td className="px-4 py-4 hidden md:table-cell">
+                    <td className="px-[18px] py-[14px] hidden md:table-cell">
                       <span className="text-[13px] text-[#6B7280] font-mono">
                         {c.min_order_cents ? `$${(c.min_order_cents / 100).toFixed(0)}` : "—"}
                       </span>
                     </td>
 
                     {/* Uses */}
-                    <td className="px-4 py-4 hidden md:table-cell">
+                    <td className="px-[18px] py-[14px] hidden md:table-cell">
                       <span className="text-[13px] text-[#334155] font-medium font-mono">
                         {c.uses}
                         {c.max_uses ? <span className="text-[#8A94A6] font-normal"> / {c.max_uses}</span> : ""}
@@ -255,7 +254,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                     </td>
 
                     {/* Expires */}
-                    <td className="px-4 py-4 hidden lg:table-cell">
+                    <td className="px-[18px] py-[14px] hidden lg:table-cell">
                       <span className="text-[13px] text-[#6B7280]">
                         {c.expires_at
                           ? new Date(c.expires_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })
@@ -264,9 +263,9 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                     </td>
 
                     {/* Status */}
-                    <td className="px-4 py-4">
+                    <td className="px-[18px] py-[14px]">
                       <span className={cn(
-                        "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium",
+                        "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium",
                         active
                           ? "bg-[#D5F1E2] text-[#166B3B]"
                           : status === "Expired"
@@ -279,7 +278,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                     </td>
 
                     {/* Actions */}
-                    <td className="pl-4 pr-6 py-4 text-right">
+                    <td className="pl-4 pr-6 py-[14px] text-right">
                       <ActionMenu
                         code={c}
                         onToggle={() => toggleActive(c.id, c.active)}
@@ -346,9 +345,9 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-md overflow-hidden" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
           <div>
-            <h2 className="text-[16px] font-semibold text-[#1F2937] leading-none">New Discount Code</h2>
+            <h2 className="text-[14px] font-semibold text-[#1F2937] leading-none">New Discount Code</h2>
             <p className="text-[12px] text-[#6B7280] mt-1">Create a promo code for your store</p>
           </div>
           <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
@@ -358,7 +357,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
         <form onSubmit={submit} className="p-6 space-y-4">
           <div>
-            <label className="block text-[12px] font-medium text-[#6B7280] mb-1.5">Code</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Code</label>
             <input
               required
               value={form.code}
@@ -368,9 +367,9 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[12px] font-medium text-[#6B7280] mb-1.5">Type</label>
+              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Type</label>
               <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" | "free_shipping" }))} className={field}>
                 <option value="percentage">Percentage off</option>
                 <option value="fixed">Fixed amount off</option>
@@ -379,7 +378,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             </div>
             {form.type !== "free_shipping" && (
               <div>
-                <label className="block text-[12px] font-medium text-[#6B7280] mb-1.5">
+                <label className="block text-[12px] font-medium text-[#374151] mb-1.5">
                   {form.type === "percentage" ? "Discount %" : "Amount ($)"}
                 </label>
                 <input
@@ -395,19 +394,19 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[12px] font-medium text-[#6B7280] mb-1.5">Min Order ($)</label>
+              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Min Order ($)</label>
               <input type="number" value={form.min_order} onChange={e => setForm(f => ({ ...f, min_order: e.target.value }))} placeholder="0" className={field} />
             </div>
             <div>
-              <label className="block text-[12px] font-medium text-[#6B7280] mb-1.5">Max Uses</label>
+              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Max Uses</label>
               <input type="number" value={form.max_uses} onChange={e => setForm(f => ({ ...f, max_uses: e.target.value }))} placeholder="Unlimited" className={field} />
             </div>
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-[#6B7280] mb-1.5">Expiry date (optional)</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Expiry date (optional)</label>
             <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))} className={field} />
           </div>
 
@@ -422,14 +421,14 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-10 rounded-full bg-white border border-[#E2E8F0] text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-all"
+              className="flex-1 h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-all"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 h-10 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all disabled:opacity-50"
+              className="flex-1 h-10 px-5 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all disabled:opacity-50"
             >
               {loading ? "Creating…" : "Create code"}
             </button>

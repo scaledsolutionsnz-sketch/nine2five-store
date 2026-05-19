@@ -58,6 +58,21 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Affiliates</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">Manage referral partners and track commission.</p>
+        </div>
+        <button
+          onClick={() => setShowCreate(true)}
+          className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors"
+        >
+          <Plus className="h-4 w-4" />
+          Add Affiliate
+        </button>
+      </div>
+
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
@@ -66,37 +81,29 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
           { label: "Commission Owed", value: fmt(totals.commission - totals.paid),          icon: DollarSign,   color: "#92400E",  bg: "bg-[#FEF3C7]" },
           { label: "Affiliates",      value: affiliates.length.toString(),                  icon: Users,        color: "#7C3AED",  bg: "bg-[#EDE9FE]" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="p-5 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+          <div key={label} className="p-5 rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs text-[#6B7280] font-medium">{label}</p>
+              <p className="text-[11px] uppercase tracking-widest text-[#8A94A6]">{label}</p>
               <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", bg)}>
                 <Icon style={{ width: 15, height: 15, color }} strokeWidth={1.8} />
               </div>
             </div>
-            <p className="font-bold text-2xl text-[#1F2937] font-mono">{value}</p>
+            <p className="text-[24px] font-bold font-mono text-[#1F2937]">{value}</p>
           </div>
         ))}
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-[#6B7280]">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          Add Affiliate
-        </button>
-      </div>
-
       {/* Table */}
       <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <table className="w-full text-sm">
+        <div className="px-6 py-4 border-b border-[#E2E8F0]">
+          <h3 className="text-[14px] font-semibold text-[#1F2937] leading-none">All Affiliates</h3>
+          <p className="text-[12px] text-[#6B7280] mt-1">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
+        </div>
+        <table className="w-full">
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
               {["Affiliate", "Code", "Status", "Clicks", "Conversions", "Commission", "Rate", "Actions"].map((h) => (
-                <th key={h} className="px-[18px] h-[52px] text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">
+                <th key={h} className="px-[18px] h-[52px] text-left text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -105,7 +112,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
           <tbody className="divide-y divide-[#E5EAF1]">
             {affiliates.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-[18px] py-10 text-center text-[#8A94A6] text-sm">
+                <td colSpan={8} className="px-[18px] py-16 text-center text-[#8A94A6] text-[13px]">
                   No affiliates yet. Add your first referral partner.
                 </td>
               </tr>
@@ -113,12 +120,12 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
             {affiliates.map((a) => (
               <tr key={a.id} className="hover:bg-[#F6FAFF] transition-colors">
                 <td className="px-[18px] py-[14px]">
-                  <p className="font-medium text-[#1F2937]">{a.name}</p>
-                  <p className="text-xs text-[#6B7280] mt-0.5">{a.email}</p>
+                  <p className="text-[13px] font-medium text-[#1F2937]">{a.name}</p>
+                  <p className="text-[12px] text-[#6B7280] mt-0.5">{a.email}</p>
                 </td>
                 <td className="px-[18px] py-[14px]">
                   <div className="flex items-center gap-2">
-                    <code className="text-xs bg-[#EAF2FF] border border-[#BBD3FF] px-2 py-0.5 rounded text-[#116DFF] font-mono">
+                    <code className="text-[12px] bg-[#EAF2FF] border border-[#BBD3FF] px-2 py-0.5 rounded text-[#116DFF] font-mono">
                       {a.referral_code}
                     </code>
                     <button
@@ -131,23 +138,25 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                 </td>
                 <td className="px-[18px] py-[14px]">
                   <span className={cn(
-                    "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium",
+                    "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium",
                     STATUS[a.status].cls
                   )}>
                     {STATUS[a.status].label}
                   </span>
                 </td>
-                <td className="px-[18px] py-[14px] text-[#334155] font-mono">{a.total_clicks.toLocaleString()}</td>
-                <td className="px-[18px] py-[14px] text-[#334155] font-mono">{a.total_conversions.toLocaleString()}</td>
-                <td className="px-[18px] py-[14px] font-semibold text-[#1F2937] font-mono">
-                  {fmt(a.total_commission_cents)}
+                <td className="px-[18px] py-[14px] text-[13px] text-[#334155] font-mono">{a.total_clicks.toLocaleString()}</td>
+                <td className="px-[18px] py-[14px] text-[13px] text-[#334155] font-mono">{a.total_conversions.toLocaleString()}</td>
+                <td className="px-[18px] py-[14px]">
+                  <span className="text-[13px] font-semibold text-[#1F2937] font-mono">
+                    {fmt(a.total_commission_cents)}
+                  </span>
                   {a.total_paid_cents > 0 && (
-                    <span className="block text-[10px] text-[#6B7280] font-normal mt-0.5">
+                    <span className="block text-[11px] text-[#6B7280] font-normal mt-0.5">
                       {fmt(a.total_paid_cents)} paid
                     </span>
                   )}
                 </td>
-                <td className="px-[18px] py-[14px] text-[#334155] font-mono">{a.commission_rate}%</td>
+                <td className="px-[18px] py-[14px] text-[13px] text-[#334155] font-mono">{a.commission_rate}%</td>
                 <td className="px-[18px] py-[14px]">
                   <div className="flex items-center gap-1">
                     {a.status === "pending" && (
@@ -252,20 +261,20 @@ function CreateAffiliateModal({
     toast.success("Affiliate created");
   }
 
-  const inputClass = "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-[#334155] text-sm placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  const inputClass = "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-md" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
-          <h2 className="font-semibold text-base text-[#1F2937]">New Affiliate</h2>
-          <button onClick={onClose} className="text-[#6B7280] hover:text-[#334155] transition-colors">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+          <h2 className="text-[14px] font-semibold text-[#1F2937]">New Affiliate</h2>
+          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <form onSubmit={submit} className="p-5 space-y-4">
+        <form onSubmit={submit} className="p-6 space-y-4">
           <div>
-            <label className="block text-xs text-[#6B7280] mb-1.5">Full Name</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Full Name</label>
             <input
               required
               value={form.name}
@@ -278,7 +287,7 @@ function CreateAffiliateModal({
             />
           </div>
           <div>
-            <label className="block text-xs text-[#6B7280] mb-1.5">Email</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Email</label>
             <input
               required
               type="email"
@@ -289,7 +298,7 @@ function CreateAffiliateModal({
             />
           </div>
           <div>
-            <label className="block text-xs text-[#6B7280] mb-1.5">Referral Code</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Referral Code</label>
             <input
               required
               value={form.referral_code}
@@ -297,12 +306,12 @@ function CreateAffiliateModal({
               placeholder="wiremu10"
               className={cn(inputClass, "font-mono")}
             />
-            <p className="text-[10px] text-[#8A94A6] mt-1">
+            <p className="text-[11px] text-[#8A94A6] mt-1.5">
               Link: nine2five.co.nz?ref={form.referral_code || "code"}
             </p>
           </div>
           <div>
-            <label className="block text-xs text-[#6B7280] mb-1.5">Commission Rate (%)</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Commission Rate (%)</label>
             <input
               required
               type="number"
@@ -314,13 +323,16 @@ function CreateAffiliateModal({
             />
           </div>
           {error && (
-            <p className="text-xs text-[#991B1B] bg-[#FEE2E2] border border-[#FCA5A5] px-3 py-2 rounded-lg">{error}</p>
+            <div className="flex items-start gap-2 bg-[#FEE2E2] border border-[#FCA5A5] rounded-xl px-4 py-3">
+              <X style={{ width: 14, height: 14, color: "#991B1B", marginTop: 1, flexShrink: 0 }} />
+              <p className="text-[12px] text-[#991B1B]">{error}</p>
+            </div>
           )}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 h-10 rounded-full bg-white border border-[#E2E8F0] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
+            <button type="button" onClick={onClose} className="flex-1 h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="flex-1 h-10 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors">
+            <button type="submit" disabled={loading} className="flex-1 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors">
               {loading ? "Creating…" : "Create Affiliate"}
             </button>
           </div>
@@ -365,16 +377,16 @@ function AffiliateDetailModal({
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
       <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-lg" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
           <div>
-            <h2 className="font-semibold text-base text-[#1F2937]">{affiliate.name}</h2>
-            <p className="text-xs text-[#6B7280] mt-0.5">{affiliate.email}</p>
+            <h2 className="text-[14px] font-semibold text-[#1F2937]">{affiliate.name}</h2>
+            <p className="text-[12px] text-[#6B7280] mt-0.5">{affiliate.email}</p>
           </div>
-          <button onClick={onClose} className="text-[#6B7280] hover:text-[#334155] transition-colors">
+          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="p-5 space-y-5">
+        <div className="p-6 space-y-5">
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3">
             {[
@@ -382,23 +394,23 @@ function AffiliateDetailModal({
               { label: "Conversions", value: affiliate.total_conversions.toLocaleString() },
               { label: "Pending Pay", value: fmt(pending) },
             ].map(({ label, value }) => (
-              <div key={label} className="p-3 bg-[#F3F5F8] border border-[#E2E8F0] rounded-xl text-center">
-                <p className="text-xs text-[#6B7280] mb-1">{label}</p>
-                <p className="font-bold text-base text-[#1F2937] font-mono">{value}</p>
+              <div key={label} className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-center">
+                <p className="text-[11px] uppercase tracking-widest text-[#8A94A6] mb-1.5">{label}</p>
+                <p className="text-[18px] font-bold text-[#1F2937] font-mono">{value}</p>
               </div>
             ))}
           </div>
 
           {/* Referral link */}
           <div>
-            <label className="block text-xs text-[#6B7280] mb-1.5">Referral Link</label>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 text-xs bg-[#F3F5F8] border border-[#E2E8F0] px-3 py-2 rounded-lg text-[#116DFF] overflow-hidden text-ellipsis whitespace-nowrap font-mono">
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Referral Link</label>
+            <div className="flex items-center gap-2 h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0]">
+              <code className="flex-1 text-[12px] text-[#116DFF] overflow-hidden text-ellipsis whitespace-nowrap font-mono min-w-0">
                 {link}
               </code>
               <button
                 onClick={() => { navigator.clipboard.writeText(link); toast.success("Copied"); }}
-                className="px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white text-xs text-[#334155] hover:bg-[#F6FAFF] hover:border-[#116DFF]/30 transition-colors"
+                className="shrink-0 h-7 px-3 rounded-md border border-[#D8E2F0] bg-white text-[12px] text-[#27364A] hover:bg-[#F4F8FF] transition-colors"
               >
                 Copy
               </button>
@@ -407,7 +419,7 @@ function AffiliateDetailModal({
 
           {/* Commission rate */}
           <div>
-            <label className="block text-xs text-[#6B7280] mb-1.5">Commission Rate (%)</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Commission Rate (%)</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -415,12 +427,12 @@ function AffiliateDetailModal({
                 max="50"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
-                className="w-24 h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-[#334155] text-sm focus:outline-none focus:border-[#116DFF]/50 font-mono"
+                className="w-24 h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] focus:outline-none focus:border-[#116DFF]/50 font-mono"
               />
               <button
                 onClick={saveRate}
                 disabled={saving || parseInt(rate) === affiliate.commission_rate}
-                className="px-4 h-10 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
+                className="h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
               >
                 {saving ? "Saving…" : "Save"}
               </button>
@@ -428,7 +440,7 @@ function AffiliateDetailModal({
           </div>
 
           {/* Joined */}
-          <p className="text-xs text-[#8A94A6]">
+          <p className="text-[12px] text-[#8A94A6]">
             Joined {new Date(affiliate.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
             {affiliate.approved_at && ` · Approved ${new Date(affiliate.approved_at).toLocaleDateString("en-NZ")}`}
           </p>

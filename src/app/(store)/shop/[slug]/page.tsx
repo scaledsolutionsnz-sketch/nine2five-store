@@ -7,8 +7,39 @@ import { WishlistButton } from "@/components/storefront/wishlist-button";
 import type { Product, ProductVariant } from "@/types/database";
 import type { Metadata } from "next";
 import { Shield, Truck, RotateCcw } from "lucide-react";
+import { getStaticProducts, SIZES } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
+
+async function getProduct(slug: string): Promise<{ product: Product; variants: ProductVariant[] } | null> {
+  try {
+    const supabase = await createClient();
+    const { data: product } = await supabase
+      .from("products")
+      .select("*")
+      .eq("slug", slug)
+      .eq("active", true)
+      .single();
+    if (product) {
+      const { data: variants } = await supabase
+        .from("product_variants")
+        .select("*")
+        .eq("product_id", product.id);
+      return { product: product as Product, variants: (variants ?? []) as ProductVariant[] };
+    }
+  } catch { /* ignore */ }
+
+  const staticProduct = getStaticProducts().find((p) => p.slug === slug);
+  if (!staticProduct) return null;
+  const staticVariants: ProductVariant[] = SIZES.map((size, i) => ({
+    id: `${slug}-${size}`,
+    product_id: slug,
+    size,
+    stock_quantity: 30,
+    sku: null,
+  }));
+  return { product: staticProduct, variants: staticVariants };
+}
 
 export async function generateMetadata({
   params,
@@ -16,18 +47,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = await createClient();
-  const { data: product } = await supabase
-    .from("products")
-    .select("name, description, image_urls, price")
-    .eq("slug", slug)
-    .single();
-
-  if (!product) return { title: "Product not found" };
-
+  const result = await getProduct(slug);
+  if (!result) return { title: "Product not found" };
+  const { product } = result;
   const price = `$${(product.price / 100).toFixed(2)} NZD`;
   const img = product.image_urls?.[0];
-
   return {
     title: product.name,
     description: product.description ?? `${product.name} — Māori inspired grip sock. ${price}.`,
@@ -41,24 +65,9 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const supabase = await createClient();
-
-  const { data: product } = await supabase
-    .from("products")
-    .select("*")
-    .eq("slug", slug)
-    .eq("active", true)
-    .single();
-
-  if (!product) notFound();
-
-  const { data: variants } = await supabase
-    .from("product_variants")
-    .select("*")
-    .eq("product_id", product.id);
-
-  const p = product as Product;
-  const v = (variants ?? []) as ProductVariant[];
+  const result = await getProduct(slug);
+  if (!result) notFound();
+  const { product: p, variants: v } = result;
   const isOnSale = p.compare_at_price && p.compare_at_price > p.price;
 
   return (

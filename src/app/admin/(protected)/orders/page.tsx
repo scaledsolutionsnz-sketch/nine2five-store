@@ -53,7 +53,7 @@ function formatDate(dateStr: string): string {
 function StatusBadge({ bg, color, label }: { bg: string; color: string; label: string }) {
   return (
     <span
-      className="inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium whitespace-nowrap"
+      className="inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium whitespace-nowrap"
       style={{ backgroundColor: bg, color }}
     >
       {label}
@@ -98,28 +98,27 @@ export default async function OrdersPage({
   const now = Date.now();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Page header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[22px] font-semibold text-[#1F2937]">Orders</h1>
           <p className="text-[14px] text-[#64748B] mt-1">View and manage all customer orders.</p>
         </div>
-        <Link href="/admin/pos" className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] hover:bg-[#0D5FE0] text-white text-[14px] font-semibold transition-colors shadow-sm">
-          <Plus style={{ width: 16, height: 16 }} strokeWidth={2.5} />
+        <Link href="/admin/pos" className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] hover:bg-[#0D5FE0] text-white text-[13px] font-semibold transition-colors">
+          <Plus style={{ width: 15, height: 15 }} strokeWidth={2.5} />
           Add New Order
         </Link>
       </div>
 
       {/* Orders card */}
       <div
-        className="rounded-[14px] bg-white overflow-hidden"
-        style={{ border: "1px solid #E2E8F0", boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
+        className="rounded-[14px] bg-white overflow-hidden border border-[#E2E8F0]"
+        style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
       >
         {/* Toolbar */}
         <div
-          className="flex items-center justify-between gap-3 px-6 h-16"
-          style={{ borderBottom: "1px solid #E2E8F0" }}
+          className="flex items-center justify-between gap-3 px-6 h-16 border-b border-[#E2E8F0]"
         >
           {/* Left */}
           <div className="flex items-center gap-3">
@@ -142,7 +141,7 @@ export default async function OrdersPage({
             <button className="h-9 w-9 rounded-full border border-[#D8E2F0] bg-white hover:bg-[#F4F8FF] flex items-center justify-center text-[#6B7280] transition-colors">
               <SlidersHorizontal style={{ width: 14, height: 14 }} strokeWidth={2} />
             </button>
-            <form action="/admin/orders" method="get" className="hidden sm:flex items-center gap-2 h-9 px-3.5 w-[280px] bg-white border border-[#D8E2F0] rounded-full transition-colors focus-within:border-[#116DFF]/50">
+            <form action="/admin/orders" method="get" className="hidden sm:flex items-center gap-2 h-10 px-3.5 w-[280px] bg-white border border-[#E2E8F0] rounded-lg transition-colors focus-within:border-[#116DFF]/50">
               <Search
                 className="pointer-events-none shrink-0"
                 style={{ width: 13, height: 13, color: "#9CA3AF" }}
@@ -163,10 +162,10 @@ export default async function OrdersPage({
         <div className="overflow-x-auto">
           <table className="w-full" style={{ minWidth: 1100 }}>
             <thead>
-              <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
+              <tr className="bg-[#EAF2FF] border-b border-[#BBD3FF]">
                 <th
-                  className="w-[52px] px-4 text-center"
-                  style={{ height: 52, borderRight: "1px solid #C7DAF8" }}
+                  className="w-[52px] px-4 text-center h-[52px]"
+                  style={{ borderRight: "1px solid #C7DAF8" }}
                 >
                   <input
                     type="checkbox"
@@ -184,9 +183,8 @@ export default async function OrdersPage({
                 ].map(({ label, w }, i, arr) => (
                   <th
                     key={label}
-                    className="px-4 text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap"
+                    className="px-[18px] text-left text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap h-[52px]"
                     style={{
-                      height: 52,
                       width: w || undefined,
                       borderRight: i < arr.length - 1 ? "1px solid #C7DAF8" : undefined,
                     }}
@@ -213,7 +211,7 @@ export default async function OrdersPage({
                     style={{ borderBottom: "1px solid #E5EAF1", position: "relative" }}
                   >
                     {/* Checkbox — above overlay */}
-                    <td className="w-[52px] px-4 py-3.5 text-center" style={{ position: "relative", zIndex: 1 }}>
+                    <td className="w-[52px] px-4 py-[14px] text-center" style={{ position: "relative", zIndex: 1 }}>
                       <input
                         type="checkbox"
                         className="w-4 h-4 rounded cursor-pointer accent-[#116DFF]"
@@ -221,9 +219,9 @@ export default async function OrdersPage({
                     </td>
 
                     {/* Order # — contains the full-row overlay link */}
-                    <td className="px-4 py-3.5" style={{ width: 120, position: "relative" }}>
+                    <td className="px-[18px] py-[14px]" style={{ width: 120, position: "relative" }}>
                       <Link href={`/admin/orders/${order.id}`} className="absolute inset-0" aria-label={`View order #${order.order_number}`} style={{ zIndex: 0 }} />
-                      <span className="relative text-[14px] font-medium text-[#3B4558]" style={{ zIndex: 1 }}>
+                      <span className="relative text-[13px] font-medium text-[#3B4558]" style={{ zIndex: 1 }}>
                         #{order.order_number}
                       </span>
                       {isNew && (
@@ -239,15 +237,15 @@ export default async function OrdersPage({
                     </td>
 
                     {/* Date */}
-                    <td className="px-4 py-3.5" style={{ width: 200 }}>
-                      <span className="text-[14px] text-[#4A5568] whitespace-nowrap">
+                    <td className="px-[18px] py-[14px]" style={{ width: 200 }}>
+                      <span className="text-[13px] text-[#4A5568] whitespace-nowrap">
                         {formatDate(order.created_at)}
                       </span>
                     </td>
 
                     {/* Customer */}
-                    <td className="px-4 py-3.5">
-                      <p className="text-[14px] font-medium text-[#3F4A5F] whitespace-nowrap">
+                    <td className="px-[18px] py-[14px]">
+                      <p className="text-[13px] font-medium text-[#3F4A5F] whitespace-nowrap">
                         {customerName || <span className="text-[#9CA3AF]">Guest</span>}
                       </p>
                       {order.guest_email && (
@@ -258,27 +256,27 @@ export default async function OrdersPage({
                     </td>
 
                     {/* Payment */}
-                    <td className="px-4 py-3.5" style={{ width: 150 }}>
+                    <td className="px-[18px] py-[14px]" style={{ width: 150 }}>
                       <StatusBadge {...payment} />
                     </td>
 
                     {/* Fulfillment */}
-                    <td className="px-4 py-3.5" style={{ width: 160 }}>
+                    <td className="px-[18px] py-[14px]" style={{ width: 160 }}>
                       <StatusBadge {...fulfillment} />
                     </td>
 
                     {/* Total */}
-                    <td className="px-4 py-3.5" style={{ width: 130 }}>
-                      <span className="text-[14px] font-medium text-[#334155]">
+                    <td className="px-[18px] py-[14px]" style={{ width: 130 }}>
+                      <span className="text-[13px] font-medium text-[#334155]">
                         NZ${(order.total / 100).toFixed(2)}
                       </span>
                     </td>
 
                     {/* View */}
-                    <td className="px-4 py-3.5 text-center" style={{ width: 100, position: "relative", zIndex: 1 }}>
+                    <td className="px-[18px] py-[14px] text-center" style={{ width: 100, position: "relative", zIndex: 1 }}>
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="text-[14px] font-medium text-[#116DFF] hover:underline transition-colors"
+                        className="text-[13px] font-medium text-[#116DFF] hover:underline transition-colors"
                       >
                         View
                       </Link>
@@ -307,13 +305,13 @@ export default async function OrdersPage({
             {page > 1 && (
               <Link
                 href={`/admin/orders?page=${page - 1}`}
-                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E8F0] hover:border-[#C7DAF8] text-[#334155] transition-colors"
+                className="h-9 px-4 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E8F0] hover:border-[#C7DAF8] text-[#334155] transition-colors inline-flex items-center"
               >
                 ← Previous
               </Link>
             )}
             <span
-              className="px-4 py-2 rounded-full text-[13px] font-semibold text-[#116DFF]"
+              className="px-4 h-9 rounded-full text-[13px] font-semibold text-[#116DFF] inline-flex items-center"
               style={{
                 backgroundColor: "rgba(17,109,255,0.08)",
                 border: "1px solid rgba(17,109,255,0.2)",
@@ -324,7 +322,7 @@ export default async function OrdersPage({
             {page < totalPages && (
               <Link
                 href={`/admin/orders?page=${page + 1}`}
-                className="px-4 py-2 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E8F0] hover:border-[#C7DAF8] text-[#334155] transition-colors"
+                className="h-9 px-4 rounded-full text-[13px] font-medium bg-white hover:bg-[#F6FAFF] border border-[#E2E8F0] hover:border-[#C7DAF8] text-[#334155] transition-colors inline-flex items-center"
               >
                 Next →
               </Link>

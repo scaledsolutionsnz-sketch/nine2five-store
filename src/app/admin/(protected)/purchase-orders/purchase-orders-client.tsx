@@ -46,7 +46,7 @@ const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderSt
 };
 
 const inputClass =
-  "w-full h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
 interface LineItemDraft { variant_id: string; quantity_ordered: number; unit_cost_cents: number; }
 
@@ -100,89 +100,103 @@ function CreatePOModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="w-full max-w-xl bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between p-5 border-b border-[#E2E8F0]">
-          <h2 className="font-semibold text-base text-[#1F2937]">New Purchase Order</h2>
-          <button onClick={onClose} className="text-[#6B7280] hover:text-[#334155] transition-colors">✕</button>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+          <div>
+            <h2 className="text-[14px] font-semibold text-[#1F2937]">New Purchase Order</h2>
+            <p className="text-[12px] text-[#6B7280] mt-1">Create a stock order from a supplier</p>
+          </div>
+          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
+            <span className="text-[15px] leading-none">✕</span>
+          </button>
         </div>
 
-        <div className="p-5 space-y-4">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="p-6 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-[#6B7280] mb-1.5">Supplier</label>
+              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Supplier</label>
               <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} className={cn(inputClass, "appearance-none")}>
                 <option value="">No supplier</option>
                 {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-[#6B7280] mb-1.5">Expected by</label>
+              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Expected by</label>
               <input type="date" value={expectedAt} onChange={(e) => setExpectedAt(e.target.value)} className={inputClass} />
             </div>
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-xs text-[#6B7280] mb-2">Line Items</label>
+            <label className="block text-[12px] font-medium text-[#374151] mb-2">Line Items</label>
             <div className="space-y-2">
               {lines.map((line, i) => (
-                <div key={i} className="grid grid-cols-[1fr_80px_100px_28px] gap-2 items-center">
-                  <select
-                    value={line.variant_id}
-                    onChange={(e) => setLine(i, "variant_id", e.target.value)}
-                    className={cn(inputClass, "appearance-none text-xs")}
-                  >
-                    <option value="">Select variant…</option>
-                    {variants.map((v) => (
-                      <option key={v.id} value={v.id}>
-                        {v.product?.name ?? "Unknown"} · Size {v.size}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number" min={1} placeholder="Qty"
-                    value={line.quantity_ordered}
-                    onChange={(e) => setLine(i, "quantity_ordered", parseInt(e.target.value) || 1)}
-                    className={cn(inputClass, "text-center text-xs font-mono")}
-                  />
-                  <div className={cn(inputClass, "flex items-center gap-1")}>
-                    <span className="text-[#8A94A6] text-xs pointer-events-none select-none shrink-0">$</span>
-                    <input
-                      type="number" min={0} step={0.01} placeholder="Unit cost"
-                      value={line.unit_cost_cents / 100 || ""}
-                      onChange={(e) => setLine(i, "unit_cost_cents", Math.round(parseFloat(e.target.value) * 100) || 0)}
-                      className="flex-1 min-w-0 text-xs font-mono bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none"
-                    />
+                <div key={i} className="grid grid-cols-[1fr_80px_28px] gap-2 items-start">
+                  <div className="space-y-2">
+                    <select
+                      value={line.variant_id}
+                      onChange={(e) => setLine(i, "variant_id", e.target.value)}
+                      className={cn(inputClass, "appearance-none text-[13px]")}
+                    >
+                      <option value="">Select variant…</option>
+                      {variants.map((v) => (
+                        <option key={v.id} value={v.id}>
+                          {v.product?.name ?? "Unknown"} · Size {v.size}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="number" min={1} placeholder="Qty"
+                        value={line.quantity_ordered}
+                        onChange={(e) => setLine(i, "quantity_ordered", parseInt(e.target.value) || 1)}
+                        className={cn(inputClass, "text-center font-mono")}
+                      />
+                      <div className="flex items-center gap-1 h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] focus-within:border-[#116DFF]/50 transition-colors">
+                        <span className="text-[#8A94A6] text-[13px] pointer-events-none select-none shrink-0">$</span>
+                        <input
+                          type="number" min={0} step={0.01} placeholder="Unit cost"
+                          value={line.unit_cost_cents / 100 || ""}
+                          onChange={(e) => setLine(i, "unit_cost_cents", Math.round(parseFloat(e.target.value) * 100) || 0)}
+                          className="flex-1 min-w-0 text-[13px] font-mono bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => setLines((prev) => prev.filter((_, idx) => idx !== i))}
-                    disabled={lines.length === 1}
-                    className="h-10 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#991B1B] disabled:opacity-20 transition-colors"
-                  >✕</button>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setLines((prev) => prev.filter((_, idx) => idx !== i))}
+                      disabled={lines.length === 1}
+                      className="h-10 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#991B1B] disabled:opacity-20 transition-colors"
+                    >✕</button>
+                  </div>
                 </div>
               ))}
             </div>
             <button
               onClick={() => setLines((prev) => [...prev, { variant_id: "", quantity_ordered: 1, unit_cost_cents: 0 }])}
-              className="mt-2 flex items-center gap-1.5 text-xs text-[#116DFF] hover:opacity-80 transition-opacity"
+              className="mt-3 flex items-center gap-1.5 text-[13px] text-[#116DFF] hover:opacity-80 transition-opacity"
             >
               <Plus className="h-3.5 w-3.5" /> Add line
             </button>
           </div>
 
-          <input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} className={inputClass} />
+          <div>
+            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Notes (optional)</label>
+            <input placeholder="Any notes about this order…" value={notes} onChange={(e) => setNotes(e.target.value)} className={inputClass} />
+          </div>
 
           <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
-            <p className="text-sm text-[#6B7280]">
+            <p className="text-[13px] text-[#6B7280]">
               Total: <span className="text-[#1F2937] font-semibold font-mono">${(totalCents / 100).toFixed(2)}</span>
             </p>
-            <div className="flex gap-2">
-              <button onClick={onClose} className="h-9 px-4 rounded-full bg-white border border-[#E2E8F0] text-sm text-[#334155] hover:bg-[#F6FAFF] transition-colors">
+            <div className="flex gap-3">
+              <button onClick={onClose} className="h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-colors">
                 Cancel
               </button>
               <button
                 onClick={save}
                 disabled={saving}
-                className="flex items-center gap-2 h-9 px-4 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
               >
                 {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
                 Create PO
@@ -244,16 +258,16 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
 
   return (
     <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-      <div className="flex items-center gap-4 p-4">
+      <div className="flex items-center gap-4 px-5 py-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[13px] font-medium", cfg.color)}>
+          <div className="flex items-center gap-2.5 mb-1.5">
+            <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] font-medium", cfg.color)}>
               <StatusIcon className="h-3 w-3" />
               {cfg.label}
             </span>
-            <span className="text-xs text-[#8A94A6] font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
+            <span className="text-[12px] text-[#8A94A6] font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-[#6B7280]">
+          <div className="flex items-center gap-4 text-[13px] text-[#6B7280]">
             <span>{po.suppliers?.name ?? "No supplier"}</span>
             <span>{po.purchase_order_items.length} item{po.purchase_order_items.length !== 1 ? "s" : ""}</span>
             {po.total_cost_cents ? <span className="font-mono">${(po.total_cost_cents / 100).toFixed(2)}</span> : null}
@@ -267,10 +281,10 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               onClick={advance}
               disabled={acting}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-50",
+                "flex items-center gap-1.5 h-9 px-4 rounded-full text-[13px] font-semibold transition-colors disabled:opacity-50",
                 po.status === "in_transit"
                   ? "bg-[#116DFF] text-white hover:bg-[#0D5FE0]"
-                  : "bg-white border border-[#E2E8F0] text-[#334155] hover:bg-[#F6FAFF]"
+                  : "bg-white border border-[#D8E2F0] text-[#27364A] hover:bg-[#F4F8FF]"
               )}
             >
               {acting ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
@@ -281,14 +295,14 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
             <button
               onClick={cancel}
               disabled={acting}
-              className="h-7 px-2.5 rounded-full text-xs text-[#6B7280] hover:text-[#991B1B] hover:bg-[#FEE2E2] transition-colors disabled:opacity-40"
+              className="h-9 px-3 rounded-full text-[13px] text-[#6B7280] hover:text-[#991B1B] hover:bg-[#FEE2E2] transition-colors disabled:opacity-40"
             >
               Cancel
             </button>
           )}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="h-7 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#334155] transition-colors"
+            className="h-8 w-8 flex items-center justify-center text-[#6B7280] hover:text-[#334155] hover:bg-[#F3F5F8] rounded-lg transition-colors"
           >
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
@@ -296,28 +310,28 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
       </div>
 
       {expanded && (
-        <div className="border-t border-[#E2E8F0] bg-[#F3F5F8] px-4 py-3">
+        <div className="border-t border-[#E2E8F0] bg-[#F8FAFC] px-5 py-4">
           {po.purchase_order_items.length === 0 ? (
-            <p className="text-xs text-[#6B7280]">No line items.</p>
+            <p className="text-[13px] text-[#6B7280]">No line items.</p>
           ) : (
-            <table className="w-full text-xs">
+            <table className="w-full">
               <thead>
                 <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                  <th className="text-left pb-2 text-[#6B7280] font-medium">Variant</th>
-                  <th className="text-right pb-2 text-[#6B7280] font-medium">Ordered</th>
-                  <th className="text-right pb-2 text-[#6B7280] font-medium">Received</th>
-                  <th className="text-right pb-2 text-[#6B7280] font-medium">Unit cost</th>
+                  <th className="text-left pb-2.5 text-[12px] text-[#6B7280] font-medium">Variant</th>
+                  <th className="text-right pb-2.5 text-[12px] text-[#6B7280] font-medium">Ordered</th>
+                  <th className="text-right pb-2.5 text-[12px] text-[#6B7280] font-medium">Received</th>
+                  <th className="text-right pb-2.5 text-[12px] text-[#6B7280] font-medium">Unit cost</th>
                 </tr>
               </thead>
               <tbody>
                 {po.purchase_order_items.map((item) => (
                   <tr key={item.id} className="border-b border-[#E5EAF1] last:border-0">
-                    <td className="py-2 text-[#334155]">
+                    <td className="py-2.5 text-[13px] text-[#334155]">
                       {item.product_variants?.products?.name ?? "Unknown"} · Size {item.product_variants?.size ?? "—"}
                     </td>
-                    <td className="py-2 text-right text-[#1F2937] font-mono">{item.quantity_ordered}</td>
-                    <td className="py-2 text-right text-[#6B7280] font-mono">{item.quantity_received}</td>
-                    <td className="py-2 text-right text-[#6B7280] font-mono">
+                    <td className="py-2.5 text-right text-[13px] text-[#1F2937] font-mono">{item.quantity_ordered}</td>
+                    <td className="py-2.5 text-right text-[13px] text-[#6B7280] font-mono">{item.quantity_received}</td>
+                    <td className="py-2.5 text-right text-[13px] text-[#6B7280] font-mono">
                       {item.unit_cost_cents ? `$${(item.unit_cost_cents / 100).toFixed(2)}` : "—"}
                     </td>
                   </tr>
@@ -325,7 +339,7 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               </tbody>
             </table>
           )}
-          {po.notes && <p className="mt-3 text-xs text-[#6B7280]">Note: {po.notes}</p>}
+          {po.notes && <p className="mt-3 text-[13px] text-[#6B7280]">Note: {po.notes}</p>}
         </div>
       )}
     </div>
@@ -352,10 +366,14 @@ export function PurchaseOrdersClient({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1F2937]">Purchase Orders</h1>
+          <p className="text-[14px] text-[#64748B] mt-1">Track stock orders from your suppliers.</p>
+        </div>
         <button
           onClick={() => setCreating(true)}
-          className="flex items-center gap-2 h-11 px-6 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] transition-colors"
+          className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors"
         >
           <Plus className="h-4 w-4" /> New Order
         </button>
@@ -378,7 +396,7 @@ export function PurchaseOrdersClient({
 
       {closed.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#8A94A6] mb-3">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#8A94A6] mb-3">
             Completed / Cancelled
           </p>
           <div className="space-y-3 opacity-60">
@@ -390,8 +408,8 @@ export function PurchaseOrdersClient({
       {orders.length === 0 && !creating && (
         <div className="flex flex-col items-center justify-center py-20 text-center rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
           <Package className="h-10 w-10 text-[#C4CAD4] mb-4" />
-          <p className="text-[#6B7280] text-sm">No purchase orders yet.</p>
-          <p className="text-[#8A94A6] text-xs mt-1">Create one to track stock orders from suppliers.</p>
+          <p className="text-[13px] text-[#6B7280]">No purchase orders yet.</p>
+          <p className="text-[12px] text-[#8A94A6] mt-1">Create one to track stock orders from suppliers.</p>
         </div>
       )}
     </div>

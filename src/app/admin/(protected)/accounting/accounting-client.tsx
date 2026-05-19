@@ -118,7 +118,7 @@ function StripePanel() {
                       </p>
                     </div>
                     <span className={cn(
-                      "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium",
+                      "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium",
                       statusColor[p.status] ?? "bg-[#F3F4F6] text-[#6B7280]"
                     )}>
                       {p.status.replace("_", " ")}
@@ -161,7 +161,7 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
           <thead>
             <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
               {["Month", "Orders", "Revenue (incl. GST)", "GST (15%)", "Revenue (excl. GST)", "Refunds", "Discounts"].map((h) => (
-                <th key={h} className="text-left px-[18px] h-[52px] text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap">
+                <th key={h} className="text-left px-[18px] h-[52px] text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -239,7 +239,7 @@ function ExportPanel() {
     }
   }
 
-  const inputClass = "h-10 px-3 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  const inputClass = "h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
 
   return (
     <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
@@ -249,41 +249,41 @@ function ExportPanel() {
       </p>
 
       {/* Format selector */}
-      <div className="grid grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-3 gap-3 mb-6">
         {FORMATS.map((f) => (
           <button
             key={f.value}
             onClick={() => setFormat(f.value)}
             className={cn(
-              "p-3 rounded-xl border text-left transition-colors",
+              "p-4 rounded-xl border text-left transition-colors",
               format === f.value
                 ? "border-[#116DFF]/30 bg-[#EAF2FF]"
                 : "border-[#E2E8F0] bg-white hover:border-[#116DFF]/20 hover:bg-[#F6FAFF]"
             )}
           >
-            <p className={cn("text-sm font-semibold", format === f.value ? "text-[#116DFF]" : "text-[#334155]")}>
+            <p className={cn("text-[13px] font-semibold leading-snug", format === f.value ? "text-[#116DFF]" : "text-[#334155]")}>
               {f.label}
             </p>
-            <p className="text-xs text-[#6B7280] mt-0.5">{f.desc}</p>
+            <p className="text-[12px] text-[#6B7280] mt-1 leading-snug">{f.desc}</p>
           </button>
         ))}
       </div>
 
       {/* Date range */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-end gap-3 mb-5">
         <div className="flex-1">
-          <label className="block text-xs text-[#6B7280] mb-1.5">From</label>
+          <label className="block text-[12px] font-medium text-[#6B7280] mb-2">From</label>
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={cn(inputClass, "w-full")} />
         </div>
         <div className="flex-1">
-          <label className="block text-xs text-[#6B7280] mb-1.5">To</label>
+          <label className="block text-[12px] font-medium text-[#6B7280] mb-2">To</label>
           <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={cn(inputClass, "w-full")} />
         </div>
-        <div className="pt-5">
+        <div>
           <button
             onClick={download}
             disabled={loading || !from || !to}
-            className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors whitespace-nowrap"
+            className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors whitespace-nowrap"
           >
             {loading
               ? <Loader2 className="h-4 w-4 animate-spin" />

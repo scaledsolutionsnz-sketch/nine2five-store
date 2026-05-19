@@ -59,124 +59,95 @@ export function AdminSidebar({ email }: { email: string }) {
   const initials = username.slice(0, 2).toUpperCase();
 
   return (
-    <aside className="w-[260px] shrink-0 flex flex-col h-screen sticky top-0 bg-[#11161F]">
+    <aside className="w-[256px] shrink-0 flex flex-col h-screen sticky top-0" style={{ backgroundColor: "#0F1319", borderRight: "1px solid rgba(255,255,255,0.06)" }}>
       {/* Logo */}
-      <div className="px-5 pt-6 pb-5 shrink-0">
+      <div className="px-5 pt-7 pb-6 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#4ade80]">
-            <span className="font-bold text-black text-[11px] tracking-tight leading-none">N2F</span>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#4ade80]">
+            <span className="font-black text-black text-[11px] tracking-tight leading-none">N2F</span>
           </div>
           <div>
-            <p className="font-semibold text-[14px] text-white tracking-wide leading-none">
-              NINE2FIVE
-            </p>
-            <p className="text-[11px] mt-1 leading-none" style={{ color: "#A9B0BC" }}>
-              Admin
-            </p>
+            <p className="font-bold text-[15px] text-white tracking-wide leading-none">Nine2Five</p>
+            <p className="text-[11px] mt-1.5 leading-none font-medium" style={{ color: "#6B7280" }}>Admin Dashboard</p>
           </div>
         </div>
       </div>
 
-      <div className="mx-4 mb-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
-
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 overflow-y-auto">
+      <nav className="flex-1 px-4 overflow-y-auto pb-2">
         {SECTIONS.map((section, si) => (
-          <div key={si} className="mb-0.5">
+          <div key={si} className={si > 0 ? "mt-5" : ""}>
             {section.label && (
-              <p
-                className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: "#697386" }}
-              >
+              <p className="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.1em]" style={{ color: "#4B5563" }}>
                 {section.label}
               </p>
             )}
-            {section.items.map(({ href, label, icon: Icon }) => {
-              const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 rounded-lg text-[14px] font-medium transition-colors duration-100 min-h-[44px]",
-                    active
-                      ? "text-white"
-                      : "hover:text-white"
-                  )}
-                  style={{
-                    backgroundColor: active ? "#343946" : undefined,
-                    color: active ? "#FFFFFF" : "#C5CBD5",
-                  }}
-                  onMouseEnter={e => {
-                    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)";
-                  }}
-                  onMouseLeave={e => {
-                    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = "";
-                  }}
-                >
-                  <Icon
-                    className="shrink-0"
+            <div className="space-y-0.5">
+              {section.items.map(({ href, label, icon: Icon }) => {
+                const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "flex items-center gap-3 px-3 h-[38px] rounded-lg text-[13px] font-medium transition-all duration-100",
+                      active ? "text-white" : "text-[#9CA3AF]"
+                    )}
                     style={{
-                      width: 16,
-                      height: 16,
-                      color: active ? "#FFFFFF" : "#A9B0BC",
+                      backgroundColor: active ? "rgba(17,109,255,0.15)" : undefined,
+                      boxShadow: active ? "inset 2px 0 0 #116DFF" : undefined,
                     }}
-                  />
-                  <span className="leading-none">{label}</span>
-                </Link>
-              );
-            })}
+                    onMouseEnter={e => {
+                      if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)";
+                      if (!active) (e.currentTarget as HTMLElement).style.color = "#E5E7EB";
+                    }}
+                    onMouseLeave={e => {
+                      if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = "";
+                      if (!active) (e.currentTarget as HTMLElement).style.color = "#9CA3AF";
+                    }}
+                  >
+                    <Icon className="shrink-0" style={{ width: 15, height: 15, color: active ? "#60A5FA" : "#6B7280" }} />
+                    <span className="leading-none">{label}</span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         ))}
       </nav>
 
       {/* Footer */}
-      <div className="shrink-0 px-3 pb-4">
-        <div className="mx-1 mb-2 h-px" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
+      <div className="shrink-0 px-4 pb-5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="pt-4 space-y-0.5">
+          <Link
+            href="/admin/settings"
+            className="flex items-center gap-3 px-3 h-[38px] rounded-lg text-[13px] font-medium text-[#9CA3AF] transition-all duration-100"
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)"; (e.currentTarget as HTMLElement).style.color = "#E5E7EB"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ""; (e.currentTarget as HTMLElement).style.color = "#9CA3AF"; }}
+          >
+            <Settings style={{ width: 15, height: 15, color: "#6B7280", flexShrink: 0 }} />
+            <span className="leading-none">Settings</span>
+          </Link>
 
-        <Link
-          href="/admin/settings"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-colors duration-100 min-h-[44px]"
-          style={{ color: "#C5CBD5" }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ""; }}
-        >
-          <Settings style={{ width: 16, height: 16, color: "#A9B0BC", flexShrink: 0 }} />
-          <span className="leading-none">Settings</span>
-        </Link>
-
-        <button
-          onClick={signOut}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-colors duration-100 w-full text-left min-h-[44px]"
-          style={{ color: "#C5CBD5" }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(239,68,68,0.08)";
-            (e.currentTarget as HTMLElement).style.color = "rgb(252,165,165)";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.backgroundColor = "";
-            (e.currentTarget as HTMLElement).style.color = "#C5CBD5";
-          }}
-        >
-          <LogOut style={{ width: 16, height: 16, flexShrink: 0, color: "#A9B0BC" }} />
-          <span className="leading-none">Sign out</span>
-        </button>
+          <button
+            onClick={signOut}
+            className="flex items-center gap-3 px-3 h-[38px] rounded-lg text-[13px] font-medium w-full text-left text-[#9CA3AF] transition-all duration-100"
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(239,68,68,0.08)"; (e.currentTarget as HTMLElement).style.color = "#FCA5A5"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ""; (e.currentTarget as HTMLElement).style.color = "#9CA3AF"; }}
+          >
+            <LogOut style={{ width: 15, height: 15, flexShrink: 0, color: "#6B7280" }} />
+            <span className="leading-none">Sign out</span>
+          </button>
+        </div>
 
         {/* User chip */}
-        <div
-          className="flex items-center gap-3 px-3 pt-3 mt-1"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-        >
-          <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-[#4ade80]">
-            <span className="text-[10px] text-black font-bold leading-none">{initials}</span>
+        <div className="flex items-center gap-3 mt-4 px-3 py-3 rounded-lg" style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#4ade80]">
+            <span className="text-[11px] text-black font-bold leading-none">{initials}</span>
           </div>
-          <div className="min-w-0">
-            <p className="text-[12px] font-medium truncate leading-none" style={{ color: "#C5CBD5" }}>
-              {email}
-            </p>
-            <p className="text-[10px] mt-1 leading-none" style={{ color: "#697386" }}>
-              Administrator
-            </p>
+          <div className="min-w-0 flex-1">
+            <p className="text-[12px] font-semibold truncate leading-none" style={{ color: "#D1D5DB" }}>{email}</p>
+            <p className="text-[10px] mt-1.5 leading-none font-medium" style={{ color: "#4B5563" }}>Administrator</p>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowUpRight, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import type { Product } from "@/types/database";
+import { getStaticProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
@@ -67,10 +68,9 @@ async function getFeaturedProducts(): Promise<Product[]> {
       .select("*")
       .eq("active", true)
       .limit(6);
-    return (data ?? []) as Product[];
-  } catch {
-    return [];
-  }
+    if (data?.length) return data as Product[];
+  } catch { /* ignore */ }
+  return getStaticProducts().slice(0, 6);
 }
 
 /* ─── Page ──────────────────────────────────────────────────── */
@@ -616,11 +616,7 @@ export default async function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {hasProducts
-                ? featured.map((p) => <LiveCard key={p.id} product={p} />)
-                : FALLBACK_PRODUCTS.map((p) => (
-                    <FallbackCard key={p.name} {...p} />
-                  ))}
+              {featured.map((p) => <LiveCard key={p.id} product={p} />)}
             </div>
           </div>
         </section>

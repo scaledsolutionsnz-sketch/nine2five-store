@@ -15,7 +15,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       <Suspense>
         <AffiliateTracker />
       </Suspense>
-      <main className="pt-16">{children}</main>
+      <main style={{ paddingTop: "64px" }}>{children}</main>
 
       {/* ════════════════════════════════════════════
           FOOTER

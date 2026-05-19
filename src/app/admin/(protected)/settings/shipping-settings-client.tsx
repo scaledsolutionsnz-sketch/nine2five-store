@@ -34,12 +34,12 @@ function RegionCard({
   return (
     <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
       {/* Header */}
-      <div className="px-6 py-5 flex items-center gap-3 border-b border-[#E2E8F0]">
+      <div className="px-6 py-4 flex items-center gap-3 border-b border-[#E2E8F0]">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base bg-[#EAF2FF] border border-[#BBD3FF]">
           {flag}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[14px] text-[#1F2937] leading-none">{region}</p>
+          <p className="font-semibold text-[13px] text-[#1F2937] leading-none">{region}</p>
           <p className="text-[12px] text-[#6B7280] mt-0.5 leading-none">{sublabel}</p>
         </div>
         <div className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#D5F1E2] text-[#166B3B]">
@@ -48,8 +48,8 @@ function RegionCard({
       </div>
 
       {/* Tier table */}
-      <div className="px-6 py-4">
-        <div className="space-y-1">
+      <div className="px-6 py-5">
+        <div className="space-y-1.5">
           {tiers.map((tier, i) => (
             <div
               key={i}
@@ -88,19 +88,19 @@ export function ShippingSettingsClient() {
     <div className="space-y-6">
       {/* Shipping section */}
       <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="px-7 py-5 flex items-center gap-3 border-b border-[#E2E8F0]">
+        <div className="px-6 py-4 flex items-center gap-3 border-b border-[#E2E8F0]">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#EAF2FF] border border-[#BBD3FF]">
             <Globe style={{ width: 16, height: 16, color: "#116DFF" }} strokeWidth={1.8} />
           </div>
           <div>
-            <p className="font-semibold text-[15px] text-[#1F2937] leading-none">Shipping rates</p>
+            <p className="font-semibold text-[14px] text-[#1F2937] leading-none">Shipping rates</p>
             <p className="text-[12px] text-[#6B7280] mt-0.5 leading-none">
               Weight-based tiered rates · 70g per pair
             </p>
           </div>
         </div>
 
-        <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           <RegionCard
             flag="🇳🇿"
             region="Domestic (NZ)"

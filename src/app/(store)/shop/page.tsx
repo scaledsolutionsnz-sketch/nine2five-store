@@ -1,18 +1,22 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Product } from "@/types/database";
+import { getStaticProducts } from "@/lib/products";
 import { ShopGrid } from "./shop-grid";
 
 export const dynamic = "force-dynamic";
 
 export default async function ShopPage() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("products")
-    .select("*")
-    .eq("active", true)
-    .order("created_at", { ascending: true });
-
-  const products = (data ?? []) as Product[];
+  let products: Product[] = [];
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("active", true)
+      .order("created_at", { ascending: true });
+    products = ((data ?? []) as Product[]);
+  } catch { /* ignore */ }
+  if (!products.length) products = getStaticProducts();
 
   return (
     <div className="bg-black min-h-screen">

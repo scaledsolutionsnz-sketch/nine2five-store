@@ -15,7 +15,7 @@ export default async function CustomersPage() {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[22px] font-semibold text-[#1F2937]">Customers</h1>
           <p className="text-[14px] text-[#64748B] mt-1">All registered accounts and guest purchasers.</p>
@@ -38,22 +38,22 @@ export default async function CustomersPage() {
         <div className="overflow-x-auto">
           <table className="w-full" style={{ minWidth: 700 }}>
             <thead>
-              <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
+              <tr className="bg-[#EAF2FF] border-b border-[#BBD3FF]">
                 {["Name", "Email", "Phone", "Joined", "Orders"].map((h) => (
-                  <th key={h} className="px-[18px] text-left text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap" style={{ height: 52 }}>{h}</th>
+                  <th key={h} className="px-[18px] text-left text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap h-[52px]">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {customers.map((c) => (
                 <tr key={c.id} className="hover:bg-[#F6FAFF] transition-colors" style={{ borderBottom: "1px solid #E5EAF1" }}>
-                  <td className="px-[18px] py-[14px] text-[14px] font-semibold text-[#1F2937]">{c.first_name} {c.last_name}</td>
-                  <td className="px-[18px] py-[14px] text-[14px] text-[#64748B] max-w-[220px] truncate">{c.email}</td>
-                  <td className="px-[18px] py-[14px] text-[14px] text-[#64748B]">{c.phone ?? "—"}</td>
+                  <td className="px-[18px] py-[14px] text-[13px] font-semibold text-[#1F2937]">{c.first_name} {c.last_name}</td>
+                  <td className="px-[18px] py-[14px] text-[13px] text-[#64748B] max-w-[220px] truncate">{c.email}</td>
+                  <td className="px-[18px] py-[14px] text-[13px] text-[#64748B]">{c.phone ?? "—"}</td>
                   <td className="px-[18px] py-[14px] text-[13px] text-[#94A3B8] font-mono">
                     {new Date(c.created_at).toLocaleDateString("en-NZ")}
                   </td>
-                  <td className="px-[18px] py-[14px] text-[14px] text-[#94A3B8] text-center">—</td>
+                  <td className="px-[18px] py-[14px] text-[13px] text-[#94A3B8] text-center">—</td>
                 </tr>
               ))}
             </tbody>

@@ -31,10 +31,10 @@ export function Nav() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#0d0d0d]",
         scrolled
-          ? "bg-[#0d0d0d]/95 backdrop-blur-md border-b border-white/[0.08]"
-          : "bg-transparent"
+          ? "backdrop-blur-md border-b border-white/[0.08]"
+          : "border-b border-white/[0.04]"
       )}
     >
       <nav className="flex items-center justify-between h-16 px-4 sm:px-8 md:px-16 lg:px-20">

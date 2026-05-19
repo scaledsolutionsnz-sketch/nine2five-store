@@ -118,7 +118,7 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
 function HBarChart({ rows, format }: { rows: { label: string; value: number }[]; format: (v: number) => string }) {
   const max = Math.max(...rows.map((r) => r.value), 1);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {rows.map((row, i) => {
         const pct = (row.value / max) * 100;
         return (
@@ -127,7 +127,7 @@ function HBarChart({ rows, format }: { rows: { label: string; value: number }[];
               <span className="text-[13px] text-[#334155] font-medium truncate pr-3">{row.label}</span>
               <span className="text-[13px] text-[#64748B] font-semibold shrink-0 font-mono">{format(row.value)}</span>
             </div>
-            <div className="h-1.5 rounded-full bg-[#E5EAF1] overflow-hidden">
+            <div className="h-2 rounded-full bg-[#E5EAF1] overflow-hidden">
               <div className="h-full rounded-full bg-[#35C978] transition-all duration-500" style={{ width: `${pct}%` }} />
             </div>
           </div>
@@ -244,22 +244,22 @@ export function AnalyticsClient({
 
       {/* ── Revenue chart ── */}
       <div className="bg-white border border-[#E2E8F0] rounded-[14px]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="flex items-start justify-between px-8 pt-7 pb-6 border-b border-[#E2E8F0]">
+        <div className="flex items-start justify-between px-6 py-4 border-b border-[#E2E8F0]">
           <div>
-            <h3 className="font-bold text-[17px] text-[#1F2937] leading-none">
+            <h3 className="font-semibold text-[15px] text-[#1F2937] leading-none">
               Revenue — last 30 days
             </h3>
-            <p className="text-[13px] text-[#64748B] mt-2 font-medium font-mono">
+            <p className="text-[13px] text-[#64748B] mt-1.5 font-medium font-mono">
               ${(chartData.reduce((s, d) => s + d.revenue_cents, 0) / 100).toFixed(2)} NZD total
               · {chartData.reduce((s, d) => s + d.order_count, 0)} orders
             </p>
           </div>
         </div>
-        <div className="px-8 py-7">
+        <div className="p-6">
           {chartData.length > 0 ? (
             <RevenueChart data={chartData} />
           ) : (
-            <div className="h-40 flex items-center justify-center text-[#94A3B8] text-[13px]">
+            <div className="h-48 flex items-center justify-center text-[#94A3B8] text-[13px]">
               No order data yet
             </div>
           )}
@@ -269,35 +269,35 @@ export function AnalyticsClient({
       {/* ── Top Products + Revenue by Region ── */}
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white border border-[#E2E8F0] rounded-[14px]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="px-7 pt-7 pb-5 border-b border-[#E2E8F0]">
-            <h3 className="font-bold text-[17px] text-[#1F2937] leading-none">Top Products</h3>
-            <p className="text-[12px] text-[#64748B] mt-1.5 font-medium">By revenue, all time</p>
+          <div className="px-6 py-4 border-b border-[#E2E8F0]">
+            <h3 className="font-semibold text-[15px] text-[#1F2937] leading-none">Top Products</h3>
+            <p className="text-[12px] text-[#64748B] mt-1 font-medium">By revenue, all time</p>
           </div>
-          <div className="px-7 py-6">
+          <div className="p-6">
             {topProducts.length > 0 ? (
               <HBarChart
                 rows={topProducts.map((p) => ({ label: p.product_name, value: p.revenue_cents }))}
                 format={(v) => `$${(v / 100).toFixed(0)}`}
               />
             ) : (
-              <p className="text-[13px] text-[#94A3B8] py-4">No sales yet</p>
+              <div className="flex items-center justify-center h-32 text-[13px] text-[#94A3B8]">No sales yet</div>
             )}
           </div>
         </div>
 
         <div className="bg-white border border-[#E2E8F0] rounded-[14px]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="px-7 pt-7 pb-5 border-b border-[#E2E8F0]">
-            <h3 className="font-bold text-[17px] text-[#1F2937] leading-none">Revenue by Region</h3>
-            <p className="text-[12px] text-[#64748B] mt-1.5 font-medium">Shipping destination breakdown</p>
+          <div className="px-6 py-4 border-b border-[#E2E8F0]">
+            <h3 className="font-semibold text-[15px] text-[#1F2937] leading-none">Revenue by Region</h3>
+            <p className="text-[12px] text-[#64748B] mt-1 font-medium">Shipping destination breakdown</p>
           </div>
-          <div className="px-7 py-6">
+          <div className="p-6">
             {byRegion.length > 0 ? (
               <HBarChart
                 rows={byRegion.map((r) => ({ label: r.region, value: r.revenue_cents }))}
                 format={(v) => `$${(v / 100).toFixed(0)}`}
               />
             ) : (
-              <p className="text-[13px] text-[#94A3B8] py-4">No orders yet</p>
+              <div className="flex items-center justify-center h-32 text-[13px] text-[#94A3B8]">No orders yet</div>
             )}
           </div>
         </div>
@@ -305,13 +305,13 @@ export function AnalyticsClient({
 
       {/* ── Tracking pixels ── */}
       <div className="bg-white border border-[#E2E8F0] rounded-[14px]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="px-8 pt-7 pb-5 border-b border-[#E2E8F0]">
-          <h3 className="font-bold text-[17px] text-[#1F2937] leading-none">Tracking Pixels</h3>
-          <p className="text-[13px] text-[#64748B] mt-2 font-medium">
+        <div className="px-6 py-4 border-b border-[#E2E8F0]">
+          <h3 className="font-semibold text-[15px] text-[#1F2937] leading-none">Tracking Pixels</h3>
+          <p className="text-[13px] text-[#64748B] mt-1.5 font-medium">
             Set pixel IDs as environment variables in Vercel. Purchase events fire automatically on order confirmation.
           </p>
         </div>
-        <div className="px-8 py-7">
+        <div className="p-6">
           <div className="grid md:grid-cols-3 gap-5">
             <PixelCard
               name="Meta Pixel"

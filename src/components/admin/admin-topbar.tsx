@@ -21,23 +21,22 @@ export function AdminTopbar() {
 
       {/* Right: search + icons */}
       <div className="flex items-center gap-2">
-        {/* Search pill */}
-        <div className="relative hidden md:flex items-center">
+        {/* Search pill — flex wrapper, no icon overlap */}
+        <div
+          className="hidden md:flex items-center gap-2.5 h-[40px] w-[380px] px-4 rounded-full transition-all"
+          style={{ backgroundColor: "#202633", border: "1px solid #374151" }}
+          onFocusCapture={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(17,109,255,0.5)"; }}
+          onBlurCapture={e => { (e.currentTarget as HTMLElement).style.borderColor = "#374151"; }}
+        >
           <Search
-            className="absolute left-4 pointer-events-none"
+            className="pointer-events-none shrink-0"
             style={{ width: 14, height: 14, color: "rgba(255,255,255,0.3)" }}
             strokeWidth={2}
           />
           <input
             type="text"
             placeholder="Search..."
-            className="h-[42px] w-[400px] pl-10 pr-4 text-[13px] rounded-full placeholder:text-white/25 text-white focus:outline-none transition-all"
-            style={{
-              backgroundColor: "#202633",
-              border: "1px solid #374151",
-            }}
-            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(17,109,255,0.5)"; }}
-            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = "#374151"; }}
+            className="flex-1 min-w-0 text-[13px] bg-transparent placeholder:text-white/25 text-white focus:outline-none"
           />
         </div>
 

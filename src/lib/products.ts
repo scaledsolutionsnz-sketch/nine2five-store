@@ -7,7 +7,10 @@ export const PRODUCTS = [
     price: 2000,
     compare_at_price: 2500,
     image_urls: [
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80",
+      "/products/black-kahotea/1.avif",
+      "/products/black-kahotea/2.avif",
+      "/products/black-kahotea/3.avif",
+      "/products/black-kahotea/4.avif",
     ],
   },
   {
@@ -27,7 +30,10 @@ export const PRODUCTS = [
     price: 2000,
     compare_at_price: 2500,
     image_urls: [
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
+      "/products/white-kahotea/1.avif",
+      "/products/white-kahotea/2.avif",
+      "/products/white-kahotea/3.avif",
+      "/products/white-kahotea/4.avif",
     ],
   },
   {
@@ -37,7 +43,11 @@ export const PRODUCTS = [
     price: 2000,
     compare_at_price: 2500,
     image_urls: [
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+      "/products/pink-kahotea/1.avif",
+      "/products/pink-kahotea/2.avif",
+      "/products/pink-kahotea/3.avif",
+      "/products/pink-kahotea/4.avif",
+      "/products/pink-kahotea/5.avif",
     ],
   },
   {
@@ -47,7 +57,8 @@ export const PRODUCTS = [
     price: 2000,
     compare_at_price: 2500,
     image_urls: [
-      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&q=80",
+      "/products/toa-whenua/1.png",
+      "/products/toa-whenua/2.png",
     ],
   },
   {
@@ -57,7 +68,9 @@ export const PRODUCTS = [
     price: 2000,
     compare_at_price: 2500,
     image_urls: [
-      "https://images.unsplash.com/photo-1591195853828-11db59a44f43?w=800&q=80",
+      "/products/pasifika/1.avif",
+      "/products/pasifika/2.avif",
+      "/products/pasifika/3.avif",
     ],
   },
   {
@@ -77,10 +90,27 @@ export const PRODUCTS = [
     price: 1500,
     compare_at_price: null,
     image_urls: [
-      "https://images.unsplash.com/photo-1519689373023-dd07c7988603?w=800&q=80",
+      "/products/tino-rangatiratanga/1.avif",
+      "/products/tino-rangatiratanga/2.avif",
     ],
   },
 ];
 
 export const SIZES = ["6-9", "10-13"] as const;
 export type Size = typeof SIZES[number];
+
+import type { Product } from "@/types/database";
+
+export function getStaticProducts(): Product[] {
+  return PRODUCTS.map((p, i) => ({
+    id: p.slug,
+    name: p.name,
+    slug: p.slug,
+    description: p.description,
+    price: p.price,
+    compare_at_price: p.compare_at_price,
+    image_urls: p.image_urls,
+    active: true,
+    created_at: new Date(2025, 0, i + 1).toISOString(),
+  }));
+}

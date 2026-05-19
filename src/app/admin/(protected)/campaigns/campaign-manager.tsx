@@ -76,7 +76,7 @@ export function CampaignManager({
   }
 
   const inputClass =
-    "w-full px-3 py-2.5 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+    "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
   const selectedSegment = SEGMENTS.find((s) => s.value === segment)!;
   const recipientCount = segmentCounts[segment];
 
@@ -104,7 +104,7 @@ export function CampaignManager({
         <h2 className="font-semibold text-sm text-[#1F2937] mb-5 flex items-center gap-2">
           <Plus className="h-4 w-4" /> New Campaign
         </h2>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <input
             placeholder="Subject line"
             value={subject}
@@ -114,11 +114,11 @@ export function CampaignManager({
 
           {/* Segment picker */}
           <div className="relative">
-            <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[#F3F5F8] border border-[#E2E8F0]">
+            <div className="flex items-center gap-3 px-3.5 py-3 rounded-lg bg-[#F3F5F8] border border-[#E2E8F0]">
               <Users className="h-4 w-4 text-[#6B7280] shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-[#334155]">{selectedSegment.label}</p>
-                <p className="text-[11px] text-[#6B7280]">{recipientCount} recipients · {selectedSegment.desc}</p>
+                <p className="text-[13px] font-medium text-[#334155]">{selectedSegment.label}</p>
+                <p className="text-[11px] text-[#6B7280] mt-0.5">{recipientCount} recipients · {selectedSegment.desc}</p>
               </div>
               <ChevronDown className="h-4 w-4 text-[#6B7280] shrink-0" />
               <select
@@ -139,7 +139,7 @@ export function CampaignManager({
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={10}
-              className={inputClass + " resize-none font-mono text-[13px]"}
+              className={inputClass + " h-auto py-3.5 resize-none font-mono text-[13px] leading-relaxed"}
             />
             {body && (
               <button
@@ -155,22 +155,22 @@ export function CampaignManager({
 
           {/* Preview panel */}
           {preview && body && (
-            <div className="rounded-xl border border-[#E2E8F0] bg-[#F3F5F8] p-4 max-h-64 overflow-y-auto">
-              <p className="text-xs text-[#6B7280] mb-3 uppercase tracking-widest">Preview</p>
-              <div className="text-sm text-[#334155] leading-relaxed whitespace-pre-wrap font-sans">
+            <div className="rounded-xl border border-[#E2E8F0] bg-[#F3F5F8] px-5 py-4 max-h-64 overflow-y-auto">
+              <p className="text-[11px] font-semibold text-[#6B7280] mb-3 uppercase tracking-widest">Preview</p>
+              <div className="text-[13px] text-[#334155] leading-relaxed whitespace-pre-wrap font-sans">
                 {body.replace(/\{\{first_name\}\}/g, "Aroha")}
               </div>
             </div>
           )}
 
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-[#6B7280]">
+          <div className="flex items-center justify-between pt-1">
+            <p className="text-[13px] text-[#6B7280]">
               Will send to <span className="text-[#1F2937] font-semibold">{recipientCount}</span> customers
             </p>
             <button
               onClick={createCampaign}
               disabled={creating}
-              className="flex items-center gap-2 px-4 h-10 rounded-full bg-[#116DFF] text-white text-sm font-semibold hover:bg-[#0D5FE0] transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors disabled:opacity-50"
             >
               {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
               Save Draft
@@ -193,14 +193,14 @@ export function CampaignManager({
                     <Mail className="h-3.5 w-3.5 text-[#6B7280] shrink-0" />
                     <p className="font-medium text-sm text-[#1F2937] truncate">{c.subject}</p>
                     <span className={cn(
-                      "px-2.5 py-1 rounded text-[13px] font-medium shrink-0",
+                      "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium shrink-0",
                       c.status === "sent"
                         ? "bg-[#D5F1E2] text-[#166B3B]"
                         : "bg-[#F3F4F6] text-[#6B7280]"
                     )}>
                       {c.status === "sent" ? "Sent" : "Draft"}
                     </span>
-                    <span className="px-2.5 py-1 rounded text-[13px] font-medium bg-[#F3F4F6] text-[#6B7280] shrink-0">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium bg-[#F3F4F6] text-[#6B7280] shrink-0">
                       {SEGMENTS.find((s) => s.value === c.segment)?.label ?? c.segment}
                     </span>
                   </div>
@@ -215,9 +215,9 @@ export function CampaignManager({
                   <button
                     onClick={() => sendCampaign(c.id, count)}
                     disabled={sending === c.id || count === 0}
-                    className="flex items-center gap-1.5 px-3 h-9 rounded-full bg-[#116DFF] text-white text-xs font-semibold hover:bg-[#0D5FE0] transition-colors disabled:opacity-50 shrink-0"
+                    className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors disabled:opacity-50 shrink-0"
                   >
-                    {sending === c.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                    {sending === c.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
                     Send Now
                   </button>
                 )}
@@ -242,7 +242,9 @@ export function CampaignManager({
           );
         })}
         {campaigns.length === 0 && (
-          <p className="text-center py-10 text-[#8A94A6] text-sm">No campaigns yet. Write one above.</p>
+          <div className="flex items-center justify-center py-14 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+            <p className="text-[13px] text-[#8A94A6]">No campaigns yet. Write one above.</p>
+          </div>
         )}
       </div>
     </div>
