@@ -1018,12 +1018,17 @@ function LiveCard({ product }: { product: Product }) {
           borderRadius: "17px 17px 0 0",
           flexShrink: 0,
           backgroundColor: "#0e2314",
-          backgroundImage: img ? `url('${img}')` : "none",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       >
-        {!img && (
+        {img ? (
+          <Image
+            src={img}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover object-center transition-transform duration-500"
+          />
+        ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="font-display font-black text-center px-4 leading-none" style={{ color: "rgba(255,255,255,0.12)", fontSize: 13 }}>
               {product.name.toUpperCase()}
@@ -1031,7 +1036,7 @@ function LiveCard({ product }: { product: Product }) {
           </div>
         )}
         {isOnSale && (
-          <span className="absolute top-3 left-3 font-black uppercase" style={{ background: "#2E8B28", color: "#fff", fontSize: 9, letterSpacing: "0.1em", padding: "0.25rem 0.65rem", borderRadius: 9999 }}>
+          <span className="absolute top-3 left-3 font-black uppercase z-10" style={{ background: "#2E8B28", color: "#fff", fontSize: 9, letterSpacing: "0.1em", padding: "0.25rem 0.65rem", borderRadius: 9999 }}>
             Sale
           </span>
         )}

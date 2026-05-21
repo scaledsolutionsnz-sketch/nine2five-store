@@ -123,7 +123,7 @@ function InteractiveCard({ product, priority }: { product: Product; priority?: b
               fill
               priority={priority}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
