@@ -744,7 +744,7 @@ function PaymentStep({
       {/* Payment card */}
       <div style={{ padding: 24, borderRadius: 18, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <p style={{ fontSize: 11, fontWeight: 900, color: "rgba(255,255,255,0.45)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 }}>Payment</p>
-        <PaymentElement />
+        <PaymentElement options={{ layout: { type: "tabs", defaultCollapsed: false } }} />
       </div>
 
       {error && (
