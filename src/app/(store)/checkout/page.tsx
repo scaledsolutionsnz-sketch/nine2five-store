@@ -412,46 +412,69 @@ export default function CheckoutPage() {
                     },
                     rules: {
                       ".Tab": {
-                        backgroundColor: "#0e2314",
+                        backgroundColor: "#0d1f12",
                         border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "12px",
                         boxShadow: "none",
                       },
                       ".Tab:hover": {
-                        backgroundColor: "#122918",
-                        border: "1px solid rgba(255,255,255,0.15)",
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(255,255,255,0.18)",
+                        boxShadow: "none",
                       },
                       ".Tab--selected": {
-                        backgroundColor: "#0e2314",
-                        border: "1px solid #3a7722",
-                        boxShadow: "0 0 0 1px #3a7722",
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(58,119,34,0.6)",
+                        boxShadow: "none",
                       },
                       ".Input": {
-                        backgroundColor: "#0e2314",
-                        border: "1px solid rgba(255,255,255,0.10)",
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "12px",
                         boxShadow: "none",
                         color: "#fafafa",
                       },
                       ".Input:focus": {
-                        border: "1px solid #3a7722",
-                        boxShadow: "0 0 0 1px #3a7722",
+                        border: "1px solid rgba(58,119,34,0.7)",
+                        boxShadow: "none",
                       },
                       ".Label": {
-                        color: "rgba(255,255,255,0.55)",
+                        color: "rgba(255,255,255,0.45)",
                         fontSize: "11px",
-                        letterSpacing: "0.05em",
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
                       },
                       ".Block": {
-                        backgroundColor: "#0e2314",
+                        backgroundColor: "#0d1f12",
                         border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "12px",
                         boxShadow: "none",
                       },
                       ".AccordionItem": {
-                        backgroundColor: "#0e2314",
+                        backgroundColor: "#0d1f12",
                         border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "12px",
+                        boxShadow: "none",
+                      },
+                      ".AccordionItem:hover": {
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(255,255,255,0.18)",
                       },
                       ".AccordionItem--selected": {
-                        backgroundColor: "#0e2314",
-                        border: "1px solid rgba(58,119,34,0.5)",
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(58,119,34,0.6)",
+                        boxShadow: "none",
+                      },
+                      ".PickerItem": {
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "12px",
+                        boxShadow: "none",
+                      },
+                      ".PickerItem--selected": {
+                        backgroundColor: "#0d1f12",
+                        border: "1px solid rgba(58,119,34,0.6)",
+                        boxShadow: "none",
                       },
                     },
                   } }}>
@@ -718,8 +741,7 @@ function PaymentStep({
         </button>
       </div>
 
-      <div className="bg-[#0d1f12] border border-white/[0.08] rounded-2xl p-8">
-        <h2 className="font-display font-bold text-base text-white mb-4">Payment</h2>
+      <div className="bg-[#0d1f12] border border-white/[0.08] rounded-xl px-4 py-4">
         <PaymentElement />
       </div>
 
