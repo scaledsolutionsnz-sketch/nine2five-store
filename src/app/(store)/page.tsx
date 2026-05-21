@@ -716,8 +716,47 @@ export default async function HomePage() {
         {/* ════════════════════════════════════════════
             ATHLETES
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#06150C", padding: "6rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="max-w-[1320px] mx-auto px-6 sm:px-10 md:px-14 lg:px-20">
+        <section style={{ backgroundColor: "#06150C", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <style>{`
+            .athlete-section { padding: 100px 0; }
+            .athlete-grid {
+              display: grid;
+              grid-template-columns: repeat(6, 1fr);
+              row-gap: 60px;
+              column-gap: 32px;
+              justify-items: center;
+              align-items: start;
+            }
+            .athlete-circle {
+              position: relative;
+              width: 180px;
+              height: 180px;
+              border-radius: 50%;
+              overflow: hidden;
+              flex-shrink: 0;
+              margin-bottom: 18px;
+              background: #0e2314;
+              ring: 2px solid rgba(46,139,40,0.2);
+              transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .athlete-card:hover .athlete-circle {
+              transform: scale(1.04);
+              box-shadow: 0 0 0 3px rgba(46,139,40,0.45);
+            }
+            .athlete-name {
+              min-height: 64px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            @media (max-width: 1279px) { .athlete-grid { grid-template-columns: repeat(4, 1fr); } }
+            @media (max-width: 1023px) { .athlete-grid { grid-template-columns: repeat(3, 1fr); column-gap: 24px; } }
+            @media (max-width: 767px)  { .athlete-grid { grid-template-columns: repeat(2, 1fr); column-gap: 20px; row-gap: 48px; } .athlete-section { padding: 60px 0; } }
+            @media (max-width: 1279px) { .athlete-circle { width: 160px; height: 160px; } }
+            @media (max-width: 1023px) { .athlete-circle { width: 145px; height: 145px; } }
+            @media (max-width: 767px)  { .athlete-circle { width: 130px; height: 130px; margin-bottom: 14px; } }
+          `}</style>
+          <div className="athlete-section" style={{ maxWidth: 1400, margin: "0 auto", padding: "100px 48px" }}>
             <div className="text-center" style={{ marginBottom: 64 }}>
               <p style={{ fontSize: 11, letterSpacing: "0.4em", color: "#2E8B28", fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>
                 Nine2Five Family
@@ -726,108 +765,37 @@ export default async function HomePage() {
                 WHO WEARS OUR SOCKS?
               </h2>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8 items-start justify-items-center">
+            <div className="athlete-grid">
               {[
-                {
-                  img: "/athletes/ruben-love.webp",
-                  name: "Ruben Love",
-                  role: "Fullback / First-Five",
-                  team: "Hurricanes & All Blacks",
-                  detail: "All Blacks squad 2024. Heir to a proud rugby lineage.",
-                },
-                {
-                  img: "/athletes/asafo-aumua.webp",
-                  name: "Asafo Aumua",
-                  role: "Hooker",
-                  team: "Hurricanes & All Blacks",
-                  detail: "U20 World Cup winner 2017. All Blacks Test debut 2020.",
-                },
-                {
-                  img: "/athletes/haze-dunster.webp",
-                  name: "Haze Dunster",
-                  role: "Wing",
-                  team: "Parramatta Eels",
-                  detail: "NRL flyer born in Rotorua. Taking his culture to Australia.",
-                },
-                {
-                  img: "/athletes/dre-pakeho.webp",
-                  name: "Dre Pakeho",
-                  role: "Centre",
-                  team: "Queensland Reds",
-                  detail: "2024 U20s Player of the Year. Super Rugby rising star.",
-                },
-                {
-                  img: "/athletes/ben-odonovan.webp",
-                  name: "Ben O'Donovan",
-                  role: "Scrum-half",
-                  team: "Munster Rugby",
-                  detail: "Former Crusaders Academy. NZ U20 rep now professional in Ireland.",
-                },
-                {
-                  img: "/athletes/flora-devonshire.webp",
-                  name: "Flora Devonshire",
-                  role: "Allrounder",
-                  team: "White Ferns & Central Hinds",
-                  detail: "Left-arm seamer and batter. Called up to the White Ferns 2025.",
-                },
-                {
-                  img: "/athletes/leon-tuiloma.webp",
-                  name: "Leon Tuiloma",
-                  role: "Flanker / Hooker",
-                  team: "Hurricanes Development",
-                  detail: "From Masterton, Rathkeale College. NZ Barbarians U21 rep.",
-                },
-                {
-                  img: "/athletes/ocean-bartlett.webp",
-                  name: "Ocean Bartlett",
-                  role: "Leg-spinner / Batter",
-                  team: "White Ferns & Central Hinds",
-                  detail: "NZ Women's Development squad. Rising star in domestic T20 cricket.",
-                },
-                {
-                  img: "/athletes/rossana-perales.webp",
-                  name: "Rossana Perales",
-                  role: "Fitness Coach",
-                  team: "New Zealand",
-                  detail: "Empowering movement and performance. Training the next generation.",
-                },
-                {
-                  img: "/athletes/reuben-cherrington.webp",
-                  name: "Reuben Cherrington",
-                  role: "Rugby League",
-                  team: "Māori Ferns / NRL",
-                  detail: "NRL talent representing Māori culture at the highest level.",
-                },
-                {
-                  img: "/athletes/tiaki-freeman.webp",
-                  name: "Tiaki Freeman",
-                  role: "Powerlifter",
-                  team: "NZ National Team",
-                  detail: "317.5kg deadlift. NZ Junior World Championship competitor.",
-                },
-                {
-                  img: "/athletes/will-cole.webp",
-                  name: "Will Cole",
-                  role: "Fly-half",
-                  team: "Hurricanes WTG",
-                  detail: "NZ U20 World Championship finalist 2025. Hurricanes next gen.",
-                },
+                { img: "/athletes/ruben-love.webp",        name: "Ruben Love",         role: "Fullback / First-Five",  team: "Hurricanes & All Blacks",    detail: "All Blacks squad 2024. Heir to a proud rugby lineage." },
+                { img: "/athletes/asafo-aumua.webp",       name: "Asafo Aumua",        role: "Hooker",                 team: "Hurricanes & All Blacks",    detail: "U20 World Cup winner 2017. All Blacks Test debut 2020." },
+                { img: "/athletes/haze-dunster.webp",      name: "Haze Dunster",       role: "Wing",                   team: "Parramatta Eels",            detail: "NRL flyer born in Rotorua. Taking his culture to Australia." },
+                { img: "/athletes/dre-pakeho.webp",        name: "Dre Pakeho",         role: "Centre",                 team: "Queensland Reds",            detail: "2024 U20s Player of the Year. Super Rugby rising star." },
+                { img: "/athletes/ben-odonovan.webp",      name: "Ben O'Donovan",      role: "Scrum-half",             team: "Munster Rugby",              detail: "Former Crusaders Academy. NZ U20 rep now pro in Ireland." },
+                { img: "/athletes/flora-devonshire.webp",  name: "Flora Devonshire",   role: "Allrounder",             team: "White Ferns & Central Hinds",detail: "Left-arm seamer and batter. Called up to the White Ferns 2025." },
+                { img: "/athletes/leon-tuiloma.webp",      name: "Leon Tuiloma",       role: "Flanker / Hooker",       team: "Hurricanes Development",     detail: "From Masterton, Rathkeale College. NZ Barbarians U21 rep." },
+                { img: "/athletes/ocean-bartlett.webp",    name: "Ocean Bartlett",     role: "Leg-spinner / Batter",   team: "White Ferns & Central Hinds",detail: "NZ Women's Development squad. Rising star in domestic T20." },
+                { img: "/athletes/rossana-perales.webp",   name: "Rossana Perales",    role: "Fitness Coach",          team: "New Zealand",                detail: "Empowering movement and performance. Training the next generation." },
+                { img: "/athletes/reuben-cherrington.webp",name: "Reuben Cherrington", role: "Rugby League",           team: "Māori Ferns / NRL",          detail: "NRL talent representing Māori culture at the highest level." },
+                { img: "/athletes/tiaki-freeman.webp",     name: "Tiaki Freeman",      role: "Powerlifter",            team: "NZ National Team",           detail: "317.5kg deadlift. NZ Junior World Championship competitor." },
+                { img: "/athletes/will-cole.webp",         name: "Will Cole",          role: "Fly-half",               team: "Hurricanes WTG",             detail: "NZ U20 World Championship finalist 2025. Hurricanes next gen." },
               ].map((a) => (
-                <div key={a.name} className="flex flex-col items-center text-center group relative">
-                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#2E8B28]/20 group-hover:ring-[#2E8B28]/60 transition-all duration-300 group-hover:scale-105"
-                    style={{ background: "#0e2314" }}>
+                <div key={a.name} className="athlete-card" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", width: "100%" }}>
+                  <div className="athlete-circle" style={{ boxShadow: "0 0 0 2px rgba(46,139,40,0.2)" }}>
                     <Image
                       src={a.img}
                       alt={a.name}
                       fill
-                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 767px) 130px, (max-width: 1023px) 145px, (max-width: 1279px) 160px, 180px"
+                      className="object-cover object-top"
                     />
-                    <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 50% 120%, rgba(58,119,34,0.08) 0%, transparent 70%)" }} />
                   </div>
-                  <p className="font-display font-black text-white text-lg md:text-xl leading-tight mb-1 min-h-[3rem] flex items-center justify-center">{a.name}</p>
-                  <p className="text-[#2E8B28] text-[11px] font-bold uppercase tracking-widest mb-1">{a.role}</p>
-                  <p className="text-white/40 text-[11px] font-medium mb-2 min-h-[2rem]">{a.team}</p>
-                  <p className="text-white/30 text-[12px] leading-relaxed max-w-[180px] min-h-[5rem]">{a.detail}</p>
+                  <div className="athlete-name">
+                    <p className="font-display font-black text-white" style={{ fontSize: "clamp(0.95rem, 1.2vw, 1.15rem)", lineHeight: 1.25, margin: 0 }}>{a.name}</p>
+                  </div>
+                  <p style={{ color: "#2E8B28", fontSize: 10, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 4, marginTop: 6 }}>{a.role}</p>
+                  <p style={{ color: "rgba(255,255,255,0.38)", fontSize: 11, fontWeight: 500, marginBottom: 10, minHeight: "2rem", display: "flex", alignItems: "center", justifyContent: "center" }}>{a.team}</p>
+                  <p style={{ color: "rgba(255,255,255,0.28)", fontSize: 11.5, lineHeight: 1.65, maxWidth: 175, minHeight: "5rem" }}>{a.detail}</p>
                 </div>
               ))}
             </div>
