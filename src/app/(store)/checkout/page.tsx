@@ -27,7 +27,7 @@ const COUNTRIES = [
 const STEP_LABELS = ["Information", "Shipping", "Payment"];
 
 const inputClass =
-  "w-full h-14 px-4 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#3a7722]/40 focus:bg-white/[0.06] transition-all";
+  "w-full h-14 px-4 rounded-xl bg-white/[0.05] border border-white/[0.10] text-white text-base placeholder-white/30 focus:outline-none focus:border-[#2f9b2f]/50 focus:bg-white/[0.07] transition-all";
 
 export default function CheckoutPage() {
   const { items, total, count } = useCart();
@@ -42,6 +42,7 @@ export default function CheckoutPage() {
 
   const [email, setEmail] = useState("");
   const [acceptsMarketing, setAcceptsMarketing] = useState(false);
+  const [suburb, setSuburb] = useState("");
   const [address, setAddress] = useState<Partial<ShippingAddress>>({
     first_name: "", last_name: "", line1: "", line2: "",
     city: "", region: "", postcode: "", phone: "",
@@ -76,7 +77,9 @@ export default function CheckoutPage() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           place.address_components.find((c: any) => c.types.includes(t))?.long_name ?? "";
         const line1 = [get("subpremise"), get("street_number"), get("route")].filter(Boolean).join(" ");
-        const city = get("locality") || get("sublocality_level_1") || get("administrative_area_level_2");
+        const city = get("locality") || get("administrative_area_level_2");
+        const autoSuburb = get("sublocality_level_1") || get("neighborhood") || "";
+        if (autoSuburb) setSuburb(autoSuburb);
         setAddress(a => ({ ...a, line1, city, postcode: get("postal_code"), region: get("administrative_area_level_1") }));
       });
     }
@@ -166,12 +169,9 @@ export default function CheckoutPage() {
 
   if (count === 0) {
     return (
-      <div className="bg-[#112016] min-h-screen flex flex-col items-center justify-center px-8 text-center">
-        <p className="text-white/50 mb-4">Your cart is empty.</p>
-        <Link
-          href="/shop"
-          className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300"
-        >
+      <div style={{ background: "#06150c", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 20px", textAlign: "center" }}>
+        <p style={{ color: "rgba(255,255,255,0.5)", marginBottom: 16 }}>Your cart is empty.</p>
+        <Link href="/shop" style={{ background: "#2f9b2f", color: "#fff", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.12em", padding: "14px 32px", borderRadius: 999, textDecoration: "none" }}>
           Shop Now
         </Link>
       </div>
@@ -186,353 +186,276 @@ export default function CheckoutPage() {
 
   const step1Valid =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
-    !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
+    !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region) &&
+    suburb.trim() !== "";
+
+  const CS = {
+    label: { display: "block", marginBottom: 8, color: "rgba(255,255,255,0.58)", fontSize: 11, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase" } as React.CSSProperties,
+    input: { width: "100%", height: 58, padding: "0 18px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", fontSize: 16, outline: "none", transition: "border-color 0.2s, box-shadow 0.2s", fontFamily: "inherit" } as React.CSSProperties,
+    select: { width: "100%", height: 58, padding: "0 18px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", fontSize: 16, outline: "none", appearance: "none" as const, fontFamily: "inherit" } as React.CSSProperties,
+    sectionTitle: { margin: "28px 0 16px", color: "#2f9b2f", fontSize: 12, fontWeight: 900, letterSpacing: "0.22em", textTransform: "uppercase" } as React.CSSProperties,
+    formCard: { padding: 28, borderRadius: 22, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" } as React.CSSProperties,
+    row2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 } as React.CSSProperties,
+    row1: { marginBottom: 16 } as React.CSSProperties,
+  };
 
   return (
-    <div className="bg-[#112016] min-h-screen max-w-screen-xl mx-auto px-4 sm:px-8 md:px-16 lg:px-20 pt-20 pb-24">
-      <Link href="/cart" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition-colors mb-6">
-        <ChevronLeft className="h-4 w-4" /> Back to Cart
-      </Link>
+    <div style={{ background: "#06150c", minHeight: "100vh", overflowX: "hidden" }}>
+      <style>{`
+        .co-container { max-width: 1280px; margin: 0 auto; padding: 100px 48px 90px; }
+        .co-layout { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 56px; align-items: start; }
+        .co-input:focus { border-color: #2f9b2f !important; box-shadow: 0 0 0 3px rgba(47,155,47,0.18) !important; }
+        .co-input::placeholder { color: rgba(255,255,255,0.3); }
+        .co-input option { background: #0d1f12; color: #fff; }
+        .co-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        @media (max-width: 960px) { .co-layout { grid-template-columns: 1fr; gap: 36px; } .co-container { padding: 90px 32px 64px; } }
+        @media (max-width: 640px) { .co-container { padding: 90px 20px 56px; } .co-form-row { grid-template-columns: 1fr; } }
+      `}</style>
+      <div className="co-container">
 
-      <h1 className="font-display font-black text-4xl text-white mb-10">Checkout</h1>
+        {/* Back link + heading */}
+        <Link href="/cart" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.4)", textDecoration: "none", marginBottom: 20 }} className="hover:text-white transition-colors">
+          <ChevronLeft style={{ width: 16, height: 16 }} /> Back to Cart
+        </Link>
+        <h1 className="font-display font-black text-white" style={{ fontSize: "clamp(2.2rem, 4vw, 3rem)", letterSpacing: "-0.03em", marginBottom: 28 }}>Checkout</h1>
 
-      {/* Step indicator */}
-      <div className="flex items-center gap-0 mb-10">
-        {STEP_LABELS.map((label, i) => {
-          const num = (i + 1) as 1 | 2 | 3;
-          const isActive = step === num;
-          const isDone = step > num;
-          return (
-            <div key={label} className="flex items-center">
-              {i > 0 && (
-                <div className={cn("h-px w-8 md:w-12 transition-colors", isDone ? "bg-[#3a7722]" : "bg-white/[0.08]")} />
-              )}
-              <button
-                type="button"
-                onClick={() => { if (isDone) setStep(num); }}
-                className={cn("flex flex-col items-center gap-1.5", isDone && "cursor-pointer")}
-              >
-                <div className={cn(
-                  "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                  isActive && "bg-[#3a7722] text-white",
-                  isDone && "bg-[#3a7722]/15 text-[#3a7722] border border-[#3a7722]/30",
-                  !isActive && !isDone && "bg-[#192d1e] border border-white/[0.08] text-white/30",
-                )}>
-                  {isDone ? <Check className="h-3.5 w-3.5" /> : num}
-                </div>
-                <span className={cn(
-                  "text-xs hidden sm:block transition-colors",
-                  isActive && "text-white font-semibold",
-                  isDone && "text-[#3a7722]",
-                  !isActive && !isDone && "text-white/40",
-                )}>
-                  {label}
-                </span>
-              </button>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="grid md:grid-cols-[1fr_400px] gap-12">
-        {/* ── Left column ── */}
-        <div>
-          {/* STEP 1 — Information */}
-          {step === 1 && (
-            <div className="space-y-6">
-              {loading && (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#3a7722]" />
-                </div>
-              )}
-
-              {isBulk && !loading && (
-                <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8 text-center space-y-4">
-                  <p className="text-sm text-white/50 leading-relaxed">
-                    Your order contains more than 12 pairs.<br />
-                    Please contact us directly for bulk shipping rates.
-                  </p>
-                  <a
-                    href="mailto:nine2five.co.nz@gmail.com"
-                    className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 inline-block"
-                  >
-                    Contact Us
-                  </a>
-                </div>
-              )}
-
-              {!isBulk && !loading && (
-                <>
-                  <div>
-
-                    {/* Contact */}
-                    <div className="pb-6">
-                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#3a7722] mb-5">Contact</p>
-                      <div className="space-y-7">
-                        <div>
-                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Country</label>
-                          <select
-                            value={country}
-                            onChange={(e) => setCountry(e.target.value)}
-                            className={cn(inputClass, "appearance-none")}
-                          >
-                            {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Email Address</label>
-                          <input
-                            type="email" placeholder="you@example.com" required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            onBlur={syncCart}
-                            className={inputClass}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="border-t border-white/[0.06]" />
-
-                    {/* Shipping Address */}
-                    <div className="pt-6 pb-8">
-                      <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#3a7722] mb-5">Shipping Address</p>
-                      <div className="space-y-7">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">First Name</label>
-                            <input placeholder="First name" required value={address.first_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, first_name: e.target.value }))} className={inputClass} />
-                          </div>
-                          <div>
-                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Last Name</label>
-                            <input placeholder="Last name" required value={address.last_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, last_name: e.target.value }))} className={inputClass} />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Address</label>
-                          <div className="space-y-2">
-                            <input ref={addressLine1Ref} placeholder="Start typing your address…" required value={address.line1 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line1: e.target.value }))} className={inputClass} />
-                            <input placeholder="Apartment, suite, etc. (optional)" value={address.line2 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line2: e.target.value }))} className={inputClass} />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">City / Town</label>
-                            <input placeholder="City" required value={address.city ?? ""} onChange={(e) => setAddress(a => ({ ...a, city: e.target.value }))} className={inputClass} />
-                          </div>
-                          <div>
-                            <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Postcode</label>
-                            <input placeholder="0000" required value={address.postcode ?? ""} onChange={(e) => setAddress(a => ({ ...a, postcode: e.target.value }))} className={inputClass} />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Region</label>
-                          {country === "NZ" ? (
-                            <select
-                              required value={address.region ?? ""}
-                              onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))}
-                              className={cn(inputClass, "appearance-none")}
-                            >
-                              <option value="" disabled>Select region</option>
-                              {NZ_REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
-                            </select>
-                          ) : (
-                            <input placeholder="State / Region" required value={address.region ?? ""} onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))} className={inputClass} />
-                          )}
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-1.5 block">Phone <span className="text-white/20 normal-case tracking-normal font-normal">(optional)</span></label>
-                          <input placeholder="+64 21 000 0000" value={address.phone ?? ""} onChange={(e) => setAddress(a => ({ ...a, phone: e.target.value }))} className={inputClass} />
-                        </div>
-                      </div>
-                    </div>
+        {/* Step indicator */}
+        <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 40 }}>
+          {STEP_LABELS.map((label, i) => {
+            const num = (i + 1) as 1 | 2 | 3;
+            const isActive = step === num;
+            const isDone = step > num;
+            return (
+              <div key={label} style={{ display: "flex", alignItems: "center" }}>
+                {i > 0 && (
+                  <div style={{ height: 1, width: 40, background: isDone ? "#2f9b2f" : "rgba(255,255,255,0.10)", transition: "background 0.3s" }} />
+                )}
+                <button type="button" onClick={() => { if (isDone) setStep(num); }}
+                  style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, cursor: isDone ? "pointer" : "default", background: "none", border: "none", padding: 0 }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                    fontWeight: 800, fontSize: 14,
+                    background: isActive ? "#2f9b2f" : isDone ? "rgba(47,155,47,0.12)" : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${isActive ? "#2f9b2f" : isDone ? "rgba(47,155,47,0.4)" : "rgba(255,255,255,0.12)"}`,
+                    color: isActive ? "#fff" : isDone ? "#2f9b2f" : "rgba(255,255,255,0.5)",
+                    transition: "all 0.3s",
+                  }}>
+                    {isDone ? <Check style={{ width: 16, height: 16 }} /> : num}
                   </div>
-
-                  <label className="flex items-start gap-3 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={acceptsMarketing}
-                      onChange={(e) => setAcceptsMarketing(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/[0.04] accent-[#3a7722] shrink-0"
-                    />
-                    <span className="text-xs text-white/40 leading-relaxed">
-                      Send me updates about new drops and restocks. You can unsubscribe any time.
-                    </span>
-                  </label>
-
-                  <button
-                    onClick={() => setStep(2)}
-                    disabled={!step1Valid}
-                    className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 w-full disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    Continue to Shipping
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* STEP 2 — Delivery method */}
-          {step === 2 && (
-            <div className="space-y-6">
-              {/* Summary of step 1 */}
-              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#192d1e] border border-white/[0.08] text-sm">
-                <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-white truncate">{address.first_name} {address.last_name}</p>
-                  <p className="text-white/40 truncate">{address.line1}{address.line2 ? `, ${address.line2}` : ""}, {address.city} {address.postcode}</p>
-                  <p className="text-white/40">{email}</p>
-                </div>
-                <button type="button" onClick={() => setStep(1)} className="text-xs text-[#3a7722] hover:underline shrink-0">
-                  Change
+                  <span style={{ fontSize: 12, fontWeight: 700, color: isActive ? "#fff" : isDone ? "#2f9b2f" : "rgba(255,255,255,0.4)", display: "none" }} className="sm:block">{label}</span>
                 </button>
               </div>
-
-              <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
-                <h2 className="font-display font-bold text-base text-white mb-4">Delivery Method</h2>
-                <div className="flex items-center gap-4 px-4 py-4 rounded-xl bg-[#192d1e] border border-[#3a7722]/30 ring-1 ring-[#3a7722]/10">
-                  <div className="h-4 w-4 rounded-full border-2 border-[#3a7722] flex items-center justify-center shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-[#3a7722]" />
-                  </div>
-                  <Package className="h-5 w-5 text-white/40 shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-white">{shippingInfo.label}</p>
-                    <p className="text-xs text-white/40 mt-0.5">{shippingInfo.delivery}</p>
-                  </div>
-                  <p className="text-sm font-semibold text-white">
-                    {effectiveShipping === 0
-                      ? <span className="text-[#3a7722]">Free</span>
-                      : `$${(effectiveShipping / 100).toFixed(2)}`}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="border border-white/20 text-white font-medium text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:border-white/50 hover:bg-white/5 transition-all"
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStep(3)}
-                  className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 flex-1"
-                >
-                  Continue to payment
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3 — Payment */}
-          {step === 3 && (
-            <>
-              {loading && (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#3a7722]" />
-                </div>
-              )}
-              {clientSecret && !loading && (
-                <Elements
-                  stripe={stripePromise}
-                  options={{
-                    clientSecret,
-                    appearance: {
-                      theme: "night",
-                      variables: {
-                        colorPrimary: "#3a7722",
-                        colorBackground: "#111111",
-                        colorText: "#fafafa",
-                        colorDanger: "#ef4444",
-                        fontFamily: "Inter, sans-serif",
-                        borderRadius: "8px",
-                      },
-                    },
-                  }}
-                >
-                  <PaymentStep
-                    items={items}
-                    clientSecret={clientSecret}
-                    shippingCost={effectiveShipping}
-                    discounts={discounts}
-                    email={email}
-                    address={{ ...address, country } as ShippingAddress}
-                    sessionId={sessionIdRef.current}
-                    acceptsMarketing={acceptsMarketing}
-                    onBack={() => setStep(2)}
-                  />
-                </Elements>
-              )}
-            </>
-          )}
+            );
+          })}
         </div>
 
-        {/* ── Right column — Order summary ── */}
-        <div className="space-y-7">
-          <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
-            <h2 className="font-display font-bold text-base text-white mb-5">Order Summary</h2>
-            <div className="space-y-3 mb-5">
-              {items.map((item) => (
-                <div key={`${item.productId}-${item.size}`} className="flex gap-4">
-                  <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-[#1a1a1a] shrink-0">
-                    {item.imageUrl && (
-                      <Image src={item.imageUrl} alt={item.productName} fill className="object-cover" />
-                    )}
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#3a7722] text-white text-[10px] font-bold flex items-center justify-center">
-                      {item.quantity}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{item.productName}</p>
-                    <p className="text-xs text-white/40">Size {item.size}</p>
-                  </div>
-                  <p className="text-sm font-medium text-white">${((item.price * item.quantity) / 100).toFixed(2)}</p>
-                </div>
-              ))}
-            </div>
+        <div className="co-layout">
+          {/* ── Left column: form ── */}
+          <div>
+            {/* STEP 1 */}
+            {step === 1 && (
+              <div>
+                {loading && <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}><Loader2 style={{ width: 24, height: 24, color: "#2f9b2f" }} className="animate-spin" /></div>}
 
-            <div className="border-t border-white/[0.08] pt-4 space-y-2 text-sm">
-              <div className="flex justify-between text-white/40">
-                <span>Subtotal</span>
-                <span>${(total / 100).toFixed(2)}</span>
+                {isBulk && !loading && (
+                  <div style={{ ...CS.formCard, textAlign: "center" }}>
+                    <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>
+                      Your order contains more than 12 pairs.<br />Please contact us directly for bulk shipping rates.
+                    </p>
+                    <a href="mailto:nine2five.co.nz@gmail.com" style={{ display: "inline-block", background: "#2f9b2f", color: "#fff", fontWeight: 800, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.12em", padding: "14px 32px", borderRadius: 999, textDecoration: "none" }}>
+                      Contact Us
+                    </a>
+                  </div>
+                )}
+
+                {!isBulk && !loading && (
+                  <div style={CS.formCard}>
+                    {/* Contact section */}
+                    <p style={CS.sectionTitle}>Contact</p>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Country</label>
+                      <select value={country} onChange={(e) => setCountry(e.target.value)} style={CS.select} className="co-input">
+                        {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+                      </select>
+                    </div>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Email Address</label>
+                      <input type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} onBlur={syncCart} style={CS.input} className="co-input" />
+                    </div>
+
+                    {/* Shipping address section */}
+                    <p style={{ ...CS.sectionTitle, marginTop: 32 }}>Shipping Address</p>
+                    <div className="co-form-row">
+                      <div>
+                        <label style={CS.label}>First Name</label>
+                        <input placeholder="First name" required value={address.first_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, first_name: e.target.value }))} style={CS.input} className="co-input" />
+                      </div>
+                      <div>
+                        <label style={CS.label}>Last Name</label>
+                        <input placeholder="Last name" required value={address.last_name ?? ""} onChange={(e) => setAddress(a => ({ ...a, last_name: e.target.value }))} style={CS.input} className="co-input" />
+                      </div>
+                    </div>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Street Address</label>
+                      <input ref={addressLine1Ref} placeholder="Start typing your address…" required value={address.line1 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line1: e.target.value }))} style={CS.input} className="co-input" />
+                    </div>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Apartment / Suite <span style={{ fontWeight: 400, letterSpacing: 0, textTransform: "none", opacity: 0.5 }}>(optional)</span></label>
+                      <input placeholder="Apt, suite, unit, etc." value={address.line2 ?? ""} onChange={(e) => setAddress(a => ({ ...a, line2: e.target.value }))} style={CS.input} className="co-input" />
+                    </div>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Suburb <span style={{ color: "#f87171", marginLeft: 4 }}>*</span></label>
+                      <input placeholder="Suburb" required value={suburb} onChange={(e) => setSuburb(e.target.value)} style={CS.input} className="co-input" />
+                      {!suburb.trim() && address.line1 && <p style={{ marginTop: 6, color: "#f87171", fontSize: 12 }}>Please enter a suburb</p>}
+                    </div>
+                    <div className="co-form-row">
+                      <div>
+                        <label style={CS.label}>City / Town</label>
+                        <input placeholder="City" required value={address.city ?? ""} onChange={(e) => setAddress(a => ({ ...a, city: e.target.value }))} style={CS.input} className="co-input" />
+                      </div>
+                      <div>
+                        <label style={CS.label}>Postcode</label>
+                        <input placeholder="0000" required value={address.postcode ?? ""} onChange={(e) => setAddress(a => ({ ...a, postcode: e.target.value }))} style={CS.input} className="co-input" />
+                      </div>
+                    </div>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Region</label>
+                      {country === "NZ" ? (
+                        <select required value={address.region ?? ""} onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))} style={CS.select} className="co-input">
+                          <option value="" disabled>Select region</option>
+                          {NZ_REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                        </select>
+                      ) : (
+                        <input placeholder="State / Region" required value={address.region ?? ""} onChange={(e) => setAddress(a => ({ ...a, region: e.target.value }))} style={CS.input} className="co-input" />
+                      )}
+                    </div>
+                    <div style={CS.row1}>
+                      <label style={CS.label}>Phone <span style={{ fontWeight: 400, letterSpacing: 0, textTransform: "none", opacity: 0.5 }}>(optional)</span></label>
+                      <input placeholder="+64 21 000 0000" value={address.phone ?? ""} onChange={(e) => setAddress(a => ({ ...a, phone: e.target.value }))} style={CS.input} className="co-input" />
+                    </div>
+
+                    {/* Marketing checkbox */}
+                    <label style={{ display: "flex", alignItems: "flex-start", gap: 12, marginTop: 24, cursor: "pointer" }}>
+                      <input type="checkbox" checked={acceptsMarketing} onChange={(e) => setAcceptsMarketing(e.target.checked)} style={{ marginTop: 2, width: 16, height: 16, accentColor: "#2f9b2f", flexShrink: 0 }} />
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6 }}>
+                        Send me updates about new drops and restocks. Unsubscribe any time.
+                      </span>
+                    </label>
+
+                    {/* Continue button */}
+                    <button onClick={() => setStep(2)} disabled={!step1Valid}
+                      style={{ width: "100%", height: 56, border: "none", borderRadius: 999, background: step1Valid ? "#2f9b2f" : "rgba(47,155,47,0.3)", color: "#fff", fontSize: 15, fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase", marginTop: 24, cursor: step1Valid ? "pointer" : "not-allowed", transition: "background 0.2s" }}>
+                      Continue to Shipping
+                    </button>
+                  </div>
+                )}
               </div>
-              {discounts.map((d) => (
-                <div key={d.code} className="flex justify-between text-[#3a7722]">
-                  <span className="flex items-center gap-1.5">
-                    <Tag className="h-3 w-3" /> {d.code}
-                  </span>
-                  <span>{d.amount > 0 ? `−$${(d.amount / 100).toFixed(2)}` : "Free ship"}</span>
+            )}
+
+            {/* STEP 2 — Delivery */}
+            {step === 2 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "14px 18px", borderRadius: 16, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 14 }}>
+                  <MapPin style={{ width: 16, height: 16, color: "rgba(255,255,255,0.4)", marginTop: 2, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ color: "#fff", fontWeight: 600, marginBottom: 2 }}>{address.first_name} {address.last_name}</p>
+                    <p style={{ color: "rgba(255,255,255,0.4)" }}>{address.line1}{suburb ? `, ${suburb}` : ""}{address.city ? `, ${address.city}` : ""} {address.postcode}</p>
+                    <p style={{ color: "rgba(255,255,255,0.4)" }}>{email}</p>
+                  </div>
+                  <button type="button" onClick={() => setStep(1)} style={{ fontSize: 12, color: "#2f9b2f", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>Change</button>
                 </div>
-              ))}
-              <div className="flex justify-between text-white/40">
-                <span>Shipping</span>
-                <span>
-                  {isBulk
-                    ? <span className="text-red-400 text-xs">Bulk order</span>
-                    : effectiveShipping === 0
-                      ? <span className="text-[#3a7722]">Free</span>
-                      : `$${(effectiveShipping / 100).toFixed(2)}`}
-                </span>
+
+                <div style={CS.formCard}>
+                  <p style={{ ...CS.sectionTitle, marginTop: 0 }}>Delivery Method</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 18px", borderRadius: 14, background: "rgba(47,155,47,0.06)", border: "1px solid rgba(47,155,47,0.25)" }}>
+                    <div style={{ width: 16, height: 16, borderRadius: "50%", border: "2px solid #2f9b2f", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#2f9b2f" }} />
+                    </div>
+                    <Package style={{ width: 18, height: 18, color: "rgba(255,255,255,0.4)", flexShrink: 0 }} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{shippingInfo.label}</p>
+                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{shippingInfo.delivery}</p>
+                    </div>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: effectiveShipping === 0 ? "#2f9b2f" : "#fff" }}>
+                      {effectiveShipping === 0 ? "Free" : `$${(effectiveShipping / 100).toFixed(2)}`}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+                  <button type="button" onClick={() => setStep(1)} style={{ padding: "14px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", color: "#fff", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", background: "none", cursor: "pointer" }}>Back</button>
+                  <button type="button" onClick={() => setStep(3)} style={{ flex: 1, height: 52, borderRadius: 999, background: "#2f9b2f", color: "#fff", fontWeight: 900, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.12em", border: "none", cursor: "pointer" }}>Continue to Payment</button>
+                </div>
               </div>
-              {!isBulk && (
-                <div className="flex justify-between font-black text-lg text-white pt-2 border-t border-white/[0.08]">
-                  <span>Total</span>
-                  <span>${(orderTotal / 100).toFixed(2)} NZD</span>
-                </div>
-              )}
-            </div>
+            )}
+
+            {/* STEP 3 — Payment */}
+            {step === 3 && (
+              <>
+                {loading && <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}><Loader2 style={{ width: 24, height: 24, color: "#2f9b2f" }} className="animate-spin" /></div>}
+                {clientSecret && !loading && (
+                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "night", variables: { colorPrimary: "#2f9b2f", colorBackground: "#0d1f12", colorText: "#fafafa", colorDanger: "#ef4444", fontFamily: "inherit", borderRadius: "14px" } } }}>
+                    <PaymentStep items={items} clientSecret={clientSecret} shippingCost={effectiveShipping} discounts={discounts} email={email} address={{ ...address, country } as ShippingAddress} sessionId={sessionIdRef.current} acceptsMarketing={acceptsMarketing} onBack={() => setStep(2)} />
+                  </Elements>
+                )}
+              </>
+            )}
           </div>
 
-          {/* Discount code input — always visible */}
-          <DiscountInput
-            subtotal={total}
-            discounts={discounts}
-            onApply={(d) => setDiscounts(prev => [...prev, d])}
-            onRemove={(code) => setDiscounts(prev => prev.filter(d => d.code !== code))}
-          />
+          {/* ── Right column: order summary ── */}
+          <div style={{ padding: 26, borderRadius: 22, background: "rgba(7,24,14,0.88)", border: "1px solid rgba(255,255,255,0.10)", position: "sticky", top: 96 }}>
+            <p style={{ fontSize: 18, fontWeight: 900, color: "#fff", marginBottom: 20 }}>Order Summary</p>
+
+            {/* Products */}
+            <div style={{ marginBottom: 20 }}>
+              {items.map((item) => (
+                <div key={`${item.productId}-${item.size}`} style={{ display: "grid", gridTemplateColumns: "64px 1fr auto", gap: 14, alignItems: "center", paddingBottom: 16, marginBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div style={{ position: "relative", width: 64, height: 64, flexShrink: 0 }}>
+                    <div style={{ width: 64, height: 64, borderRadius: 12, overflow: "hidden", background: "#0d1f12" }}>
+                      {item.imageUrl && <Image src={item.imageUrl} alt={item.productName} fill className="object-cover" />}
+                    </div>
+                    {item.quantity > 1 && (
+                      <span style={{ position: "absolute", top: -5, right: -5, width: 20, height: 20, borderRadius: "50%", background: "#2f9b2f", color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid #07180E" }}>{item.quantity}</span>
+                    )}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.productName}</p>
+                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 3 }}>Size {item.size} · Qty {item.quantity}</p>
+                  </div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>${((item.price * item.quantity) / 100).toFixed(2)}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+              <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>Subtotal</span>
+              <span style={{ fontSize: 14, color: "#fff" }}>${(total / 100).toFixed(2)}</span>
+            </div>
+            {discounts.map((d) => (
+              <div key={d.code} style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                <span style={{ fontSize: 14, color: "#2f9b2f", display: "flex", alignItems: "center", gap: 6 }}><Tag style={{ width: 12, height: 12 }} />{d.code}</span>
+                <span style={{ fontSize: 14, color: "#2f9b2f" }}>{d.amount > 0 ? `−$${(d.amount / 100).toFixed(2)}` : "Free ship"}</span>
+              </div>
+            ))}
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+              <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>Shipping</span>
+              <span style={{ fontSize: 14, color: isBulk ? "#f87171" : effectiveShipping === 0 ? "#2f9b2f" : "#fff" }}>
+                {isBulk ? "Contact us" : effectiveShipping === 0 ? "Free" : `$${(effectiveShipping / 100).toFixed(2)}`}
+              </span>
+            </div>
+            {!isBulk && (
+              <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.10)", fontSize: 20, fontWeight: 900, color: "#fff" }}>
+                <span>Total</span>
+                <span>${(orderTotal / 100).toFixed(2)} NZD</span>
+              </div>
+            )}
+
+            {/* Discount code */}
+            <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+              <DiscountInput subtotal={total} discounts={discounts} onApply={(d) => setDiscounts(prev => [...prev, d])} onRemove={(code) => setDiscounts(prev => prev.filter(d => d.code !== code))} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -577,13 +500,13 @@ function DiscountInput({
   return (
     <div className="space-y-2">
       {discounts.map((d) => (
-        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#3a7722]/10 border border-[#3a7722]/20">
+        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#2f9b2f]/10 border border-[#2f9b2f]/20">
           <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-[#3a7722]" />
-            <span className="text-sm font-semibold text-[#3a7722] font-mono">{d.code}</span>
-            <span className="text-xs text-[#3a7722]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
+            <Check className="h-4 w-4 text-[#2f9b2f]" />
+            <span className="text-sm font-semibold text-[#2f9b2f] font-mono">{d.code}</span>
+            <span className="text-xs text-[#2f9b2f]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
           </div>
-          <button onClick={() => onRemove(d.code)} className="text-[#3a7722] hover:opacity-70 transition-opacity">
+          <button onClick={() => onRemove(d.code)} className="text-[#2f9b2f] hover:opacity-70 transition-opacity">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -595,12 +518,12 @@ function DiscountInput({
             onChange={(e) => { setCode(e.target.value.toUpperCase()); setError(""); }}
             onKeyDown={(e) => e.key === "Enter" && apply()}
             placeholder="Discount code"
-            className="flex-1 h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#3a7722]/50 transition-colors font-mono"
+            className="flex-1 h-12 px-4 rounded-xl bg-[#0d1f12] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#2f9b2f]/50 transition-colors font-mono"
           />
           <button
             onClick={apply}
             disabled={loading || !code.trim()}
-            className="h-12 px-5 rounded-xl bg-[#3a7722] text-white font-bold text-sm hover:bg-[#4d9e2e] disabled:opacity-40 transition-all"
+            className="h-12 px-5 rounded-xl bg-[#2f9b2f] text-white font-bold text-sm hover:bg-[#3aad3a] disabled:opacity-40 transition-all"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
           </button>
@@ -696,6 +619,18 @@ function PaymentStep({
             email,
           },
         },
+        shipping: {
+          name: `${address.first_name} ${address.last_name}`,
+          phone: address.phone ?? undefined,
+          address: {
+            line1: address.line1,
+            line2: address.line2 ?? undefined,
+            city: address.city,
+            state: address.region,
+            postal_code: address.postcode,
+            country: address.country,
+          },
+        },
       },
     });
 
@@ -711,7 +646,7 @@ function PaymentStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Delivery summary pill */}
-      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#192d1e] border border-white/[0.08] text-sm">
+      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#0d1f12] border border-white/[0.08] text-sm">
         <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-white truncate">{address.first_name} {address.last_name}</p>
@@ -723,7 +658,7 @@ function PaymentStep({
         </button>
       </div>
 
-      <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
+      <div className="bg-[#0d1f12] border border-white/[0.08] rounded-2xl p-8">
         <h2 className="font-display font-bold text-base text-white mb-4">Payment</h2>
         <PaymentElement />
       </div>

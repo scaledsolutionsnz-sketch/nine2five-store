@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: total,
       currency: "nzd",
+      automatic_payment_methods: { enabled: true },
       metadata: {
         subtotal: String(subtotal),
         shipping: String(shipping),
@@ -74,11 +75,26 @@ export async function PATCH(req: NextRequest) {
     const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
     const newTotal = Math.max(subtotal + shipping - discountAmt, 50);
 
+    const addr = body.shippingAddress ?? {};
     await stripe.paymentIntents.update(piId, {
       amount: newTotal,
+      ...(addr.line1 ? {
+        shipping: {
+          name: `${addr.first_name ?? ""} ${addr.last_name ?? ""}`.trim(),
+          phone: addr.phone ?? undefined,
+          address: {
+            line1: addr.line1,
+            line2: addr.line2 ?? undefined,
+            city: addr.city ?? undefined,
+            state: addr.region ?? undefined,
+            postal_code: addr.postcode ?? undefined,
+            country: addr.country ?? "NZ",
+          },
+        },
+      } : {}),
       metadata: {
         email: body.email || "",
-        shippingAddress: JSON.stringify(body.shippingAddress ?? {}),
+        shippingAddress: JSON.stringify(addr),
         items: JSON.stringify(items),
         shipping: String(shipping),
         subtotal: String(subtotal),
