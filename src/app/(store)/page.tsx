@@ -813,14 +813,14 @@ export default async function HomePage() {
                   detail: "NZ U20 World Championship finalist 2025. Hurricanes next gen.",
                 },
               ].map((a) => (
-                <div key={a.name} className="flex flex-col items-center text-center group relative hover:z-10 transition-transform duration-300 ease-out hover:scale-110" style={{ willChange: "transform" }}>
-                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#2E8B28]/20 group-hover:ring-[#2E8B28]/70 transition-all duration-300"
+                <div key={a.name} className="flex flex-col items-center text-center group relative">
+                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 ring-2 ring-[#2E8B28]/20 group-hover:ring-[#2E8B28]/60 transition-all duration-300 group-hover:scale-105"
                     style={{ background: "#0e2314" }}>
                     <Image
                       src={a.img}
                       alt={a.name}
                       fill
-                      className="object-cover object-top transition-transform duration-500"
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 50% 120%, rgba(58,119,34,0.08) 0%, transparent 70%)" }} />
                   </div>
