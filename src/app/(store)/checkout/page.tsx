@@ -394,7 +394,67 @@ export default function CheckoutPage() {
               <>
                 {loading && <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}><Loader2 style={{ width: 24, height: 24, color: "#2f9b2f" }} className="animate-spin" /></div>}
                 {clientSecret && !loading && (
-                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "night", variables: { colorPrimary: "#2f9b2f", colorBackground: "#0d1f12", colorText: "#fafafa", colorDanger: "#ef4444", fontFamily: "inherit", borderRadius: "14px" } } }}>
+                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: {
+                    theme: "night",
+                    variables: {
+                      colorPrimary: "#3a7722",
+                      colorBackground: "#0d1f12",
+                      colorText: "#fafafa",
+                      colorTextSecondary: "rgba(255,255,255,0.45)",
+                      colorTextPlaceholder: "rgba(255,255,255,0.25)",
+                      colorDanger: "#ef4444",
+                      colorIconTab: "rgba(255,255,255,0.5)",
+                      colorIconTabSelected: "#3a7722",
+                      colorLogo: "light",
+                      fontFamily: "inherit",
+                      borderRadius: "12px",
+                      spacingUnit: "4px",
+                    },
+                    rules: {
+                      ".Tab": {
+                        backgroundColor: "#0e2314",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        boxShadow: "none",
+                      },
+                      ".Tab:hover": {
+                        backgroundColor: "#122918",
+                        border: "1px solid rgba(255,255,255,0.15)",
+                      },
+                      ".Tab--selected": {
+                        backgroundColor: "#0e2314",
+                        border: "1px solid #3a7722",
+                        boxShadow: "0 0 0 1px #3a7722",
+                      },
+                      ".Input": {
+                        backgroundColor: "#0e2314",
+                        border: "1px solid rgba(255,255,255,0.10)",
+                        boxShadow: "none",
+                        color: "#fafafa",
+                      },
+                      ".Input:focus": {
+                        border: "1px solid #3a7722",
+                        boxShadow: "0 0 0 1px #3a7722",
+                      },
+                      ".Label": {
+                        color: "rgba(255,255,255,0.55)",
+                        fontSize: "11px",
+                        letterSpacing: "0.05em",
+                      },
+                      ".Block": {
+                        backgroundColor: "#0e2314",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        boxShadow: "none",
+                      },
+                      ".AccordionItem": {
+                        backgroundColor: "#0e2314",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      },
+                      ".AccordionItem--selected": {
+                        backgroundColor: "#0e2314",
+                        border: "1px solid rgba(58,119,34,0.5)",
+                      },
+                    },
+                  } }}>
                     <PaymentStep items={items} clientSecret={clientSecret} shippingCost={effectiveShipping} discounts={discounts} email={email} address={{ ...address, country } as ShippingAddress} sessionId={sessionIdRef.current} acceptsMarketing={acceptsMarketing} onBack={() => setStep(2)} />
                   </Elements>
                 )}
