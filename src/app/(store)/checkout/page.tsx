@@ -202,14 +202,14 @@ export default function CheckoutPage() {
   return (
     <div style={{ background: "#06150c", minHeight: "100vh", overflowX: "hidden" }}>
       <style>{`
-        .co-container { max-width: 1280px; margin: 0 auto; padding: 100px 48px 90px; }
-        .co-layout { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 56px; align-items: start; }
+        .co-container { max-width: 1280px; margin: 0 auto; padding: 136px 48px 100px; }
+        .co-layout { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 56px; align-items: start; }
         .co-input:focus { border-color: #2f9b2f !important; box-shadow: 0 0 0 3px rgba(47,155,47,0.18) !important; }
         .co-input::placeholder { color: rgba(255,255,255,0.3); }
         .co-input option { background: #0d1f12; color: #fff; }
         .co-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        @media (max-width: 960px) { .co-layout { grid-template-columns: 1fr; gap: 36px; } .co-container { padding: 90px 32px 64px; } }
-        @media (max-width: 640px) { .co-container { padding: 90px 20px 56px; } .co-form-row { grid-template-columns: 1fr; } }
+        @media (max-width: 960px) { .co-layout { grid-template-columns: 1fr; gap: 36px; } .co-container { padding: 120px 32px 72px; } }
+        @media (max-width: 640px) { .co-container { padding: 110px 20px 64px; } .co-form-row { grid-template-columns: 1fr; } }
       `}</style>
       <div className="co-container">
 
@@ -727,45 +727,48 @@ function PaymentStep({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Delivery summary pill */}
-      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#0d1f12] border border-white/[0.08] text-sm">
-        <MapPin className="h-4 w-4 text-white/40 mt-0.5 shrink-0" />
-        <div className="flex-1 min-w-0">
-          <p className="text-white truncate">{address.first_name} {address.last_name}</p>
-          <p className="text-white/40 truncate">{address.line1}, {address.city} {address.postcode}</p>
-          <p className="text-white/40">{email}</p>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "14px 18px", borderRadius: 16, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 14 }}>
+        <MapPin style={{ width: 16, height: 16, color: "rgba(255,255,255,0.4)", marginTop: 2, flexShrink: 0 }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ color: "#fff", fontWeight: 600, marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{address.first_name} {address.last_name}</p>
+          <p style={{ color: "rgba(255,255,255,0.4)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{address.line1}, {address.city} {address.postcode}</p>
+          <p style={{ color: "rgba(255,255,255,0.4)" }}>{email}</p>
         </div>
-        <button type="button" onClick={onBack} className="text-xs text-[#3a7722] hover:underline shrink-0">
+        <button type="button" onClick={onBack} style={{ fontSize: 12, color: "#3a7722", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>
           Change
         </button>
       </div>
 
-      <div className="bg-[#0d1f12] border border-white/[0.08] rounded-xl px-4 py-4">
+      {/* Payment card */}
+      <div style={{ padding: 24, borderRadius: 18, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <p style={{ fontSize: 11, fontWeight: 900, color: "rgba(255,255,255,0.45)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 }}>Payment</p>
         <PaymentElement />
       </div>
 
       {error && (
-        <p className="text-sm text-red-400 bg-red-500/10 px-4 py-3 rounded-xl">{error}</p>
+        <p style={{ fontSize: 13, color: "#f87171", background: "rgba(239,68,68,0.08)", padding: "12px 16px", borderRadius: 12, border: "1px solid rgba(239,68,68,0.2)" }}>{error}</p>
       )}
 
-      <div className="flex gap-3">
+      {/* Action buttons */}
+      <div style={{ display: "flex", gap: 12, paddingTop: 8 }}>
         <button
           type="button"
           onClick={onBack}
-          className="border border-white/20 text-white font-medium text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:border-white/50 hover:bg-white/5 transition-all"
+          style={{ padding: "14px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", color: "#fff", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", background: "none", cursor: "pointer", transition: "border-color 0.2s, background 0.2s" }}
         >
           Back
         </button>
         <button
           type="submit"
           disabled={submitting || !stripe}
-          className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ flex: 1, height: 52, borderRadius: 999, background: submitting ? "rgba(47,155,47,0.5)" : "#3a7722", color: "#fff", fontWeight: 900, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.12em", border: "none", cursor: submitting ? "not-allowed" : "pointer", transition: "background 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
         >
           {submitting ? (
-            <span className="flex items-center justify-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" /> Processing…
-            </span>
+            <>
+              <Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> Processing…
+            </>
           ) : (
             "Pay Now"
           )}
