@@ -61,6 +61,8 @@ export async function middleware(request: NextRequest) {
     "/admin/login",
     "/account/login",
     "/account/signup",
+    "/affiliate/login",
+    "/join",
     "/api/create-payment-intent",
     "/api/affiliates",
     "/api/back-in-stock",
@@ -70,6 +72,34 @@ export async function middleware(request: NextRequest) {
   ];
   if (publicPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next({ request });
+  }
+
+  // ── Affiliate portal: require Supabase session + affiliate record
+  if (pathname.startsWith("/affiliate")) {
+    let supabaseResponse = NextResponse.next({ request });
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return request.cookies.getAll(); },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+            supabaseResponse = NextResponse.next({ request });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/affiliate/login";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
   }
 
   // ── Customer account routes: require any Supabase session (not admin)
