@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     const { data: affiliate } = await supabase
       .from("affiliates")
-      .select("id, referral_code, commission_rate, status")
+      .select("id, referral_code, commission_rate, status, total_clicks")
       .eq("referral_code", code.toLowerCase())
       .eq("status", "active")
       .single();
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const userAgent = req.headers.get("user-agent") ?? null;
     const referrer = req.headers.get("referer") ?? null;
 
-    // Record the click (fire and forget, don't block the response)
+    // Record the click and increment counter (fire and forget)
     supabase
       .from("affiliate_clicks")
       .insert({
@@ -42,8 +42,10 @@ export async function POST(req: NextRequest) {
         landing_page: landing_page ?? null,
       })
       .then(() => {
-        // Increment total_clicks counter
-        supabase.rpc("increment_affiliate_clicks", { p_affiliate_id: affiliate.id });
+        supabase
+          .from("affiliates")
+          .update({ total_clicks: affiliate.total_clicks + 1 })
+          .eq("id", affiliate.id);
       });
 
     return NextResponse.json({
