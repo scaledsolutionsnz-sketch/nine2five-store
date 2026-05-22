@@ -28,54 +28,82 @@ function LoginForm() {
     router.refresh();
   }
 
-  const inputClass = "w-full h-12 px-4 rounded-xl bg-[#192d1e] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#3a7722]/50 transition-colors";
-
   return (
-    <div className="bg-[#112016] min-h-screen flex items-center justify-center px-6">
-      <div className="w-full max-w-md">
+    <div style={{ background: "var(--background)", minHeight: "100vh", color: "var(--foreground)" }} className="flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-sm">
+
+        {/* Brand */}
         <div className="text-center mb-10">
-          <Link href="/" className="font-display font-black text-2xl tracking-tight text-white inline-block mb-1">
-            NINE2FIVE
+          <Link href="/" className="font-display font-black text-2xl tracking-tight text-white inline-block">
+            NINE<span style={{ color: "var(--accent)" }}>2</span>FIVE
           </Link>
-          <p className="text-white/40 text-sm mt-1">Affiliate Portal</p>
+          <p className="text-sm mt-1.5" style={{ color: "var(--muted)" }}>Affiliate Portal</p>
         </div>
 
-        <div className="bg-[#192d1e] border border-white/[0.08] rounded-2xl p-8">
-          <h1 className="text-white font-bold text-lg mb-6">Sign in to your dashboard</h1>
+        {/* Card */}
+        <div className="rounded-2xl p-8" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+          <h1 className="font-display font-bold text-white text-lg mb-6">Sign in to your dashboard</h1>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Email</label>
+              <label className="block text-xs uppercase tracking-widest mb-2 font-medium" style={{ color: "var(--muted)" }}>
+                Email
+              </label>
               <input
-                type="email" required placeholder="your@email.com"
-                value={email} onChange={(e) => setEmail(e.target.value)}
-                className={inputClass}
+                type="email"
+                required
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full h-12 px-4 rounded-xl text-white text-sm placeholder-white/25 focus:outline-none transition-colors"
+                style={{ background: "var(--surface-2, #132b19)", border: "1px solid var(--border)" }}
+                onFocus={e => (e.currentTarget.style.borderColor = "rgba(46,139,40,0.4)")}
+                onBlur={e => (e.currentTarget.style.borderColor = "var(--border)")}
               />
             </div>
+
             <div>
-              <label className="text-xs text-white/40 uppercase tracking-widest mb-2 block">Password</label>
+              <label className="block text-xs uppercase tracking-widest mb-2 font-medium" style={{ color: "var(--muted)" }}>
+                Password
+              </label>
               <input
-                type="password" required placeholder="••••••••"
-                value={password} onChange={(e) => setPassword(e.target.value)}
-                className={inputClass}
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full h-12 px-4 rounded-xl text-white text-sm placeholder-white/25 focus:outline-none transition-colors"
+                style={{ background: "var(--surface-2, #132b19)", border: "1px solid var(--border)" }}
+                onFocus={e => (e.currentTarget.style.borderColor = "rgba(46,139,40,0.4)")}
+                onBlur={e => (e.currentTarget.style.borderColor = "var(--border)")}
               />
             </div>
 
             {error && (
-              <p className="text-red-400 bg-red-500/10 rounded-xl px-4 py-3 text-sm">{error}</p>
+              <p className="text-red-400 rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)" }}>
+                {error}
+              </p>
             )}
 
             <button
-              type="submit" disabled={loading}
-              className="bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300 w-full disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 transition-all mt-2"
+              style={{ background: "var(--accent)" }}
+              onMouseEnter={e => !loading && (e.currentTarget.style.filter = "brightness(1.1)")}
+              onMouseLeave={e => (e.currentTarget.style.filter = "none")}
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-white/40 mt-6">
+        <p className="text-center text-sm mt-6" style={{ color: "var(--muted)" }}>
           Want to become an affiliate?{" "}
-          <Link href="/join" className="text-white/60 hover:text-white underline transition-colors">
+          <Link href="/join" className="underline transition-colors" style={{ color: "var(--muted)" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--foreground)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}
+          >
             Apply here
           </Link>
         </p>
@@ -84,7 +112,7 @@ function LoginForm() {
   );
 }
 
-export default function AffiliatLoginPage() {
+export default function AffiliateLoginPage() {
   return (
     <Suspense>
       <LoginForm />

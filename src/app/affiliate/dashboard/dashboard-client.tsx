@@ -4,18 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { Copy, Check, MousePointer, TrendingUp, DollarSign, Clock, LogOut } from "lucide-react";
+import { Copy, Check, MousePointer, TrendingUp, DollarSign, Clock, LogOut, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import type { Affiliate, AffiliateConversion } from "@/types/database";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.nz";
-
-const STATUS_COLOURS: Record<string, string> = {
-  pending:  "bg-[#FFF4CC] text-[#9A5B00]",
-  approved: "bg-[#D5F1E2] text-[#166B3B]",
-  paid:     "bg-[#D5F1E2] text-[#166B3B]",
-  reversed: "bg-[#FEE2E2] text-[#991B1B]",
-};
 
 function fmt(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -51,116 +44,123 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
     router.push("/affiliate/login");
   }
 
+  const cardBase = "rounded-2xl border p-5" as const;
+  const cardStyle = { background: "var(--surface)", border: "1px solid var(--border)" };
+
   return (
-    <div className="bg-[#F1F5F9] min-h-screen">
+    <div style={{ background: "var(--background)", minHeight: "100vh", color: "var(--foreground)" }}>
+
       {/* Nav */}
-      <header className="bg-white border-b border-[#E2E8F0] px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="font-display font-black text-xl tracking-tight text-[#1F2937]">
-            NINE2FIVE
+      <header style={{ borderBottom: "1px solid var(--border)", background: "rgba(6,21,12,0.85)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 50 }}>
+        <div className="max-w-4xl mx-auto px-5 sm:px-8 flex items-center justify-between" style={{ height: 64 }}>
+          <Link href="/" className="font-display font-black text-xl tracking-tight text-white">
+            NINE<span style={{ color: "var(--accent)" }}>2</span>FIVE
           </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-[13px] text-[#6B7280]">{affiliate.name}</span>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <span className="text-sm hidden sm:block" style={{ color: "var(--muted)" }}>{affiliate.name}</span>
             <button
               onClick={signOut}
-              className="flex items-center gap-1.5 text-[13px] text-[#6B7280] hover:text-[#334155] transition-colors"
+              className="flex items-center gap-1.5 text-sm transition-colors"
+              style={{ color: "var(--muted)" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--foreground)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut style={{ width: 15, height: 15 }} />
               Sign out
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
-        {/* Status banner */}
+      <main className="max-w-4xl mx-auto px-5 sm:px-8 py-8 space-y-6">
+
+        {/* Status banners */}
         {isPending && (
-          <div className="bg-[#FFF4CC] border border-[#FDE68A] rounded-2xl px-6 py-4 flex items-start gap-3">
-            <Clock className="h-5 w-5 text-[#9A5B00] mt-0.5 shrink-0" />
+          <div className="rounded-2xl flex items-start gap-3 px-5 py-4" style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.2)" }}>
+            <Clock style={{ width: 18, height: 18, color: "#EAB308", marginTop: 2, flexShrink: 0 }} />
             <div>
-              <p className="text-[14px] font-semibold text-[#9A5B00]">Application pending review</p>
-              <p className="text-[13px] text-[#9A5B00]/80 mt-0.5">
-                We&apos;ll approve your account within 24 hours and let you know by email.
-                Your link is ready below so you can prepare your content.
+              <p className="text-sm font-semibold" style={{ color: "#EAB308" }}>Application pending review</p>
+              <p className="text-sm mt-0.5" style={{ color: "rgba(234,179,8,0.7)" }}>
+                We&apos;ll approve your account within 24 hours. Your link is ready below — start preparing your content.
               </p>
             </div>
           </div>
         )}
         {isSuspended && (
-          <div className="bg-[#FEE2E2] border border-[#FCA5A5] rounded-2xl px-6 py-4">
-            <p className="text-[14px] font-semibold text-[#991B1B]">Account suspended</p>
-            <p className="text-[13px] text-[#991B1B]/80 mt-0.5">Please contact us at info@nine2five.nz.</p>
+          <div className="rounded-2xl flex items-start gap-3 px-5 py-4" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
+            <AlertCircle style={{ width: 18, height: 18, color: "#EF4444", marginTop: 2, flexShrink: 0 }} />
+            <div>
+              <p className="text-sm font-semibold" style={{ color: "#EF4444" }}>Account suspended</p>
+              <p className="text-sm mt-0.5" style={{ color: "rgba(239,68,68,0.7)" }}>Please contact us at info@nine2five.nz.</p>
+            </div>
           </div>
         )}
 
-        {/* Header */}
+        {/* Page header */}
         <div>
-          <h1 className="text-[22px] font-bold text-[#1F2937]">Your Dashboard</h1>
-          <p className="text-[14px] text-[#6B7280] mt-1">
-            Track your clicks, sales, and earnings in real time.
-          </p>
+          <h1 className="font-display font-bold text-2xl text-white">Your Dashboard</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>Track your clicks, sales, and earnings.</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: "Total Clicks",  value: affiliate.total_clicks.toLocaleString(),      icon: MousePointer, color: "#1E40AF", bg: "bg-[#DBEAFE]" },
-            { label: "Total Sales",   value: affiliate.total_conversions.toLocaleString(),  icon: TrendingUp,   color: "#166B3B", bg: "bg-[#D5F1E2]" },
-            { label: "Total Earned",  value: fmt(affiliate.total_commission_cents),         icon: DollarSign,   color: "#92400E", bg: "bg-[#FEF3C7]" },
-            { label: "Pending Payout",value: fmt(pendingPayout),                            icon: Clock,        color: "#7C3AED", bg: "bg-[#EDE9FE]" },
-          ].map(({ label, value, icon: Icon, color, bg }) => (
-            <div key={label} className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+            { label: "Clicks",         value: affiliate.total_clicks.toLocaleString(),     icon: MousePointer, color: "#60A5FA" },
+            { label: "Sales",          value: affiliate.total_conversions.toLocaleString(), icon: TrendingUp,   color: "var(--accent)" },
+            { label: "Total Earned",   value: fmt(affiliate.total_commission_cents),        icon: DollarSign,   color: "#FBBF24" },
+            { label: "Pending Payout", value: fmt(pendingPayout),                           icon: Clock,        color: "#A78BFA" },
+          ].map(({ label, value, icon: Icon, color }) => (
+            <div key={label} className={cardBase} style={cardStyle}>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-[11px] uppercase tracking-widest text-[#8A94A6]">{label}</p>
-                <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${bg}`}>
-                  <Icon style={{ width: 15, height: 15, color }} strokeWidth={1.8} />
-                </div>
+                <p className="text-xs uppercase tracking-widest" style={{ color: "var(--muted)", fontSize: 10 }}>{label}</p>
+                <Icon style={{ width: 15, height: 15, color }} strokeWidth={1.8} />
               </div>
-              <p className="text-[24px] font-bold font-mono text-[#1F2937]">{value}</p>
+              <p className="font-display font-bold text-2xl text-white font-mono">{value}</p>
             </div>
           ))}
         </div>
 
         {/* Referral link */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <h2 className="text-[14px] font-semibold text-[#1F2937] mb-1">Your Referral Link</h2>
-          <p className="text-[13px] text-[#6B7280] mb-4">
-            Share this link anywhere. You earn $5 for every sale that comes through it.
+        <div className={cardBase} style={cardStyle}>
+          <h2 className="font-display font-bold text-white mb-1">Your Referral Link</h2>
+          <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+            Share this anywhere. You earn <span className="text-white font-semibold">$5 for every sale</span> that comes through it.
           </p>
           <div className="flex items-center gap-3">
-            <div className="flex-1 min-w-0 h-11 px-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center">
-              <code className="text-[13px] text-[#116DFF] font-mono truncate">{referralLink}</code>
+            <div className="flex-1 min-w-0 h-11 px-4 rounded-xl flex items-center overflow-hidden" style={{ background: "var(--surface-2, #132b19)", border: "1px solid var(--border)" }}>
+              <code className="text-sm truncate font-mono" style={{ color: "var(--accent)" }}>{referralLink}</code>
             </div>
             <button
               onClick={copyLink}
-              className="h-11 px-5 rounded-xl bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors flex items-center gap-2 shrink-0"
+              className="flex items-center gap-2 h-11 px-5 rounded-xl font-bold text-sm text-white shrink-0 transition-colors"
+              style={{ background: copied ? "rgba(46,139,40,0.3)" : "var(--accent)" }}
             >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? "Copied!" : "Copy"}
+              {copied ? <Check style={{ width: 16, height: 16 }} /> : <Copy style={{ width: 16, height: 16 }} />}
+              {copied ? "Copied" : "Copy"}
             </button>
           </div>
-          <p className="text-[12px] text-[#8A94A6] mt-3">
-            Your code: <code className="font-mono bg-[#F1F5F9] px-1.5 py-0.5 rounded text-[#334155]">{affiliate.referral_code}</code>
-            {" · "}Tracks for 30 days after click
+          <p className="text-xs mt-3" style={{ color: "rgba(255,255,255,0.25)" }}>
+            Code: <code className="font-mono" style={{ color: "var(--muted)" }}>{affiliate.referral_code}</code>
+            {" · "}30-day attribution window
           </p>
         </div>
 
         {/* How it works */}
-        <div className="bg-[#112016] rounded-2xl border border-white/[0.06] p-6">
-          <h2 className="text-[14px] font-semibold text-white mb-4">How it works</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
+        <div className={cardBase} style={cardStyle}>
+          <h2 className="font-display font-bold text-white mb-5">How it works</h2>
+          <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { step: "1", title: "Share your link", desc: "Post it on TikTok, Instagram, YouTube — wherever your audience is." },
-              { step: "2", title: "They buy socks", desc: "When someone clicks your link and places an order, it's tracked automatically." },
-              { step: "3", title: "You get paid $5", desc: "We pay out monthly via bank transfer. No minimums." },
-            ].map(({ step, title, desc }) => (
-              <div key={step} className="flex gap-3">
-                <div className="h-7 w-7 rounded-full bg-[#3a7722]/30 border border-[#3a7722]/40 flex items-center justify-center text-[12px] font-bold text-[#3a7722] shrink-0 mt-0.5">
-                  {step}
+              { n: "1", title: "Share your link", body: "Post it on TikTok, Instagram, YouTube — wherever your audience is." },
+              { n: "2", title: "They buy socks",  body: "When someone clicks your link and places an order, it's tracked automatically." },
+              { n: "3", title: "You get $5",      body: "We pay out monthly via bank transfer. No minimums, no fuss." },
+            ].map(({ n, title, body }) => (
+              <div key={n} className="flex gap-3">
+                <div className="flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "var(--accent-light, rgba(46,139,40,0.12))", color: "var(--accent)", border: "1px solid rgba(46,139,40,0.2)" }}>
+                  {n}
                 </div>
                 <div>
-                  <p className="text-[13px] font-semibold text-white">{title}</p>
-                  <p className="text-[12px] text-white/40 mt-1 leading-relaxed">{desc}</p>
+                  <p className="text-sm font-semibold text-white">{title}</p>
+                  <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--muted)" }}>{body}</p>
                 </div>
               </div>
             ))}
@@ -168,50 +168,58 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
         </div>
 
         {/* Commission history */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="px-6 py-4 border-b border-[#E2E8F0]">
-            <h2 className="text-[14px] font-semibold text-[#1F2937]">Commission History</h2>
-            <p className="text-[12px] text-[#6B7280] mt-0.5">{conversions.length} sale{conversions.length !== 1 ? "s" : ""} tracked</p>
+        <div className="rounded-2xl overflow-hidden" style={{ ...cardStyle, padding: 0 }}>
+          <div className="px-6 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
+            <h2 className="font-display font-bold text-white">Commission History</h2>
+            <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
+              {conversions.length} sale{conversions.length !== 1 ? "s" : ""} tracked
+            </p>
           </div>
           {conversions.length === 0 ? (
-            <div className="px-6 py-16 text-center">
-              <p className="text-[#8A94A6] text-[13px]">No sales yet — share your link to start earning.</p>
+            <div className="px-6 py-14 text-center">
+              <p className="text-sm" style={{ color: "var(--muted)" }}>No sales yet — share your link to start earning.</p>
             </div>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  {["Date", "Order", "You Earned", "Status"].map((h) => (
-                    <th key={h} className="px-6 py-3 text-left text-[12px] font-medium text-[#6B7280] uppercase tracking-wider">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
-                {conversions.map((c) => (
-                  <tr key={c.id} className="hover:bg-[#F8FAFC] transition-colors">
-                    <td className="px-6 py-4 text-[13px] text-[#334155]">{fmtDate(c.created_at)}</td>
-                    <td className="px-6 py-4 text-[13px] text-[#334155] font-mono">
-                      {c.orders ? `#${c.orders.order_number}` : "—"}
-                    </td>
-                    <td className="px-6 py-4 text-[13px] font-semibold text-[#1F2937] font-mono">
-                      {fmt(c.commission_cents)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium capitalize ${STATUS_COLOURS[c.status] ?? "bg-[#F1F5F9] text-[#6B7280]"}`}>
-                        {c.status}
-                      </span>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                    {["Date", "Order", "Earned", "Status"].map((h) => (
+                      <th key={h} className="px-6 py-3 text-left text-xs font-medium uppercase tracking-widest" style={{ color: "var(--muted)" }}>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {conversions.map((c, i) => (
+                    <tr key={c.id} style={{ borderBottom: i < conversions.length - 1 ? "1px solid var(--border)" : undefined }}>
+                      <td className="px-6 py-4 text-sm" style={{ color: "var(--muted)" }}>{fmtDate(c.created_at)}</td>
+                      <td className="px-6 py-4 text-sm font-mono text-white">
+                        {c.orders ? `#${c.orders.order_number}` : "—"}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-semibold font-mono" style={{ color: "var(--accent)" }}>
+                        {fmt(c.commission_cents)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium capitalize"
+                          style={{
+                            background: c.status === "paid" ? "rgba(46,139,40,0.15)" : "rgba(234,179,8,0.1)",
+                            color: c.status === "paid" ? "var(--accent)" : "#EAB308",
+                          }}>
+                          {c.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
 
-        <p className="text-center text-[12px] text-[#8A94A6] pb-4">
-          Questions? Email us at <a href="mailto:info@nine2five.nz" className="underline hover:text-[#334155]">info@nine2five.nz</a>
+        <p className="text-center text-xs pb-6" style={{ color: "rgba(255,255,255,0.2)" }}>
+          Questions? <a href="mailto:info@nine2five.nz" className="underline transition-colors" style={{ color: "var(--muted)" }}>info@nine2five.nz</a>
         </p>
       </main>
     </div>
