@@ -1,13 +1,9 @@
 export const dynamic = "force-dynamic";
 
 import { createServiceClient } from "@/lib/supabase/server";
-import {
-  ArrowUpRight, ArrowDownRight, ShoppingBag, Users,
-  DollarSign, Package, ChevronRight, TrendingUp,
-  Tag, Megaphone,
-} from "lucide-react";
+import { ShoppingBag, Package, TrendingUp, Users, Tag, Megaphone, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { LiveStats } from "./components/live-stats";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -24,39 +20,47 @@ function pct(a: number, b: number) {
   return Math.round(((a - b) / b) * 100);
 }
 
-// ─── Sparkline ───────────────────────────────────────────────────────────────
-
-function Sparkline({ data, up = true }: { data: number[]; up?: boolean }) {
-  if (data.length < 2) return <div style={{ height: 48 }} />;
-  const mx = Math.max(...data, 1), mn = Math.min(...data), rng = mx - mn || 1;
-  const W = 180, H = 48, pad = 5;
-  const pts = data.map((v, i) => ({
-    x: (i / (data.length - 1)) * W,
-    y: H - pad - ((v - mn) / rng) * (H - pad * 2),
-  }));
-  const line  = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-  const area  = [`0,${H}`, ...pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`), `${W},${H}`].join(" ");
-  const color = up ? "#116DFF" : "#EF4444";
-  const fill  = up ? "rgba(17,109,255,0.06)" : "rgba(239,68,68,0.06)";
-  const last  = pts[pts.length - 1];
-  return (
-    <svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="overflow-visible">
-      <polygon points={area} fill={fill} />
-      <polyline points={line} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={last.x} cy={last.y} r="2.5" fill={color} stroke="#FFFFFF" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
 // ─── Status map ──────────────────────────────────────────────────────────────
 
-const STATUS: Record<string, { pay: string; fulfill: string; payCls: string; fulfillCls: string }> = {
-  processing: { pay: "Paid",      fulfill: "Unfulfilled", payCls: "bg-[#D5F1E2] text-[#166B3B]",     fulfillCls: "bg-[#FFF4CC] text-[#9A5B00]" },
-  shipped:    { pay: "Paid",      fulfill: "Fulfilled",   payCls: "bg-[#D5F1E2] text-[#166B3B]",     fulfillCls: "bg-[#DBEAFE] text-[#1E40AF]" },
-  delivered:  { pay: "Paid",      fulfill: "Delivered",   payCls: "bg-[#D5F1E2] text-[#166B3B]",     fulfillCls: "bg-[#D5F1E2] text-[#166B3B]" },
-  pending:    { pay: "Unpaid",    fulfill: "Unfulfilled", payCls: "bg-[#FFF4CC] text-[#9A5B00]",     fulfillCls: "bg-[#FFF4CC] text-[#9A5B00]" },
-  cancelled:  { pay: "Voided",   fulfill: "Cancelled",   payCls: "bg-[#FEE2E2] text-[#991B1B]",     fulfillCls: "bg-[#FEE2E2] text-[#991B1B]" },
-  refunded:   { pay: "Refunded", fulfill: "Returned",    payCls: "bg-[#F3F4F6] text-[#6B7280]",     fulfillCls: "bg-[#F3F4F6] text-[#6B7280]" },
+const STATUS: Record<string, { pay: string; fulfill: string; payStyle: React.CSSProperties; fulfillStyle: React.CSSProperties }> = {
+  processing: {
+    pay: "Paid",      fulfill: "Unfulfilled",
+    payStyle: { background: "#dcfce7", color: "#166534" },
+    fulfillStyle: { background: "#fef3c7", color: "#92400e" },
+  },
+  shipped: {
+    pay: "Paid",      fulfill: "Fulfilled",
+    payStyle: { background: "#dcfce7", color: "#166534" },
+    fulfillStyle: { background: "#dbeafe", color: "#1e40af" },
+  },
+  delivered: {
+    pay: "Paid",      fulfill: "Delivered",
+    payStyle: { background: "#dcfce7", color: "#166534" },
+    fulfillStyle: { background: "#dcfce7", color: "#166534" },
+  },
+  pending: {
+    pay: "Unpaid",    fulfill: "Unfulfilled",
+    payStyle: { background: "#fef3c7", color: "#92400e" },
+    fulfillStyle: { background: "#fef3c7", color: "#92400e" },
+  },
+  cancelled: {
+    pay: "Voided",    fulfill: "Cancelled",
+    payStyle: { background: "#fee2e2", color: "#b91c1c" },
+    fulfillStyle: { background: "#fee2e2", color: "#b91c1c" },
+  },
+  refunded: {
+    pay: "Refunded",  fulfill: "Returned",
+    payStyle: { background: "#f3f4f6", color: "#6b7280" },
+    fulfillStyle: { background: "#f3f4f6", color: "#6b7280" },
+  },
+};
+
+const BADGE_BASE: React.CSSProperties = {
+  display: "inline-flex",
+  padding: "3px 10px",
+  borderRadius: 999,
+  fontSize: 12,
+  fontWeight: 800,
 };
 
 // ─── Page ────────────────────────────────────────────────────────────────────
@@ -98,19 +102,6 @@ export default async function AdminDashboard() {
 
   const valid30 = (raw30 ?? []).filter(o => o.status !== "cancelled" && o.status !== "refunded");
 
-  // daily map for sparklines
-  const daily = new Map<string, { rev: number; cnt: number }>();
-  for (const o of valid30) {
-    const d = o.created_at.slice(0, 10);
-    const e = daily.get(d) ?? { rev: 0, cnt: 0 };
-    e.rev += o.total; e.cnt += 1;
-    daily.set(d, e);
-  }
-  const last14 = Array.from({ length: 14 }, (_, i) => {
-    const d = new Date(now.getTime() - (13 - i) * 86_400_000);
-    return daily.get(d.toISOString().slice(0, 10)) ?? { rev: 0, cnt: 0 };
-  });
-
   const todayTs = new Date(todayStart).getTime();
   const yestTs  = new Date(yesterdayStart).getTime();
   const monTs   = new Date(monthStart).getTime();
@@ -147,37 +138,48 @@ export default async function AdminDashboard() {
   const stocks = (lowStock ?? []) as unknown as Stock[];
 
   const metrics = [
-    { label: "Revenue",       value: money(revMon),           change: revPct,  todayV: moneyShort(revToday),  yestV: moneyShort(revYest),  sparkline: last14.map(d => d.rev), icon: DollarSign, primary: true },
-    { label: "Orders",        value: ordMon.toLocaleString(), change: ordPct,  todayV: todayOs.length.toString(), yestV: yestOs.length.toString(), sparkline: last14.map(d => d.cnt), icon: ShoppingBag, primary: false },
-    { label: "Avg. Order",    value: money(avgMon),           change: avgPct,  todayV: avgToday > 0 ? moneyShort(avgToday) : "—", yestV: avgYest > 0 ? moneyShort(avgYest) : "—", sparkline: last14.map(d => d.cnt > 0 ? Math.round(d.rev / d.cnt) : 0), icon: TrendingUp, primary: false },
-    { label: "New Customers", value: (newCust ?? 0).toLocaleString(), change: custPct, todayV: "—", yestV: "—", sparkline: [lastCust ?? 0, newCust ?? 0], icon: Users, primary: false },
+    { label: "Revenue",       value: money(revMon),           change: revPct,  todayV: moneyShort(revToday), yestV: moneyShort(revYest) },
+    { label: "Orders",        value: ordMon.toLocaleString(), change: ordPct,  todayV: todayOs.length.toString(), yestV: yestOs.length.toString() },
+    { label: "Avg Order",     value: money(avgMon),           change: avgPct,  todayV: avgToday > 0 ? moneyShort(avgToday) : "—", yestV: avgYest > 0 ? moneyShort(avgYest) : "—" },
+    { label: "New Customers", value: (newCust ?? 0).toLocaleString(), change: custPct, todayV: "—", yestV: "—" },
   ];
 
   return (
-    <div className="space-y-8">
+    <div style={{ minHeight: "100vh", background: "#06150C", color: "#f8f8f2", padding: "32px 28px" }}>
+      <style>{`
+        @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2,1fr) !important; } }
+        @media (max-width: 640px)  { .stats-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 900px)  { .main-grid  { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px)  { .actions-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px)  { .live-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between">
+      <div style={{ marginBottom: 28, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
         <div>
-          <h2 className="text-[24px] font-bold text-[#1F2937] tracking-tight leading-none">
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>
             Welcome back{firstName ? `, ${firstName}` : ""}
-          </h2>
-          <p className="text-[14px] text-[#6B7280] mt-2 font-normal">
+          </h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>
             {now.toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-            {(pending ?? 0) > 0 && <span className="ml-2 text-[#9A5B00] font-medium">· {pending} order{pending !== 1 ? "s" : ""} pending</span>}
+            {(pending ?? 0) > 0 && (
+              <span style={{ marginLeft: 8, color: "#fbbf24" }}>
+                · {pending} order{pending !== 1 ? "s" : ""} pending
+              </span>
+            )}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div style={{ display: "flex", gap: 10 }}>
           <Link
             href="/admin/orders"
-            className="flex items-center gap-2 h-9 px-4 rounded-full bg-white border border-[#E2E8F0] text-[#334155] text-[13px] font-medium hover:bg-[#F6FAFF] transition-all"
+            style={{ height: 42, padding: "0 20px", borderRadius: 999, background: "rgba(255,255,255,0.08)", color: "#fff", fontWeight: 700, fontSize: 13, border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none" }}
           >
             <ShoppingBag style={{ width: 14, height: 14 }} strokeWidth={1.8} />
             Orders
           </Link>
           <Link
             href="/admin/inventory"
-            className="flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all"
+            style={{ height: 42, padding: "0 20px", borderRadius: 999, background: "#2f9b2f", color: "#fff", fontWeight: 900, fontSize: 13, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", letterSpacing: "0.08em" }}
           >
             <Package style={{ width: 14, height: 14 }} strokeWidth={1.8} />
             Inventory
@@ -185,39 +187,32 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      {/* ── Metric cards ── */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-5">
-        {metrics.map(({ label, value, change, todayV, yestV, sparkline, icon: Icon, primary }) => {
+      {/* ── Live stats ── */}
+      <LiveStats initialOrdersToday={todayOs.length} initialOrdersMonth={ordMon} />
+
+      {/* ── Stat cards ── */}
+      <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 18, marginBottom: 24 }}>
+        {metrics.map(({ label, value, change, todayV, yestV }) => {
           const up = change >= 0;
           return (
             <div
               key={label}
-              className="rounded-[14px] bg-white border border-[#E2E8F0] p-6"
-              style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)", borderTop: primary ? "2px solid #116DFF" : undefined }}
+              style={{ background: "#f7f8f4", color: "#111827", borderRadius: 18, padding: "20px 22px", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#F3F5F8] flex items-center justify-center">
-                    <Icon style={{ width: 13, height: 13, color: primary ? "#116DFF" : "#6B7280" }} strokeWidth={1.8} />
-                  </div>
-                  <p className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-widest">{label}</p>
-                </div>
-                <span className={cn(
-                  "flex items-center gap-0.5 text-[11px] font-semibold px-2 py-1 rounded-lg",
-                  up ? "bg-[#D5F1E2] text-[#166B3B]" : "bg-[#FEE2E2] text-[#991B1B]"
-                )}>
-                  {up ? <ArrowUpRight style={{ width: 12, height: 12 }} /> : <ArrowDownRight style={{ width: 12, height: 12 }} />}
-                  {Math.abs(change)}%
+              <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#64748b" }}>{label}</p>
+              <p style={{ fontSize: 30, fontWeight: 900, color: "#111827", marginTop: 8 }}>{value}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", padding: "2px 8px", borderRadius: 999, fontSize: 11, fontWeight: 800,
+                  background: up ? "#dcfce7" : "#fee2e2",
+                  color: up ? "#166534" : "#b91c1c",
+                }}>
+                  {up ? "▲" : "▼"} {Math.abs(change)}%
                 </span>
+                <span style={{ fontSize: 12, color: "#6b7280" }}>vs last month</span>
               </div>
-              <p className="text-[28px] font-bold text-[#1F2937] tracking-tight leading-none mb-5 font-mono">
-                {value}
-              </p>
-              <Sparkline data={sparkline} up={up} />
-              <p className="text-[12px] text-[#6B7280] mt-3">
-                <span className="font-semibold text-[#334155]">{todayV}</span> today
-                &nbsp;·&nbsp;
-                <span>{yestV}</span> yesterday
+              <p style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+                <span style={{ fontWeight: 700, color: "#334155" }}>{todayV}</span> today · {yestV} yesterday
               </p>
             </div>
           );
@@ -225,128 +220,108 @@ export default async function AdminDashboard() {
       </div>
 
       {/* ── Orders + Low stock ── */}
-      <div className="grid lg:grid-cols-[1fr_300px] gap-5">
+      <div className="main-grid" style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 20, marginBottom: 24 }}>
 
-        {/* Recent orders */}
-        <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
+        {/* Recent Orders table */}
+        <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
+          <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(0,0,0,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <h3 className="text-[15px] font-semibold text-[#1F2937] leading-none">Recent Orders</h3>
-              <p className="text-[12px] text-[#6B7280] mt-1">Last {orders.length} transactions</p>
+              <p style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>Recent Orders</p>
+              <p style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>Last {orders.length} transactions</p>
             </div>
-            <Link href="/admin/orders" className="flex items-center gap-1 text-[13px] text-[#116DFF] hover:text-[#0D5FE0] font-semibold transition-colors">
+            <Link href="/admin/orders" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: "#2f9b2f", fontWeight: 700, textDecoration: "none" }}>
               View all <ChevronRight style={{ width: 14, height: 14 }} />
             </Link>
           </div>
-
           {orders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-[#F3F5F8] border border-[#E2E8F0] flex items-center justify-center mb-4">
-                <ShoppingBag style={{ width: 24, height: 24, color: "#C4CAD4" }} strokeWidth={1.5} />
-              </div>
-              <p className="text-[14px] font-medium text-[#6B7280]">No orders yet</p>
-              <p className="text-[13px] text-[#8A94A6] mt-1">Orders will appear here as they come in</p>
-            </div>
+            <div style={{ textAlign: "center", padding: "48px 24px", color: "#94a3b8", fontSize: 14 }}>No orders yet</div>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
-                  {[
-                    { label: "Order",       cls: "pl-6 pr-4 h-[52px] text-left" },
-                    { label: "Date",        cls: "px-4 h-[52px] text-left hidden sm:table-cell" },
-                    { label: "Customer",    cls: "px-4 h-[52px] text-left" },
-                    { label: "Payment",     cls: "px-4 h-[52px] text-left hidden lg:table-cell" },
-                    { label: "Fulfillment", cls: "px-4 h-[52px] text-left hidden lg:table-cell" },
-                    { label: "Total",       cls: "pl-4 pr-6 h-[52px] text-right" },
-                  ].map(h => (
-                    <th key={h.label} className={cn(h.cls, "text-[14px] font-medium text-[#1F2D3D] whitespace-nowrap")}>
-                      {h.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => {
-                  const name  = order.customers ? `${order.customers.first_name} ${order.customers.last_name}`.trim() : (order.guest_email?.split("@")[0] ?? "Guest");
-                  const email = order.customers?.email ?? order.guest_email ?? "";
-                  const st    = STATUS[order.status] ?? STATUS.pending;
-                  return (
-                    <tr
-                      key={order.id}
-                      className="border-b border-[#E5EAF1] last:border-0 hover:bg-[#F6FAFF] transition-colors group relative"
-                    >
-                      <td className="pl-6 pr-4 py-4">
-                        <Link href={`/admin/orders/${order.id}`} className="absolute inset-0 z-0" />
-                        <span className="relative z-10 text-[14px] font-semibold text-[#1F2937] font-mono">
-                          #{order.order_number}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 hidden sm:table-cell relative z-10">
-                        <span className="text-[13px] text-[#6B7280] whitespace-nowrap">
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+                <thead style={{ background: "#eaf2fb" }}>
+                  <tr>
+                    {["Order", "Date", "Customer", "Payment", "Fulfillment", "Total"].map(h => (
+                      <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontWeight: 800, color: "#334155", whiteSpace: "nowrap" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order) => {
+                    const name  = order.customers
+                      ? `${order.customers.first_name} ${order.customers.last_name}`.trim()
+                      : (order.guest_email?.split("@")[0] ?? "Guest");
+                    const email = order.customers?.email ?? order.guest_email ?? "";
+                    const st = STATUS[order.status] ?? STATUS.pending;
+                    return (
+                      <tr key={order.id} style={{ borderTop: "1px solid #e5e7eb" }}>
+                        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                          <Link href={`/admin/orders/${order.id}`} style={{ color: "#111827", fontWeight: 800, fontSize: 13, textDecoration: "none", fontFamily: "monospace" }}>
+                            #{order.order_number}
+                          </Link>
+                        </td>
+                        <td style={{ padding: "13px 16px", color: "#6b7280", whiteSpace: "nowrap", verticalAlign: "middle", fontSize: 13 }}>
                           {new Date(order.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short" })}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 relative z-10">
-                        <p className="text-[13px] font-medium text-[#334155] truncate max-w-[160px]">{name}</p>
-                        <p className="text-[12px] text-[#8A94A6] truncate max-w-[160px] mt-0.5">{email}</p>
-                      </td>
-                      <td className="px-4 py-4 hidden lg:table-cell relative z-10">
-                        <span className={cn("inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium", st.payCls)}>{st.pay}</span>
-                      </td>
-                      <td className="px-4 py-4 hidden lg:table-cell relative z-10">
-                        <span className={cn("inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium", st.fulfillCls)}>{st.fulfill}</span>
-                      </td>
-                      <td className="pl-4 pr-6 py-4 text-right relative z-10">
-                        <span className="text-[14px] font-semibold text-[#1F2937] font-mono">{money(order.total)}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        </td>
+                        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</p>
+                          <p style={{ fontSize: 12, color: "#9ca3af", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 2 }}>{email}</p>
+                        </td>
+                        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                          <span style={{ ...BADGE_BASE, ...st.payStyle }}>{st.pay}</span>
+                        </td>
+                        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                          <span style={{ ...BADGE_BASE, ...st.fulfillStyle }}>{st.fulfill}</span>
+                        </td>
+                        <td style={{ padding: "13px 16px", verticalAlign: "middle", fontFamily: "monospace", fontWeight: 800, color: "#111827" }}>
+                          {money(order.total)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
 
-        {/* Low stock */}
-        <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <div className="flex items-center justify-between px-6 py-5 border-b border-[#E2E8F0]">
+        {/* Low stock panel */}
+        <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
+          <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(0,0,0,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <h3 className="text-[15px] font-semibold text-[#1F2937] leading-none">Low Stock</h3>
-              <p className="text-[12px] text-[#6B7280] mt-1">Below 10 units</p>
+              <p style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>Low Stock</p>
+              <p style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>Below 10 units</p>
             </div>
-            <Link href="/admin/inventory" className="flex items-center gap-1 text-[13px] text-[#116DFF] hover:text-[#0D5FE0] font-semibold transition-colors">
+            <Link href="/admin/inventory" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: "#2f9b2f", fontWeight: 700, textDecoration: "none" }}>
               Manage <ChevronRight style={{ width: 14, height: 14 }} />
             </Link>
           </div>
-
           {stocks.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center px-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#D5F1E2] flex items-center justify-center mb-3">
-                <Package style={{ width: 20, height: 20, color: "#166B3B" }} strokeWidth={1.5} />
+            <div style={{ textAlign: "center", padding: "40px 24px" }}>
+              <div style={{ width: 44, height: 44, borderRadius: 14, background: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
+                <Package style={{ width: 20, height: 20, color: "#166534" }} strokeWidth={1.5} />
               </div>
-              <p className="text-[14px] font-medium text-[#334155]">All stock healthy</p>
-              <p className="text-[13px] text-[#6B7280] mt-1">No variants below 10 units</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: "#334155" }}>All stock healthy</p>
+              <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>No variants below 10 units</p>
             </div>
           ) : (
             <div>
               {stocks.map((v, i) => (
                 <div
                   key={v.id}
-                  className={cn(
-                    "flex items-center justify-between px-6 py-4 hover:bg-[#F6FAFF] transition-colors",
-                    i < stocks.length - 1 && "border-b border-[#E5EAF1]"
-                  )}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 22px", borderBottom: i < stocks.length - 1 ? "1px solid #e5e7eb" : "none" }}
                 >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-medium text-[#334155] truncate">{v.products?.name ?? "Unknown"}</p>
-                    <p className="text-[12px] text-[#6B7280] mt-0.5">Size {v.size}</p>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.products?.name ?? "Unknown"}</p>
+                    <p style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>Size {v.size}</p>
                   </div>
-                  <span className={cn(
-                    "inline-flex items-center px-2.5 py-1 rounded text-[13px] font-medium ml-4 shrink-0",
-                    v.stock_quantity === 0
-                      ? "bg-[#FEE2E2] text-[#991B1B]"
-                      : "bg-[#FFF4CC] text-[#9A5B00]"
-                  )}>
+                  <span style={{
+                    ...BADGE_BASE,
+                    marginLeft: 12,
+                    flexShrink: 0,
+                    ...(v.stock_quantity === 0
+                      ? { background: "#fee2e2", color: "#b91c1c" }
+                      : { background: "#fef3c7", color: "#92400e" }),
+                  }}>
                     {v.stock_quantity === 0 ? "Out of stock" : `${v.stock_quantity} left`}
                   </span>
                 </div>
@@ -356,31 +331,29 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      {/* ── Quick actions ── */}
-      <div className="grid grid-cols-3 gap-5">
+      {/* ── Quick Actions ── */}
+      <div className="actions-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16 }}>
         {[
-          { href: "/admin/inventory", label: "Update inventory", sub: "Adjust stock levels",  icon: Package,   iconColor: "#116DFF",  iconBg: "bg-[#EAF2FF]" },
-          { href: "/admin/discounts", label: "Create discount",  sub: "New promo code",        icon: Tag,       iconColor: "#7C3AED",  iconBg: "bg-[#EDE9FE]" },
-          { href: "/admin/campaigns", label: "Email campaign",   sub: "Send to customers",     icon: Megaphone, iconColor: "#D97706",  iconBg: "bg-[#FEF3C7]" },
-        ].map(({ href, label, sub, icon: Icon, iconColor, iconBg }) => (
+          { href: "/admin/inventory", label: "Update inventory", sub: "Adjust stock levels",  icon: Package,   iconBg: "#1a3d25", iconColor: "#4ade80" },
+          { href: "/admin/discounts", label: "Create discount",  sub: "New promo code",        icon: Tag,       iconBg: "#2d1d4a", iconColor: "#a78bfa" },
+          { href: "/admin/campaigns", label: "Email campaign",   sub: "Send to customers",     icon: Megaphone, iconBg: "#3d2a0a", iconColor: "#fbbf24" },
+        ].map(({ href, label, sub, icon: Icon, iconBg, iconColor }) => (
           <Link
             key={href}
             href={href}
-            className="group flex items-center gap-4 p-5 rounded-[14px] bg-white border border-[#E2E8F0] hover:border-[#116DFF]/30 hover:bg-[#F6FAFF] transition-all duration-150"
-            style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
+            style={{ display: "flex", alignItems: "center", gap: 16, padding: "18px 20px", borderRadius: 16, background: "rgba(8,28,16,0.92)", border: "1px solid rgba(255,255,255,0.10)", textDecoration: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}
           >
-            <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shrink-0", iconBg)}>
+            <div style={{ height: 40, width: 40, borderRadius: 12, background: iconBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <Icon style={{ width: 18, height: 18, color: iconColor }} strokeWidth={1.8} />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-semibold text-[#334155] group-hover:text-[#1F2937] transition-colors">{label}</p>
-              <p className="text-[12px] text-[#6B7280] mt-0.5">{sub}</p>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>{label}</p>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>{sub}</p>
             </div>
-            <ChevronRight className="text-[#C4CAD4] group-hover:text-[#6B7280] transition-colors shrink-0" style={{ width: 16, height: 16 }} />
+            <ChevronRight style={{ width: 16, height: 16, color: "rgba(255,255,255,0.3)", flexShrink: 0 }} />
           </Link>
         ))}
       </div>
-
     </div>
   );
 }
