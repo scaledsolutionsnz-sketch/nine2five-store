@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { ShoppingBag, Package, TrendingUp, Users, Tag, Megaphone, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { LiveStats } from "./components/live-stats";
+import { RefreshButton } from "./components/refresh-button";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -170,6 +171,7 @@ export default async function AdminDashboard() {
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
+          <RefreshButton />
           <Link
             href="/admin/orders"
             style={{ height: 42, padding: "0 20px", borderRadius: 999, background: "rgba(255,255,255,0.08)", color: "#fff", fontWeight: 700, fontSize: 13, border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none" }}
