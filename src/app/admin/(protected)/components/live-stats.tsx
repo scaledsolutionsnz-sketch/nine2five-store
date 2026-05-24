@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Radio, TrendingUp } from "lucide-react";
+import { Radio, Users, TrendingUp } from "lucide-react";
 
 interface LiveData {
   live_now: number;
@@ -48,7 +48,7 @@ export function LiveStats({ initialOrdersToday, initialOrdersMonth }: { initialO
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
 
       {/* Live viewers */}
       <div style={card}>
@@ -73,11 +73,9 @@ export function LiveStats({ initialOrdersToday, initialOrdersMonth }: { initialO
               </span>
             )}
           </div>
-          {data && (
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 4 }}>
-              {data.sessions_today.toLocaleString()} unique today
-            </p>
-          )}
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 4 }}>
+            updated every 30s
+          </p>
         </div>
         <div style={{ flexShrink: 0 }}>
           <span style={{
@@ -93,6 +91,31 @@ export function LiveStats({ initialOrdersToday, initialOrdersMonth }: { initialO
             LIVE
           </span>
           <style>{`@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
+        </div>
+      </div>
+
+      {/* Visitors today */}
+      <div style={card}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+          <Users style={{ width: 16, height: 16, color: "#60a5fa" }} strokeWidth={1.8} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 4 }}>
+            Visitors today
+          </p>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <span style={{ fontSize: 32, fontWeight: 900, color: "#ffffff" }}>
+              {data?.sessions_today ?? "—"}
+            </span>
+            {data && (
+              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
+                unique sessions
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 4 }}>
+            {data ? `${data.sessions_month.toLocaleString()} this month` : "loading…"}
+          </p>
         </div>
       </div>
 
