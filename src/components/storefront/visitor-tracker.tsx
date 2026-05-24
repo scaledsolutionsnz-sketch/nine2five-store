@@ -20,7 +20,10 @@ export function VisitorTracker() {
   function ping(page: string) {
     const session_id = getSessionId();
     if (!session_id) return;
-    navigator.sendBeacon("/api/analytics/ping", JSON.stringify({ session_id, page }));
+    navigator.sendBeacon(
+      "/api/analytics/ping",
+      new Blob([JSON.stringify({ session_id, page })], { type: "application/json" })
+    );
   }
 
   useEffect(() => {
