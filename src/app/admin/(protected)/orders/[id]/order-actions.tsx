@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, PackageCheck } from "lucide-react";
 import type { OrderStatus } from "@/types/database";
 
 const STATUSES: OrderStatus[] = ["pending", "processing", "shipped", "delivered", "cancelled", "refunded"];
+const UNFULFILLED = new Set(["pending", "processing"]);
 
 export function OrderActions({
   orderId,
@@ -22,6 +23,23 @@ export function OrderActions({
   const [status, setStatus] = useState<OrderStatus>(currentStatus);
   const [tracking, setTracking] = useState(trackingNumber ?? "");
   const [saving, setSaving] = useState(false);
+  const [fulfilling, setFulfilling] = useState(false);
+
+  const isUnfulfilled = UNFULFILLED.has(status);
+
+  async function fulfill() {
+    setFulfilling(true);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: "shipped", updated_at: new Date().toISOString() })
+      .eq("id", orderId);
+    setFulfilling(false);
+    if (error) { toast.error(error.message); return; }
+    setStatus("shipped");
+    toast.success("Order marked as shipped");
+    router.refresh();
+  }
 
   async function save() {
     setSaving(true);
@@ -37,7 +55,26 @@ export function OrderActions({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 flex-wrap">
+      {isUnfulfilled && (
+        <button
+          onClick={fulfill}
+          disabled={fulfilling}
+          style={{
+            height: 36, padding: "0 16px", borderRadius: 8,
+            background: "#2f9b2f", color: "#fff",
+            fontWeight: 800, fontSize: 13, border: "none",
+            cursor: fulfilling ? "not-allowed" : "pointer",
+            display: "inline-flex", alignItems: "center", gap: 7,
+            opacity: fulfilling ? 0.7 : 1, transition: "background 0.2s",
+          }}
+        >
+          {fulfilling
+            ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" />
+            : <PackageCheck style={{ width: 14, height: 14 }} />}
+          {fulfilling ? "Fulfilling…" : "Fulfill Order"}
+        </button>
+      )}
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value as OrderStatus)}
