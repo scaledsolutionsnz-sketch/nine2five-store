@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
 import type { Metadata } from "next";
 import ClubsForm from "./ClubsForm";
+import ComingSoonBanner from "./ComingSoonBanner";
 
 export const metadata: Metadata = {
   title: "Clubs & Teams — Nine2Five",
@@ -35,17 +36,7 @@ export default function ClubsPage() {
   return (
     <div style={{ backgroundColor: "#06150C", color: "#ffffff", minHeight: "100vh" }}>
 
-      {/* ── Coming Soon Banner ── */}
-      <div style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: "#2E8B28", padding: "10px 20px",
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 12,
-      }}>
-        <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.25em", color: "#ffffff", textTransform: "uppercase" }}>
-          Coming Soon — Club orders launching shortly. Register your interest below.
-        </span>
-      </div>
-      <div style={{ height: 40 }} />
+      <ComingSoonBanner />
       <style>{`
         .clubs-hero { max-width: 1280px; margin: 0 auto; padding: clamp(100px, 12vw, 160px) clamp(20px, 4vw, 48px) 80px; }
         .clubs-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
