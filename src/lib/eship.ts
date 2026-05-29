@@ -29,14 +29,23 @@ function dimsForPairs(pairs: number) {
   return               { length: 40, width: 27, height: 8  }; // Foolscap
 }
 
+export type EShipItem = {
+  sku: string;
+  description: string;
+  quantity: number;
+  unit_price: number;
+};
+
 export async function createEShipShipment({
   orderNumber,
   shippingAddress: addr,
   totalPairs,
+  items = [],
 }: {
   orderNumber: number;
   shippingAddress: ShippingAddress;
   totalPairs: number;
+  items?: EShipItem[];
 }): Promise<EShipResult> {
   if (!process.env.NZPOST_ESHIP_API_KEY) {
     throw new Error("NZPOST_ESHIP_API_KEY is not set");
@@ -47,7 +56,7 @@ export async function createEShipShipment({
 
   const isNZ = addr.country === "NZ" || addr.country.toLowerCase() === "new zealand";
   const nzService = nzCarrierForPairs(totalPairs);
-  const carrierName = isNZ ? "NZ Post Domestic" : "NZ Post International";
+  const carrierName = isNZ ? "MyNZPost Business" : "NZ Post International";
   const carrierServiceCode = isNZ ? nzService.code : "IECON";
 
   const res = await fetch(`${BASE}/orders`, {
@@ -74,6 +83,13 @@ export async function createEShipShipment({
           weight: weightKg,
           ...dims,
         }],
+        items: items.map((item) => ({
+          sku: item.sku,
+          description: item.description,
+          quantity: item.quantity,
+          weight: GRAMS_PER_PAIR / 1000,
+          unit_price: item.unit_price,
+        })),
       },
     }),
   });

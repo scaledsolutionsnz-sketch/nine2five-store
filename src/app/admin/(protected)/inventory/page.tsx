@@ -12,11 +12,11 @@ export default async function InventoryPage() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
+    <div style={{ minHeight: "100vh", background: "#06150C", color: "#f8f8f2", padding: "32px 28px" }}>
+      <div style={{ marginBottom: 28, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
         <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Inventory</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Manage stock levels and variants.</p>
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>Inventory</h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>Manage stock levels and variants.</p>
         </div>
       </div>
       <InventoryEditor

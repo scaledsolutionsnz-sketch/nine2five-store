@@ -77,17 +77,17 @@ export function abandonedCartHtml(opts: {
         </table>
 
         <p style="margin:20px 0 0;font-size:12px;color:#525252;">
-          Free NZ shipping on orders over $75. Easy 7-day returns.
+          NZ shipping. Easy 7-day returns.
         </p>
       </td></tr>
 
       <!-- Footer -->
       <tr><td style="padding:24px 40px;border-top:1px solid #1e1e1e;">
         <p style="margin:0;font-size:12px;color:#525252;line-height:1.7;">
-          Nine2Five Limited · Masterton, New Zealand · <a href="https://nine2five.co.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.co.nz</a>
+          Nine2Five Limited · Masterton, New Zealand · <a href="https://nine2five.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.nz</a>
         </p>
         <p style="margin:6px 0 0;font-size:11px;color:#3a3a3a;">
-          You received this because you started a purchase at nine2five.co.nz. ·
+          You received this because you started a purchase at nine2five.nz. ·
           <a href="${unsub}" style="color:#3a3a3a;text-decoration:underline;">Unsubscribe</a>
         </p>
       </td></tr>
@@ -106,5 +106,5 @@ export function abandonedCartText(opts: {
 }): string {
   const greeting = opts.firstName ? `Kia ora ${opts.firstName},` : "Kia ora,";
   const lines = opts.items.map((i) => `- ${i.productName} (Size ${i.size}, Qty ${i.quantity}) — $${((i.price * i.quantity) / 100).toFixed(2)}`);
-  return `${greeting}\n\nYou left something in your cart:\n\n${lines.join("\n")}\n\nComplete your order: ${opts.recoveryUrl}\n\n— Nine2Five\nhttps://nine2five.co.nz`;
+  return `${greeting}\n\nYou left something in your cart:\n\n${lines.join("\n")}\n\nComplete your order: ${opts.recoveryUrl}\n\n— Nine2Five\nhttps://nine2five.nz`;
 }

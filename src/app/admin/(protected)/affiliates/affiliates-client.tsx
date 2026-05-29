@@ -50,7 +50,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
   }
 
   function copyLink(code: string) {
-    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.co.nz"}?ref=${code}`);
+    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.nz"}?ref=${code}`);
     toast.success("Referral link copied");
   }
 
@@ -307,7 +307,7 @@ function CreateAffiliateModal({
               className={cn(inputClass, "font-mono")}
             />
             <p className="text-[11px] text-[#8A94A6] mt-1.5">
-              Link: nine2five.co.nz?ref={form.referral_code || "code"}
+              Link: nine2five.nz?ref={form.referral_code || "code"}
             </p>
           </div>
           <div>
@@ -371,7 +371,7 @@ function AffiliateDetailModal({
     setSaving(false);
   }
 
-  const link = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.co.nz"}?ref=${affiliate.referral_code}`;
+  const link = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.nz"}?ref=${affiliate.referral_code}`;
   const pending = affiliate.total_commission_cents - affiliate.total_paid_cents;
 
   return (

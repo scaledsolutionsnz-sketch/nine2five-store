@@ -9,7 +9,7 @@ export function campaignHtml(opts: {
 }): string {
   const { campaignId, email, firstName, body } = opts;
   const greeting = firstName ? `Kia ora ${firstName},` : "Kia ora,";
-  const shopUrl = trackedClickUrl(campaignId, email, "https://nine2five.co.nz/shop");
+  const shopUrl = trackedClickUrl(campaignId, email, "https://nine2five.nz/shop");
   const pixel = openPixelUrl(campaignId, email);
   const unsub = unsubscribeUrl(email);
 
@@ -55,7 +55,7 @@ export function campaignHtml(opts: {
       <tr><td style="padding:24px 40px;border-top:1px solid #1e1e1e;">
         <p style="margin:0;font-size:12px;color:#525252;line-height:1.7;">
           You're receiving this because you've ordered from Nine2Five or opted in to marketing emails.<br/>
-          Nine2Five · Christchurch, New Zealand · <a href="https://nine2five.co.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.co.nz</a><br/>
+          Nine2Five · Christchurch, New Zealand · <a href="https://nine2five.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.nz</a><br/>
           <a href="${unsub}" style="color:#525252;text-decoration:underline;">Unsubscribe</a>
         </p>
       </td></tr>
@@ -74,5 +74,5 @@ export function campaignText(opts: {
   body: string;
 }): string {
   const greeting = opts.firstName ? `Kia ora ${opts.firstName},` : "Kia ora,";
-  return `${greeting}\n\n${opts.body}\n\nShop: https://nine2five.co.nz/shop\n\n— Nine2Five\nhttps://nine2five.co.nz`;
+  return `${greeting}\n\n${opts.body}\n\nShop: https://nine2five.nz/shop\n\n— Nine2Five\nhttps://nine2five.nz`;
 }

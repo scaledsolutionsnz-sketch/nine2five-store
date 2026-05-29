@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { GalleryGrid } from "./gallery-grid";
 
 export const metadata: Metadata = {
   title: "Gallery — Nine2Five",
@@ -8,102 +8,119 @@ export const metadata: Metadata = {
 };
 
 const GALLERY = [
-  { src: "/gallery/1.png",  alt: "Nine2Five socks lifestyle", tag: "Lifestyle",   aspect: "aspect-[3/4]" },
-  { src: "/gallery/2.png",  alt: "Nine2Five socks in action", tag: "Sport",       aspect: "aspect-[4/3]" },
-  { src: "/gallery/3.png",  alt: "Nine2Five grip socks",      tag: "Training",    aspect: "aspect-[3/4]" },
-  { src: "/gallery/4.png",  alt: "Nine2Five product shot",    tag: "Product",     aspect: "aspect-square" },
-  { src: "/gallery/5.png",  alt: "Nine2Five socks worn",      tag: "Lifestyle",   aspect: "aspect-[4/3]" },
-  { src: "/gallery/6.png",  alt: "Nine2Five on the field",    tag: "Sport",       aspect: "aspect-[3/4]" },
-  { src: "/gallery/7.png",  alt: "Nine2Five team socks",      tag: "Team",        aspect: "aspect-[4/3]" },
-  { src: "/gallery/8.png",  alt: "Nine2Five close up",        tag: "Product",     aspect: "aspect-[3/4]" },
-  { src: "/gallery/9.png",  alt: "Nine2Five lifestyle shot",  tag: "Lifestyle",   aspect: "aspect-square" },
-  { src: "/gallery/10.png", alt: "Nine2Five performance",     tag: "Performance", aspect: "aspect-[4/3]" },
-  { src: "/gallery/11.png", alt: "Nine2Five gym training",    tag: "Training",    aspect: "aspect-[3/4]" },
-  { src: "/gallery/12.png", alt: "Nine2Five movement",        tag: "Sport",       aspect: "aspect-[4/3]" },
-  { src: "/gallery/13.png", alt: "Nine2Five culture",         tag: "Culture",     aspect: "aspect-[3/4]" },
-  { src: "/gallery/14.png", alt: "Nine2Five field session",   tag: "Sport",       aspect: "aspect-square" },
-  { src: "/gallery/15.png", alt: "Nine2Five gym socks",       tag: "Gym",         aspect: "aspect-[4/3]" },
-  { src: "/gallery/16.png", alt: "Nine2Five product display", tag: "Product",     aspect: "aspect-[3/4]" },
-  { src: "/gallery/17.png", alt: "Nine2Five outdoor action",  tag: "Lifestyle",   aspect: "aspect-[4/3]" },
-  { src: "/gallery/18.png", alt: "Nine2Five Māori design",    tag: "Culture",     aspect: "aspect-[3/4]" },
-  { src: "/gallery/19.png", alt: "Nine2Five athlete socks",   tag: "Performance", aspect: "aspect-square" },
-  { src: "/gallery/20.png", alt: "Nine2Five on grass",        tag: "Sport",       aspect: "aspect-[4/3]" },
-  { src: "/gallery/21.png", alt: "Nine2Five grip pattern",    tag: "Product",     aspect: "aspect-[3/4]" },
-  { src: "/gallery/22.png", alt: "Nine2Five workout",         tag: "Training",    aspect: "aspect-[4/3]" },
-  { src: "/gallery/23.png", alt: "Nine2Five lifestyle",       tag: "Lifestyle",   aspect: "aspect-[3/4]" },
-  { src: "/gallery/24.png", alt: "Nine2Five team shot",       tag: "Team",        aspect: "aspect-square" },
-  { src: "/gallery/25.png", alt: "Nine2Five active wear",     tag: "Performance", aspect: "aspect-[4/3]" },
-  { src: "/gallery/26.png", alt: "Nine2Five street style",    tag: "Lifestyle",   aspect: "aspect-[3/4]" },
-  { src: "/gallery/27.png", alt: "Nine2Five identity",        tag: "Culture",     aspect: "aspect-[4/3]" },
+  { src: "/gallery/1.webp",  alt: "Nine2Five socks lifestyle",    tag: "Lifestyle",   ratio: "3/4"  },
+  { src: "/gallery/2.webp",  alt: "Nine2Five socks in action",    tag: "Sport",       ratio: "4/3"  },
+  { src: "/gallery/3.webp",  alt: "Nine2Five grip socks",         tag: "Training",    ratio: "3/4"  },
+  { src: "/gallery/4.webp",  alt: "Nine2Five product shot",       tag: "Product",     ratio: "1/1"  },
+  { src: "/gallery/5.webp",  alt: "Nine2Five socks worn",         tag: "Lifestyle",   ratio: "4/3"  },
+  { src: "/gallery/6.webp",  alt: "Nine2Five on the field",       tag: "Sport",       ratio: "3/4"  },
+  { src: "/gallery/7.webp",  alt: "Nine2Five team socks",         tag: "Team",        ratio: "4/3"  },
+  { src: "/gallery/8.webp",  alt: "Nine2Five close up",           tag: "Product",     ratio: "3/4"  },
+  { src: "/gallery/9.webp",  alt: "Nine2Five lifestyle shot",     tag: "Lifestyle",   ratio: "1/1"  },
+  { src: "/gallery/10.webp", alt: "Nine2Five performance",        tag: "Performance", ratio: "4/3"  },
+  { src: "/gallery/11.webp", alt: "Nine2Five gym training",       tag: "Training",    ratio: "3/4"  },
+  { src: "/gallery/12.webp", alt: "Nine2Five movement",           tag: "Sport",       ratio: "4/3"  },
+  { src: "/gallery/13.webp", alt: "Nine2Five culture",            tag: "Culture",     ratio: "3/4"  },
+  { src: "/gallery/14.webp", alt: "Nine2Five field session",      tag: "Sport",       ratio: "1/1"  },
+  { src: "/gallery/15.webp", alt: "Nine2Five gym socks",          tag: "Gym",         ratio: "4/3"  },
+  { src: "/gallery/16.webp", alt: "Nine2Five product display",    tag: "Product",     ratio: "3/4"  },
+  { src: "/gallery/17.webp", alt: "Nine2Five outdoor action",     tag: "Lifestyle",   ratio: "4/3"  },
+  { src: "/gallery/18.webp", alt: "Nine2Five Māori design",       tag: "Culture",     ratio: "3/4"  },
+  { src: "/gallery/19.webp", alt: "Nine2Five athlete socks",      tag: "Performance", ratio: "1/1"  },
+  { src: "/gallery/20.webp", alt: "Nine2Five on grass",           tag: "Sport",       ratio: "4/3"  },
+  { src: "/gallery/21.webp", alt: "Nine2Five grip pattern",       tag: "Product",     ratio: "3/4"  },
+  { src: "/gallery/22.webp", alt: "Nine2Five workout",            tag: "Training",    ratio: "4/3"  },
+  { src: "/gallery/23.webp", alt: "Nine2Five lifestyle",          tag: "Lifestyle",   ratio: "3/4"  },
+  { src: "/gallery/24.webp", alt: "Nine2Five team shot",          tag: "Team",        ratio: "1/1"  },
+  { src: "/gallery/25.webp", alt: "Nine2Five active wear",        tag: "Performance", ratio: "4/3"  },
+  { src: "/gallery/26.webp", alt: "Nine2Five street style",       tag: "Lifestyle",   ratio: "3/4"  },
+  { src: "/gallery/27.webp", alt: "Nine2Five identity",           tag: "Culture",     ratio: "4/3"  },
 ];
 
 export default function GalleryPage() {
   return (
-    <div className="bg-[#112016] min-h-screen">
+    <div style={{ backgroundColor: "#06150C", minHeight: "100vh" }}>
 
-      {/* Hero header */}
-      <div className="relative overflow-hidden" style={{ height: "55vh", minHeight: "400px" }}>
-        <Image
-          src="/gallery/1.png"
-          alt="Nine2Five athlete"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
-        <div
-          className="absolute inset-0"
-          style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(58,119,34,0.10) 0%, transparent 60%)" }}
-        />
-        <div className="absolute bottom-0 left-0 right-0 px-10 md:px-20 pb-12">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#3a7722] mb-3">Nine2Five</p>
-          <h1 className="font-display font-black text-white leading-none"
-            style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}>
+      {/* ── Hero ── */}
+      <div
+        style={{
+          position: "relative",
+          backgroundColor: "#07180e",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          overflow: "hidden",
+        }}
+      >
+        {/* Texture overlay */}
+        <div style={{
+          position: "absolute", inset: 0,
+          backgroundImage: "url('/bg-overlay.webp')",
+          backgroundSize: "540px auto",
+          backgroundRepeat: "repeat",
+          opacity: 0.05,
+          pointerEvents: "none",
+        }} />
+        {/* Radial green glow */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse at 20% 100%, rgba(46,139,40,0.12) 0%, transparent 60%)",
+          pointerEvents: "none",
+        }} />
+
+        <div style={{
+          maxWidth: 1280,
+          margin: "0 auto",
+          padding: "clamp(70px,10vw,120px) clamp(20px,4vw,48px) clamp(44px,6vw,70px)",
+          position: "relative",
+          zIndex: 1,
+        }}>
+          <p style={{
+            fontSize: 10, letterSpacing: "0.4em", color: "#2E8B28",
+            fontWeight: 700, textTransform: "uppercase", marginBottom: 16,
+          }}>
+            Nine2Five
+          </p>
+          <h1
+            className="font-display font-black text-white"
+            style={{ fontSize: "clamp(3rem, 8vw, 7rem)", lineHeight: 0.92, letterSpacing: "-0.02em", marginBottom: 20 }}
+          >
             THE GALLERY
           </h1>
-          <p className="text-white/40 text-base mt-3 max-w-sm">
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 16, maxWidth: 420, lineHeight: 1.6 }}>
             Worn on fields, in gyms, on tracks. Built for movement. Made with pride.
           </p>
         </div>
       </div>
 
-      {/* Masonry grid */}
-      <div className="px-6 md:px-16 py-16 max-w-screen-xl mx-auto">
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-          {GALLERY.map((item, i) => (
-            <div
-              key={i}
-              className="group relative break-inside-avoid mb-4 rounded-xl overflow-hidden bg-[#192d1e]"
-            >
-              <div className={`relative w-full ${item.aspect}`}>
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-[#112016]/50 backdrop-blur-sm border border-white/[0.15] text-white/80 text-[10px] font-black uppercase tracking-widest">
-                  {item.tag}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* ── Gallery grid (client) ── */}
+      <div style={{ paddingTop: 48 }}>
+        <GalleryGrid items={GALLERY} />
       </div>
 
-      {/* Bottom CTA */}
-      <div className="border-t border-white/[0.06] py-24 text-center px-10">
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#3a7722] mb-5">
+      {/* ── Bottom CTA ── */}
+      <div style={{
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        padding: "6rem 1.5rem",
+        textAlign: "center",
+      }}>
+        <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4em", color: "#2E8B28", marginBottom: 20 }}>
           Ready to Represent
         </p>
-        <h2 className="font-display font-black text-white leading-none mb-8"
-          style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>
+        <h2
+          className="font-display font-black text-white"
+          style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 0.92, letterSpacing: "-0.01em", marginBottom: 36 }}
+        >
           WEAR YOUR IDENTITY
         </h2>
         <Link
           href="/shop"
-          className="inline-flex items-center gap-2 bg-[#3a7722] text-white font-bold text-sm uppercase tracking-widest px-10 py-4 rounded-full hover:bg-[#4d9e2e] transition-all duration-300"
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            background: "#2E8B28", color: "#fff",
+            fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em",
+            padding: "14px 36px", borderRadius: 999, textDecoration: "none",
+            transition: "background 0.2s",
+          }}
+          className="hover:bg-[#36A832]"
         >
           Shop Collection
         </Link>

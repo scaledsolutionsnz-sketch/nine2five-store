@@ -190,6 +190,12 @@ export async function POST(req: NextRequest) {
             orderNumber: order.order_number,
             shippingAddress,
             totalPairs,
+            items: items.map((i) => ({
+              sku: i.variantId,
+              description: `${i.productName} – ${i.size}`,
+              quantity: i.quantity,
+              unit_price: i.price,
+            })),
           });
           // Order created in eShip — tracking number assigned when label is printed in eShip dashboard
           void eship;
@@ -205,6 +211,7 @@ export async function POST(req: NextRequest) {
           from: FROM_EMAIL,
           replyTo: REPLY_TO,
           to: meta.email,
+          bcc: "nine2five.co.nz@gmail.com",
           subject: `Order #${order.order_number} confirmed — Nine2Five`,
           html: orderConfirmationHtml({
             order_number: order.order_number,

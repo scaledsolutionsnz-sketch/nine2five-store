@@ -1,4 +1,4 @@
-const BASE = "https://nine2five.co.nz";
+const BASE = "https://nine2five.nz";
 
 export function makeTrackingToken(campaignId: string, email: string): string {
   return Buffer.from(`${campaignId}:${email}`).toString("base64url");

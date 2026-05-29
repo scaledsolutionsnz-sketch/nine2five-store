@@ -11,5 +11,9 @@ export default async function DiscountsPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  return <DiscountsClient codes={(data ?? []) as DiscountCode[]} />;
+  return (
+    <div style={{ minHeight: "100vh", background: "#06150C", color: "#f8f8f2", padding: "32px 28px" }}>
+      <DiscountsClient codes={(data ?? []) as DiscountCode[]} />
+    </div>
+  );
 }

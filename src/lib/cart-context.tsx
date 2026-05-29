@@ -6,11 +6,19 @@ import type { CartItem } from "@/types/database";
 interface CartContextValue {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (productId: string, size: string) => void;
-  updateQuantity: (productId: string, size: string, quantity: number) => void;
+  removeItem: (variantId: string, productName: string) => void;
+  updateQuantity: (variantId: string, productName: string, quantity: number) => void;
   clearCart: () => void;
   total: number;
   count: number;
+  bundleDiscount: number;
+}
+
+function calcBundleDiscount(pairs: number): number {
+  if (pairs >= 5) return 3000;
+  if (pairs >= 3) return 1000;
+  if (pairs >= 2) return 500;
+  return 0;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -32,11 +40,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addItem = useCallback((newItem: CartItem) => {
     setItems((prev) => {
       const existing = prev.find(
-        (i) => i.productId === newItem.productId && i.size === newItem.size
+        (i) => i.variantId === newItem.variantId && i.productName === newItem.productName
       );
       if (existing) {
         return prev.map((i) =>
-          i.productId === newItem.productId && i.size === newItem.size
+          i.variantId === newItem.variantId && i.productName === newItem.productName
             ? { ...i, quantity: i.quantity + newItem.quantity }
             : i
         );
@@ -45,18 +53,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const removeItem = useCallback((productId: string, size: string) => {
-    setItems((prev) => prev.filter((i) => !(i.productId === productId && i.size === size)));
+  const removeItem = useCallback((variantId: string, productName: string) => {
+    setItems((prev) => prev.filter((i) => !(i.variantId === variantId && i.productName === productName)));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, size: string, quantity: number) => {
+  const updateQuantity = useCallback((variantId: string, productName: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(productId, size);
+      removeItem(variantId, productName);
       return;
     }
     setItems((prev) =>
       prev.map((i) =>
-        i.productId === productId && i.size === size ? { ...i, quantity } : i
+        i.variantId === variantId && i.productName === productName ? { ...i, quantity } : i
       )
     );
   }, [removeItem]);
@@ -65,9 +73,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const count = items.reduce((sum, i) => sum + i.quantity, 0);
+  const bundleDiscount = calcBundleDiscount(count);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, count }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, count, bundleDiscount }}>
       {children}
     </CartContext.Provider>
   );

@@ -1,9 +1,24 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Outfit, Inter } from "next/font/google";
 import { CartProvider } from "@/lib/cart-context";
 import { Toaster } from "sonner";
 
-const BASE_URL = "https://nine2five.co.nz";
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const BASE_URL = "https://nine2five.nz";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -11,7 +26,7 @@ export const metadata: Metadata = {
     default: "Nine2Five — Māori Grip Socks",
     template: "%s | Nine2Five",
   },
-  description: "Premium Māori inspired grip socks built for rugby, sport, and training. New Zealand made. Free NZ shipping on orders over $75.",
+  description: "Premium Māori inspired grip socks built for rugby, sport, and training. New Zealand made.",
   keywords: ["grip socks", "Māori", "rugby socks", "New Zealand", "sport socks", "grip socks NZ", "nine2five"],
   authors: [{ name: "Nine2Five" }],
   creator: "Nine2Five",
@@ -46,7 +61,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
       <body>
         <CartProvider>
           {children}

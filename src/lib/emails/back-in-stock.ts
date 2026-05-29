@@ -33,7 +33,7 @@ export function backInStockHtml(productName: string, productUrl: string, size: s
             <td style="text-align:center;padding-top:24px;">
               <p style="margin:0;font-size:12px;color:#525252;">Nine2Five Limited · Masterton, New Zealand</p>
               <p style="margin:6px 0 0;font-size:11px;color:#3a3a3a;">
-                You signed up for stock alerts at nine2five.co.nz. ·
+                You signed up for stock alerts at nine2five.nz. ·
                 <a href="${unsub}" style="color:#3a3a3a;text-decoration:underline;">Unsubscribe</a>
               </p>
             </td>

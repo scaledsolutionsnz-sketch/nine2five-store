@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   <div class="logo">NINE2FIVE</div>
   <p class="title">You've been unsubscribed</p>
   <p class="sub">You won't receive marketing emails from Nine2Five anymore. You'll still get order and shipping notifications.</p>
-  <a class="btn" href="https://nine2five.co.nz/shop">Back to Shop</a>
+  <a class="btn" href="https://nine2five.nz/shop">Back to Shop</a>
 </div>
 </body>
 </html>`,

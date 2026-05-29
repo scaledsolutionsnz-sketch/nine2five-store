@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import type { DiscountCode } from "@/types/database";
 import { Plus, X, Copy, Tag, Hash, BarChart2, MoreHorizontal, Check, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -41,36 +40,36 @@ function ActionMenu({ code, onToggle, onDelete }: {
   }, []);
 
   return (
-    <div className="relative" ref={ref}>
+    <div style={{ position: "relative" }} ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="h-7 w-7 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all"
+        style={{ height: 28, width: 28, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280" }}
       >
         <MoreHorizontal style={{ width: 15, height: 15 }} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-8 w-44 bg-white border border-[#E2E8F0] rounded-xl shadow-lg z-50 py-1 overflow-hidden" style={{ boxShadow: "0 8px 24px rgba(15,23,42,0.12)" }}>
+        <div style={{ position: "absolute", right: 0, top: 34, width: 176, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, boxShadow: "0 8px 24px rgba(15,23,42,0.12)", zIndex: 50, padding: "4px 0", overflow: "hidden" }}>
           <button
             onClick={() => { navigator.clipboard.writeText(code.code); toast.success("Copied"); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-[#334155] hover:bg-[#F3F5F8] transition-colors text-left"
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", fontSize: 13, color: "#334155", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
           >
             <Copy style={{ width: 13, height: 13 }} />
             Copy code
           </button>
           <button
             onClick={() => { onToggle(); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-[#334155] hover:bg-[#F3F5F8] transition-colors text-left"
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", fontSize: 13, color: "#334155", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
           >
             {code.active
               ? <><X style={{ width: 13, height: 13 }} /> Deactivate</>
-              : <><Check style={{ width: 13, height: 13, color: "#166B3B" }} /> Activate</>
+              : <><Check style={{ width: 13, height: 13, color: "#166534" }} /> Activate</>
             }
           </button>
-          <div className="h-px bg-[#E2E8F0] my-1" />
+          <div style={{ height: 1, background: "#e5e7eb", margin: "4px 0" }} />
           <button
             onClick={() => { onDelete(); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-[#991B1B] hover:bg-[#FEE2E2] transition-colors text-left"
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", fontSize: 13, color: "#b91c1c", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
           >
             <Trash2 style={{ width: 13, height: 13 }} />
             Delete
@@ -114,18 +113,27 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
     }
   }
 
+  const statCards = [
+    { label: "Active Codes",  value: activeCodes.toString(),  sub: `${totalCodes} total`,                   icon: Tag,       iconColor: "#166534", iconBg: "#dcfce7" },
+    { label: "Total Uses",    value: totalUses.toString(),    sub: "across all codes",                       icon: BarChart2, iconColor: "#1e40af", iconBg: "#dbeafe" },
+    { label: "Total Codes",   value: totalCodes.toString(),   sub: `${codes.length - activeCodes} inactive`, icon: Hash,     iconColor: "#7c3aed", iconBg: "#ede9fe" },
+  ];
+
   return (
-    <div className="space-y-6">
+    <div>
+      <style>{`
+        @media (max-width: 768px) { .discount-stats { grid-template-columns: 1fr !important; } }
+      `}</style>
 
       {/* ── Page header ── */}
-      <div className="flex items-start justify-between">
+      <div style={{ marginBottom: 28, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
         <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Discount Codes</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Create and manage promotional codes for your store.</p>
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>Discount Codes</h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>Create and manage promotional codes for your store.</p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 h-10 px-5 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all"
+          style={{ height: 42, padding: "0 20px", borderRadius: 999, background: "#2f9b2f", color: "#fff", fontWeight: 900, fontSize: 13, border: "none", cursor: "pointer", letterSpacing: "0.08em", display: "inline-flex", alignItems: "center", gap: 8, flexShrink: 0 }}
         >
           <Plus style={{ width: 15, height: 15 }} strokeWidth={2.5} />
           New Code
@@ -133,163 +141,132 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-3 gap-5">
-        {[
-          { label: "Active Codes",  value: activeCodes.toString(),  sub: `${totalCodes} total`,                        icon: Tag,      iconColor: "#166B3B",  iconBg: "bg-[#D5F1E2]" },
-          { label: "Total Uses",    value: totalUses.toString(),    sub: "across all codes",                            icon: BarChart2, iconColor: "#1E40AF",  iconBg: "bg-[#DBEAFE]" },
-          { label: "Total Codes",   value: totalCodes.toString(),   sub: `${codes.length - activeCodes} inactive`,      icon: Hash,     iconColor: "#7C3AED",  iconBg: "bg-[#EDE9FE]" },
-        ].map(({ label, value, sub, icon: Icon, iconColor, iconBg }) => (
+      <div className="discount-stats" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 18, marginBottom: 24 }}>
+        {statCards.map(({ label, value, sub, icon: Icon, iconColor, iconBg }) => (
           <div
             key={label}
-            className="p-5 rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0]"
-            style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}
+            style={{ background: "#f7f8f4", color: "#111827", borderRadius: 18, padding: "20px 22px", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
           >
-            <div className="flex items-start justify-between mb-4">
-              <p className="text-[11px] uppercase tracking-widest text-[#8A94A6] leading-none">
-                {label}
-              </p>
-              <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center shrink-0", iconBg)}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
+              <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#64748b" }}>{label}</p>
+              <div style={{ height: 32, width: 32, borderRadius: 10, background: iconBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Icon style={{ width: 15, height: 15, color: iconColor }} strokeWidth={1.8} />
               </div>
             </div>
-            <p className="text-[24px] font-bold font-mono text-[#1F2937] tracking-tight leading-none mb-1.5">
-              {value}
-            </p>
-            <p className="text-[12px] text-[#6B7280] font-medium">{sub}</p>
+            <p style={{ fontSize: 30, fontWeight: 900, color: "#111827", marginTop: 4 }}>{value}</p>
+            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>{sub}</p>
           </div>
         ))}
       </div>
 
       {/* ── Table ── */}
-      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="px-6 py-4 border-b border-[#E2E8F0]">
-          <h3 className="text-[14px] font-semibold text-[#1F2937] leading-none">All Codes</h3>
-          <p className="text-[12px] text-[#6B7280] mt-1">{totalCodes} discount codes</p>
+      <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
+        <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(0,0,0,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <p style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>All Codes</p>
+          <span style={{ fontSize: 13, color: "#6b7280" }}>{totalCodes} discount codes</span>
         </div>
 
         {codes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-[#F3F5F8] border border-[#E2E8F0] flex items-center justify-center mb-4">
-              <Tag style={{ width: 22, height: 22, color: "#C4CAD4" }} strokeWidth={1.5} />
+          <div style={{ textAlign: "center", padding: "64px 24px" }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: "#f3f4f6", border: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+              <Tag style={{ width: 22, height: 22, color: "#c4cad4" }} strokeWidth={1.5} />
             </div>
-            <p className="text-[14px] font-medium text-[#6B7280]">No discount codes yet</p>
-            <p className="text-[13px] text-[#8A94A6] mt-1">Create your first code to get started</p>
+            <p style={{ fontSize: 14, fontWeight: 600, color: "#6b7280" }}>No discount codes yet</p>
+            <p style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Create your first code to get started</p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
-                {[
-                  { label: "Code",      cls: "pl-6 pr-4 h-[52px] text-left" },
-                  { label: "Type",      cls: "px-[18px] h-[52px] text-left hidden sm:table-cell" },
-                  { label: "Value",     cls: "px-[18px] h-[52px] text-left" },
-                  { label: "Min Order", cls: "px-[18px] h-[52px] text-left hidden md:table-cell" },
-                  { label: "Uses",      cls: "px-[18px] h-[52px] text-left hidden md:table-cell" },
-                  { label: "Expires",   cls: "px-[18px] h-[52px] text-left hidden lg:table-cell" },
-                  { label: "Status",    cls: "px-[18px] h-[52px] text-left" },
-                  { label: "",          cls: "pl-4 pr-6 h-[52px] text-right w-10" },
-                ].map((h, i) => (
-                  <th key={i} className={cn(h.cls, "text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap")}>
-                    {h.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {codes.map((c, i) => {
-                const active  = isActive(c);
-                const status  = statusLabel(c);
-                return (
-                  <tr
-                    key={c.id}
-                    className="hover:bg-[#F6FAFF] transition-colors"
-                    style={{ borderBottom: i < codes.length - 1 ? "1px solid #E5EAF1" : "none" }}
-                  >
-                    {/* Code */}
-                    <td className="pl-6 pr-4 px-[18px] py-[14px]">
-                      <div className="flex items-center gap-2">
-                        <code className="font-mono font-bold text-[13px] text-[#1F2937] tracking-wide">
-                          {c.code}
-                        </code>
-                        <button
-                          onClick={() => { navigator.clipboard.writeText(c.code); toast.success("Copied"); }}
-                          className="text-[#C4CAD4] hover:text-[#6B7280] transition-colors"
-                        >
-                          <Copy style={{ width: 12, height: 12 }} />
-                        </button>
-                      </div>
-                    </td>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+              <thead style={{ background: "#eaf2fb" }}>
+                <tr>
+                  {["Code", "Type", "Value", "Min Order", "Uses", "Expires", "Status", ""].map((h, i) => (
+                    <th key={i} style={{ textAlign: i === 7 ? "right" : "left", padding: "12px 16px", fontWeight: 800, color: "#334155", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {codes.map((c) => {
+                  const active  = isActive(c);
+                  const status  = statusLabel(c);
+                  return (
+                    <tr key={c.id} style={{ borderTop: "1px solid #e5e7eb" }}>
+                      {/* Code */}
+                      <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <code style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, color: "#111827", letterSpacing: "0.05em" }}>
+                            {c.code}
+                          </code>
+                          <button
+                            onClick={() => { navigator.clipboard.writeText(c.code); toast.success("Copied"); }}
+                            style={{ background: "none", border: "none", cursor: "pointer", color: "#c4cad4", padding: 0 }}
+                          >
+                            <Copy style={{ width: 12, height: 12 }} />
+                          </button>
+                        </div>
+                      </td>
 
-                    {/* Type */}
-                    <td className="px-[18px] py-[14px] hidden sm:table-cell">
-                      <span className="text-[13px] text-[#6B7280] capitalize">
+                      {/* Type */}
+                      <td style={{ padding: "13px 16px", color: "#6b7280", verticalAlign: "middle", textTransform: "capitalize" }}>
                         {c.type === "fixed" && c.value === 0 ? "Free shipping" : c.type}
-                      </span>
-                    </td>
+                      </td>
 
-                    {/* Value */}
-                    <td className="px-[18px] py-[14px]">
-                      <span className="text-[13px] font-semibold text-[#1F2937] font-mono">
-                        {c.type === "fixed" && c.value === 0
-                          ? <span className="text-[#116DFF]">Free shipping</span>
-                          : c.type === "percentage"
-                            ? `${c.value}%`
-                            : `$${(c.value / 100).toFixed(2)}`}
-                      </span>
-                    </td>
+                      {/* Value */}
+                      <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                        <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 13, color: c.type === "fixed" && c.value === 0 ? "#2f9b2f" : "#111827" }}>
+                          {c.type === "fixed" && c.value === 0
+                            ? "Free shipping"
+                            : c.type === "percentage"
+                              ? `${c.value}%`
+                              : `$${(c.value / 100).toFixed(2)}`}
+                        </span>
+                      </td>
 
-                    {/* Min order */}
-                    <td className="px-[18px] py-[14px] hidden md:table-cell">
-                      <span className="text-[13px] text-[#6B7280] font-mono">
+                      {/* Min order */}
+                      <td style={{ padding: "13px 16px", color: "#6b7280", verticalAlign: "middle", fontFamily: "monospace" }}>
                         {c.min_order_cents ? `$${(c.min_order_cents / 100).toFixed(0)}` : "—"}
-                      </span>
-                    </td>
+                      </td>
 
-                    {/* Uses */}
-                    <td className="px-[18px] py-[14px] hidden md:table-cell">
-                      <span className="text-[13px] text-[#334155] font-medium font-mono">
-                        {c.uses}
-                        {c.max_uses ? <span className="text-[#8A94A6] font-normal"> / {c.max_uses}</span> : ""}
-                      </span>
-                    </td>
+                      {/* Uses */}
+                      <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                        <span style={{ fontFamily: "monospace", fontWeight: 600, fontSize: 13, color: "#334155" }}>
+                          {c.uses}
+                          {c.max_uses ? <span style={{ color: "#9ca3af", fontWeight: 400 }}> / {c.max_uses}</span> : ""}
+                        </span>
+                      </td>
 
-                    {/* Expires */}
-                    <td className="px-[18px] py-[14px] hidden lg:table-cell">
-                      <span className="text-[13px] text-[#6B7280]">
+                      {/* Expires */}
+                      <td style={{ padding: "13px 16px", color: "#6b7280", verticalAlign: "middle" }}>
                         {c.expires_at
                           ? new Date(c.expires_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })
-                          : <span className="text-[#8A94A6]">Never</span>}
-                      </span>
-                    </td>
+                          : <span style={{ color: "#9ca3af" }}>Never</span>}
+                      </td>
 
-                    {/* Status */}
-                    <td className="px-[18px] py-[14px]">
-                      <span className={cn(
-                        "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium",
-                        active
-                          ? "bg-[#D5F1E2] text-[#166B3B]"
-                          : status === "Expired"
-                            ? "bg-[#FFF4CC] text-[#9A5B00]"
-                            : "bg-[#F3F4F6] text-[#6B7280]"
-                      )}>
-                        {active && <span className="w-1.5 h-1.5 rounded-full bg-[#166B3B] mr-1.5" />}
-                        {status}
-                      </span>
-                    </td>
+                      {/* Status */}
+                      <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", padding: "3px 10px", borderRadius: 999, fontSize: 12, fontWeight: 800,
+                          background: active ? "#dcfce7" : status === "Expired" ? "#fef3c7" : "#f3f4f6",
+                          color: active ? "#166534" : status === "Expired" ? "#92400e" : "#6b7280",
+                        }}>
+                          {active && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#166534", marginRight: 6, display: "inline-block" }} />}
+                          {status}
+                        </span>
+                      </td>
 
-                    {/* Actions */}
-                    <td className="pl-4 pr-6 py-[14px] text-right">
-                      <ActionMenu
-                        code={c}
-                        onToggle={() => toggleActive(c.id, c.active)}
-                        onDelete={() => deleteCode(c.id)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      {/* Actions */}
+                      <td style={{ padding: "13px 16px", verticalAlign: "middle", textAlign: "right" }}>
+                        <ActionMenu
+                          code={c}
+                          onToggle={() => toggleActive(c.id, c.active)}
+                          onDelete={() => deleteCode(c.id)}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -313,7 +290,11 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const field = "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-all";
+  const fieldStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 14px", borderRadius: 10,
+    background: "#fff", border: "1px solid #d8dee8", fontSize: 13, color: "#334155",
+    outline: "none", boxSizing: "border-box",
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -343,34 +324,38 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-md overflow-hidden" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", padding: 16 }}>
+      <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 20, width: "100%", maxWidth: 440, overflow: "hidden", boxShadow: "0 24px 48px rgba(15,23,42,0.18)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 22px", borderBottom: "1px solid #e5e7eb" }}>
           <div>
-            <h2 className="text-[14px] font-semibold text-[#1F2937] leading-none">New Discount Code</h2>
-            <p className="text-[12px] text-[#6B7280] mt-1">Create a promo code for your store</p>
+            <h2 style={{ fontSize: 15, fontWeight: 800, color: "#111827", margin: 0 }}>New Discount Code</h2>
+            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>Create a promo code for your store</p>
           </div>
-          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
+          <button onClick={onClose} style={{ height: 32, width: 32, borderRadius: 10, border: "none", background: "#f3f4f6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280" }}>
             <X style={{ width: 16, height: 16 }} />
           </button>
         </div>
 
-        <form onSubmit={submit} className="p-6 space-y-4">
+        <form onSubmit={submit} style={{ padding: 22, display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Code</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Code</label>
             <input
               required
               value={form.code}
               onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase().replace(/\s/g, "") }))}
               placeholder="SUMMER20"
-              className={cn(field, "font-mono tracking-widest")}
+              style={{ ...fieldStyle, fontFamily: "monospace", letterSpacing: "0.1em", fontWeight: 800 }}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
-              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Type</label>
-              <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" | "free_shipping" }))} className={field}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Type</label>
+              <select
+                value={form.type}
+                onChange={e => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" | "free_shipping" }))}
+                style={{ ...fieldStyle }}
+              >
                 <option value="percentage">Percentage off</option>
                 <option value="fixed">Fixed amount off</option>
                 <option value="free_shipping">Free shipping</option>
@@ -378,7 +363,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             </div>
             {form.type !== "free_shipping" && (
               <div>
-                <label className="block text-[12px] font-medium text-[#374151] mb-1.5">
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 6 }}>
                   {form.type === "percentage" ? "Discount %" : "Amount ($)"}
                 </label>
                 <input
@@ -388,47 +373,47 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
                   value={form.value}
                   onChange={e => setForm(f => ({ ...f, value: e.target.value }))}
                   placeholder={form.type === "percentage" ? "20" : "10.00"}
-                  className={field}
+                  style={fieldStyle}
                 />
               </div>
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
-              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Min Order ($)</label>
-              <input type="number" value={form.min_order} onChange={e => setForm(f => ({ ...f, min_order: e.target.value }))} placeholder="0" className={field} />
+              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Min Order ($)</label>
+              <input type="number" value={form.min_order} onChange={e => setForm(f => ({ ...f, min_order: e.target.value }))} placeholder="0" style={fieldStyle} />
             </div>
             <div>
-              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Max Uses</label>
-              <input type="number" value={form.max_uses} onChange={e => setForm(f => ({ ...f, max_uses: e.target.value }))} placeholder="Unlimited" className={field} />
+              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Max Uses</label>
+              <input type="number" value={form.max_uses} onChange={e => setForm(f => ({ ...f, max_uses: e.target.value }))} placeholder="Unlimited" style={fieldStyle} />
             </div>
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Expiry date (optional)</label>
-            <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))} className={field} />
+            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Expiry date (optional)</label>
+            <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))} style={fieldStyle} />
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 bg-[#FEE2E2] border border-[#FCA5A5] rounded-xl px-4 py-3">
-              <X style={{ width: 14, height: 14, color: "#991B1B", marginTop: 1, flexShrink: 0 }} />
-              <p className="text-[12px] text-[#991B1B]">{error}</p>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 12, padding: "12px 16px" }}>
+              <X style={{ width: 14, height: 14, color: "#b91c1c", marginTop: 1, flexShrink: 0 }} />
+              <p style={{ fontSize: 12, color: "#b91c1c" }}>{error}</p>
             </div>
           )}
 
-          <div className="flex gap-3 pt-2">
+          <div style={{ display: "flex", gap: 12, paddingTop: 4 }}>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-all"
+              style={{ flex: 1, height: 40, padding: "0 16px", borderRadius: 999, background: "#fff", border: "1px solid #d8dee8", color: "#374151", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 h-10 px-5 rounded-full text-[13px] font-semibold text-white bg-[#116DFF] hover:bg-[#0D5FE0] transition-all disabled:opacity-50"
+              style={{ flex: 1, height: 42, padding: "0 20px", borderRadius: 999, background: "#2f9b2f", color: "#fff", fontWeight: 900, fontSize: 13, border: "none", cursor: "pointer", letterSpacing: "0.08em", opacity: loading ? 0.6 : 1 }}
             >
               {loading ? "Creating…" : "Create code"}
             </button>

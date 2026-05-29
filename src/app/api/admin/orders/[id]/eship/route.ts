@@ -22,14 +22,20 @@ export async function POST(
   if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
 
   const addr = order.shipping_address as ShippingAddress;
-  const totalPairs = (order.order_items as Array<{ quantity: number }>)
-    .reduce((s, i) => s + i.quantity, 0);
+  const orderItems = order.order_items as Array<{ quantity: number; variant_id: string; product_name: string; size: string; unit_price: number }>;
+  const totalPairs = orderItems.reduce((s, i) => s + i.quantity, 0);
 
   try {
     const result = await createEShipShipment({
       orderNumber: order.order_number,
       shippingAddress: addr,
       totalPairs,
+      items: orderItems.map((i) => ({
+        sku: i.variant_id,
+        description: `${i.product_name} – ${i.size}`,
+        quantity: i.quantity,
+        unit_price: i.unit_price,
+      })),
     });
 
     return NextResponse.json(result);

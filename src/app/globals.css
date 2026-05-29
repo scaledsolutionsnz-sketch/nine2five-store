@@ -1,30 +1,29 @@
 @import "tailwindcss";
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap");
-
 :root {
-  --background: #112016;
-  --surface: #192d1e;
-  --surface-2: #1f3826;
-  --border: rgba(255,255,255,0.1);
-  --foreground: #f0fdf4;
-  --muted: rgba(240,253,244,0.5);
-  --accent: #3a7722;
-  --accent-hover: #4d9e2e;
-  --accent-light: rgba(58,119,34,0.12);
+  --background: #06150C;
+  --surface: #0e2314;
+  --surface-2: #132b19;
+  --border: rgba(255,255,255,0.08);
+  --foreground: #F7F7F2;
+  --muted: rgba(247,247,242,0.5);
+  --accent: #2E8B28;
+  --accent-hover: #36A832;
+  --accent-light: rgba(46,139,40,0.12);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: "Outfit", sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-outfit), sans-serif; }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--background); }
@@ -33,7 +32,7 @@ h1, h2, h3, h4, h5, h6 { font-family: "Outfit", sans-serif; }
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  background: var(--accent); color: #ffffff; font-family: "Outfit", sans-serif;
+  background: var(--accent); color: #ffffff; font-family: var(--font-outfit), sans-serif;
   font-weight: 700; font-size: 0.875rem; padding: 0.75rem 1.5rem;
   border-radius: 999px; border: none; cursor: pointer;
   transition: background 0.15s, transform 0.1s; text-decoration: none;
@@ -43,7 +42,7 @@ h1, h2, h3, h4, h5, h6 { font-family: "Outfit", sans-serif; }
 
 .btn-outline {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  background: rgba(255,255,255,0.06); color: var(--foreground); font-family: "Outfit", sans-serif;
+  background: rgba(255,255,255,0.06); color: var(--foreground); font-family: var(--font-outfit), sans-serif;
   font-weight: 600; font-size: 0.875rem; padding: 0.75rem 1.5rem;
   border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
   transition: border-color 0.15s, background 0.15s; text-decoration: none;
@@ -53,3 +52,28 @@ h1, h2, h3, h4, h5, h6 { font-family: "Outfit", sans-serif; }
 
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Global texture overlay — sits above every section, doesn't block interactions */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('/bg-overlay.webp') repeat center / 540px auto;
+  opacity: 0.05;
+  filter: none;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-start-playback-button,
+video::-internal-media-controls-button-panel,
+video::-internal-media-controls-loading-panel {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

@@ -180,6 +180,7 @@ export async function POST(req: NextRequest) {
         from: FROM_EMAIL,
         replyTo: REPLY_TO,
         to: customer.email,
+        bcc: "nine2five.co.nz@gmail.com",
         subject: `Your Nine2Five receipt — Order #${order.order_number}`,
         html: orderConfirmationHtml({
           order_number: order.order_number,

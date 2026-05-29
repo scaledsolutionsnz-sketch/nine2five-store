@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { abandonedCartHtml, abandonedCartText } from "@/lib/emails/abandoned-cart";
 import type { CartItem } from "@/types/database";
 
-const FROM = "Nine2Five <orders@nine2five.co.nz>";
+const FROM = "Nine2Five <orders@nine2five.nz>";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
 
     if (!items.length) continue;
 
-    const recoveryUrl = `https://nine2five.co.nz/cart`;
+    const recoveryUrl = `https://nine2five.nz/cart`;
 
     try {
       await resend.emails.send({

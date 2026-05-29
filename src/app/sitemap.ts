@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .select("slug, created_at")
     .eq("active", true);
 
-  const base = "https://nine2five.co.nz";
+  const base = "https://nine2five.nz";
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },

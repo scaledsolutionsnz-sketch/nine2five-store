@@ -4,17 +4,10 @@ import { useState } from "react";
 import { ShoppingBag, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart-context";
-import { cn } from "@/lib/utils";
 import type { Product, ProductVariant } from "@/types/database";
 import { BackInStockForm } from "./back-in-stock-form";
 
-export function AddToCart({
-  product,
-  variants,
-}: {
-  product: Product;
-  variants: ProductVariant[];
-}) {
+export function AddToCart({ product, variants }: { product: Product; variants: ProductVariant[] }) {
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -26,16 +19,11 @@ export function AddToCart({
   }
 
   const selectedVariant = selectedSize ? getVariant(selectedSize) : null;
-  const selectedOutOfStock = selectedVariant
-    ? selectedVariant.stock_quantity < 1
-    : false;
+  const selectedOutOfStock = selectedVariant ? selectedVariant.stock_quantity < 1 : false;
 
   function handleAdd() {
     if (!selectedSize) { toast.error("Please select a size"); return; }
-    if (!selectedVariant || selectedVariant.stock_quantity < 1) {
-      toast.error("This size is out of stock");
-      return;
-    }
+    if (!selectedVariant || selectedVariant.stock_quantity < 1) { toast.error("This size is out of stock"); return; }
     addItem({
       productId: product.id,
       variantId: selectedVariant.id,
@@ -50,33 +38,42 @@ export function AddToCart({
   }
 
   return (
-    <div className="space-y-5">
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .qty-stepper { width: 100% !important; }
+          .qty-stepper .qty-btn { flex: 1; }
+          .qty-stepper .qty-num { flex: 1; }
+        }
+      `}</style>
+
       {/* Size selector */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#737373] mb-3">
+        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", marginBottom: 12 }}>
           Select Size
         </p>
-        <div className="flex gap-3">
+        <div style={{ display: "flex", gap: 10 }}>
           {sizes.map((size) => {
             const variant = getVariant(size);
             const outOfStock = !variant || variant.stock_quantity < 1;
+            const selected = selectedSize === size;
             return (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
-                className={cn(
-                  "relative flex-1 h-12 rounded-lg border text-sm font-semibold font-display transition-all",
-                  outOfStock && "opacity-40",
-                  selectedSize === size
-                    ? outOfStock
-                      ? "border-red-500/30 bg-red-500/5 text-red-400"
-                      : "border-[#2d6b1a] bg-[#2d6b1a]/10 text-[#2d6b1a]"
-                    : "border-[#262626] text-[#a3a3a3] hover:border-[#404040] hover:text-white"
-                )}
+                style={{
+                  flex: 1, height: 48, borderRadius: 10,
+                  border: `1px solid ${selected ? "#2E8B28" : outOfStock ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.16)"}`,
+                  background: selected ? "rgba(46,139,40,0.12)" : "transparent",
+                  color: outOfStock ? "rgba(255,255,255,0.22)" : selected ? "#2E8B28" : "#F7F7F2",
+                  fontSize: 14, fontWeight: 700,
+                  cursor: outOfStock ? "not-allowed" : "pointer",
+                  position: "relative", transition: "all 0.15s",
+                }}
               >
                 {size}
                 {outOfStock && (
-                  <span className="absolute -top-2 right-1 text-[9px] font-bold uppercase tracking-wider text-[#525252]">
+                  <span style={{ position: "absolute", top: -8, right: 4, fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
                     Out
                   </span>
                 )}
@@ -84,48 +81,74 @@ export function AddToCart({
             );
           })}
         </div>
-        <p className="text-xs text-[#525252] mt-2">Shoe sizes NZ/AU</p>
+        <div style={{ marginTop: 10 }}>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Shoe sizes US</p>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", lineHeight: 1.5 }}>
+            Size 6–9 fits US 6 – 10.5 &nbsp;·&nbsp; Size 10–13 fits US 11 – 14
+          </p>
+        </div>
       </div>
 
-      {/* Back in stock form — shown when selected size is out of stock */}
+      {/* Back in stock form if out of stock */}
       {selectedSize && selectedOutOfStock && selectedVariant && (
-        <BackInStockForm
-          productId={product.id}
-          variantId={selectedVariant.id}
-          size={selectedSize}
-        />
+        <BackInStockForm productId={product.id} variantId={selectedVariant.id} size={selectedSize} />
       )}
 
-      {/* Quantity + Add button — only when in-stock size selected */}
+      {/* Quantity + Add button */}
       {(!selectedSize || !selectedOutOfStock) && (
         <>
+          {/* Quantity */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#737373] mb-3">
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", marginBottom: 12 }}>
               Quantity
             </p>
-            <div className="flex items-center gap-3">
+            <div className="qty-stepper" style={{ display: "flex", alignItems: "center", gap: 0, width: "fit-content", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10 }}>
               <button
+                className="qty-btn"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="h-9 w-9 rounded-lg border border-[#262626] flex items-center justify-center hover:border-[#404040] transition-colors"
+                style={{
+                  width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "transparent", border: "none", cursor: "pointer",
+                  color: quantity <= 1 ? "rgba(255,255,255,0.2)" : "#F7F7F2", borderRadius: "9px 0 0 9px",
+                }}
               >
-                <Minus className="h-3.5 w-3.5" />
+                <Minus style={{ width: 14, height: 14 }} />
               </button>
-              <span className="font-display font-bold text-lg w-8 text-center">{quantity}</span>
+              <span className="qty-num" style={{ width: 36, textAlign: "center", fontSize: 15, fontWeight: 700, color: "#F7F7F2", userSelect: "none" }}>
+                {quantity}
+              </span>
               <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="h-9 w-9 rounded-lg border border-[#262626] flex items-center justify-center hover:border-[#404040] transition-colors"
+                className="qty-btn"
+                onClick={() => setQuantity(Math.min(10, quantity + 1))}
+                style={{
+                  width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "transparent", border: "none", cursor: "pointer",
+                  color: "#F7F7F2", borderRadius: "0 9px 9px 0",
+                }}
               >
-                <Plus className="h-3.5 w-3.5" />
+                <Plus style={{ width: 14, height: 14 }} />
               </button>
             </div>
           </div>
 
+          {/* Add to cart button */}
           <button
             onClick={handleAdd}
             disabled={!selectedSize}
-            className="w-full btn-primary py-4 text-base gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              width: "100%", height: 58,
+              background: selectedSize ? "#2E8B28" : "rgba(255,255,255,0.06)",
+              color: selectedSize ? "#ffffff" : "rgba(255,255,255,0.38)",
+              border: "none", borderRadius: 12,
+              fontSize: 14, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
+              cursor: selectedSize ? "pointer" : "not-allowed",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) => { if (selectedSize) e.currentTarget.style.background = "#36A832"; }}
+            onMouseLeave={(e) => { if (selectedSize) e.currentTarget.style.background = "#2E8B28"; }}
           >
-            <ShoppingBag className="h-5 w-5" />
+            <ShoppingBag style={{ width: 18, height: 18 }} />
             {selectedSize
               ? `Add to Cart — $${((product.price * quantity) / 100).toFixed(2)} NZD`
               : "Select a Size"}

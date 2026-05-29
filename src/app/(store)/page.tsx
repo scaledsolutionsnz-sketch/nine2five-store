@@ -24,29 +24,29 @@ const COLLECTIONS = [
   {
     name: "Kahotea Collection",
     tag: "Signature",
-    desc: "Our original. Crafted from deep cultural roots and worn with pride.",
+    desc: "Our original. The grip pattern that holds through scrums, sprints, and sessions. Built from deep cultural roots — worn by athletes who carry their identity into every space they enter.",
     href: "/shop?collection=kahotea",
     image: "/products/black-kahotea/2.avif",
   },
   {
     name: "Limited Drops",
     tag: "Drop",
-    desc: "Rare releases. Once they're gone, they're gone.",
+    desc: "Rare releases made for people who move differently. Once this run sells out, it's gone for good. No restocks. No exceptions.",
     href: "/shop?collection=limited",
     image: "/products/pasifika/1.avif",
   },
   {
     name: "Performance Range",
     tag: "Training",
-    desc: "Built for the gym, track, and the field. Grip where it matters.",
+    desc: "No frills. Pure grip. Built for the gym, the box, the track, and the field. The grip pattern placement is engineered for the movements that matter — not just for show.",
     href: "/shop?collection=performance",
     image: "/gallery/3.webp",
   },
   {
-    name: "Teamwear",
+    name: "Clubs & Teams",
     tag: "Custom",
-    desc: "Kit your whole crew. Custom orders available.",
-    href: "/shop?collection=teamwear",
+    desc: "Your logo. Your colours. Your club's identity on every pair. MOQ 50. Free design. Your club keeps the margin. One order can raise $650+ — no sausage sizzle required.",
+    href: "/clubs",
     image: "/gallery/7.webp",
   },
 ];
@@ -264,8 +264,10 @@ export default async function HomePage() {
         .hp-gallery-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
         @media (max-width: 1024px) { .hp-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
         @media (max-width: 640px)  { .hp-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        .hp-gallery-item { position: relative; aspect-ratio: 1 / 0.75; overflow: hidden; border-radius: 10px; background: #07180e; border: 1px solid rgba(255,255,255,0.06); }
-        .hp-gallery-item::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05)); opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
+        .hp-gallery-item { position: relative; aspect-ratio: 1 / 0.75; overflow: hidden; border-radius: 10px; background: #07180e; border: 1px solid rgba(46,139,40,0.18); }
+        .hp-gallery-item::before { content: ""; position: absolute; inset: 0; background: rgba(14,60,20,0.32); z-index: 1; pointer-events: none; transition: opacity 0.35s ease; }
+        .hp-gallery-item::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05)); opacity: 0; z-index: 2; transition: opacity 0.35s ease; pointer-events: none; }
+        .hp-gallery-item:hover::before { opacity: 0.6; }
         .hp-gallery-item:hover::after { opacity: 1; }
         .hp-gallery-item img { transition: transform 0.35s ease; width: 100%; height: 100%; object-fit: cover; }
         .hp-gallery-item:hover img { transform: scale(1.05); }
@@ -425,7 +427,7 @@ export default async function HomePage() {
                   marginTop: "1.25rem",
                 }}
               >
-                Māori grip socks built for sport, movement, and identity.
+                Stop slipping. Start performing. Grip socks forged from Māori identity — worn by athletes who play hard and stand proud.
               </p>
 
               <div
@@ -489,9 +491,11 @@ export default async function HomePage() {
                   "GRIP UP",
                   "STAND PROUD",
                   "UNAPOLOGETICALLY MĀORI",
-                  "WEAR YOUR IDENTITY",
+                  "30-DAY GRIP GUARANTEE",
+                  "FREE CLUB MOCKUPS",
                   "MASTERTON, NZ",
-                  "EST. 2024",
+                  "NZ SHIPPING 2–4 DAYS",
+                  "WEAR YOUR IDENTITY",
                 ].map((word) => (
                   <span
                     key={`${copy}-${word}`}
@@ -661,6 +665,50 @@ export default async function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════
+            CLUBS & TEAMS SECTION
+        ════════════════════════════════════════════ */}
+        <section style={{ backgroundColor: "#06150C", padding: "7rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="page-container">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }} className="clubs-grid">
+              <style>{`@media (max-width: 768px) { .clubs-grid { grid-template-columns: 1fr !important; gap: 40px !important; } }`}</style>
+              <div>
+                <p style={{ fontSize: 11, letterSpacing: "0.35em", color: "#2E8B28", fontWeight: 700, textTransform: "uppercase", marginBottom: 18 }}>Clubs & Teams</p>
+                <h2 className="font-display font-black text-white" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 0.95, letterSpacing: "-0.02em", marginBottom: 24 }}>
+                  YOUR CLUB.<br />YOUR COLOURS.<br /><span style={{ color: "#2E8B28" }}>YOUR SOCKS.</span>
+                </h2>
+                <p style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: 420, marginBottom: 12 }}>
+                  Custom grip socks with your club logo and colours. Free design. MOQ 50 pairs. We build it — you sell it, keep the margin.
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.32)", lineHeight: 1.7, maxWidth: 420, marginBottom: 32, fontSize: 14 }}>
+                  Buy 50 pairs at $12 each. Sell at $25. Your club keeps <strong style={{ color: "#2E8B28" }}>$650</strong> — no sausage sizzle required.
+                </p>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  <Link href="/clubs" className="btn-green-sm">
+                    Get a Free Mockup <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                  <Link href="/clubs" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 52, padding: "0 1.5rem", borderRadius: 9999, border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.6)", fontSize: 13, fontWeight: 600, textDecoration: "none", transition: "border-color 0.2s" }}>
+                    Learn more
+                  </Link>
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                {[
+                  { stat: "Free", label: "Design & Mockup" },
+                  { stat: "50+", label: "Minimum Order" },
+                  { stat: "$650", label: "Club Revenue (50 pairs)" },
+                  { stat: "100%", label: "Custom — Your Brand" },
+                ].map(({ stat, label }) => (
+                  <div key={label} style={{ background: "#0d1f12", borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)", padding: "1.5rem", textAlign: "center" }}>
+                    <p className="font-display font-black" style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "#2E8B28", lineHeight: 1, marginBottom: 8 }}>{stat}</p>
+                    <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)" }}>{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════
             STATS
         ════════════════════════════════════════════ */}
         <section
@@ -676,9 +724,9 @@ export default async function HomePage() {
               style={{ borderLeft: "1px solid rgba(255,255,255,0.07)" }}
             >
               {[
-                { num: "9+",    label: "Designs" },
-                { num: "NZ",    label: "Made & Owned" },
-                { num: "5 / 5", label: "Customer Rating" },
+                { num: "200+",  label: "Happy Customers" },
+                { num: "4.9★",  label: "Customer Rating" },
+                { num: "2–4",   label: "Days NZ Delivery" },
               ].map(({ num, label }) => (
                 <div
                   key={label}
@@ -709,6 +757,33 @@ export default async function HomePage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════
+            SPONSORSHIP STRIP
+        ════════════════════════════════════════════ */}
+        <section style={{ backgroundColor: "#06150C", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "32px clamp(20px, 4vw, 48px)" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+              <div>
+                <p style={{ fontSize: 10, letterSpacing: "0.4em", color: "#2E8B28", fontWeight: 700, textTransform: "uppercase", marginBottom: 6 }}>Official Sponsor</p>
+                <p style={{ fontSize: 18, fontWeight: 800, color: "#ffffff", margin: 0 }}>Lincoln University Rugby</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>Rams &amp; Wethers squads — Canterbury, NZ</p>
+              </div>
+              <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+                {[
+                  { num: "55+", label: "Players in Nine2Five" },
+                  { num: "2025", label: "Season Sponsor" },
+                  { num: "NZ", label: "University Rugby" },
+                ].map(({ num, label }) => (
+                  <div key={label} style={{ textAlign: "center" }}>
+                    <p className="font-display font-black" style={{ fontSize: "1.5rem", color: "#2E8B28", lineHeight: 1, marginBottom: 4 }}>{num}</p>
+                    <p style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(255,255,255,0.28)" }}>{label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -877,6 +952,40 @@ export default async function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════
+            30-DAY GUARANTEE
+        ════════════════════════════════════════════ */}
+        <section style={{ backgroundColor: "#07180e", padding: "5rem 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="page-container">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, textAlign: "center" }} className="guarantee-grid">
+              <style>{`.guarantee-grid { } @media (max-width: 640px) { .guarantee-grid { grid-template-columns: 1fr !important; } }`}</style>
+              {[
+                {
+                  icon: "🛡",
+                  title: "30-Day Grip Guarantee",
+                  desc: "If the grip isn't performing within 30 days, we replace them. No questions asked.",
+                },
+                {
+                  icon: "✦",
+                  title: "Free Club Mockups",
+                  desc: "Your logo. Your colours. We design it for free — you only pay when you're happy.",
+                },
+                {
+                  icon: "⚡",
+                  title: "Ships in 24 Hours",
+                  desc: "Order before 2pm. We pack and send the same business day. NZ delivery 2–4 days.",
+                },
+              ].map(({ icon, title, desc }) => (
+                <div key={title} style={{ padding: "2.5rem 2rem", background: "#0d1f12", borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)" }}>
+                  <p style={{ fontSize: 28, marginBottom: 16 }}>{icon}</p>
+                  <p style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", marginBottom: 10 }}>{title}</p>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.65 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════
             CTA CLOSER
         ════════════════════════════════════════════ */}
         <section
@@ -914,46 +1023,25 @@ export default async function HomePage() {
               style={{
                 color: "rgba(255,255,255,0.32)",
                 fontSize: 16,
-                maxWidth: 360,
-                margin: "0 auto 3rem",
+                maxWidth: 400,
+                margin: "0 auto 1.5rem",
                 lineHeight: 1.65,
               }}
             >
-              Māori grip socks. Masterton, New Zealand.
+              Every pair is backed by our 30-day grip guarantee. If they don't perform, we replace them — no questions.
             </p>
-            <Link href="/shop" className="btn-green-lg">
-              Shop Now <ArrowUpRight className="h-4 w-4" />
-            </Link>
-
-            <div
-              className="flex flex-wrap items-center justify-center gap-8 mt-14 pt-10"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-            >
-              <a
-                href="https://instagram.com/nine2five.nz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                Instagram
-              </a>
-              <a
-                href="https://tiktok.com/@nine2five.nz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                TikTok
-              </a>
-              <a
-                href="https://www.facebook.com/profile.php?id=61563357785307"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                Facebook
-              </a>
+            <p style={{ color: "rgba(255,255,255,0.18)", fontSize: 13, maxWidth: 340, margin: "0 auto 3rem", lineHeight: 1.6 }}>
+              NZ-owned. Māori-led. Masterton, New Zealand.
+            </p>
+            <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/shop" className="btn-green-lg">
+                Shop Now <ArrowUpRight className="h-4 w-4" />
+              </Link>
+              <Link href="/clubs" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 56, padding: "0 2.6rem", borderRadius: 9999, border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.6)", fontSize: 13, fontWeight: 700, textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                Club Orders
+              </Link>
             </div>
+
           </div>
         </section>
 

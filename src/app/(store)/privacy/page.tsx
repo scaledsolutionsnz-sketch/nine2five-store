@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-white font-bold text-base mb-3">1. Who we are</h2>
             <p>
-              Nine2Five Limited (<strong className="text-white">"Nine2Five", "we", "us"</strong>) operates nine2five.co.nz.
+              Nine2Five Limited (<strong className="text-white">"Nine2Five", "we", "us"</strong>) operates nine2five.nz.
               We are registered in New Zealand and collect personal information in accordance with the{" "}
               <strong className="text-white">Privacy Act 2020</strong>.
             </p>
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
             <h2 className="text-white font-bold text-base mb-3">10. Changes to this policy</h2>
             <p>
               We may update this policy from time to time. The current version is always available at
-              nine2five.co.nz/privacy. Continued use of the site after changes constitutes acceptance.
+              nine2five.nz/privacy. Continued use of the site after changes constitutes acceptance.
             </p>
           </section>
 

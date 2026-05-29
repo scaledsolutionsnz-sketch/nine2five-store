@@ -167,7 +167,7 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
           <!-- CTA -->
           <tr>
             <td style="text-align:center;">
-              <a href="https://nine2five.co.nz/account/orders"
+              <a href="https://nine2five.nz/account/orders"
                  style="display:inline-block;background:#2d6b1a;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;letter-spacing:0.02em;">
                 View Your Order
               </a>
@@ -182,7 +182,7 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
               <p style="margin:0;font-size:12px;color:#525252;">Nine2Five Limited · Masterton, New Zealand</p>
               <p style="margin:6px 0 0;font-size:12px;color:#525252;">
                 Questions? Reply to this email or visit
-                <a href="https://nine2five.co.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.co.nz</a>
+                <a href="https://nine2five.nz" style="color:#2d6b1a;text-decoration:none;">nine2five.nz</a>
               </p>
               <p style="margin:12px 0 0;font-size:11px;font-weight:900;letter-spacing:0.05em;color:#262626;">NINE2FIVE</p>
             </td>
@@ -218,7 +218,7 @@ export function orderConfirmationText(data: OrderConfirmationData): string {
     `${data.shipping_address.line1}${data.shipping_address.line2 ? `, ${data.shipping_address.line2}` : ""}`,
     `${data.shipping_address.city}, ${data.shipping_address.region} ${data.shipping_address.postcode}`,
     ``,
-    `View your order: https://nine2five.co.nz/account/orders`,
+    `View your order: https://nine2five.nz/account/orders`,
     ``,
     `Nine2Five Limited · Masterton, New Zealand`,
   ].filter((l) => l !== null);

@@ -3,7 +3,7 @@ import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { campaignHtml, campaignText } from "@/lib/emails/campaign";
 
-const FROM = "Nine2Five <hello@nine2five.co.nz>";
+const FROM = "Nine2Five <hello@nine2five.nz>";
 const BATCH_SIZE = 100;
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

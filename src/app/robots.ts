@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/account/", "/api/", "/checkout", "/cart"],
       },
     ],
-    sitemap: "https://nine2five.co.nz/sitemap.xml",
+    sitemap: "https://nine2five.nz/sitemap.xml",
   };
 }

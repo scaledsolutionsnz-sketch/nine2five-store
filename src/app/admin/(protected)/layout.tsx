@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen">
       <AdminSidebar email={user.email!} />
-      <div className="flex-1 flex flex-col min-h-screen" style={{ backgroundColor: "#F4F6F9" }}>
+      <div className="flex-1 flex flex-col min-h-screen" style={{ backgroundColor: "#06150C" }}>
         <AdminTopbar />
         <main className="flex-1">
           <div className="px-8 pt-8 pb-12 max-w-[1600px]">

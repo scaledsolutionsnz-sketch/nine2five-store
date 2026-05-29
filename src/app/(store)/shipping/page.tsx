@@ -57,7 +57,7 @@ export default function ShippingPage() {
               </table>
             </div>
             <p className="mt-3 text-white/40 text-xs">
-              Free shipping on orders over $75 NZD.
+              All prices in NZD.
             </p>
           </section>
 

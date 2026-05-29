@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
-  const url = req.nextUrl.searchParams.get("url") ?? "https://nine2five.co.nz";
+  const url = req.nextUrl.searchParams.get("url") ?? "https://nine2five.nz";
   const parsed = parseTrackingToken(token);
 
   if (parsed) {
@@ -25,7 +25,7 @@ export async function GET(
   }
 
   // Validate destination is our domain or allow any https URL
-  let destination = "https://nine2five.co.nz";
+  let destination = "https://nine2five.nz";
   try {
     const parsed = new URL(url);
     if (parsed.protocol === "https:") destination = parsed.href;

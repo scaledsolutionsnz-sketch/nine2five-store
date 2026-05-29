@@ -30,7 +30,7 @@ const inputClass =
   "w-full h-14 px-4 rounded-xl bg-white/[0.05] border border-white/[0.10] text-white text-base placeholder-white/30 focus:outline-none focus:border-[#2f9b2f]/50 focus:bg-white/[0.07] transition-all";
 
 export default function CheckoutPage() {
-  const { items, total, count } = useCart();
+  const { items, total, count, bundleDiscount } = useCart();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [clientSecret, setClientSecret] = useState("");
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
   // Keep Stripe PI amount in sync whenever discounts or shipping change
   useEffect(() => {
     if (!clientSecret || isBulk) return;
-    const discountAmt = discounts.reduce((s, d) => s + d.amount, 0);
+    const discountAmt = discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount;
     const effectiveShip = discounts.some(d => d.free_shipping) ? 0 : shippingCost;
     fetch("/api/create-payment-intent", {
       method: "PATCH",
@@ -154,7 +154,7 @@ export default function CheckoutPage() {
         discount_amount: discountAmt,
       }),
     }).catch(() => {});
-  }, [discounts, shippingCost, clientSecret, isBulk, total]);
+  }, [discounts, shippingCost, clientSecret, isBulk, total, bundleDiscount]);
 
   const syncCart = useCallback(() => {
     const sessionId = sessionIdRef.current;
@@ -178,7 +178,7 @@ export default function CheckoutPage() {
     );
   }
 
-  const totalDiscountAmount = discounts.reduce((sum, d) => sum + d.amount, 0);
+  const totalDiscountAmount = discounts.reduce((sum, d) => sum + d.amount, 0) + bundleDiscount;
   const effectiveShipping = discounts.some(d => d.free_shipping) ? 0 : shippingCost;
   const orderTotal = total + effectiveShipping - totalDiscountAmount;
   const totalPairs = items.reduce((s, i) => s + i.quantity, 0);
@@ -193,10 +193,10 @@ export default function CheckoutPage() {
     label: { display: "block", marginBottom: 8, color: "rgba(255,255,255,0.58)", fontSize: 11, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase" } as React.CSSProperties,
     input: { width: "100%", height: 58, padding: "0 18px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", fontSize: 16, outline: "none", transition: "border-color 0.2s, box-shadow 0.2s", fontFamily: "inherit" } as React.CSSProperties,
     select: { width: "100%", height: 58, padding: "0 18px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", fontSize: 16, outline: "none", appearance: "none" as const, fontFamily: "inherit" } as React.CSSProperties,
-    sectionTitle: { margin: "28px 0 16px", color: "#2f9b2f", fontSize: 12, fontWeight: 900, letterSpacing: "0.22em", textTransform: "uppercase" } as React.CSSProperties,
-    formCard: { padding: 28, borderRadius: 22, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" } as React.CSSProperties,
-    row2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 } as React.CSSProperties,
-    row1: { marginBottom: 16 } as React.CSSProperties,
+    sectionTitle: { margin: "32px 0 18px", color: "#2f9b2f", fontSize: 11, fontWeight: 900, letterSpacing: "0.25em", textTransform: "uppercase" } as React.CSSProperties,
+    formCard: { padding: 32, borderRadius: 22, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" } as React.CSSProperties,
+    row2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, marginBottom: 20 } as React.CSSProperties,
+    row1: { marginBottom: 20 } as React.CSSProperties,
   };
 
   return (
@@ -204,12 +204,12 @@ export default function CheckoutPage() {
       <style>{`
         .co-container { max-width: 1280px; margin: 0 auto; padding: 136px 48px 100px; }
         .co-layout { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 56px; align-items: start; }
-        .co-input:focus { border-color: #2f9b2f !important; box-shadow: 0 0 0 3px rgba(47,155,47,0.18) !important; }
-        .co-input::placeholder { color: rgba(255,255,255,0.3); }
+        .co-input:focus { border-color: rgba(47,155,47,0.7) !important; box-shadow: 0 0 0 4px rgba(47,155,47,0.15) !important; }
+        .co-input::placeholder { color: rgba(255,255,255,0.28); }
         .co-input option { background: #0d1f12; color: #fff; }
-        .co-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        @media (max-width: 960px) { .co-layout { grid-template-columns: 1fr; gap: 36px; } .co-container { padding: 120px 32px 72px; } }
-        @media (max-width: 640px) { .co-container { padding: 110px 20px 64px; } .co-form-row { grid-template-columns: 1fr; } }
+        .co-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+        @media (max-width: 960px) { .co-layout { grid-template-columns: 1fr; gap: 40px; } .co-container { padding: 120px 28px 72px; } }
+        @media (max-width: 640px) { .co-container { padding: 110px 20px 64px; } .co-form-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; } }
       `}</style>
       <div className="co-container">
 
@@ -220,31 +220,53 @@ export default function CheckoutPage() {
         <h1 className="font-display font-black text-white" style={{ fontSize: "clamp(2.2rem, 4vw, 3rem)", letterSpacing: "-0.03em", marginBottom: 28 }}>Checkout</h1>
 
         {/* Step indicator */}
-        <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 40 }}>
+        <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 52, width: "100%" }}>
+          {/* Background track */}
+          <div style={{ position: "absolute", top: 19, left: 0, right: 0, height: 1, background: "rgba(255,255,255,0.10)" }} />
+          {/* Progress fill */}
+          <div style={{
+            position: "absolute", top: 19, left: 0,
+            width: step === 1 ? "0%" : step === 2 ? "50%" : "100%",
+            height: 1,
+            background: "linear-gradient(to right, #2f9b2f, rgba(47,155,47,0.6))",
+            transition: "width 0.45s cubic-bezier(0.4,0,0.2,1)",
+          }} />
           {STEP_LABELS.map((label, i) => {
             const num = (i + 1) as 1 | 2 | 3;
             const isActive = step === num;
             const isDone = step > num;
             return (
-              <div key={label} style={{ display: "flex", alignItems: "center" }}>
-                {i > 0 && (
-                  <div style={{ height: 1, width: 40, background: isDone ? "#2f9b2f" : "rgba(255,255,255,0.10)", transition: "background 0.3s" }} />
-                )}
-                <button type="button" onClick={() => { if (isDone) setStep(num); }}
-                  style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, cursor: isDone ? "pointer" : "default", background: "none", border: "none", padding: 0 }}>
-                  <div style={{
-                    width: 38, height: 38, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                    fontWeight: 800, fontSize: 14,
-                    background: isActive ? "#2f9b2f" : isDone ? "rgba(47,155,47,0.12)" : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${isActive ? "#2f9b2f" : isDone ? "rgba(47,155,47,0.4)" : "rgba(255,255,255,0.12)"}`,
-                    color: isActive ? "#fff" : isDone ? "#2f9b2f" : "rgba(255,255,255,0.5)",
-                    transition: "all 0.3s",
-                  }}>
-                    {isDone ? <Check style={{ width: 16, height: 16 }} /> : num}
-                  </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: isActive ? "#fff" : isDone ? "#2f9b2f" : "rgba(255,255,255,0.4)", display: "none" }} className="sm:block">{label}</span>
-                </button>
-              </div>
+              <button
+                key={label}
+                type="button"
+                onClick={() => { if (isDone) setStep(num); }}
+                style={{
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 10,
+                  cursor: isDone ? "pointer" : "default",
+                  background: "none", border: "none", padding: 0,
+                  position: "relative", zIndex: 1,
+                }}
+              >
+                <div style={{
+                  width: 38, height: 38, borderRadius: "50%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontWeight: 800, fontSize: 14,
+                  background: isActive ? "#2f9b2f" : isDone ? "rgba(47,155,47,0.14)" : "#06150c",
+                  border: `2px solid ${isActive ? "#2f9b2f" : isDone ? "rgba(47,155,47,0.5)" : "rgba(255,255,255,0.14)"}`,
+                  color: isActive ? "#fff" : isDone ? "#2f9b2f" : "rgba(255,255,255,0.4)",
+                  boxShadow: isActive ? "0 0 0 5px rgba(47,155,47,0.18), 0 0 14px rgba(47,155,47,0.25)" : "none",
+                  transition: "all 0.35s ease",
+                }}>
+                  {isDone ? <Check style={{ width: 16, height: 16 }} /> : num}
+                </div>
+                <span style={{
+                  fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: isActive ? "#fff" : isDone ? "#2f9b2f" : "rgba(255,255,255,0.3)",
+                  whiteSpace: "nowrap",
+                }}>
+                  {label}
+                </span>
+              </button>
             );
           })}
         </div>
@@ -478,7 +500,7 @@ export default function CheckoutPage() {
                       },
                     },
                   } }}>
-                    <PaymentStep items={items} clientSecret={clientSecret} shippingCost={effectiveShipping} discounts={discounts} email={email} address={{ ...address, country } as ShippingAddress} sessionId={sessionIdRef.current} acceptsMarketing={acceptsMarketing} onBack={() => setStep(2)} />
+                    <PaymentStep items={items} clientSecret={clientSecret} shippingCost={effectiveShipping} discounts={discounts} bundleDiscount={bundleDiscount} email={email} address={{ ...address, country } as ShippingAddress} sessionId={sessionIdRef.current} acceptsMarketing={acceptsMarketing} onBack={() => setStep(2)} />
                   </Elements>
                 )}
               </>
@@ -486,8 +508,8 @@ export default function CheckoutPage() {
           </div>
 
           {/* ── Right column: order summary ── */}
-          <div style={{ padding: 26, borderRadius: 22, background: "rgba(7,24,14,0.88)", border: "1px solid rgba(255,255,255,0.10)", position: "sticky", top: 96 }}>
-            <p style={{ fontSize: 18, fontWeight: 900, color: "#fff", marginBottom: 20 }}>Order Summary</p>
+          <div style={{ padding: 32, borderRadius: 22, background: "rgba(7,24,14,0.88)", border: "1px solid rgba(255,255,255,0.10)", position: "sticky", top: 96 }}>
+            <p style={{ fontSize: 13, fontWeight: 900, color: "rgba(255,255,255,0.5)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 24 }}>Order Summary</p>
 
             {/* Products */}
             <div style={{ marginBottom: 20 }}>
@@ -515,6 +537,12 @@ export default function CheckoutPage() {
               <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>Subtotal</span>
               <span style={{ fontSize: 14, color: "#fff" }}>${(total / 100).toFixed(2)}</span>
             </div>
+            {bundleDiscount > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                <span style={{ fontSize: 14, color: "#2f9b2f" }}>Bundle discount</span>
+                <span style={{ fontSize: 14, color: "#2f9b2f" }}>−${(bundleDiscount / 100).toFixed(2)}</span>
+              </div>
+            )}
             {discounts.map((d) => (
               <div key={d.code} style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: "#2f9b2f", display: "flex", alignItems: "center", gap: 6 }}><Tag style={{ width: 12, height: 12 }} />{d.code}</span>
@@ -528,9 +556,9 @@ export default function CheckoutPage() {
               </span>
             </div>
             {!isBulk && (
-              <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.10)", fontSize: 20, fontWeight: 900, color: "#fff" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, marginTop: 6, borderTop: "1px solid rgba(255,255,255,0.12)", fontSize: 24, fontWeight: 900, color: "#fff", letterSpacing: "-0.01em" }}>
                 <span>Total</span>
-                <span>${(orderTotal / 100).toFixed(2)} NZD</span>
+                <span style={{ color: "#fff" }}>${(orderTotal / 100).toFixed(2)} <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.5)", letterSpacing: 0 }}>NZD</span></span>
               </div>
             )}
 
@@ -566,6 +594,7 @@ function DiscountInput({
     const trimmed = code.trim().toUpperCase();
     if (!trimmed) return;
     if (discounts.some(d => d.code === trimmed)) { setError("Code already applied"); return; }
+    if (discounts.length >= 2) { setError("Maximum of 2 discount codes allowed"); return; }
     setLoading(true);
     setError("");
     const res = await fetch("/api/discount", {
@@ -576,42 +605,86 @@ function DiscountInput({
     const data = await res.json() as { discount_cents?: number; free_shipping?: boolean; error?: string };
     setLoading(false);
     if (!res.ok || data.error) { setError(data.error ?? "Invalid code"); return; }
-    onApply({ code: trimmed, amount: data.discount_cents!, free_shipping: data.free_shipping ?? false });
+    const isShipping = data.free_shipping ?? false;
+    if (isShipping && discounts.some(d => d.free_shipping)) { setError("A free shipping code is already applied"); return; }
+    if (!isShipping && discounts.some(d => !d.free_shipping)) { setError("A price discount code is already applied"); return; }
+    onApply({ code: trimmed, amount: data.discount_cents!, free_shipping: isShipping });
     setCode("");
   }
 
   return (
-    <div className="space-y-2">
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {discounts.map((d) => (
-        <div key={d.code} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#2f9b2f]/10 border border-[#2f9b2f]/20">
-          <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-[#2f9b2f]" />
-            <span className="text-sm font-semibold text-[#2f9b2f] font-mono">{d.code}</span>
-            <span className="text-xs text-[#2f9b2f]">{d.free_shipping ? "free shipping" : `−$${(d.amount / 100).toFixed(2)}`}</span>
+        <div key={d.code} style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "12px 16px", borderRadius: 14,
+          background: "rgba(47,155,47,0.08)",
+          border: "1px solid rgba(47,155,47,0.28)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{
+              width: 22, height: 22, borderRadius: "50%",
+              background: "rgba(47,155,47,0.18)", border: "1px solid rgba(47,155,47,0.4)",
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+            }}>
+              <Check style={{ width: 11, height: 11, color: "#2f9b2f" }} />
+            </div>
+            <div>
+              <span style={{ fontSize: 13, fontWeight: 800, color: "#fff", fontFamily: "monospace", letterSpacing: "0.06em" }}>
+                {d.code}
+              </span>
+              <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 600, color: "#2f9b2f" }}>
+                {d.free_shipping ? "Free shipping" : `−$${(d.amount / 100).toFixed(2)}`}
+              </span>
+            </div>
           </div>
-          <button onClick={() => onRemove(d.code)} className="text-[#2f9b2f] hover:opacity-70 transition-opacity">
-            <X className="h-4 w-4" />
+          <button
+            onClick={() => onRemove(d.code)}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.3)", padding: 4, display: "flex", alignItems: "center", borderRadius: 6, transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#f87171")}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.3)")}
+          >
+            <X style={{ width: 14, height: 14 }} />
           </button>
         </div>
       ))}
-      <div>
-        <div className="flex gap-2">
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", gap: 10 }}>
           <input
             value={code}
             onChange={(e) => { setCode(e.target.value.toUpperCase()); setError(""); }}
             onKeyDown={(e) => e.key === "Enter" && apply()}
             placeholder="Discount code"
-            className="flex-1 h-12 px-4 rounded-xl bg-[#0d1f12] border border-white/[0.1] text-white text-sm placeholder-white/25 focus:outline-none focus:border-[#2f9b2f]/50 transition-colors font-mono"
+            style={{
+              flex: 1, height: 48, padding: "0 16px", borderRadius: 12,
+              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)",
+              color: "#fff", fontSize: 14, outline: "none",
+              fontFamily: "monospace", letterSpacing: "0.04em",
+              transition: "border-color 0.2s",
+            }}
+            onFocus={e => (e.currentTarget.style.borderColor = "rgba(47,155,47,0.5)")}
+            onBlur={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)")}
           />
           <button
             onClick={apply}
             disabled={loading || !code.trim()}
-            className="h-12 px-5 rounded-xl bg-[#2f9b2f] text-white font-bold text-sm hover:bg-[#3aad3a] disabled:opacity-40 transition-all"
+            style={{
+              height: 48, padding: "0 20px", borderRadius: 12,
+              background: loading || !code.trim() ? "rgba(47,155,47,0.35)" : "#2f9b2f",
+              color: "#fff", fontWeight: 800, fontSize: 13,
+              letterSpacing: "0.06em", textTransform: "uppercase",
+              border: "none", cursor: loading || !code.trim() ? "not-allowed" : "pointer",
+              transition: "background 0.2s", display: "flex", alignItems: "center",
+            }}
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
+            {loading ? <Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> : "Apply"}
           </button>
         </div>
-        {error && <p className="text-xs text-red-400 mt-1.5">{error}</p>}
+        {error && (
+          <p style={{ fontSize: 12, color: "#f87171", padding: "8px 12px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 10 }}>
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -624,6 +697,7 @@ function PaymentStep({
   clientSecret,
   shippingCost,
   discounts,
+  bundleDiscount,
   email,
   address,
   sessionId,
@@ -634,6 +708,7 @@ function PaymentStep({
   clientSecret: string;
   shippingCost: number;
   discounts: Array<{ code: string; amount: number; free_shipping: boolean }>;
+  bundleDiscount: number;
   email: string;
   address: ShippingAddress;
   sessionId: string;
@@ -671,7 +746,7 @@ function PaymentStep({
         })),
         shipping: shippingCost,
         discount_code: discounts.length ? discounts.map(d => d.code).join(",") : null,
-        discount_amount: discounts.reduce((s, d) => s + d.amount, 0),
+        discount_amount: discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount,
         affiliate_code: affiliateCode,
         session_id: sessionId,
         accepts_marketing: acceptsMarketing,
@@ -679,7 +754,7 @@ function PaymentStep({
     });
 
     const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-    const discountAmt = discounts.reduce((s, d) => s + d.amount, 0);
+    const discountAmt = discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount;
     sessionStorage.setItem("n2f_purchase", JSON.stringify({
       orderNumber: clientSecret.split("_secret_")[0],
       total: subtotal + shippingCost - discountAmt,
@@ -700,18 +775,6 @@ function PaymentStep({
           billing_details: {
             name: `${address.first_name} ${address.last_name}`,
             email,
-          },
-        },
-        shipping: {
-          name: `${address.first_name} ${address.last_name}`,
-          phone: address.phone ?? undefined,
-          address: {
-            line1: address.line1,
-            line2: address.line2 ?? undefined,
-            city: address.city,
-            state: address.region,
-            postal_code: address.postcode,
-            country: address.country,
           },
         },
       },
