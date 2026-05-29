@@ -7,7 +7,7 @@ import { getStaticProducts } from "@/lib/products";
 import { HeroVideo } from "@/components/storefront/hero-video";
 import { HomepageCard } from "@/components/storefront/homepage-card";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 /* ─── Fallback products (6 items) ───────────────────────────── */
 const FALLBACK_PRODUCTS = [

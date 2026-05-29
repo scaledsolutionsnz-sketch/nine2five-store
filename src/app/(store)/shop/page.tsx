@@ -5,7 +5,7 @@ import { getStaticProducts } from "@/lib/products";
 import { ShopGrid } from "./shop-grid";
 import { ArrowUpRight } from "lucide-react";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function ShopPage() {
   let products: Product[] = [];
