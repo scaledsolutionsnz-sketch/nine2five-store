@@ -8,8 +8,10 @@ import { ProductGallery } from "@/components/storefront/product-gallery";
 import type { Product, ProductVariant } from "@/types/database";
 import type { Metadata } from "next";
 import { Shield, Truck, RotateCcw } from "lucide-react";
-import { getStaticProducts, SIZES } from "@/lib/products";
+import { getStaticProducts, getProductExtras, SIZES } from "@/lib/products";
 import { CollapsibleDescription } from "@/components/storefront/collapsible-description";
+import { BundleNudge } from "@/components/storefront/bundle-nudge";
+import { ProductReviews } from "@/components/storefront/product-reviews";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +69,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!result) notFound();
   const { product: p, variants: v } = result;
   const isOnSale = p.compare_at_price && p.compare_at_price > p.price;
+  const extras = getProductExtras(slug);
 
   // Other designs — static list excluding current product
   const otherDesigns = getStaticProducts()
@@ -129,13 +132,39 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {/* Title */}
             <h1
               className="font-display font-black text-white"
-              style={{ fontSize: "clamp(2.25rem, 4vw, 3.5rem)", lineHeight: 1, marginBottom: 16 }}
+              style={{ fontSize: "clamp(2.25rem, 4vw, 3.5rem)", lineHeight: 1, marginBottom: 14 }}
             >
               {p.name}
             </h1>
 
+            {/* Badges + scarcity */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
+              {extras.badges.map((badge) => (
+                <span key={badge} style={{
+                  fontSize: 10, fontWeight: 800, letterSpacing: "0.12em",
+                  textTransform: "uppercase", padding: "4px 10px", borderRadius: 999,
+                  background: badge === "Best Seller" ? "rgba(46,139,40,0.15)" : "rgba(255,255,255,0.06)",
+                  color: badge === "Best Seller" ? "#2E8B28" : badge === "Limited Edition" ? "#f59e0b" : "rgba(255,255,255,0.5)",
+                  border: `1px solid ${badge === "Best Seller" ? "rgba(46,139,40,0.3)" : badge === "Limited Edition" ? "rgba(245,158,11,0.3)" : "rgba(255,255,255,0.1)"}`,
+                }}>
+                  {badge}
+                </span>
+              ))}
+              {extras.limitedStock && (
+                <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.25)", display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#f59e0b", display: "inline-block" }} />
+                  Low Stock
+                </span>
+              )}
+              {extras.soldCount && (
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", fontWeight: 600 }}>
+                  {extras.soldCount} sold
+                </span>
+              )}
+            </div>
+
             {/* Price */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 28 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 20 }}>
               <span style={{ fontSize: 28, fontWeight: 800, color: "#ffffff" }}>
                 ${(p.price / 100).toFixed(2)} <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.5)" }}>NZD</span>
               </span>
@@ -146,16 +175,58 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               )}
             </div>
 
-            {/* Bundle savings hint */}
-            <div style={{ background: "rgba(46,139,40,0.08)", border: "1px solid rgba(46,139,40,0.2)", borderRadius: 10, padding: "10px 14px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ color: "#2E8B28", fontSize: 13 }}>✦</span>
-              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", margin: 0, lineHeight: 1.5 }}>
-                <strong style={{ color: "#2E8B28" }}>Buy 2, save $5.</strong> Add 2 pairs to your cart to unlock bundle pricing. Buy 3 for $65 — save $10.
-              </p>
-            </div>
+            {/* Dynamic bundle nudge */}
+            <BundleNudge />
 
             {/* Description */}
             <CollapsibleDescription text={p.description} />
+
+            {/* Size guide */}
+            <details style={{ marginBottom: 20, maxWidth: 600 }}>
+              <summary style={{
+                listStyle: "none", display: "flex", justifyContent: "space-between",
+                alignItems: "center", padding: "10px 0", cursor: "pointer",
+                borderBottom: "1px solid rgba(255,255,255,0.08)",
+                fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)",
+              }}>
+                <span>Size Guide</span>
+                <span style={{ fontSize: 16, fontWeight: 400, color: "rgba(255,255,255,0.25)" }}>+</span>
+              </summary>
+              <div style={{ paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                {[
+                  { size: "6–9", nz: "NZ/AU 6–9", eu: "EU 39–43", us: "US M 6–9 / W 7–10" },
+                  { size: "10–13", nz: "NZ/AU 10–13", eu: "EU 44–48", us: "US M 10–13" },
+                ].map(({ size, nz, eu, us }) => (
+                  <div key={size} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: "12px 14px" }}>
+                    <p style={{ fontSize: 14, fontWeight: 800, color: "#fff", marginBottom: 6 }}>{size}</p>
+                    <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>{nz}<br />{eu}<br />{us}</p>
+                  </div>
+                ))}
+              </div>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 10, lineHeight: 1.6 }}>
+                Between sizes? Go up. The compression fit adjusts to your foot.
+              </p>
+            </details>
+
+            {/* Specs & Care */}
+            <div style={{ marginBottom: 28 }}>
+              <div style={{
+                display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 24px",
+                padding: "16px 0", borderTop: "1px solid rgba(255,255,255,0.08)",
+                borderBottom: "1px solid rgba(255,255,255,0.08)", marginBottom: 14,
+              }}>
+                {extras.specs.map(({ label, value }) => (
+                  <div key={label}>
+                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 3 }}>{label}</p>
+                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.4 }}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", lineHeight: 1.7 }}>
+                Care: {extras.care.join(" · ")}
+              </p>
+            </div>
 
             {/* Add to cart + wishlist */}
             <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -176,8 +247,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             >
               {[
                 { icon: Truck, label: "Ships in 24 hrs", sub: "NZ 2–4 business days" },
-                { icon: Shield, label: "30-Day Guarantee", sub: "Grip or we replace it" },
-                { icon: RotateCcw, label: "Easy returns", sub: "Hassle-free exchanges" },
+                { icon: Shield, label: "Returns accepted", sub: "Unworn & unwashed only" },
+                { icon: RotateCcw, label: "Size exchanges", sub: "Unworn & unwashed only" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} style={{ textAlign: "center" }}>
                   <Icon style={{ width: 20, height: 20, color: "#2E8B28", margin: "0 auto 8px" }} />
@@ -186,8 +257,61 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </div>
               ))}
             </div>
+
+            {/* Shipping + payment */}
+            <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", lineHeight: 1.6, margin: 0 }}>
+                NZ shipping from <strong style={{ color: "rgba(255,255,255,0.5)" }}>$6.68</strong> · Australia from <strong style={{ color: "rgba(255,255,255,0.5)" }}>$15.00</strong>
+              </p>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                {["VISA", "MC", "AMEX", "Apple Pay", "Google Pay"].map((method) => (
+                  <span key={method} style={{
+                    fontSize: 10, fontWeight: 700, letterSpacing: "0.05em",
+                    color: "rgba(255,255,255,0.3)",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 5, padding: "3px 8px",
+                  }}>
+                    {method}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* FAQ */}
+            <div style={{ marginTop: 32 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", marginBottom: 14 }}>
+                Common Questions
+              </p>
+              <style>{`
+                .pdp-faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; padding: 14px 0; cursor: pointer; border-top: 1px solid rgba(255,255,255,0.07); font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); }
+                .pdp-faq summary::-webkit-details-marker { display: none; }
+                .pdp-faq summary::after { content: "+"; font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.3); flex-shrink: 0; margin-left: 12px; }
+                .pdp-faq details[open] summary::after { content: "−"; }
+                .pdp-faq details[open] summary { color: #fff; }
+                .pdp-faq .faq-answer { padding: 0 0 14px; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+              `}</style>
+              <div className="pdp-faq">
+                {[
+                  { q: "Will the grip last after washing?", a: "Machine wash cold, tumble dry low — the silicone grip sole holds up well with proper care." },
+                  { q: "How do I choose the right size?", a: "We offer two sizes: 6–9 and 10–13. If you're between sizes, go up. The compression fit adjusts to your foot." },
+                  { q: "Are they machine washable?", a: "Yes — machine wash cold, tumble dry low. Don't iron the grip sole and avoid bleach. That's it." },
+                  { q: "Do they work on turf, gym, and mats?", a: "Yes. The grip pattern is tested on all three — astro turf, rubber gym floors, and pilates/yoga mats." },
+                  { q: "What's the compression like?", a: "Moderate compression around the arch with a relaxed fit through the toe box. Snug enough to stay put, comfortable enough for long sessions." },
+                  { q: "Can I return or exchange them?", a: "Yes — as long as they haven't been washed. Once washed, we can't accept returns. If you ordered the wrong size and they're unworn and unwashed, contact us and we'll sort it." },
+                ].map(({ q, a }) => (
+                  <details key={q}>
+                    <summary>{q}</summary>
+                    <p className="faq-answer">{a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Reviews — full width below both columns */}
+        <ProductReviews slug={slug} />
 
         {/* Other designs — below both columns */}
         {otherDesigns.length > 0 && (

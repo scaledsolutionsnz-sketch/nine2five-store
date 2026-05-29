@@ -3,6 +3,7 @@ import { ArrowUpRight, Check } from "lucide-react";
 import type { Metadata } from "next";
 import ClubsForm from "./ClubsForm";
 import ComingSoonBanner from "./ComingSoonBanner";
+import FundraisingCalculator from "./FundraisingCalculator";
 
 export const metadata: Metadata = {
   title: "Clubs & Teams — Nine2Five",
@@ -137,24 +138,7 @@ export default function ClubsPage() {
                 ))}
               </div>
             </div>
-            <div style={{ background: "#0d1f12", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: "2.5rem" }}>
-              <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#2E8B28", marginBottom: 20 }}>Fundraising Calculator</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {[
-                  { label: "50 pairs × $12 cost", value: "$600", muted: true },
-                  { label: "50 pairs × $25 retail", value: "$1,250", muted: false },
-                  { label: "Your club keeps", value: "$650", highlight: true },
-                ].map(({ label, value, muted, highlight }) => (
-                  <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                    <p style={{ fontSize: 14, color: muted ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.7)" }}>{label}</p>
-                    <p style={{ fontSize: highlight ? 22 : 16, fontWeight: highlight ? 900 : 700, color: highlight ? "#2E8B28" : "rgba(255,255,255,0.7)" }}>{value}</p>
-                  </div>
-                ))}
-              </div>
-              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.25)", marginTop: 20, lineHeight: 1.6 }}>
-                Scale it up — 100 pairs at $10 each = $1,500 for your club.
-              </p>
-            </div>
+            <FundraisingCalculator />
           </div>
         </div>
       </section>

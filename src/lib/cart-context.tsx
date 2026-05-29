@@ -15,9 +15,9 @@ interface CartContextValue {
 }
 
 function calcBundleDiscount(pairs: number): number {
-  if (pairs >= 5) return 3000;
-  if (pairs >= 3) return 1000;
-  if (pairs >= 2) return 500;
+  if (pairs >= 5) return 5500;
+  if (pairs >= 3) return 2100;
+  if (pairs >= 2) return 900;
   return 0;
 }
 

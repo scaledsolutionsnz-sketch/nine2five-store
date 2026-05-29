@@ -15,7 +15,8 @@ export function WishlistButton({ productId }: { productId: string }) {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
+    let supabase: ReturnType<typeof createClient>;
+    try { supabase = createClient(); } catch { setChecking(false); return; }
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) { setChecking(false); return; }
       setLoggedIn(true);

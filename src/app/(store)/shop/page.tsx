@@ -47,10 +47,10 @@ export default async function ShopPage() {
     {
       label: null,
       title: "2 Pairs",
-      subtitle: "Share with a mate or mix designs",
-      price: "$45",
-      was: "$50",
-      save: "Save $5",
+      subtitle: "Mix designs — one for training, one for game day",
+      price: "$55",
+      was: "$64",
+      save: "Save $9",
       pairs: 2,
       href: "/shop",
     },
@@ -58,19 +58,19 @@ export default async function ShopPage() {
       label: "MOST POPULAR",
       title: "3 Pairs",
       subtitle: "The sweet spot — one for every session",
-      price: "$65",
-      was: "$75",
-      save: "Save $10",
+      price: "$75",
+      was: "$96",
+      save: "Save $21",
       pairs: 3,
       href: "/shop",
     },
     {
       label: "BEST VALUE",
       title: "5 Pairs",
-      subtitle: "Stock up. Never run out.",
-      price: "$95",
-      was: "$125",
-      save: "Save $30",
+      subtitle: "$21/pair — stock up and never run out",
+      price: "$105",
+      was: "$160",
+      save: "Save $55",
       pairs: 5,
       href: "/shop",
     },
@@ -102,7 +102,7 @@ export default async function ShopPage() {
           <div className="shop-header">
             <p className="shop-label">Collection</p>
             <h1 className="shop-title">All Products</h1>
-            <p className="shop-count">{products.length} designs available · 30-day grip guarantee</p>
+            <p className="shop-count">{products.length} designs available · returns on unwashed pairs</p>
           </div>
 
           {/* Bundle & Save */}
@@ -154,7 +154,7 @@ export default async function ShopPage() {
             borderRadius: 12, padding: "16px 24px", marginBottom: 44,
           }}>
             {[
-              "✦  30-Day Grip Guarantee",
+              "✦  Returns on Unwashed Pairs",
               "⚡  Ships in 24 Hours",
               "🛡  Secure Checkout",
               "✦  NZ-Owned & Made",
@@ -164,7 +164,7 @@ export default async function ShopPage() {
           </div>
 
           {/* All products */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $25 each</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $32 each</p>
           <ShopGrid products={products} />
 
           {/* Club CTA */}

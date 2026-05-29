@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Star } from "lucide-react";
+import { ArrowUpRight, Star, Shield, Zap, Paintbrush } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import type { Product } from "@/types/database";
 import { getStaticProducts } from "@/lib/products";
@@ -381,66 +381,133 @@ export default async function HomePage() {
             }}
           />
 
-          {/* Content — bottom-left */}
+          {/* Content — bottom with floating card on desktop */}
           <div
             className="absolute z-10 left-0 right-0 bottom-0"
             style={{ paddingBottom: "clamp(3rem, 7dvh, 6rem)" }}
           >
-            <div className="hero-content">
-              <div className="h-a1 flex items-center gap-2 mb-5">
-                <span
+            <div className="hero-content" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "2rem" }}>
+
+              {/* Text block */}
+              <div style={{ flex: "1 1 auto", minWidth: 0 }}>
+                <div className="h-a1 flex items-center gap-2 mb-5">
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "#2E8B28",
+                      display: "inline-block",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: "0.4em",
+                      color: "#2E8B28",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Masterton, NZ · Est. 2024
+                  </span>
+                </div>
+
+                <h1
+                  className="font-display font-black text-white h-a2 hero-title"
+                >
+                  GRIP UP.<br />STAND PROUD.
+                </h1>
+
+                <p
+                  className="h-a3"
                   style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    backgroundColor: "#2E8B28",
-                    display: "inline-block",
-                    flexShrink: 0,
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.4em",
-                    color: "#2E8B28",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.58)",
+                    fontSize: "clamp(0.9375rem, 1.4vw, 1.0625rem)",
+                    lineHeight: 1.65,
+                    maxWidth: 400,
+                    marginTop: "1.25rem",
                   }}
                 >
-                  Masterton, NZ · Est. 2024
-                </span>
+                  Stop slipping. Start performing. Grip socks forged from Māori identity — worn by athletes who play hard and stand proud.
+                </p>
+
+                {/* Social proof strip */}
+                <div className="h-a4 flex flex-wrap items-center" style={{ marginTop: "1.25rem", gap: "8px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} style={{ width: 12, height: 12, color: "#2E8B28", fill: "#2E8B28" }} />
+                    ))}
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.72)", marginLeft: 5 }}>4.9</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.32)", marginLeft: 4 }}>· 5,000+ athletes</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                    {["Rugby", "Pilates", "CrossFit", "Touch"].map((s) => (
+                      <span key={s} style={{ fontSize: 10, color: "rgba(255,255,255,0.38)", fontWeight: 600, letterSpacing: "0.06em", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 4, padding: "2px 7px" }}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  className="h-a5 flex flex-wrap items-center gap-3"
+                  style={{ marginTop: "1.5rem" }}
+                >
+                  <Link href="/shop" className="btn-green">
+                    Shop Collection <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                  <Link href="/shop?collection=limited" className="btn-outline-hero">
+                    View Limited Drop
+                  </Link>
+                </div>
               </div>
 
-              <h1
-                className="font-display font-black text-white h-a2 hero-title"
-              >
-                GRIP UP.<br />STAND PROUD.
-              </h1>
-
-              <p
-                className="h-a3"
-                style={{
-                  color: "rgba(255,255,255,0.58)",
-                  fontSize: "clamp(0.9375rem, 1.4vw, 1.0625rem)",
-                  lineHeight: 1.65,
-                  maxWidth: 400,
-                  marginTop: "1.25rem",
-                }}
-              >
-                Stop slipping. Start performing. Grip socks forged from Māori identity — worn by athletes who play hard and stand proud.
-              </p>
-
-              <div
-                className="h-a4 flex flex-wrap items-center gap-3"
-                style={{ marginTop: "2rem" }}
-              >
-                <Link href="/shop" className="btn-green">
-                  Shop Collection <ArrowUpRight className="h-4 w-4" />
+              {/* Floating best-seller card — desktop only */}
+              <div className="hidden lg:block h-a5" style={{ flexShrink: 0 }}>
+                <Link
+                  href="/shop/black-kahotea"
+                  style={{
+                    display: "block",
+                    width: 184,
+                    background: "rgba(10,25,14,0.84)",
+                    backdropFilter: "blur(24px)",
+                    WebkitBackdropFilter: "blur(24px)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 18,
+                    padding: 12,
+                    textDecoration: "none",
+                  }}
+                >
+                  <div style={{ position: "relative", height: 192, borderRadius: 10, overflow: "hidden", marginBottom: 10, background: "#0e2314" }}>
+                    <Image
+                      src="/products/black-kahotea/1.avif"
+                      alt="Black Kahotea"
+                      fill
+                      className="object-cover object-center"
+                      unoptimized
+                    />
+                    <span style={{ position: "absolute", top: 8, left: 8, background: "#2E8B28", color: "#fff", fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 10px", borderRadius: 999 }}>
+                      Best Seller
+                    </span>
+                  </div>
+                  <p style={{ fontSize: 12.5, fontWeight: 800, color: "#fff", margin: "0 0 5px", letterSpacing: "0.01em" }}>Black Kahotea</p>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                    <span style={{ fontSize: 14, fontWeight: 900, color: "#2E8B28" }}>$32.00</span>
+                    <div style={{ display: "flex", gap: 1 }}>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} style={{ width: 9, height: 9, color: "#2E8B28", fill: "#2E8B28" }} />
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ background: "#2E8B28", borderRadius: 8, padding: "9px 0", textAlign: "center", fontSize: 10, fontWeight: 800, color: "#fff", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                    Shop Now
+                  </div>
                 </Link>
-                <Link href="/shop?collection=limited" className="btn-outline-hero">
-                  View Limited Drop
-                </Link>
+                <p style={{ fontSize: 10, color: "rgba(255,255,255,0.18)", textAlign: "center", marginTop: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                  2,500+ Sold
+                </p>
               </div>
+
             </div>
           </div>
 
@@ -491,7 +558,7 @@ export default async function HomePage() {
                   "GRIP UP",
                   "STAND PROUD",
                   "UNAPOLOGETICALLY MĀORI",
-                  "30-DAY GRIP GUARANTEE",
+                  "UNWORN RETURNS ACCEPTED",
                   "FREE CLUB MOCKUPS",
                   "MASTERTON, NZ",
                   "NZ SHIPPING 2–4 DAYS",
@@ -524,7 +591,7 @@ export default async function HomePage() {
         <section className="collections-section">
           <div className="collections-container">
             <div className="collections-header">
-              <p className="collections-label">New Arrivals</p>
+              <p className="collections-label">Shop by Collection</p>
               <h2 className="font-display collections-title">COLLECTIONS</h2>
             </div>
 
@@ -680,7 +747,7 @@ export default async function HomePage() {
                   Custom grip socks with your club logo and colours. Free design. MOQ 50 pairs. We build it — you sell it, keep the margin.
                 </p>
                 <p style={{ color: "rgba(255,255,255,0.32)", lineHeight: 1.7, maxWidth: 420, marginBottom: 32, fontSize: 14 }}>
-                  Buy 50 pairs at $12 each. Sell at $25. Your club keeps <strong style={{ color: "#2E8B28" }}>$650</strong> — no sausage sizzle required.
+                  One order. Your logo. Your colours. Your club keeps the margin — no sausage sizzle required.
                 </p>
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                   <Link href="/clubs" className="btn-green-sm">
@@ -691,18 +758,17 @@ export default async function HomePage() {
                   </Link>
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                {[
-                  { stat: "Free", label: "Design & Mockup" },
-                  { stat: "50+", label: "Minimum Order" },
-                  { stat: "$650", label: "Club Revenue (50 pairs)" },
-                  { stat: "100%", label: "Custom — Your Brand" },
-                ].map(({ stat, label }) => (
-                  <div key={label} style={{ background: "#0d1f12", borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)", padding: "1.5rem", textAlign: "center" }}>
-                    <p className="font-display font-black" style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)", color: "#2E8B28", lineHeight: 1, marginBottom: 8 }}>{stat}</p>
-                    <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)" }}>{label}</p>
-                  </div>
-                ))}
+              <div style={{ background: "#0d1f12", borderRadius: 20, border: "1px solid rgba(46,139,40,0.2)", padding: "3rem 2rem", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(46,139,40,0.1)", border: "1px solid rgba(46,139,40,0.25)", borderRadius: 999, padding: "6px 16px" }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#2E8B28", display: "inline-block" }} />
+                  <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.25em", textTransform: "uppercase", color: "#2E8B28" }}>Coming Soon</span>
+                </div>
+                <p className="font-display font-black" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "#ffffff", lineHeight: 0.95, letterSpacing: "-0.02em", margin: 0 }}>
+                  CLUB ORDERS<br /><span style={{ color: "#2E8B28" }}>OPENING SOON</span>
+                </p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", lineHeight: 1.6, maxWidth: 280, margin: 0 }}>
+                  Custom club orders are launching soon. Get in touch to be first in line.
+                </p>
               </div>
             </div>
           </div>
@@ -724,7 +790,7 @@ export default async function HomePage() {
               style={{ borderLeft: "1px solid rgba(255,255,255,0.07)" }}
             >
               {[
-                { num: "200+",  label: "Happy Customers" },
+                { num: "5,000+", label: "Happy Customers" },
                 { num: "4.9★",  label: "Customer Rating" },
                 { num: "2–4",   label: "Days NZ Delivery" },
               ].map(({ num, label }) => (
@@ -774,7 +840,7 @@ export default async function HomePage() {
               </div>
               <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
                 {[
-                  { num: "55+", label: "Players in Nine2Five" },
+                  { num: "55+", label: "Players Sponsored" },
                   { num: "2025", label: "Season Sponsor" },
                   { num: "NZ", label: "University Rugby" },
                 ].map(({ num, label }) => (
@@ -921,7 +987,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <span style={{ fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1 }}>4.9</span>
-              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>from 200+ verified customers</span>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>from 5,000+ verified customers</span>
             </div>
             {/* Cards */}
             <div className="testimonials-grid">
@@ -960,23 +1026,23 @@ export default async function HomePage() {
               <style>{`.guarantee-grid { } @media (max-width: 640px) { .guarantee-grid { grid-template-columns: 1fr !important; } }`}</style>
               {[
                 {
-                  icon: "🛡",
-                  title: "30-Day Grip Guarantee",
-                  desc: "If the grip isn't performing within 30 days, we replace them. No questions asked.",
+                  icon: <Shield style={{ width: 24, height: 24, color: "#2E8B28" }} />,
+                  title: "Easy Returns",
+                  desc: "Changed your mind or wrong size? We accept returns on unworn, unwashed pairs. Contact us and we'll sort it.",
                 },
                 {
-                  icon: "✦",
+                  icon: <Paintbrush style={{ width: 24, height: 24, color: "#2E8B28" }} />,
                   title: "Free Club Mockups",
                   desc: "Your logo. Your colours. We design it for free — you only pay when you're happy.",
                 },
                 {
-                  icon: "⚡",
+                  icon: <Zap style={{ width: 24, height: 24, color: "#2E8B28" }} />,
                   title: "Ships in 24 Hours",
                   desc: "Order before 2pm. We pack and send the same business day. NZ delivery 2–4 days.",
                 },
               ].map(({ icon, title, desc }) => (
                 <div key={title} style={{ padding: "2.5rem 2rem", background: "#0d1f12", borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)" }}>
-                  <p style={{ fontSize: 28, marginBottom: 16 }}>{icon}</p>
+                  <div style={{ marginBottom: 16 }}>{icon}</div>
                   <p style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", marginBottom: 10 }}>{title}</p>
                   <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.65 }}>{desc}</p>
                 </div>
@@ -1023,12 +1089,12 @@ export default async function HomePage() {
               style={{
                 color: "rgba(255,255,255,0.32)",
                 fontSize: 16,
-                maxWidth: 400,
+                maxWidth: 420,
                 margin: "0 auto 1.5rem",
                 lineHeight: 1.65,
               }}
             >
-              Every pair is backed by our 30-day grip guarantee. If they don't perform, we replace them — no questions.
+              Grip socks forged from Māori identity. Every design carries whakapapa — made for athletes who move with purpose.
             </p>
             <p style={{ color: "rgba(255,255,255,0.18)", fontSize: 13, maxWidth: 340, margin: "0 auto 3rem", lineHeight: 1.6 }}>
               NZ-owned. Māori-led. Masterton, New Zealand.
