@@ -10,13 +10,13 @@ export function BundleNudge() {
   if (count === 0) {
     msg = { strong: "Bundle & save:", rest: "2 pairs $55 · 3 pairs $75 · 5 pairs $105 ($21/pair)" };
   } else if (count === 1) {
-    msg = { strong: "Add 1 more pair → save $9.", rest: "Bundle discount applied automatically at checkout." };
+    msg = { strong: "Add 1 more pair → save $7.", rest: "Bundle discount applied automatically at checkout." };
   } else if (count === 2) {
-    msg = { strong: "$9 bundle discount active.", rest: "Add 1 more pair → save $21 total." };
+    msg = { strong: "$7 bundle discount active.", rest: "Add 1 more pair → save $18 total." };
   } else if (count >= 3 && count < 5) {
-    msg = { strong: "$21 bundle discount active.", rest: `Add ${5 - count} more pair${5 - count > 1 ? "s" : ""} → save $55 total ($21/pair).` };
+    msg = { strong: "$18 bundle discount active.", rest: `Add ${5 - count} more pair${5 - count > 1 ? "s" : ""} → save $50 total ($21/pair).` };
   } else {
-    msg = { strong: "$55 bundle discount active.", rest: "$21/pair — best value unlocked." };
+    msg = { strong: "$50 bundle discount active.", rest: "$21/pair — best value unlocked." };
   }
 
   return (

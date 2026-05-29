@@ -4,7 +4,7 @@ export const PRODUCTS = [
     name: "Black Kahotea",
     slug: "black-kahotea",
     description: "The one that started it all. The Black Kahotea grips the turf, the gym floor, and the mat — so you can focus on your game, not your feet. Best-seller. Worn by players who don't slip under pressure. Tested grip pattern, compression support, and cushion comfort built for rugby, training, and everything in between.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/black-kahotea/1.avif",
@@ -17,7 +17,7 @@ export const PRODUCTS = [
     name: "Grey Kahotea",
     slug: "grey-kahotea",
     description: "The clean training sock. Grey Kahotea holds its grip rep after rep — whether you're in a box jump, a lunge, or a full training session. Same tested grip pattern as the Black Kahotea. Versatile colourway that goes with anything. Compression fit keeps your foot locked in so your technique stays sharp.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/grey-kahotea/1.avif",
@@ -29,7 +29,7 @@ export const PRODUCTS = [
     name: "White Kahotea",
     slug: "white-kahotea",
     description: "Built for pilates, barre, and gym — and clean enough to wear all day. The White Kahotea won't bunch, won't slip, and won't lose its shape after washing. The grip panel placement is exactly where your foot needs it in a lunge, a plank, or a downward dog. A fan favourite for a reason.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/white-kahotea/1.avif",
@@ -42,7 +42,7 @@ export const PRODUCTS = [
     name: "Pink Kahotea",
     slug: "pink-kahotea",
     description: "The gym sock people ask about. The Pink Kahotea turns heads and holds grip — whether you're mid-rep, mid-game, or mid-run. Designed for pilates, touch rugby, gym, and general training. Bold Kahotea Māori detailing because your socks should say something before you even move.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/pink-kahotea/1.avif",
@@ -56,7 +56,7 @@ export const PRODUCTS = [
     name: "Toa Whenua",
     slug: "toa-whenua",
     description: "Toa Whenua — Warrior of the Land. This design carries meaning before your first step. Cushion comfort for long sessions, compression support to reduce fatigue, and a tested grip pattern that holds whether you're on turf, court, or gym floor. Wear your whakapapa. Perform with purpose.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/toa-whenua/1.webp",
@@ -68,7 +68,7 @@ export const PRODUCTS = [
     name: "Pasifika",
     slug: "pasifika",
     description: "Limited edition. The Pasifika celebrates the unity of Polynesian culture and sport — and once this run sells out, it's gone. Same grip sole pattern, compression support, and cushion comfort as the full range. Wear it to the gym, the field, or the court. Rep your culture in every session.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/pasifika/1.avif",
@@ -80,7 +80,7 @@ export const PRODUCTS = [
     name: "Basic Black",
     slug: "basic-black",
     description: "No frills. Pure grip. The Basic Black is for athletes who want reliable traction without the design noise. Same tested grip pattern, compression fit, and cushion comfort — just in a clean all-black colourway. Goes with everything. Built to last.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/basic-black/2.webp",
@@ -93,7 +93,7 @@ export const PRODUCTS = [
     name: "Basic White",
     slug: "basic-white",
     description: "Clean, minimal, and built to grip. The Basic White is the everyday training sock — no distractions, just performance. Same grip sole as the full range. Crisp white colourway that pairs with any gym kit. If you want grip without the statement, this is it.",
-    price: 3200,
+    price: 3100,
     compare_at_price: null,
     image_urls: [
       "/products/basic-white/3.webp",

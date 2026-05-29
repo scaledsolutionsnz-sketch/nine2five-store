@@ -49,8 +49,8 @@ export default async function ShopPage() {
       title: "2 Pairs",
       subtitle: "Mix designs — one for training, one for game day",
       price: "$55",
-      was: "$64",
-      save: "Save $9",
+      was: "$62",
+      save: "Save $7",
       pairs: 2,
       href: "/shop",
     },
@@ -59,8 +59,8 @@ export default async function ShopPage() {
       title: "3 Pairs",
       subtitle: "The sweet spot — one for every session",
       price: "$75",
-      was: "$96",
-      save: "Save $21",
+      was: "$93",
+      save: "Save $18",
       pairs: 3,
       href: "/shop",
     },
@@ -69,8 +69,8 @@ export default async function ShopPage() {
       title: "5 Pairs",
       subtitle: "$21/pair — stock up and never run out",
       price: "$105",
-      was: "$160",
-      save: "Save $55",
+      was: "$155",
+      save: "Save $50",
       pairs: 5,
       href: "/shop",
     },
@@ -164,7 +164,7 @@ export default async function ShopPage() {
           </div>
 
           {/* All products */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $32 each</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $31 each</p>
           <ShopGrid products={products} />
 
           {/* Club CTA */}

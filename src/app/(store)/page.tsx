@@ -492,7 +492,7 @@ export default async function HomePage() {
                   </div>
                   <p style={{ fontSize: 12.5, fontWeight: 800, color: "#fff", margin: "0 0 5px", letterSpacing: "0.01em" }}>Black Kahotea</p>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, fontWeight: 900, color: "#2E8B28" }}>$32.00</span>
+                    <span style={{ fontSize: 14, fontWeight: 900, color: "#2E8B28" }}>$31.00</span>
                     <div style={{ display: "flex", gap: 1 }}>
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} style={{ width: 9, height: 9, color: "#2E8B28", fill: "#2E8B28" }} />
