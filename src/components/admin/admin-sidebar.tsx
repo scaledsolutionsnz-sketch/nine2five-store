@@ -76,15 +76,15 @@ export function AdminSidebar({ email }: { email: string }) {
       style={{ backgroundColor: "#07180E", borderRight: "1px solid rgba(46,139,40,0.15)" }}
     >
       {/* Logo */}
-      <div className="px-6 pt-7 pb-6 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <Link href="/admin" style={{ textDecoration: "none" }}>
+      <div style={{ padding: "28px 24px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
+        <Link href="/admin" style={{ textDecoration: "none", display: "block" }}>
           <p
             className="font-display font-black leading-none"
-            style={{ fontSize: 22, letterSpacing: "-0.04em", color: "#ffffff" }}
+            style={{ fontSize: 24, letterSpacing: "-0.04em", color: "#ffffff" }}
           >
             NINE<span style={{ color: "#2f9b2f" }}>2</span>FIVE
           </p>
-          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginTop: 6 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginTop: 8 }}>
             Admin Panel
           </p>
         </Link>

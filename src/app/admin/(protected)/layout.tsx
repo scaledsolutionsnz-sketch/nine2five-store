@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="flex-1 flex flex-col min-h-screen" style={{ backgroundColor: "#06150C" }}>
         <AdminTopbar />
         <main className="flex-1">
-          <div className="px-8 pt-8 pb-12 max-w-[1600px]">
+          <div className="px-10 pt-10 pb-16 max-w-[1600px]">
             {children}
           </div>
         </main>

@@ -337,9 +337,9 @@ export function AmbassadorsClient({ applications: initial }: { applications: App
                 key={app.id}
                 onClick={() => setSelected(app)}
                 style={{
-                  borderRadius: 14, padding: "16px 20px", cursor: "pointer",
+                  borderRadius: 16, padding: "20px 24px", cursor: "pointer",
                   background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
-                  display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+                  display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap",
                   transition: "background 0.12s",
                 }}
                 onMouseEnter={e => (e.currentTarget.style.background = "rgba(46,139,40,0.1)")}
