@@ -65,7 +65,7 @@ interface Customer {
 
 const STATUS_CONFIG: Record<ThreadStatus, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
   needs_reply:       { label: "Needs Reply",       color: "#ef4444", bg: "rgba(239,68,68,0.12)",    icon: <AlertCircle style={{ width: 11, height: 11 }} /> },
-  replied:           { label: "Replied",           color: "#2E8B28", bg: "rgba(46,139,40,0.12)",    icon: <CheckCircle style={{ width: 11, height: 11 }} /> },
+  replied:           { label: "Replied",           color: "#2f9b2f", bg: "rgba(47,155,47,0.12)",    icon: <CheckCircle style={{ width: 11, height: 11 }} /> },
   waiting_on_client: { label: "Waiting on Client", color: "#f59e0b", bg: "rgba(245,158,11,0.12)",   icon: <Clock style={{ width: 11, height: 11 }} /> },
   follow_up_later:   { label: "Follow Up Later",   color: "#8b5cf6", bg: "rgba(139,92,246,0.12)",   icon: <Calendar style={{ width: 11, height: 11 }} /> },
   closed:            { label: "Closed",            color: "rgba(255,255,255,0.3)", bg: "rgba(255,255,255,0.06)", icon: <Archive style={{ width: 11, height: 11 }} /> },
@@ -104,7 +104,7 @@ function initials(name: string | null, email: string): string {
   return email.slice(0, 2).toUpperCase();
 }
 
-const AVATAR_COLORS = ["#2E8B28", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4"];
+const AVATAR_COLORS = ["#2f9b2f", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4"];
 function avatarColor(email: string): string {
   let h = 0;
   for (let i = 0; i < email.length; i++) h += email.charCodeAt(i);
@@ -359,29 +359,29 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
         <div style={{
           maxWidth: 480, textAlign: "center", padding: "48px 40px",
-          background: "#07180E", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20,
+          background: "rgba(8,28,16,0.92)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 20,
         }}>
-          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(46,139,40,0.1)", border: "1px solid rgba(46,139,40,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-            <Mail style={{ width: 28, height: 28, color: "#2E8B28" }} />
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(47,155,47,0.1)", border: "1px solid rgba(47,155,47,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+            <Mail style={{ width: 28, height: 28, color: "#2f9b2f" }} />
           </div>
-          <h2 className="font-display font-black text-white" style={{ fontSize: "1.5rem", marginBottom: 12 }}>Connect Gmail</h2>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14, lineHeight: 1.6, marginBottom: 32 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 900, color: "#ffffff", marginBottom: 12 }}>Connect Gmail</h2>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6, marginBottom: 32 }}>
             Connect your Gmail account to start managing client emails directly from the CRM. You&apos;ll need to add your Gmail API credentials in Vercel first.
           </p>
-          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "16px 20px", marginBottom: 28, textAlign: "left" }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: "#2E8B28", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 10 }}>Setup Required</p>
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 12, padding: "16px 20px", marginBottom: 28, textAlign: "left" }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: "#2f9b2f", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 10 }}>Setup Required</p>
             <ol style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, lineHeight: 1.7, paddingLeft: 16, margin: 0 }}>
               <li>Create a Google Cloud project &amp; enable Gmail API</li>
               <li>Create OAuth 2.0 credentials</li>
-              <li>Set redirect URI: <code style={{ color: "#2E8B28", fontSize: 11 }}>https://nine2five.nz/api/admin/gmail/callback</code></li>
-              <li>Add to Vercel: <code style={{ color: "#2E8B28", fontSize: 11 }}>GMAIL_CLIENT_ID</code>, <code style={{ color: "#2E8B28", fontSize: 11 }}>GMAIL_CLIENT_SECRET</code></li>
+              <li>Set redirect URI: <code style={{ color: "#2f9b2f", fontSize: 11 }}>https://nine2five.nz/api/admin/gmail/callback</code></li>
+              <li>Add to Vercel: <code style={{ color: "#2f9b2f", fontSize: 11 }}>GMAIL_CLIENT_ID</code>, <code style={{ color: "#2f9b2f", fontSize: 11 }}>GMAIL_CLIENT_SECRET</code></li>
             </ol>
           </div>
           <a
             href="/api/admin/gmail/auth"
             style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              background: "#2E8B28", color: "#fff", padding: "12px 28px",
+              background: "#2f9b2f", color: "#fff", padding: "12px 28px",
               borderRadius: 999, fontSize: 13, fontWeight: 700, textDecoration: "none",
               letterSpacing: "0.06em", textTransform: "uppercase",
             }}
@@ -400,17 +400,17 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
 
       {/* ── LEFT: Thread list ─────────────────────────────────────────────── */}
       <div style={{
-        width: 300, flexShrink: 0, borderRight: "1px solid rgba(255,255,255,0.07)",
-        background: "#07180E", display: "flex", flexDirection: "column", overflow: "hidden",
+        width: 300, flexShrink: 0, borderRight: "1px solid rgba(255,255,255,0.09)",
+        background: "rgba(8,28,16,0.92)", display: "flex", flexDirection: "column", overflow: "hidden",
       }}>
         {/* Header */}
-        <div style={{ padding: "20px 16px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+        <div style={{ padding: "20px 16px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Mail style={{ width: 15, height: 15, color: "#2E8B28" }} />
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Inbox</span>
+              <Mail style={{ width: 15, height: 15, color: "#2f9b2f" }} />
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>Inbox</span>
               {needsReplyCount > 0 && (
-                <span style={{ background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, padding: "2px 7px", borderRadius: 999 }}>
+                <span style={{ background: "#2f9b2f", color: "#fff", fontSize: 10, fontWeight: 800, padding: "2px 7px", borderRadius: 999 }}>
                   {needsReplyCount}
                 </span>
               )}
@@ -418,7 +418,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
             <button
               onClick={sync}
               disabled={syncing}
-              style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 10px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "rgba(255,255,255,0.6)", fontSize: 11, fontWeight: 600, cursor: "pointer" }}
+              style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 10px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: 600, cursor: "pointer" }}
             >
               <RefreshCw style={{ width: 11, height: 11, animation: syncing ? "spin 1s linear infinite" : "none" }} />
               {syncing ? "Syncing…" : "Sync"}
@@ -427,26 +427,26 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
 
           {/* Search */}
           <div style={{ position: "relative", marginBottom: 12 }}>
-            <Search style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", width: 12, height: 12, color: "rgba(255,255,255,0.3)" }} />
+            <Search style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", width: 12, height: 12, color: "rgba(255,255,255,0.35)" }} />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search…"
-              style={{ width: "100%", height: 34, paddingLeft: 30, paddingRight: 10, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, color: "#F7F7F2", fontSize: 12, outline: "none" }}
+              style={{ width: "100%", height: 34, paddingLeft: 30, paddingRight: 10, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", fontSize: 12, outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
           {/* Filter tabs */}
-          <div style={{ display: "flex", gap: 2, overflowX: "auto", paddingBottom: 12 }} className="scrollbar-hide">
+          <div style={{ display: "flex", gap: 2, overflowX: "auto", paddingBottom: 12, scrollbarWidth: "none" }}>
             {FILTERS.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setActiveFilter(key)}
                 style={{
                   flexShrink: 0, padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                  background: activeFilter === key ? "#2E8B28" : "transparent",
+                  background: activeFilter === key ? "#2f9b2f" : "transparent",
                   color: activeFilter === key ? "#fff" : "rgba(255,255,255,0.4)",
-                  border: `1px solid ${activeFilter === key ? "#2E8B28" : "rgba(255,255,255,0.08)"}`,
+                  border: `1px solid ${activeFilter === key ? "#2f9b2f" : "rgba(255,255,255,0.09)"}`,
                 }}
               >
                 {label}
@@ -456,10 +456,10 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
         </div>
 
         {/* Thread list */}
-        <div style={{ flex: 1, overflowY: "auto" }} className="scrollbar-hide">
+        <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none" }}>
           {filtered.length === 0 ? (
             <div style={{ padding: 24, textAlign: "center" }}>
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>No conversations</p>
+              <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>No conversations</p>
             </div>
           ) : (
             filtered.map((t) => {
@@ -471,9 +471,9 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                   onClick={() => selectThread(t.id)}
                   style={{
                     display: "block", width: "100%", textAlign: "left", padding: "12px 14px",
-                    background: active ? "rgba(46,139,40,0.1)" : "transparent",
-                    borderLeft: `2px solid ${active ? "#2E8B28" : "transparent"}`,
-                    borderBottom: "1px solid rgba(255,255,255,0.04)",
+                    background: active ? "rgba(47,155,47,0.1)" : "transparent",
+                    borderLeft: `${active ? "3px" : "2px"} solid ${active ? "#2f9b2f" : "transparent"}`,
+                    borderBottom: "1px solid rgba(255,255,255,0.06)",
                     cursor: "pointer", transition: "background 0.15s",
                   }}
                 >
@@ -489,14 +489,14 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                     </div>
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#F7F7F2", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#ffffff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {t.participant_name || t.participant_email}
                         </span>
-                        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", flexShrink: 0, marginLeft: 6 }}>
+                        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", flexShrink: 0, marginLeft: 6 }}>
                           {timeAgo(t.updated_at)}
                         </span>
                       </div>
-                      <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: 5 }}>
+                      <p style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: 5 }}>
                         {t.subject}
                       </p>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -517,9 +517,9 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
 
         {/* Footer */}
         {gmailEmail && (
-          <div style={{ padding: "10px 14px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 6 }}>
-            <Wifi style={{ width: 11, height: 11, color: "#2E8B28" }} />
-            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>{gmailEmail}</span>
+          <div style={{ padding: "10px 14px", borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: 6 }}>
+            <Wifi style={{ width: 11, height: 11, color: "#2f9b2f" }} />
+            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)" }}>{gmailEmail}</span>
           </div>
         )}
       </div>
@@ -530,25 +530,25 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ textAlign: "center" }}>
               <MessageSquare style={{ width: 40, height: 40, color: "rgba(255,255,255,0.1)", margin: "0 auto 16px" }} />
-              <p style={{ color: "rgba(255,255,255,0.25)", fontSize: 14 }}>Select a conversation</p>
+              <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 14 }}>Select a conversation</p>
             </div>
           </div>
         ) : loadingThread ? (
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Loader2 style={{ width: 24, height: 24, color: "#2E8B28", animation: "spin 1s linear infinite" }} />
+            <Loader2 style={{ width: 24, height: 24, color: "#2f9b2f", animation: "spin 1s linear infinite" }} />
           </div>
         ) : (
           <>
             {/* Thread header */}
-            <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.07)", background: "#07180E", flexShrink: 0 }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(8,28,16,0.92)", flexShrink: 0 }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                 <div style={{ minWidth: 0 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: "#F7F7F2", marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {threadDetail?.subject}
                   </h3>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     {threadDetail && <StatusBadge status={threadDetail.status} />}
-                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
+                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>
                       {messages.length} message{messages.length !== 1 ? "s" : ""}
                     </span>
                   </div>
@@ -557,7 +557,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                 <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                   {threadDetail?.status !== "replied" && (
                     <button onClick={() => updateStatus(selectedId, "replied")}
-                      style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", background: "rgba(46,139,40,0.1)", border: "1px solid rgba(46,139,40,0.2)", borderRadius: 7, color: "#2E8B28", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                      style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", background: "rgba(47,155,47,0.1)", border: "1px solid rgba(47,155,47,0.2)", borderRadius: 7, color: "#2f9b2f", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
                       <CheckCircle style={{ width: 11, height: 11 }} /> Replied
                     </button>
                   )}
@@ -573,7 +573,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                   </button>
                   {threadDetail?.status !== "closed" && (
                     <button onClick={() => updateStatus(selectedId, "closed")}
-                      style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 7, color: "rgba(255,255,255,0.4)", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                      style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 7, color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
                       <Archive style={{ width: 11, height: 11 }} /> Close
                     </button>
                   )}
@@ -582,7 +582,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
             </div>
 
             {/* Messages */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px" }} className="scrollbar-hide">
+            <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", scrollbarWidth: "none" }}>
               {messages.map((msg, i) => {
                 const isOut = msg.direction === "outbound";
                 return (
@@ -591,7 +591,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                       <div style={{
                         width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                        background: isOut ? "#2E8B28" : avatarColor(msg.from_email),
+                        background: isOut ? "#2f9b2f" : avatarColor(msg.from_email),
                         display: "flex", alignItems: "center", justifyContent: "center",
                       }}>
                         <span style={{ fontSize: 10, fontWeight: 800, color: "#fff" }}>
@@ -599,23 +599,23 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                         </span>
                       </div>
                       <div>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#F7F7F2" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>
                           {isOut ? "You" : (msg.from_name || msg.from_email)}
                         </span>
-                        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>
+                        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginLeft: 8 }}>
                           {new Date(msg.sent_at).toLocaleString("en-NZ", { dateStyle: "medium", timeStyle: "short" })}
                         </span>
                       </div>
                       {isOut && (
-                        <span style={{ marginLeft: "auto", fontSize: 9, color: "#2E8B28", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>Sent</span>
+                        <span style={{ marginLeft: "auto", fontSize: 9, color: "#2f9b2f", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>Sent</span>
                       )}
                     </div>
                     {/* Message body */}
                     <div style={{
                       marginLeft: 38,
                       padding: "14px 16px",
-                      background: isOut ? "rgba(46,139,40,0.07)" : "rgba(255,255,255,0.04)",
-                      border: `1px solid ${isOut ? "rgba(46,139,40,0.15)" : "rgba(255,255,255,0.07)"}`,
+                      background: isOut ? "rgba(47,155,47,0.07)" : "rgba(255,255,255,0.04)",
+                      border: `1px solid ${isOut ? "rgba(47,155,47,0.15)" : "rgba(255,255,255,0.09)"}`,
                       borderRadius: 12,
                     }}>
                       {msg.body_html ? (
@@ -636,19 +636,19 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
             </div>
 
             {/* Reply box */}
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", background: "#07180E", flexShrink: 0 }}>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", background: "rgba(8,28,16,0.92)", flexShrink: 0 }}>
               {/* Reply fields */}
-              <div style={{ padding: "12px 16px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ padding: "12px 16px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
                 {[
                   { label: "To", value: replyTo, onChange: setReplyTo },
                   { label: "Subject", value: replySubject, onChange: setReplySubject },
                 ].map(({ label, value, onChange }) => (
                   <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.3)", width: 48, letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0 }}>{label}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)", width: 48, letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0 }}>{label}</span>
                     <input
                       value={value}
                       onChange={(e) => onChange(e.target.value)}
-                      style={{ flex: 1, height: 28, background: "transparent", border: "none", borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#F7F7F2", fontSize: 12, outline: "none" }}
+                      style={{ flex: 1, height: 28, background: "transparent", border: "none", borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#fff", fontSize: 12, outline: "none" }}
                     />
                   </div>
                 ))}
@@ -659,18 +659,18 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                       { label: "BCC", value: replyBcc, onChange: setReplyBcc },
                     ].map(({ label, value, onChange }) => (
                       <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                        <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.3)", width: 48, letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0 }}>{label}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)", width: 48, letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0 }}>{label}</span>
                         <input
                           value={value}
                           onChange={(e) => onChange(e.target.value)}
-                          style={{ flex: 1, height: 28, background: "transparent", border: "none", borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#F7F7F2", fontSize: 12, outline: "none" }}
+                          style={{ flex: 1, height: 28, background: "transparent", border: "none", borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#fff", fontSize: 12, outline: "none" }}
                         />
                       </div>
                     ))}
                   </>
                 )}
                 <button onClick={() => setShowCcBcc((v) => !v)}
-                  style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", background: "none", border: "none", cursor: "pointer", marginBottom: 8, padding: 0, display: "flex", alignItems: "center", gap: 3 }}>
+                  style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", background: "none", border: "none", cursor: "pointer", marginBottom: 8, padding: 0, display: "flex", alignItems: "center", gap: 3 }}>
                   <ChevronDown style={{ width: 10, height: 10, transform: showCcBcc ? "rotate(180deg)" : "none" }} />
                   {showCcBcc ? "Hide CC/BCC" : "Add CC / BCC"}
                 </button>
@@ -684,8 +684,8 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                 rows={6}
                 style={{
                   width: "100%", padding: "12px 16px", background: "transparent",
-                  border: "none", color: "#F7F7F2", fontSize: 13, lineHeight: 1.6,
-                  resize: "none", outline: "none", fontFamily: "inherit",
+                  border: "none", color: "#fff", fontSize: 13, lineHeight: 1.6,
+                  resize: "none", outline: "none", fontFamily: "inherit", boxSizing: "border-box",
                 }}
               />
 
@@ -701,7 +701,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                     onChange={(e) => setAiInstructions(e.target.value)}
                     placeholder="e.g. Make it casual, mention we can deliver by Friday, ask if they want a demo…"
                     rows={2}
-                    style={{ width: "100%", padding: "8px 12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#F7F7F2", fontSize: 12, resize: "none", outline: "none", fontFamily: "inherit", marginBottom: 10 }}
+                    style={{ width: "100%", padding: "8px 12px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", fontSize: 12, resize: "none", outline: "none", fontFamily: "inherit", marginBottom: 10, boxSizing: "border-box" }}
                   />
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
@@ -712,7 +712,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                       {generatingAi ? "Generating…" : "Generate Draft"}
                     </button>
                     <button onClick={() => setShowAiPanel(false)}
-                      style={{ padding: "7px 12px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "rgba(255,255,255,0.4)", fontSize: 12, cursor: "pointer" }}>
+                      style={{ padding: "7px 12px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#fff", fontSize: 12, cursor: "pointer" }}>
                       Cancel
                     </button>
                   </div>
@@ -720,15 +720,15 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
               )}
 
               {/* Actions */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button
                     onClick={sendReply}
                     disabled={sending || !replyBody.trim()}
                     style={{
                       display: "flex", alignItems: "center", gap: 6,
-                      padding: "8px 18px", background: replyBody.trim() ? "#2E8B28" : "rgba(255,255,255,0.06)",
-                      border: "none", borderRadius: 8, color: replyBody.trim() ? "#fff" : "rgba(255,255,255,0.3)",
+                      padding: "8px 18px", background: replyBody.trim() ? "#2f9b2f" : "rgba(255,255,255,0.06)",
+                      border: "none", borderRadius: 8, color: replyBody.trim() ? "#fff" : "rgba(255,255,255,0.35)",
                       fontSize: 12, fontWeight: 700, cursor: replyBody.trim() ? "pointer" : "not-allowed",
                     }}>
                     {sending ? <Loader2 style={{ width: 12, height: 12, animation: "spin 1s linear infinite" }} /> : <Send style={{ width: 12, height: 12 }} />}
@@ -737,7 +737,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                   <button
                     onClick={saveDraft}
                     disabled={savingDraft}
-                    style={{ display: "flex", alignItems: "center", gap: 5, padding: "8px 14px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                    style={{ display: "flex", alignItems: "center", gap: 5, padding: "8px 14px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
                     {savingDraft ? <Loader2 style={{ width: 11, height: 11, animation: "spin 1s linear infinite" }} /> : null}
                     Save Draft
                   </button>
@@ -762,9 +762,9 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
       {/* ── RIGHT: Contact details ────────────────────────────────────────── */}
       {selectedId && threadDetail && (
         <div style={{
-          width: 260, flexShrink: 0, borderLeft: "1px solid rgba(255,255,255,0.07)",
-          background: "#07180E", overflowY: "auto", padding: "20px 16px",
-        }} className="scrollbar-hide">
+          width: 260, flexShrink: 0, borderLeft: "1px solid rgba(255,255,255,0.09)",
+          background: "rgba(8,28,16,0.92)", overflowY: "auto", padding: "20px 16px", scrollbarWidth: "none",
+        }}>
           {/* Avatar */}
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <div style={{
@@ -776,7 +776,7 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                 {initials(threadDetail.participant_name, threadDetail.participant_email)}
               </span>
             </div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: "#F7F7F2", marginBottom: 4 }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: "#ffffff", marginBottom: 4 }}>
               {threadDetail.participant_name || threadDetail.participant_email}
             </p>
             <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{threadDetail.participant_email}</p>
@@ -787,12 +787,12 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
             <StatusBadge status={threadDetail.status} />
           </div>
 
-          <div style={{ height: 1, background: "rgba(255,255,255,0.07)", marginBottom: 16 }} />
+          <div style={{ height: 1, background: "rgba(255,255,255,0.09)", marginBottom: 16 }} />
 
           {/* Customer details */}
           {customer ? (
             <div style={{ marginBottom: 16 }}>
-              <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 12 }}>Customer</p>
+              <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 12 }}>Customer</p>
               {[
                 { icon: <User style={{ width: 11, height: 11 }} />, label: `${customer.first_name} ${customer.last_name}` },
                 { icon: <Mail style={{ width: 11, height: 11 }} />, label: customer.email },
@@ -801,47 +801,47 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
                 { icon: <DollarSign style={{ width: 11, height: 11 }} />, label: `$${((customer.lifetime_value_cents) / 100).toFixed(2)} spent` },
               ].filter(Boolean).map((item, i) => item && (
                 <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8 }}>
-                  <span style={{ color: "#2E8B28", flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+                  <span style={{ color: "#2f9b2f", flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
                   <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>{item.label}</span>
                 </div>
               ))}
               <a
                 href={`/admin/customers?search=${customer.email}`}
-                style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 10, fontSize: 11, color: "#2E8B28", textDecoration: "none", fontWeight: 600 }}>
+                style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 10, fontSize: 11, color: "#2f9b2f", textDecoration: "none", fontWeight: 600 }}>
                 <ExternalLink style={{ width: 11, height: 11 }} /> View in CRM
               </a>
             </div>
           ) : (
             <div style={{ marginBottom: 16 }}>
-              <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 10 }}>Contact</p>
+              <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Contact</p>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <Mail style={{ width: 11, height: 11, color: "#2E8B28" }} />
-                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>{threadDetail.participant_email}</span>
+                <Mail style={{ width: 11, height: 11, color: "#2f9b2f" }} />
+                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>{threadDetail.participant_email}</span>
               </div>
-              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", marginTop: 8 }}>Not in CRM yet</p>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 8 }}>Not in CRM yet</p>
             </div>
           )}
 
-          <div style={{ height: 1, background: "rgba(255,255,255,0.07)", marginBottom: 16 }} />
+          <div style={{ height: 1, background: "rgba(255,255,255,0.09)", marginBottom: 16 }} />
 
           {/* Email activity */}
           <div>
-            <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 12 }}>Email Activity</p>
+            <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 12 }}>Email Activity</p>
             {[
               { label: "Last received", value: threadDetail.last_inbound_at ? timeAgo(threadDetail.last_inbound_at) : "—" },
               { label: "Last sent", value: threadDetail.last_outbound_at ? timeAgo(threadDetail.last_outbound_at) : "—" },
               { label: "Messages", value: String(threadDetail.message_count) },
             ].map(({ label, value }) => (
               <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>{label}</span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.6)" }}>{value}</span>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{label}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.55)" }}>{value}</span>
               </div>
             ))}
           </div>
 
           {/* Quick status actions */}
-          <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "16px 0" }} />
-          <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 10 }}>Quick Actions</p>
+          <div style={{ height: 1, background: "rgba(255,255,255,0.09)", margin: "16px 0" }} />
+          <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Quick Actions</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {(["needs_reply", "replied", "waiting_on_client", "closed"] as ThreadStatus[])
               .filter((s) => s !== threadDetail.status)
@@ -862,25 +862,25 @@ export function InboxClient({ gmailConnected, gmailEmail, lastSyncAt, initialThr
       {showFollowUp && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}
           onClick={() => setShowFollowUp(false)}>
-          <div style={{ background: "#07180E", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: 28, width: 320 }}
+          <div style={{ background: "rgba(8,28,16,0.92)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 16, padding: 28, width: 320 }}
             onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Follow Up Later</h3>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>This conversation will return to your inbox on the selected date.</p>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", marginBottom: 6 }}>Follow Up Later</h3>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginBottom: 20 }}>This conversation will return to your inbox on the selected date.</p>
             <input
               type="datetime-local"
               value={followUpDate}
               onChange={(e) => setFollowUpDate(e.target.value)}
-              style={{ width: "100%", height: 40, padding: "0 12px", background: "#0e2314", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#F7F7F2", fontSize: 13, marginBottom: 16, outline: "none" }}
+              style={{ width: "100%", height: 40, padding: "0 12px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", fontSize: 13, marginBottom: 16, outline: "none", boxSizing: "border-box" }}
             />
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={() => selectedId && followUpDate && updateStatus(selectedId, "follow_up_later", new Date(followUpDate).toISOString())}
                 disabled={!followUpDate}
-                style={{ flex: 1, height: 38, background: followUpDate ? "#8b5cf6" : "rgba(255,255,255,0.06)", border: "none", borderRadius: 8, color: followUpDate ? "#fff" : "rgba(255,255,255,0.3)", fontSize: 12, fontWeight: 700, cursor: followUpDate ? "pointer" : "not-allowed" }}>
+                style={{ flex: 1, height: 38, background: followUpDate ? "#8b5cf6" : "rgba(255,255,255,0.06)", border: "none", borderRadius: 8, color: followUpDate ? "#fff" : "rgba(255,255,255,0.35)", fontSize: 12, fontWeight: 700, cursor: followUpDate ? "pointer" : "not-allowed" }}>
                 Set Reminder
               </button>
               <button onClick={() => setShowFollowUp(false)}
-                style={{ height: 38, padding: "0 16px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "rgba(255,255,255,0.4)", fontSize: 12, cursor: "pointer" }}>
+                style={{ height: 38, padding: "0 16px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#fff", fontSize: 12, cursor: "pointer" }}>
                 Cancel
               </button>
             </div>

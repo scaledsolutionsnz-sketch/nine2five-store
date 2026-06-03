@@ -59,6 +59,7 @@ export async function middleware(request: NextRequest) {
     "/order-confirmed",
     "/auth",
     "/admin/login",
+    "/admin/update-password",
     "/account/login",
     "/account/signup",
     "/affiliate/login",

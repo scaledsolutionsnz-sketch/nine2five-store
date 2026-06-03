@@ -6,7 +6,8 @@ export type OrderStatus =
   | "shipped"
   | "delivered"
   | "cancelled"
-  | "refunded";
+  | "refunded"
+  | "disputed";
 
 export type CampaignStatus = "draft" | "sent";
 
@@ -166,6 +167,9 @@ export interface Affiliate {
   commission_rate: number;     // %
   status: AffiliateStatus;
   stripe_account_id: string | null;
+  payout_bank_name: string | null;
+  payout_bank_account: string | null;
+  terms_accepted_at: string | null;
   total_clicks: number;
   total_conversions: number;
   total_commission_cents: number;

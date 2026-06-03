@@ -67,7 +67,7 @@ function LoginForm() {
             NINE<span style={{ color: "#2f9b2f" }}>2</span>FIVE
           </p>
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
-            Affiliate Portal
+            Ambassador Portal
           </p>
         </div>
 

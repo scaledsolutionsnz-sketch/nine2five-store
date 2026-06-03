@@ -13,6 +13,12 @@ export default async function DiscountsPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#06150C", color: "#f8f8f2", padding: "32px 28px" }}>
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
+        <div>
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>Discounts</h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>Manage discount codes and promotions.</p>
+        </div>
+      </div>
       <DiscountsClient codes={(data ?? []) as DiscountCode[]} />
     </div>
   );

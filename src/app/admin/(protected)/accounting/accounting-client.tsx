@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Download, Loader2, TrendingUp, RefreshCw, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,73 +53,137 @@ function StripePanel() {
 
   useEffect(() => { load(); }, []);
 
-  const statusColor: Record<string, string> = {
-    paid:        "bg-[#D5F1E2] text-[#166B3B]",
-    in_transit:  "bg-[#FFF4CC] text-[#9A5B00]",
-    pending:     "bg-[#F3F4F6] text-[#6B7280]",
-    failed:      "bg-[#FEE2E2] text-[#991B1B]",
-    canceled:    "bg-[#FEE2E2] text-[#991B1B]",
+  const statusStyle: Record<string, React.CSSProperties> = {
+    paid:       { background: "rgba(47,155,47,0.2)",   color: "#4ade80", border: "1px solid rgba(47,155,47,0.3)" },
+    in_transit: { background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.25)" },
+    pending:    { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" },
+    failed:     { background: "rgba(239,68,68,0.15)",  color: "#f87171", border: "1px solid rgba(239,68,68,0.25)" },
+    canceled:   { background: "rgba(239,68,68,0.15)",  color: "#f87171", border: "1px solid rgba(239,68,68,0.25)" },
   };
 
   return (
-    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="font-semibold text-sm text-[#1F2937]">Stripe Account</h2>
+    <div style={{
+      padding: 24,
+      borderRadius: 14,
+      background: "rgba(8,28,16,0.92)",
+      border: "1px solid rgba(255,255,255,0.09)",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+        <h2 style={{ fontWeight: 600, fontSize: 14, color: "#ffffff", margin: 0 }}>Stripe Account</h2>
         <button
           onClick={load}
           disabled={loading}
-          className="h-7 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#334155] rounded hover:bg-[#F3F5F8] transition-colors disabled:opacity-40"
+          style={{
+            height: 28,
+            width: 28,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "rgba(255,255,255,0.5)",
+            background: "transparent",
+            border: "none",
+            borderRadius: 6,
+            cursor: loading ? "not-allowed" : "pointer",
+            opacity: loading ? 0.4 : 1,
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.06)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
         >
-          <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
+          <RefreshCw style={{ width: 14, height: 14, ...(loading ? { animation: "spin 1s linear infinite" } : {}) }} />
         </button>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-sm text-[#92400E] bg-[#FEF3C7] border border-[#FDE68A] px-3 py-2 rounded-lg mb-4">
-          <AlertCircle className="h-4 w-4 shrink-0" />
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          fontSize: 13,
+          color: "#f87171",
+          background: "rgba(239,68,68,0.15)",
+          border: "1px solid rgba(239,68,68,0.25)",
+          padding: "8px 12px",
+          borderRadius: 10,
+          marginBottom: 16,
+        }}>
+          <AlertCircle style={{ width: 16, height: 16, flexShrink: 0 }} />
           {error === "Unauthorized" ? "Not authorised" : "Could not load Stripe balance — check your STRIPE_SECRET_KEY env var"}
         </div>
       )}
 
       {balance && (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="p-4 rounded-[14px] bg-[#F3F5F8] border border-[#E2E8F0]">
-              <p className="text-xs text-[#6B7280] mb-1">Available</p>
-              <p className="font-bold text-2xl text-[#1F2937] font-mono">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+            <div style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 12,
+              padding: 16,
+            }}>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "0 0 4px 0" }}>Available</p>
+              <p style={{ fontWeight: 700, fontSize: 24, color: "#4ade80", fontFamily: "monospace", margin: 0 }}>
                 {dollars(balance.available_cents)}
               </p>
-              <p className="text-xs text-[#8A94A6] mt-0.5 uppercase">{balance.currency}</p>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 2, textTransform: "uppercase" }}>
+                {balance.currency}
+              </p>
             </div>
-            <div className="p-4 rounded-[14px] bg-[#F3F5F8] border border-[#E2E8F0]">
-              <p className="text-xs text-[#6B7280] mb-1">Pending</p>
-              <p className="font-bold text-2xl text-[#6B7280] font-mono">
+            <div style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 12,
+              padding: 16,
+            }}>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "0 0 4px 0" }}>Pending</p>
+              <p style={{ fontWeight: 700, fontSize: 24, color: "rgba(255,255,255,0.5)", fontFamily: "monospace", margin: 0 }}>
                 {dollars(balance.pending_cents)}
               </p>
-              <p className="text-xs text-[#8A94A6] mt-0.5">Clearing</p>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>Clearing</p>
             </div>
           </div>
 
           {balance.payouts.length > 0 && (
             <>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#6B7280] mb-3">
+              <p style={{
+                fontSize: 11,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "rgba(255,255,255,0.35)",
+                marginBottom: 12,
+              }}>
                 Recent Payouts
               </p>
-              <div className="space-y-2">
-                {balance.payouts.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between py-2 border-b border-[#E5EAF1] last:border-0">
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                {balance.payouts.map((p, i) => (
+                  <div key={p.id} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom: i < balance.payouts.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                  }}>
                     <div>
-                      <p className="text-sm font-medium text-[#1F2937] font-mono">
-                        {dollars(p.amount)} <span className="text-[#8A94A6] font-normal text-xs uppercase">{p.currency}</span>
+                      <p style={{ fontSize: 13, fontWeight: 500, color: "#ffffff", fontFamily: "monospace", margin: 0 }}>
+                        {dollars(p.amount)}{" "}
+                        <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400, fontSize: 11, textTransform: "uppercase" }}>
+                          {p.currency}
+                        </span>
                       </p>
-                      <p className="text-xs text-[#6B7280]">
+                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: 0 }}>
                         {new Date(p.arrival_date * 1000).toLocaleDateString("en-NZ")}
                       </p>
                     </div>
-                    <span className={cn(
-                      "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium",
-                      statusColor[p.status] ?? "bg-[#F3F4F6] text-[#6B7280]"
-                    )}>
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "4px 10px",
+                      borderRadius: 6,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      ...(statusStyle[p.status] ?? { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }),
+                    }}>
                       {p.status.replace("_", " ")}
                     </span>
                   </div>
@@ -130,14 +193,14 @@ function StripePanel() {
           )}
 
           {balance.payouts.length === 0 && (
-            <p className="text-sm text-[#6B7280]">No payouts yet.</p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>No payouts yet.</p>
           )}
         </>
       )}
 
       {loading && !balance && (
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-5 w-5 animate-spin text-[#C4CAD4]" />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "32px 0" }}>
+          <Loader2 style={{ width: 20, height: 20, color: "rgba(255,255,255,0.35)", animation: "spin 1s linear infinite" }} />
         </div>
       )}
     </div>
@@ -148,20 +211,36 @@ function StripePanel() {
 
 function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
   const total = rows.reduce((s, r) => s + r.revenue_cents, 0);
+  const headers = ["Month", "Orders", "Revenue (incl. GST)", "GST (15%)", "Revenue (excl. GST)", "Refunds", "Discounts"];
 
   return (
-    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-      <h2 className="font-semibold text-sm text-[#1F2937] mb-5 flex items-center gap-2">
-        <TrendingUp className="h-4 w-4 text-[#116DFF]" />
+    <div style={{
+      padding: 24,
+      borderRadius: 14,
+      background: "rgba(8,28,16,0.92)",
+      border: "1px solid rgba(255,255,255,0.09)",
+    }}>
+      <h2 style={{ fontWeight: 600, fontSize: 14, color: "#ffffff", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
+        <TrendingUp style={{ width: 16, height: 16, color: "#4ade80" }} />
         Monthly Revenue — last 12 months
       </h2>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
-              {["Month", "Orders", "Revenue (incl. GST)", "GST (15%)", "Revenue (excl. GST)", "Refunds", "Discounts"].map((h) => (
-                <th key={h} className="text-left px-[18px] h-[52px] text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap">
+            <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+              {headers.map((h) => (
+                <th key={h} style={{
+                  textAlign: "left",
+                  padding: "0 18px",
+                  height: 44,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.35)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  whiteSpace: "nowrap",
+                }}>
                   {h}
                 </th>
               ))}
@@ -172,29 +251,38 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
               const gstAmt   = gst(r.revenue_cents);
               const exGstAmt = exGst(r.revenue_cents);
               return (
-                <tr key={r.month} className="border-b border-[#E5EAF1] last:border-0 hover:bg-[#F6FAFF] transition-colors">
-                  <td className="px-[18px] py-[14px] font-medium text-[#1F2937] whitespace-nowrap">
+                <tr
+                  key={r.month}
+                  style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", cursor: "default" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = "rgba(255,255,255,0.02)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = "transparent"; }}
+                >
+                  <td style={{ padding: "14px 18px", fontWeight: 500, color: "#ffffff", whiteSpace: "nowrap" }}>
                     {new Date(r.month).toLocaleDateString("en-NZ", { month: "short", year: "numeric" })}
                   </td>
-                  <td className="px-[18px] py-[14px] text-[#334155] font-mono">{r.order_count}</td>
-                  <td className="px-[18px] py-[14px] font-medium text-[#1F2937] font-mono">{dollars(r.revenue_cents)}</td>
-                  <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(gstAmt)}</td>
-                  <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(exGstAmt)}</td>
-                  <td className="px-[18px] py-[14px] text-[#991B1B] text-xs font-mono">{r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}</td>
-                  <td className="px-[18px] py-[14px] text-[#6B7280] text-xs font-mono">{r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}</td>
+                  <td style={{ padding: "14px 18px", color: "rgba(255,255,255,0.7)", fontFamily: "monospace" }}>{r.order_count}</td>
+                  <td style={{ padding: "14px 18px", fontWeight: 500, color: "#4ade80", fontFamily: "monospace" }}>{dollars(r.revenue_cents)}</td>
+                  <td style={{ padding: "14px 18px", color: "rgba(255,255,255,0.7)", fontFamily: "monospace" }}>{dollars(gstAmt)}</td>
+                  <td style={{ padding: "14px 18px", color: "rgba(255,255,255,0.7)", fontFamily: "monospace" }}>{dollars(exGstAmt)}</td>
+                  <td style={{ padding: "14px 18px", color: r.refund_cents > 0 ? "#f87171" : "rgba(255,255,255,0.35)", fontSize: 12, fontFamily: "monospace" }}>
+                    {r.refund_cents > 0 ? dollars(r.refund_cents) : "—"}
+                  </td>
+                  <td style={{ padding: "14px 18px", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "monospace" }}>
+                    {r.discount_cents > 0 ? dollars(r.discount_cents) : "—"}
+                  </td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
-            <tr style={{ borderTop: "2px solid #BBD3FF" }}>
-              <td className="px-[18px] py-[14px] font-bold text-[#1F2937]">Total</td>
-              <td className="px-[18px] py-[14px] text-[#334155] font-mono">{rows.reduce((s, r) => s + r.order_count, 0)}</td>
-              <td className="px-[18px] py-[14px] font-bold text-[#116DFF] font-mono">{dollars(total)}</td>
-              <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(gst(total))}</td>
-              <td className="px-[18px] py-[14px] text-[#334155] font-mono">{dollars(exGst(total))}</td>
-              <td className="px-[18px] py-[14px] text-[#991B1B] font-mono">{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
-              <td className="px-[18px] py-[14px] text-[#6B7280] font-mono">{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
+            <tr style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "#ffffff" }}>Total</td>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "#ffffff", fontFamily: "monospace" }}>{rows.reduce((s, r) => s + r.order_count, 0)}</td>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "#4ade80", fontFamily: "monospace" }}>{dollars(total)}</td>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "#ffffff", fontFamily: "monospace" }}>{dollars(gst(total))}</td>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "#ffffff", fontFamily: "monospace" }}>{dollars(exGst(total))}</td>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "#f87171", fontFamily: "monospace" }}>{dollars(rows.reduce((s, r) => s + r.refund_cents, 0))}</td>
+              <td style={{ padding: "14px 18px", fontWeight: 700, color: "rgba(255,255,255,0.5)", fontFamily: "monospace" }}>{dollars(rows.reduce((s, r) => s + r.discount_cents, 0))}</td>
             </tr>
           </tfoot>
         </table>
@@ -206,8 +294,8 @@ function MonthlyTable({ rows }: { rows: MonthlyRow[] }) {
 // ─── Export Panel ─────────────────────────────────────────────────────────────
 
 const FORMATS = [
-  { value: "orders", label: "Orders CSV",     desc: "All order data — works with any software" },
-  { value: "gst",    label: "GST Report",     desc: "NZ GST summary for filing" },
+  { value: "orders", label: "Orders CSV",      desc: "All order data — works with any software" },
+  { value: "gst",    label: "GST Report",      desc: "NZ GST summary for filing" },
   { value: "myob",   label: "MYOB / Xero CSV", desc: "Sales journal import format" },
 ] as const;
 
@@ -239,61 +327,118 @@ function ExportPanel() {
     }
   }
 
-  const inputClass = "h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
-
   return (
-    <div className="p-6 rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-      <h2 className="font-semibold text-sm text-[#1F2937] mb-1">Export</h2>
-      <p className="text-xs text-[#6B7280] mb-5">
+    <div style={{
+      padding: 24,
+      borderRadius: 14,
+      background: "rgba(8,28,16,0.92)",
+      border: "1px solid rgba(255,255,255,0.09)",
+    }}>
+      <h2 style={{ fontWeight: 600, fontSize: 14, color: "#ffffff", margin: "0 0 4px 0" }}>Export</h2>
+      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "0 0 20px 0" }}>
         Download accounting data for MYOB, Xero, or your accountant. All amounts in NZD.
       </p>
 
       {/* Format selector */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        {FORMATS.map((f) => (
-          <button
-            key={f.value}
-            onClick={() => setFormat(f.value)}
-            className={cn(
-              "p-4 rounded-xl border text-left transition-colors",
-              format === f.value
-                ? "border-[#116DFF]/30 bg-[#EAF2FF]"
-                : "border-[#E2E8F0] bg-white hover:border-[#116DFF]/20 hover:bg-[#F6FAFF]"
-            )}
-          >
-            <p className={cn("text-[13px] font-semibold leading-snug", format === f.value ? "text-[#116DFF]" : "text-[#334155]")}>
-              {f.label}
-            </p>
-            <p className="text-[12px] text-[#6B7280] mt-1 leading-snug">{f.desc}</p>
-          </button>
-        ))}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
+        {FORMATS.map((f) => {
+          const selected = format === f.value;
+          return (
+            <button
+              key={f.value}
+              onClick={() => setFormat(f.value)}
+              style={{
+                padding: 16,
+                borderRadius: 12,
+                border: selected ? "1px solid rgba(47,155,47,0.3)" : "1px solid rgba(255,255,255,0.08)",
+                background: selected ? "rgba(47,155,47,0.15)" : "rgba(255,255,255,0.04)",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", margin: "0 0 4px 0", lineHeight: 1.3 }}>
+                {f.label}
+              </p>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1.4 }}>{f.desc}</p>
+            </button>
+          );
+        })}
       </div>
 
       {/* Date range */}
-      <div className="flex items-end gap-3 mb-5">
-        <div className="flex-1">
-          <label className="block text-[12px] font-medium text-[#6B7280] mb-2">From</label>
-          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={cn(inputClass, "w-full")} />
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 12, marginBottom: 20 }}>
+        <div style={{ flex: 1 }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>From</label>
+          <input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            style={{
+              width: "100%",
+              height: 40,
+              padding: "0 14px",
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "#fff",
+              fontSize: 13,
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
         </div>
-        <div className="flex-1">
-          <label className="block text-[12px] font-medium text-[#6B7280] mb-2">To</label>
-          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={cn(inputClass, "w-full")} />
+        <div style={{ flex: 1 }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>To</label>
+          <input
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            style={{
+              width: "100%",
+              height: 40,
+              padding: "0 14px",
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "#fff",
+              fontSize: 13,
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
         </div>
         <div>
           <button
             onClick={download}
             disabled={loading || !from || !to}
-            className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors whitespace-nowrap"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              height: 40,
+              padding: "0 20px",
+              borderRadius: 9999,
+              background: "#2f9b2f",
+              color: "#ffffff",
+              fontSize: 13,
+              fontWeight: 600,
+              border: "none",
+              cursor: loading || !from || !to ? "not-allowed" : "pointer",
+              opacity: loading || !from || !to ? 0.5 : 1,
+              transition: "opacity 0.15s",
+              whiteSpace: "nowrap",
+            }}
           >
             {loading
-              ? <Loader2 className="h-4 w-4 animate-spin" />
-              : <Download className="h-4 w-4" />}
+              ? <Loader2 style={{ width: 16, height: 16, animation: "spin 1s linear infinite" }} />
+              : <Download style={{ width: 16, height: 16 }} />}
             Download
           </button>
         </div>
       </div>
 
-      <p className="text-xs text-[#8A94A6]">
+      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
         GST calculated at 15% (tax-inclusive) · NZ GST formula: amount × 3/23
       </p>
     </div>
@@ -304,8 +449,8 @@ function ExportPanel() {
 
 export function AccountingClient({ monthlyData }: { monthlyData: MonthlyRow[] }) {
   return (
-    <div className="space-y-6">
-      <div className="grid md:grid-cols-[1fr_320px] gap-6 items-start">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 24, alignItems: "start" }}>
         <MonthlyTable rows={monthlyData} />
         <StripePanel />
       </div>

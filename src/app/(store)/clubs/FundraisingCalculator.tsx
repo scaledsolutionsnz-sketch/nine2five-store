@@ -6,7 +6,7 @@ export default function FundraisingCalculator() {
   const [pairs, setPairs] = useState(50);
   const [retailPrice, setRetailPrice] = useState(32);
 
-  const costPerPair = pairs >= 100 ? 10 : 12;
+  const costPerPair = 15;
   const totalCost = pairs * costPerPair;
   const totalRevenue = pairs * retailPrice;
   const clubKeeps = totalRevenue - totalCost;
@@ -14,33 +14,10 @@ export default function FundraisingCalculator() {
   return (
     <div style={{ position: "relative" }}>
 
-      {/* Coming soon overlay */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 10,
-        background: "rgba(6,21,12,0.65)",
-        backdropFilter: "blur(2px)",
-        borderRadius: 20,
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center", gap: 10,
-      }}>
-        <span style={{
-          fontSize: 10, fontWeight: 800, letterSpacing: "0.25em",
-          textTransform: "uppercase", color: "#2E8B28",
-          background: "rgba(46,139,40,0.12)", border: "1px solid rgba(46,139,40,0.25)",
-          padding: "5px 14px", borderRadius: 999,
-        }}>
-          Coming Soon
-        </span>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", margin: 0 }}>
-          Calculator launching with club orders
-        </p>
-      </div>
-
-      {/* Calculator UI (visible but locked) */}
+      {/* Calculator UI */}
       <div style={{
         background: "#0d1f12", border: "1px solid rgba(255,255,255,0.07)",
         borderRadius: 20, padding: "2.5rem",
-        opacity: 0.5, pointerEvents: "none", userSelect: "none",
       }}>
         <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#2E8B28", marginBottom: 24 }}>
           Fundraising Calculator
@@ -104,11 +81,6 @@ export default function FundraisingCalculator() {
           </div>
         </div>
 
-        {pairs >= 100 && (
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 16, lineHeight: 1.6 }}>
-            100+ pairs unlocks $10/pair wholesale pricing.
-          </p>
-        )}
       </div>
     </div>
   );

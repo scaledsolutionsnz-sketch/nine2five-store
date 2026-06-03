@@ -64,8 +64,8 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
         const y = PADY + chartH - t * chartH;
         return (
           <g key={t}>
-            <line x1={PADX} y1={y} x2={W} y2={y} stroke="#e5e7eb" strokeWidth="1" />
-            <text x={PADX - 8} y={y + 4} textAnchor="end" fontSize="11" fill="#94a3b8" fontFamily="ui-monospace, monospace">
+            <line x1={PADX} y1={y} x2={W} y2={y} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+            <text x={PADX - 8} y={y + 4} textAnchor="end" fontSize="11" fill="rgba(255,255,255,0.35)" fontFamily="ui-monospace, monospace">
               ${((maxVal * t) / 100).toFixed(0)}
             </text>
           </g>
@@ -83,7 +83,7 @@ function RevenueChart({ data }: { data: DayRevenue[] }) {
       ))}
 
       {labelIdx.map((i) => (
-        <text key={i} x={toX(i)} y={H - 4} textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="ui-monospace, monospace">
+        <text key={i} x={toX(i)} y={H - 4} textAnchor="middle" fontSize="11" fill="rgba(255,255,255,0.45)" fontFamily="ui-monospace, monospace">
           {formatDay(data[i].day)}
         </text>
       ))}
@@ -102,10 +102,10 @@ function HBarChart({ rows, format }: { rows: { label: string; value: number }[];
         return (
           <div key={i}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <span style={{ fontSize: 13, color: "#334155", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 12 }}>{row.label}</span>
-              <span style={{ fontSize: 13, color: "#64748b", fontWeight: 700, flexShrink: 0, fontFamily: "monospace" }}>{format(row.value)}</span>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 12 }}>{row.label}</span>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontWeight: 700, flexShrink: 0, fontFamily: "monospace" }}>{format(row.value)}</span>
             </div>
-            <div style={{ height: 8, borderRadius: 999, background: "#e5e7eb", overflow: "hidden" }}>
+            <div style={{ height: 8, borderRadius: 999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
               <div style={{ height: "100%", borderRadius: 999, background: "#2f9b2f", width: `${p}%` }} />
             </div>
           </div>
@@ -203,21 +203,21 @@ export function AnalyticsClient({
         {statCards.map((s) => (
           <div
             key={s.label}
-            style={{ background: "#f7f8f4", color: "#111827", borderRadius: 18, padding: "20px 22px", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
+            style={{ background: "rgba(8,28,16,0.92)", borderRadius: 18, padding: "20px 22px", border: "1px solid rgba(255,255,255,0.09)" }}
           >
-            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#64748b" }}>{s.label}</p>
-            <p style={{ fontSize: 30, fontWeight: 900, color: "#111827", marginTop: 8 }}>{s.value}</p>
-            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>{s.sub}</p>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>{s.label}</p>
+            <p style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginTop: 8, fontFamily: "monospace" }}>{s.value}</p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{s.sub}</p>
           </div>
         ))}
       </div>
 
       {/* ── Revenue chart ── */}
-      <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
-        <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(0,0,0,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ background: "rgba(8,28,16,0.92)", borderRadius: 18, border: "1px solid rgba(255,255,255,0.09)", overflow: "hidden" }}>
+        <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <p style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>Revenue — last 30 days</p>
-            <p style={{ fontSize: 13, color: "#64748b", marginTop: 4, fontFamily: "monospace" }}>
+            <p style={{ fontWeight: 800, fontSize: 15, color: "#ffffff" }}>Revenue — last 30 days</p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4, fontFamily: "monospace" }}>
               ${(chartData.reduce((s, d) => s + d.revenue_cents, 0) / 100).toFixed(2)} NZD total
               &nbsp;·&nbsp; {chartData.reduce((s, d) => s + d.order_count, 0)} orders
             </p>
@@ -227,7 +227,7 @@ export function AnalyticsClient({
           {chartData.length > 0 ? (
             <RevenueChart data={chartData} />
           ) : (
-            <div style={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: 13 }}>
+            <div style={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
               No order data yet
             </div>
           )}
@@ -236,10 +236,10 @@ export function AnalyticsClient({
 
       {/* ── Top Products + Revenue by Region ── */}
       <div className="analytics-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-        <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
-          <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
-            <p style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>Top Products</p>
-            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>By revenue, all time</p>
+        <div style={{ background: "rgba(8,28,16,0.92)", borderRadius: 18, border: "1px solid rgba(255,255,255,0.09)", overflow: "hidden" }}>
+          <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+            <p style={{ fontWeight: 800, fontSize: 15, color: "#ffffff" }}>Top Products</p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>By revenue, all time</p>
           </div>
           <div style={{ padding: 22 }}>
             {topProducts.length > 0 ? (
@@ -248,15 +248,15 @@ export function AnalyticsClient({
                 format={(v) => `$${(v / 100).toFixed(0)}`}
               />
             ) : (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 120, fontSize: 13, color: "#94a3b8" }}>No sales yet</div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 120, fontSize: 13, color: "rgba(255,255,255,0.3)" }}>No sales yet</div>
             )}
           </div>
         </div>
 
-        <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
-          <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
-            <p style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>Revenue by Region</p>
-            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>Shipping destination breakdown</p>
+        <div style={{ background: "rgba(8,28,16,0.92)", borderRadius: 18, border: "1px solid rgba(255,255,255,0.09)", overflow: "hidden" }}>
+          <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+            <p style={{ fontWeight: 800, fontSize: 15, color: "#ffffff" }}>Revenue by Region</p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>Shipping destination breakdown</p>
           </div>
           <div style={{ padding: 22 }}>
             {byRegion.length > 0 ? (
@@ -265,14 +265,14 @@ export function AnalyticsClient({
                 format={(v) => `$${(v / 100).toFixed(0)}`}
               />
             ) : (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 120, fontSize: 13, color: "#94a3b8" }}>No orders yet</div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 120, fontSize: 13, color: "rgba(255,255,255,0.3)" }}>No orders yet</div>
             )}
           </div>
         </div>
       </div>
 
       {/* ── Tracking pixels ── */}
-      <div style={{ background: "rgba(8,28,16,0.92)", border: "1px solid rgba(255,255,255,0.10)", borderRadius: 18, padding: 24, boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
+      <div style={{ background: "rgba(8,28,16,0.92)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 18, padding: 24 }}>
         <div style={{ marginBottom: 20 }}>
           <p style={{ fontWeight: 800, fontSize: 15, color: "#ffffff" }}>Tracking Pixels</p>
           <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>

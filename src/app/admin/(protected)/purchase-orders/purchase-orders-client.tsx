@@ -6,7 +6,6 @@ import {
   Plus, Loader2, ChevronDown, ChevronUp, Package,
   Truck, CheckCircle, AlertCircle, FileText,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { PurchaseOrderStatus } from "@/types/database";
 
 interface Variant { id: string; size: string; product: { name: string } | null; }
@@ -31,12 +30,32 @@ interface PO {
   purchase_order_items: POItem[];
 }
 
-const STATUS_CONFIG: Record<PurchaseOrderStatus, { label: string; color: string; icon: React.ElementType }> = {
-  draft:      { label: "Draft",      color: "bg-[#F3F4F6] text-[#6B7280]",       icon: FileText },
-  ordered:    { label: "Ordered",    color: "bg-[#DBEAFE] text-[#1E40AF]",        icon: Package },
-  in_transit: { label: "In Transit", color: "bg-[#FFF4CC] text-[#9A5B00]",        icon: Truck },
-  received:   { label: "Received",   color: "bg-[#D5F1E2] text-[#166B3B]",        icon: CheckCircle },
-  cancelled:  { label: "Cancelled",  color: "bg-[#FEE2E2] text-[#991B1B]",        icon: AlertCircle },
+const STATUS_CONFIG: Record<PurchaseOrderStatus, { label: string; style: React.CSSProperties; icon: React.ElementType }> = {
+  draft:      {
+    label: "Draft",
+    style: { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)" },
+    icon: FileText,
+  },
+  ordered:    {
+    label: "Ordered",
+    style: { background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)" },
+    icon: Package,
+  },
+  in_transit: {
+    label: "In Transit",
+    style: { background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)" },
+    icon: Truck,
+  },
+  received:   {
+    label: "Received",
+    style: { background: "rgba(47,155,47,0.2)", color: "#4ade80", border: "1px solid rgba(74,222,128,0.3)" },
+    icon: CheckCircle,
+  },
+  cancelled:  {
+    label: "Cancelled",
+    style: { background: "rgba(239,68,68,0.15)", color: "#f87171", border: "1px solid rgba(239,68,68,0.3)" },
+    icon: AlertCircle,
+  },
 };
 
 const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderStatus; label: string }>> = {
@@ -45,8 +64,27 @@ const NEXT_STATUS: Partial<Record<PurchaseOrderStatus, { status: PurchaseOrderSt
   in_transit: { status: "in_transit", label: "Receive Stock" },
 };
 
-const inputClass =
-  "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+const darkInput: React.CSSProperties = {
+  width: "100%",
+  height: 40,
+  padding: "0 14px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.06)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  color: "#fff",
+  fontSize: 13,
+  outline: "none",
+  boxSizing: "border-box",
+  appearance: "none" as const,
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 12,
+  fontWeight: 500,
+  color: "rgba(255,255,255,0.55)",
+  marginBottom: 6,
+};
 
 interface LineItemDraft { variant_id: string; quantity_ordered: number; unit_cost_cents: number; }
 
@@ -98,44 +136,89 @@ function CreatePOModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="w-full max-w-xl bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 16,
+      background: "rgba(0,0,0,0.6)",
+      backdropFilter: "blur(4px)",
+    }}>
+      <div style={{
+        width: "100%",
+        maxWidth: 560,
+        background: "#0d1a12",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: 16,
+        overflow: "hidden",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        boxShadow: "0 24px 64px rgba(0,0,0,0.6)",
+      }}>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "16px 24px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}>
           <div>
-            <h2 className="text-[14px] font-semibold text-[#1F2937]">New Purchase Order</h2>
-            <p className="text-[12px] text-[#6B7280] mt-1">Create a stock order from a supplier</p>
+            <h2 style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", margin: 0 }}>New Purchase Order</h2>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 4 }}>Create a stock order from a supplier</p>
           </div>
-          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
-            <span className="text-[15px] leading-none">✕</span>
+          <button
+            onClick={onClose}
+            style={{
+              height: 32,
+              width: 32,
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.55)",
+              fontSize: 15,
+              cursor: "pointer",
+              lineHeight: 1,
+            }}
+          >
+            ✕
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
-              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Supplier</label>
-              <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} className={cn(inputClass, "appearance-none")}>
+              <label style={labelStyle}>Supplier</label>
+              <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} style={darkInput}>
                 <option value="">No supplier</option>
                 {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Expected by</label>
-              <input type="date" value={expectedAt} onChange={(e) => setExpectedAt(e.target.value)} className={inputClass} />
+              <label style={labelStyle}>Expected by</label>
+              <input type="date" value={expectedAt} onChange={(e) => setExpectedAt(e.target.value)} style={{
+                ...darkInput,
+                colorScheme: "dark",
+              }} />
             </div>
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-2">Line Items</label>
-            <div className="space-y-2">
+            <label style={{ ...labelStyle, marginBottom: 8 }}>Line Items</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {lines.map((line, i) => (
-                <div key={i} className="grid grid-cols-[1fr_80px_28px] gap-2 items-start">
-                  <div className="space-y-2">
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 80px 28px", gap: 8, alignItems: "start" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     <select
                       value={line.variant_id}
                       onChange={(e) => setLine(i, "variant_id", e.target.value)}
-                      className={cn(inputClass, "appearance-none text-[13px]")}
+                      style={darkInput}
                     >
                       <option value="">Select variant…</option>
                       {variants.map((v) => (
@@ -144,29 +227,60 @@ function CreatePOModal({
                         </option>
                       ))}
                     </select>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       <input
                         type="number" min={1} placeholder="Qty"
                         value={line.quantity_ordered}
                         onChange={(e) => setLine(i, "quantity_ordered", parseInt(e.target.value) || 1)}
-                        className={cn(inputClass, "text-center font-mono")}
+                        style={{ ...darkInput, textAlign: "center", fontFamily: "monospace" }}
                       />
-                      <div className="flex items-center gap-1 h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] focus-within:border-[#116DFF]/50 transition-colors">
-                        <span className="text-[#8A94A6] text-[13px] pointer-events-none select-none shrink-0">$</span>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        height: 40,
+                        padding: "0 14px",
+                        borderRadius: 10,
+                        background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        boxSizing: "border-box",
+                      }}>
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", pointerEvents: "none", userSelect: "none", flexShrink: 0 }}>$</span>
                         <input
                           type="number" min={0} step={0.01} placeholder="Unit cost"
                           value={line.unit_cost_cents / 100 || ""}
                           onChange={(e) => setLine(i, "unit_cost_cents", Math.round(parseFloat(e.target.value) * 100) || 0)}
-                          className="flex-1 min-w-0 text-[13px] font-mono bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none"
+                          style={{
+                            flex: 1,
+                            minWidth: 0,
+                            fontSize: 13,
+                            fontFamily: "monospace",
+                            background: "transparent",
+                            color: "#fff",
+                            border: "none",
+                            outline: "none",
+                          }}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-end">
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
                       onClick={() => setLines((prev) => prev.filter((_, idx) => idx !== i))}
                       disabled={lines.length === 1}
-                      className="h-10 w-7 flex items-center justify-center text-[#6B7280] hover:text-[#991B1B] disabled:opacity-20 transition-colors"
+                      style={{
+                        height: 40,
+                        width: 28,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "transparent",
+                        border: "none",
+                        color: "rgba(255,255,255,0.35)",
+                        cursor: lines.length === 1 ? "not-allowed" : "pointer",
+                        opacity: lines.length === 1 ? 0.2 : 1,
+                        fontSize: 14,
+                      }}
                     >✕</button>
                   </div>
                 </div>
@@ -174,31 +288,78 @@ function CreatePOModal({
             </div>
             <button
               onClick={() => setLines((prev) => [...prev, { variant_id: "", quantity_ordered: 1, unit_cost_cents: 0 }])}
-              className="mt-3 flex items-center gap-1.5 text-[13px] text-[#116DFF] hover:opacity-80 transition-opacity"
+              style={{
+                marginTop: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 13,
+                color: "#4ade80",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+              }}
             >
-              <Plus className="h-3.5 w-3.5" /> Add line
+              <Plus style={{ width: 13, height: 13 }} /> Add line
             </button>
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Notes (optional)</label>
-            <input placeholder="Any notes about this order…" value={notes} onChange={(e) => setNotes(e.target.value)} className={inputClass} />
+            <label style={labelStyle}>Notes (optional)</label>
+            <input placeholder="Any notes about this order…" value={notes} onChange={(e) => setNotes(e.target.value)} style={darkInput} />
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]">
-            <p className="text-[13px] text-[#6B7280]">
-              Total: <span className="text-[#1F2937] font-semibold font-mono">${(totalCents / 100).toFixed(2)}</span>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingTop: 8,
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+          }}>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
+              Total:{" "}
+              <span style={{ color: "#ffffff", fontWeight: 600, fontFamily: "monospace" }}>
+                ${(totalCents / 100).toFixed(2)}
+              </span>
             </p>
-            <div className="flex gap-3">
-              <button onClick={onClose} className="h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-colors">
+            <div style={{ display: "flex", gap: 12 }}>
+              <button
+                onClick={onClose}
+                style={{
+                  height: 36,
+                  padding: "0 16px",
+                  borderRadius: 9999,
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#ffffff",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
                 Cancel
               </button>
               <button
                 onClick={save}
                 disabled={saving}
-                className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  height: 40,
+                  padding: "0 20px",
+                  borderRadius: 9999,
+                  background: "#2f9b2f",
+                  border: "none",
+                  color: "#ffffff",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: saving ? "not-allowed" : "pointer",
+                  opacity: saving ? 0.5 : 1,
+                }}
               >
-                {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                {saving ? <Loader2 style={{ width: 13, height: 13 }} className="animate-spin" /> : null}
                 Create PO
               </button>
             </div>
@@ -256,82 +417,148 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
     toast.success("Order cancelled");
   }
 
+  const isReceiveAction = po.status === "in_transit";
+
   return (
-    <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-      <div className="flex items-center gap-4 px-5 py-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] font-medium", cfg.color)}>
-              <StatusIcon className="h-3 w-3" />
+    <div style={{
+      borderRadius: 14,
+      background: "rgba(8,28,16,0.92)",
+      border: "1px solid rgba(255,255,255,0.09)",
+      overflow: "hidden",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 20px" }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <span style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "4px 10px",
+              borderRadius: 6,
+              fontSize: 12,
+              fontWeight: 500,
+              ...cfg.style,
+            }}>
+              <StatusIcon style={{ width: 11, height: 11 }} />
               {cfg.label}
             </span>
-            <span className="text-[12px] text-[#8A94A6] font-mono">{po.id.slice(0, 8).toUpperCase()}</span>
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "monospace" }}>
+              {po.id.slice(0, 8).toUpperCase()}
+            </span>
           </div>
-          <div className="flex items-center gap-4 text-[13px] text-[#6B7280]">
+          <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
             <span>{po.suppliers?.name ?? "No supplier"}</span>
             <span>{po.purchase_order_items.length} item{po.purchase_order_items.length !== 1 ? "s" : ""}</span>
-            {po.total_cost_cents ? <span className="font-mono">${(po.total_cost_cents / 100).toFixed(2)}</span> : null}
-            {po.expected_at && <span>Expected {new Date(po.expected_at).toLocaleDateString("en-NZ")}</span>}
+            {po.total_cost_cents ? (
+              <span style={{ fontFamily: "monospace" }}>${(po.total_cost_cents / 100).toFixed(2)}</span>
+            ) : null}
+            {po.expected_at && (
+              <span>Expected {new Date(po.expected_at).toLocaleDateString("en-NZ")}</span>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           {next && po.status !== "cancelled" && (
             <button
               onClick={advance}
               disabled={acting}
-              className={cn(
-                "flex items-center gap-1.5 h-9 px-4 rounded-full text-[13px] font-semibold transition-colors disabled:opacity-50",
-                po.status === "in_transit"
-                  ? "bg-[#116DFF] text-white hover:bg-[#0D5FE0]"
-                  : "bg-white border border-[#D8E2F0] text-[#27364A] hover:bg-[#F4F8FF]"
-              )}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                height: 36,
+                padding: "0 16px",
+                borderRadius: 9999,
+                border: isReceiveAction ? "none" : "1px solid rgba(255,255,255,0.15)",
+                background: isReceiveAction ? "#2f9b2f" : "rgba(255,255,255,0.08)",
+                color: "#ffffff",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: acting ? "not-allowed" : "pointer",
+                opacity: acting ? 0.5 : 1,
+              }}
             >
-              {acting ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
-              {po.status === "in_transit" ? "Receive Stock" : next.label}
+              {acting ? <Loader2 style={{ width: 11, height: 11 }} className="animate-spin" /> : null}
+              {isReceiveAction ? "Receive Stock" : next.label}
             </button>
           )}
           {["draft", "ordered"].includes(po.status) && (
             <button
               onClick={cancel}
               disabled={acting}
-              className="h-9 px-3 rounded-full text-[13px] text-[#6B7280] hover:text-[#991B1B] hover:bg-[#FEE2E2] transition-colors disabled:opacity-40"
+              style={{
+                height: 36,
+                padding: "0 12px",
+                borderRadius: 9999,
+                background: "transparent",
+                border: "none",
+                fontSize: 13,
+                color: "rgba(255,255,255,0.35)",
+                cursor: acting ? "not-allowed" : "pointer",
+                opacity: acting ? 0.4 : 1,
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.15)";
+                (e.currentTarget as HTMLButtonElement).style.color = "#f87171";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.35)";
+              }}
             >
               Cancel
             </button>
           )}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="h-8 w-8 flex items-center justify-center text-[#6B7280] hover:text-[#334155] hover:bg-[#F3F5F8] rounded-lg transition-colors"
+            style={{
+              height: 32,
+              width: 32,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 8,
+              color: "rgba(255,255,255,0.35)",
+              cursor: "pointer",
+            }}
           >
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {expanded
+              ? <ChevronUp style={{ width: 16, height: 16 }} />
+              : <ChevronDown style={{ width: 16, height: 16 }} />}
           </button>
         </div>
       </div>
 
       {expanded && (
-        <div className="border-t border-[#E2E8F0] bg-[#F8FAFC] px-5 py-4">
+        <div style={{
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          background: "rgba(0,0,0,0.2)",
+          padding: "16px 20px",
+        }}>
           {po.purchase_order_items.length === 0 ? (
-            <p className="text-[13px] text-[#6B7280]">No line items.</p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>No line items.</p>
           ) : (
-            <table className="w-full">
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
-                <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                  <th className="text-left pb-2.5 text-[12px] text-[#6B7280] font-medium">Variant</th>
-                  <th className="text-right pb-2.5 text-[12px] text-[#6B7280] font-medium">Ordered</th>
-                  <th className="text-right pb-2.5 text-[12px] text-[#6B7280] font-medium">Received</th>
-                  <th className="text-right pb-2.5 text-[12px] text-[#6B7280] font-medium">Unit cost</th>
+                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  <th style={{ textAlign: "left", paddingBottom: 10, fontSize: 11, color: "rgba(255,255,255,0.35)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>Variant</th>
+                  <th style={{ textAlign: "right", paddingBottom: 10, fontSize: 11, color: "rgba(255,255,255,0.35)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>Ordered</th>
+                  <th style={{ textAlign: "right", paddingBottom: 10, fontSize: 11, color: "rgba(255,255,255,0.35)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>Received</th>
+                  <th style={{ textAlign: "right", paddingBottom: 10, fontSize: 11, color: "rgba(255,255,255,0.35)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>Unit cost</th>
                 </tr>
               </thead>
               <tbody>
                 {po.purchase_order_items.map((item) => (
-                  <tr key={item.id} className="border-b border-[#E5EAF1] last:border-0">
-                    <td className="py-2.5 text-[13px] text-[#334155]">
+                  <tr key={item.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <td style={{ padding: "10px 0", fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
                       {item.product_variants?.products?.name ?? "Unknown"} · Size {item.product_variants?.size ?? "—"}
                     </td>
-                    <td className="py-2.5 text-right text-[13px] text-[#1F2937] font-mono">{item.quantity_ordered}</td>
-                    <td className="py-2.5 text-right text-[13px] text-[#6B7280] font-mono">{item.quantity_received}</td>
-                    <td className="py-2.5 text-right text-[13px] text-[#6B7280] font-mono">
+                    <td style={{ padding: "10px 0", textAlign: "right", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>{item.quantity_ordered}</td>
+                    <td style={{ padding: "10px 0", textAlign: "right", fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "monospace" }}>{item.quantity_received}</td>
+                    <td style={{ padding: "10px 0", textAlign: "right", fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "monospace" }}>
                       {item.unit_cost_cents ? `$${(item.unit_cost_cents / 100).toFixed(2)}` : "—"}
                     </td>
                   </tr>
@@ -339,7 +566,9 @@ function PORow({ po, onUpdate }: { po: PO; onUpdate: (po: PO) => void }) {
               </tbody>
             </table>
           )}
-          {po.notes && <p className="mt-3 text-[13px] text-[#6B7280]">Note: {po.notes}</p>}
+          {po.notes && (
+            <p style={{ marginTop: 12, fontSize: 13, color: "rgba(255,255,255,0.35)" }}>Note: {po.notes}</p>
+          )}
         </div>
       )}
     </div>
@@ -365,17 +594,30 @@ export function PurchaseOrdersClient({
   const closed = orders.filter((o) => o.status === "received" || o.status === "cancelled");
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Purchase Orders</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Track stock orders from your suppliers.</p>
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>Purchase Orders</h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>Track stock orders from your suppliers.</p>
         </div>
         <button
           onClick={() => setCreating(true)}
-          className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            height: 40,
+            padding: "0 20px",
+            borderRadius: 9999,
+            background: "#2f9b2f",
+            border: "none",
+            color: "#ffffff",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
         >
-          <Plus className="h-4 w-4" /> New Order
+          <Plus style={{ width: 16, height: 16 }} /> New Order
         </button>
       </div>
 
@@ -389,27 +631,44 @@ export function PurchaseOrdersClient({
       )}
 
       {open.length > 0 && (
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {open.map((po) => <PORow key={po.id} po={po} onUpdate={handleUpdated} />)}
         </div>
       )}
 
       {closed.length > 0 && (
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#8A94A6] mb-3">
+          <p style={{
+            fontSize: 11,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            color: "rgba(255,255,255,0.35)",
+            marginBottom: 12,
+          }}>
             Completed / Cancelled
           </p>
-          <div className="space-y-3 opacity-60">
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, opacity: 0.6 }}>
             {closed.map((po) => <PORow key={po.id} po={po} onUpdate={handleUpdated} />)}
           </div>
         </div>
       )}
 
       {orders.length === 0 && !creating && (
-        <div className="flex flex-col items-center justify-center py-20 text-center rounded-[14px] bg-white border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-          <Package className="h-10 w-10 text-[#C4CAD4] mb-4" />
-          <p className="text-[13px] text-[#6B7280]">No purchase orders yet.</p>
-          <p className="text-[12px] text-[#8A94A6] mt-1">Create one to track stock orders from suppliers.</p>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "80px 0",
+          textAlign: "center",
+          borderRadius: 14,
+          background: "rgba(8,28,16,0.92)",
+          border: "1px solid rgba(255,255,255,0.09)",
+        }}>
+          <Package style={{ width: 40, height: 40, color: "rgba(255,255,255,0.15)", marginBottom: 16 }} />
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>No purchase orders yet.</p>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", marginTop: 4 }}>Create one to track stock orders from suppliers.</p>
         </div>
       )}
     </div>

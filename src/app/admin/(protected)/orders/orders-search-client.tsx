@@ -25,17 +25,22 @@ export function OrdersSearchClient({ defaultValue }: { defaultValue: string }) {
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", width: 280, background: "#fff", border: "1px solid #d8dee8", borderRadius: 10 }}>
-      <Search style={{ width: 13, height: 13, color: "#9ca3af", flexShrink: 0 }} strokeWidth={2} />
+    <div style={{ position: "relative" }}>
+      <Search style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 13, height: 13, color: "rgba(255,255,255,0.3)", pointerEvents: "none" }} />
       <input
         type="text"
         value={value}
         onChange={handleChange}
         placeholder="Search orders or email…"
-        style={{ flex: 1, fontSize: 13, background: "transparent", color: "#334155", outline: "none", border: "none", minWidth: 0 }}
+        style={{
+          height: 34, paddingLeft: 34, paddingRight: value ? 32 : 14,
+          borderRadius: 9999, fontSize: 13, width: 240,
+          background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+          color: "#fff", outline: "none",
+        }}
       />
       {value && (
-        <button onClick={clear} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", color: "#9ca3af" }}>
+        <button onClick={clear} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", display: "flex", padding: 0 }}>
           <X style={{ width: 13, height: 13 }} />
         </button>
       )}

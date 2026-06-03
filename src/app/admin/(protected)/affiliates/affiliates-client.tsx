@@ -1,22 +1,42 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import type { Affiliate, AffiliateStatus } from "@/types/database";
+import { useState, useTransition, useEffect } from "react";
+import type { Affiliate, AffiliatePayout, AffiliateStatus } from "@/types/database";
 import {
   Plus, Check, X, Pause, TrendingUp, Users,
-  DollarSign, MousePointer, Copy, ChevronDown
+  DollarSign, MousePointer, Copy, ChevronDown, Banknote, History
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 function fmt(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-const STATUS: Record<AffiliateStatus, { label: string; cls: string }> = {
-  pending:   { label: "Pending",   cls: "bg-[#FFF4CC] text-[#9A5B00]" },
-  active:    { label: "Active",    cls: "bg-[#D5F1E2] text-[#166B3B]" },
-  suspended: { label: "Suspended", cls: "bg-[#FEE2E2] text-[#991B1B]" },
+const STATUS: Record<AffiliateStatus, { label: string; style: React.CSSProperties }> = {
+  pending:   {
+    label: "Pending",
+    style: {
+      background: "rgba(251,191,36,0.15)",
+      color: "#fbbf24",
+      border: "1px solid rgba(251,191,36,0.25)",
+    },
+  },
+  active:    {
+    label: "Active",
+    style: {
+      background: "rgba(47,155,47,0.2)",
+      color: "#4ade80",
+      border: "1px solid rgba(47,155,47,0.3)",
+    },
+  },
+  suspended: {
+    label: "Suspended",
+    style: {
+      background: "rgba(239,68,68,0.15)",
+      color: "#f87171",
+      border: "1px solid rgba(239,68,68,0.25)",
+    },
+  },
 };
 
 interface Props { affiliates: Affiliate[] }
@@ -50,151 +70,153 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
   }
 
   function copyLink(code: string) {
-    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.nz"}?ref=${code}`);
+    navigator.clipboard.writeText(`https://nine2five.nz?ref=${code}`);
     toast.success("Referral link copied");
   }
 
   void startTransition;
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24, background: "#06150C", color: "#f8f8f2", minHeight: "100%" }}>
       {/* Page header */}
-      <div className="flex items-start justify-between">
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Affiliates</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Manage referral partners and track commission.</p>
+          <h1 style={{ fontSize: 22, fontWeight: 600, color: "#ffffff", margin: 0 }}>Affiliates</h1>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 4, marginBottom: 0 }}>
+            Manage referral partners and track commission.
+          </p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            height: 40,
+            padding: "0 20px",
+            borderRadius: 9999,
+            background: "#2f9b2f",
+            color: "#fff",
+            fontSize: 13,
+            fontWeight: 600,
+            border: "none",
+            cursor: "pointer",
+          }}
         >
-          <Plus className="h-4 w-4" />
+          <Plus style={{ width: 16, height: 16 }} />
           Add Affiliate
         </button>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
         {[
-          { label: "Total Clicks",    value: totals.clicks.toLocaleString(),                icon: MousePointer, color: "#1E40AF",  bg: "bg-[#DBEAFE]" },
-          { label: "Conversions",     value: totals.conversions.toLocaleString(),           icon: TrendingUp,   color: "#166B3B",  bg: "bg-[#D5F1E2]" },
-          { label: "Commission Owed", value: fmt(totals.commission - totals.paid),          icon: DollarSign,   color: "#92400E",  bg: "bg-[#FEF3C7]" },
-          { label: "Affiliates",      value: affiliates.length.toString(),                  icon: Users,        color: "#7C3AED",  bg: "bg-[#EDE9FE]" },
-        ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="p-5 rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0]" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[11px] uppercase tracking-widest text-[#8A94A6]">{label}</p>
-              <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", bg)}>
-                <Icon style={{ width: 15, height: 15, color }} strokeWidth={1.8} />
+          { label: "Total Clicks",    value: totals.clicks.toLocaleString(),               icon: MousePointer },
+          { label: "Conversions",     value: totals.conversions.toLocaleString(),          icon: TrendingUp   },
+          { label: "Commission Owed", value: fmt(totals.commission - totals.paid),         icon: DollarSign   },
+          { label: "Affiliates",      value: affiliates.length.toString(),                 icon: Users        },
+        ].map(({ label, value, icon: Icon }) => (
+          <div
+            key={label}
+            style={{
+              background: "rgba(8,28,16,0.92)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              borderRadius: 16,
+              padding: "20px 22px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <p style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.35)",
+                margin: 0,
+              }}>
+                {label}
+              </p>
+              <div style={{
+                height: 32,
+                width: 32,
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(47,155,47,0.15)",
+                border: "1px solid rgba(47,155,47,0.3)",
+              }}>
+                <Icon style={{ width: 15, height: 15, color: "#4ade80" }} strokeWidth={1.8} />
               </div>
             </div>
-            <p className="text-[24px] font-bold font-mono text-[#1F2937]">{value}</p>
+            <p style={{ fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: "monospace", margin: 0 }}>{value}</p>
           </div>
         ))}
       </div>
 
       {/* Table */}
-      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="px-6 py-4 border-b border-[#E2E8F0]">
-          <h3 className="text-[14px] font-semibold text-[#1F2937] leading-none">All Affiliates</h3>
-          <p className="text-[12px] text-[#6B7280] mt-1">{affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}</p>
+      <div style={{
+        borderRadius: 14,
+        background: "rgba(8,28,16,0.92)",
+        border: "1px solid rgba(255,255,255,0.09)",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          padding: "16px 24px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", lineHeight: 1, margin: 0 }}>All Affiliates</h3>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 4, marginBottom: 0 }}>
+            {affiliates.length} affiliate{affiliates.length !== 1 ? "s" : ""}
+          </p>
         </div>
-        <table className="w-full">
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
+            <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               {["Affiliate", "Code", "Status", "Clicks", "Conversions", "Commission", "Rate", "Actions"].map((h) => (
-                <th key={h} className="px-[18px] h-[52px] text-left text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap">
+                <th
+                  key={h}
+                  style={{
+                    padding: "0 18px",
+                    height: 52,
+                    textAlign: "left",
+                    color: "rgba(255,255,255,0.35)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5EAF1]">
+          <tbody>
             {affiliates.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-[18px] py-16 text-center text-[#8A94A6] text-[13px]">
+                <td
+                  colSpan={8}
+                  style={{
+                    padding: "64px 18px",
+                    textAlign: "center",
+                    color: "rgba(255,255,255,0.35)",
+                    fontSize: 13,
+                  }}
+                >
                   No affiliates yet. Add your first referral partner.
                 </td>
               </tr>
             )}
             {affiliates.map((a) => (
-              <tr key={a.id} className="hover:bg-[#F6FAFF] transition-colors">
-                <td className="px-[18px] py-[14px]">
-                  <p className="text-[13px] font-medium text-[#1F2937]">{a.name}</p>
-                  <p className="text-[12px] text-[#6B7280] mt-0.5">{a.email}</p>
-                </td>
-                <td className="px-[18px] py-[14px]">
-                  <div className="flex items-center gap-2">
-                    <code className="text-[12px] bg-[#EAF2FF] border border-[#BBD3FF] px-2 py-0.5 rounded text-[#116DFF] font-mono">
-                      {a.referral_code}
-                    </code>
-                    <button
-                      onClick={() => copyLink(a.referral_code)}
-                      className="text-[#C4CAD4] hover:text-[#6B7280] transition-colors"
-                    >
-                      <Copy className="h-3 w-3" />
-                    </button>
-                  </div>
-                </td>
-                <td className="px-[18px] py-[14px]">
-                  <span className={cn(
-                    "inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium",
-                    STATUS[a.status].cls
-                  )}>
-                    {STATUS[a.status].label}
-                  </span>
-                </td>
-                <td className="px-[18px] py-[14px] text-[13px] text-[#334155] font-mono">{a.total_clicks.toLocaleString()}</td>
-                <td className="px-[18px] py-[14px] text-[13px] text-[#334155] font-mono">{a.total_conversions.toLocaleString()}</td>
-                <td className="px-[18px] py-[14px]">
-                  <span className="text-[13px] font-semibold text-[#1F2937] font-mono">
-                    {fmt(a.total_commission_cents)}
-                  </span>
-                  {a.total_paid_cents > 0 && (
-                    <span className="block text-[11px] text-[#6B7280] font-normal mt-0.5">
-                      {fmt(a.total_paid_cents)} paid
-                    </span>
-                  )}
-                </td>
-                <td className="px-[18px] py-[14px] text-[13px] text-[#334155] font-mono">{a.commission_rate}%</td>
-                <td className="px-[18px] py-[14px]">
-                  <div className="flex items-center gap-1">
-                    {a.status === "pending" && (
-                      <button
-                        onClick={() => updateStatus(a.id, "active")}
-                        title="Approve"
-                        className="p-1.5 rounded-lg hover:bg-[#D5F1E2] text-[#6B7280] hover:text-[#166B3B] transition-colors"
-                      >
-                        <Check className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                    {a.status === "active" && (
-                      <button
-                        onClick={() => updateStatus(a.id, "suspended")}
-                        title="Suspend"
-                        className="p-1.5 rounded-lg hover:bg-[#FEE2E2] text-[#6B7280] hover:text-[#991B1B] transition-colors"
-                      >
-                        <Pause className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                    {a.status === "suspended" && (
-                      <button
-                        onClick={() => updateStatus(a.id, "active")}
-                        title="Reactivate"
-                        className="p-1.5 rounded-lg hover:bg-[#D5F1E2] text-[#6B7280] hover:text-[#166B3B] transition-colors"
-                      >
-                        <Check className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setSelected(a)}
-                      className="p-1.5 rounded-lg hover:bg-[#F3F5F8] text-[#6B7280] hover:text-[#334155] transition-colors"
-                    >
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              <TableRow
+                key={a.id}
+                affiliate={a}
+                onCopyLink={copyLink}
+                onUpdateStatus={updateStatus}
+                onSelect={setSelected}
+              />
             ))}
           </tbody>
         </table>
@@ -223,6 +245,171 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
         />
       )}
     </div>
+  );
+}
+
+/* Extracted to allow hover state via React useState */
+function TableRow({
+  affiliate: a,
+  onCopyLink,
+  onUpdateStatus,
+  onSelect,
+}: {
+  affiliate: Affiliate;
+  onCopyLink: (code: string) => void;
+  onUpdateStatus: (id: string, status: AffiliateStatus) => void;
+  onSelect: (a: Affiliate) => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <tr
+      style={{
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: hovered ? "rgba(255,255,255,0.02)" : "transparent",
+        transition: "background 0.15s",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <td style={{ padding: "14px 18px" }}>
+        <p style={{ fontSize: 13, fontWeight: 500, color: "#ffffff", margin: 0 }}>{a.name}</p>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2, marginBottom: 0 }}>{a.email}</p>
+      </td>
+      <td style={{ padding: "14px 18px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <code style={{
+            fontSize: 12,
+            background: "rgba(47,155,47,0.15)",
+            border: "1px solid rgba(47,155,47,0.3)",
+            padding: "2px 8px",
+            borderRadius: 4,
+            color: "#4ade80",
+            fontFamily: "monospace",
+          }}>
+            {a.referral_code}
+          </code>
+          <button
+            onClick={() => onCopyLink(a.referral_code)}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "rgba(255,255,255,0.35)", display: "flex" }}
+          >
+            <Copy style={{ width: 12, height: 12 }} />
+          </button>
+        </div>
+      </td>
+      <td style={{ padding: "14px 18px" }}>
+        <span style={{
+          display: "inline-flex",
+          alignItems: "center",
+          padding: "4px 10px",
+          borderRadius: 6,
+          fontSize: 12,
+          fontWeight: 500,
+          ...STATUS[a.status].style,
+        }}>
+          {STATUS[a.status].label}
+        </span>
+      </td>
+      <td style={{ padding: "14px 18px", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>
+        {a.total_clicks.toLocaleString()}
+      </td>
+      <td style={{ padding: "14px 18px", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>
+        {a.total_conversions.toLocaleString()}
+      </td>
+      <td style={{ padding: "14px 18px" }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: "#4ade80", fontFamily: "monospace" }}>
+          {fmt(a.total_commission_cents)}
+        </span>
+        {a.total_paid_cents > 0 && (
+          <span style={{ display: "block", fontSize: 11, color: "rgba(255,255,255,0.55)", fontWeight: 400, marginTop: 2 }}>
+            {fmt(a.total_paid_cents)} paid
+          </span>
+        )}
+      </td>
+      <td style={{ padding: "14px 18px", fontSize: 13, color: "#4ade80", fontFamily: "monospace" }}>
+        {a.commission_rate}%
+      </td>
+      <td style={{ padding: "14px 18px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {a.status === "pending" && (
+            <ActionButton
+              title="Approve"
+              onClick={() => onUpdateStatus(a.id, "active")}
+              hoverBg="rgba(47,155,47,0.2)"
+              hoverColor="#4ade80"
+            >
+              <Check style={{ width: 14, height: 14 }} />
+            </ActionButton>
+          )}
+          {a.status === "active" && (
+            <ActionButton
+              title="Suspend"
+              onClick={() => onUpdateStatus(a.id, "suspended")}
+              hoverBg="rgba(239,68,68,0.15)"
+              hoverColor="#f87171"
+            >
+              <Pause style={{ width: 14, height: 14 }} />
+            </ActionButton>
+          )}
+          {a.status === "suspended" && (
+            <ActionButton
+              title="Reactivate"
+              onClick={() => onUpdateStatus(a.id, "active")}
+              hoverBg="rgba(47,155,47,0.2)"
+              hoverColor="#4ade80"
+            >
+              <Check style={{ width: 14, height: 14 }} />
+            </ActionButton>
+          )}
+          <ActionButton
+            title="Details"
+            onClick={() => onSelect(a)}
+            hoverBg="rgba(255,255,255,0.06)"
+            hoverColor="#ffffff"
+          >
+            <ChevronDown style={{ width: 14, height: 14 }} />
+          </ActionButton>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+function ActionButton({
+  children,
+  title,
+  onClick,
+  hoverBg,
+  hoverColor,
+}: {
+  children: React.ReactNode;
+  title: string;
+  onClick: () => void;
+  hoverBg: string;
+  hoverColor: string;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      title={title}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        padding: 6,
+        borderRadius: 8,
+        background: hovered ? hoverBg : "transparent",
+        color: hovered ? hoverColor : "rgba(255,255,255,0.35)",
+        border: "none",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transition: "background 0.15s, color 0.15s",
+      }}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -261,20 +448,70 @@ function CreateAffiliateModal({
     toast.success("Affiliate created");
   }
 
-  const inputClass = "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    height: 40,
+    padding: "0 14px",
+    borderRadius: 8,
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    color: "#fff",
+    fontSize: 13,
+    outline: "none",
+    boxSizing: "border-box",
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-md" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
-          <h2 className="text-[14px] font-semibold text-[#1F2937]">New Affiliate</h2>
-          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
-            <X className="h-4 w-4" />
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.6)",
+      backdropFilter: "blur(4px)",
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 16,
+    }}>
+      <div style={{
+        background: "#0d1a12",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: 16,
+        width: "100%",
+        maxWidth: 448,
+        boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
+      }}>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "16px 24px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}>
+          <h2 style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", margin: 0 }}>New Affiliate</h2>
+          <button
+            onClick={onClose}
+            style={{
+              height: 32,
+              width: 32,
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            <X style={{ width: 16, height: 16 }} />
           </button>
         </div>
-        <form onSubmit={submit} className="p-6 space-y-4">
+        <form onSubmit={submit} style={{ padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Full Name</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+              Full Name
+            </label>
             <input
               required
               value={form.name}
@@ -283,35 +520,41 @@ function CreateAffiliateModal({
                 setForm((f) => ({ ...f, name, referral_code: autoCode(name) }));
               }}
               placeholder="Wiremu Bartlett"
-              className={inputClass}
+              style={inputStyle}
             />
           </div>
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Email</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+              Email
+            </label>
             <input
               required
               type="email"
               value={form.email}
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               placeholder="wiremu@example.com"
-              className={inputClass}
+              style={inputStyle}
             />
           </div>
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Referral Code</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+              Referral Code
+            </label>
             <input
               required
               value={form.referral_code}
               onChange={(e) => setForm((f) => ({ ...f, referral_code: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "") }))}
               placeholder="wiremu10"
-              className={cn(inputClass, "font-mono")}
+              style={{ ...inputStyle, fontFamily: "monospace" }}
             />
-            <p className="text-[11px] text-[#8A94A6] mt-1.5">
+            <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 6, marginBottom: 0 }}>
               Link: nine2five.nz?ref={form.referral_code || "code"}
             </p>
           </div>
           <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Commission Rate (%)</label>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+              Commission Rate (%)
+            </label>
             <input
               required
               type="number"
@@ -319,20 +562,59 @@ function CreateAffiliateModal({
               max="50"
               value={form.commission_rate}
               onChange={(e) => setForm((f) => ({ ...f, commission_rate: e.target.value }))}
-              className={inputClass}
+              style={inputStyle}
             />
           </div>
           {error && (
-            <div className="flex items-start gap-2 bg-[#FEE2E2] border border-[#FCA5A5] rounded-xl px-4 py-3">
-              <X style={{ width: 14, height: 14, color: "#991B1B", marginTop: 1, flexShrink: 0 }} />
-              <p className="text-[12px] text-[#991B1B]">{error}</p>
+            <div style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 8,
+              background: "rgba(239,68,68,0.15)",
+              border: "1px solid rgba(239,68,68,0.25)",
+              borderRadius: 10,
+              padding: "12px 16px",
+            }}>
+              <X style={{ width: 14, height: 14, color: "#f87171", marginTop: 1, flexShrink: 0 }} />
+              <p style={{ fontSize: 12, color: "#f87171", margin: 0 }}>{error}</p>
             </div>
           )}
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-colors">
+          <div style={{ display: "flex", gap: 12, paddingTop: 8 }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                flex: 1,
+                height: 36,
+                padding: "0 16px",
+                borderRadius: 9999,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="flex-1 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors">
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                flex: 1,
+                height: 40,
+                padding: "0 20px",
+                borderRadius: 9999,
+                background: "#2f9b2f",
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 600,
+                border: "none",
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.5 : 1,
+              }}
+            >
               {loading ? "Creating…" : "Create Affiliate"}
             </button>
           </div>
@@ -353,6 +635,25 @@ function AffiliateDetailModal({
 }) {
   const [rate, setRate] = useState(String(affiliate.commission_rate));
   const [saving, setSaving] = useState(false);
+  const [tab, setTab] = useState<"overview" | "payout" | "history">("overview");
+  const [payoutAmt, setPayoutAmt] = useState("");
+  const [payoutNotes, setPayoutNotes] = useState("");
+  const [payoutLoading, setPayoutLoading] = useState(false);
+  const [payouts, setPayouts] = useState<AffiliatePayout[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
+  const pending = affiliate.total_commission_cents - affiliate.total_paid_cents;
+  const link = `https://nine2five.nz?ref=${affiliate.referral_code}`;
+
+  useEffect(() => {
+    if (tab === "history") {
+      setLoadingHistory(true);
+      fetch(`/api/admin/affiliates/${affiliate.id}/payout`)
+        .then(r => r.json())
+        .then((d: AffiliatePayout[]) => { setPayouts(d); setLoadingHistory(false); })
+        .catch(() => setLoadingHistory(false));
+    }
+  }, [tab, affiliate.id]);
 
   async function saveRate() {
     setSaving(true);
@@ -371,79 +672,446 @@ function AffiliateDetailModal({
     setSaving(false);
   }
 
-  const link = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://nine2five.nz"}?ref=${affiliate.referral_code}`;
-  const pending = affiliate.total_commission_cents - affiliate.total_paid_cents;
+  async function recordPayout(e: React.FormEvent) {
+    e.preventDefault();
+    const cents = Math.round(parseFloat(payoutAmt) * 100);
+    if (isNaN(cents) || cents <= 0) { toast.error("Enter a valid amount"); return; }
+    setPayoutLoading(true);
+    const res = await fetch(`/api/admin/affiliates/${affiliate.id}/payout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount_cents: cents, notes: payoutNotes || undefined }),
+    });
+    if (!res.ok) {
+      const d = await res.json() as { error: string };
+      toast.error(d.error);
+      setPayoutLoading(false);
+      return;
+    }
+    const { affiliate: updated } = await res.json() as { affiliate: Affiliate };
+    onUpdate(updated);
+    toast.success(`Payout of $${(cents / 100).toFixed(2)} recorded`);
+    setPayoutAmt("");
+    setPayoutNotes("");
+    setPayoutLoading(false);
+    setTab("history");
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    height: 40,
+    padding: "0 14px",
+    borderRadius: 8,
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    color: "#fff",
+    fontSize: 13,
+    outline: "none",
+    boxSizing: "border-box",
+  };
+
+  const tabBtn = (t: typeof tab, label: string, icon: React.ReactNode) => {
+    const active = tab === t;
+    return (
+      <button
+        key={t}
+        onClick={() => setTab(t)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "0 12px",
+          height: 32,
+          borderRadius: 8,
+          fontSize: 12,
+          fontWeight: 500,
+          border: "none",
+          cursor: "pointer",
+          background: active ? "rgba(47,155,47,0.2)" : "transparent",
+          color: active ? "#4ade80" : "rgba(255,255,255,0.55)",
+          transition: "background 0.15s, color 0.15s",
+        }}
+      >
+        {icon}{label}
+      </button>
+    );
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl w-full max-w-lg" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.16)" }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.6)",
+      backdropFilter: "blur(4px)",
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 16,
+    }}>
+      <div style={{
+        background: "#0d1a12",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: 16,
+        width: "100%",
+        maxWidth: 512,
+        boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
+      }}>
+        {/* Header */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "16px 24px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}>
           <div>
-            <h2 className="text-[14px] font-semibold text-[#1F2937]">{affiliate.name}</h2>
-            <p className="text-[12px] text-[#6B7280] mt-0.5">{affiliate.email}</p>
+            <h2 style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", margin: 0 }}>{affiliate.name}</h2>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2, marginBottom: 0 }}>{affiliate.email}</p>
           </div>
-          <button onClick={onClose} className="h-8 w-8 rounded-xl flex items-center justify-center text-[#6B7280] hover:bg-[#F3F5F8] hover:text-[#334155] transition-all">
-            <X className="h-4 w-4" />
+          <button
+            onClick={onClose}
+            style={{
+              height: 32,
+              width: 32,
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            <X style={{ width: 16, height: 16 }} />
           </button>
         </div>
-        <div className="p-6 space-y-5">
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { label: "Clicks", value: affiliate.total_clicks.toLocaleString() },
-              { label: "Conversions", value: affiliate.total_conversions.toLocaleString() },
-              { label: "Pending Pay", value: fmt(pending) },
-            ].map(({ label, value }) => (
-              <div key={label} className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-center">
-                <p className="text-[11px] uppercase tracking-widest text-[#8A94A6] mb-1.5">{label}</p>
-                <p className="text-[18px] font-bold text-[#1F2937] font-mono">{value}</p>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "16px 24px 0" }}>
+          {tabBtn("overview", "Overview", <TrendingUp style={{ width: 12, height: 12 }} />)}
+          {tabBtn("payout", `Pay Out${pending > 0 ? ` (${fmt(pending)})` : ""}`, <Banknote style={{ width: 12, height: 12 }} />)}
+          {tabBtn("history", "History", <History style={{ width: 12, height: 12 }} />)}
+        </div>
+
+        <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* OVERVIEW TAB */}
+          {tab === "overview" && (
+            <>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+                {[
+                  { label: "Clicks",      value: affiliate.total_clicks.toLocaleString() },
+                  { label: "Conversions", value: affiliate.total_conversions.toLocaleString() },
+                  { label: "Pending Pay", value: fmt(pending) },
+                ].map(({ label, value }) => (
+                  <div
+                    key={label}
+                    style={{
+                      padding: 16,
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid rgba(255,255,255,0.09)",
+                      borderRadius: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    <p style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "rgba(255,255,255,0.35)",
+                      margin: "0 0 6px",
+                    }}>
+                      {label}
+                    </p>
+                    <p style={{ fontSize: 18, fontWeight: 900, color: "#fff", fontFamily: "monospace", margin: 0 }}>{value}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {/* Referral link */}
-          <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Referral Link</label>
-            <div className="flex items-center gap-2 h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0]">
-              <code className="flex-1 text-[12px] text-[#116DFF] overflow-hidden text-ellipsis whitespace-nowrap font-mono min-w-0">
-                {link}
-              </code>
-              <button
-                onClick={() => { navigator.clipboard.writeText(link); toast.success("Copied"); }}
-                className="shrink-0 h-7 px-3 rounded-md border border-[#D8E2F0] bg-white text-[12px] text-[#27364A] hover:bg-[#F4F8FF] transition-colors"
-              >
-                Copy
-              </button>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+                  Referral Link
+                </label>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  height: 40,
+                  padding: "0 14px",
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}>
+                  <code style={{
+                    flex: 1,
+                    fontSize: 12,
+                    color: "#4ade80",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    fontFamily: "monospace",
+                    minWidth: 0,
+                  }}>
+                    {link}
+                  </code>
+                  <button
+                    onClick={() => { navigator.clipboard.writeText(link); toast.success("Copied"); }}
+                    style={{
+                      flexShrink: 0,
+                      height: 28,
+                      padding: "0 12px",
+                      borderRadius: 6,
+                      background: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      color: "#fff",
+                      fontSize: 12,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+                  Commission Rate (%)
+                </label>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={rate}
+                    onChange={(e) => setRate(e.target.value)}
+                    style={{ ...inputStyle, width: 96, fontFamily: "monospace" }}
+                  />
+                  <button
+                    onClick={saveRate}
+                    disabled={saving || parseInt(rate) === affiliate.commission_rate}
+                    style={{
+                      height: 40,
+                      padding: "0 20px",
+                      borderRadius: 9999,
+                      background: "#2f9b2f",
+                      color: "#fff",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      border: "none",
+                      cursor: saving || parseInt(rate) === affiliate.commission_rate ? "not-allowed" : "pointer",
+                      opacity: saving || parseInt(rate) === affiliate.commission_rate ? 0.5 : 1,
+                    }}
+                  >
+                    {saving ? "Saving…" : "Save"}
+                  </button>
+                </div>
+              </div>
+
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", margin: 0 }}>
+                Joined {new Date(affiliate.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
+                {affiliate.approved_at && ` · Approved ${new Date(affiliate.approved_at).toLocaleDateString("en-NZ")}`}
+              </p>
+            </>
+          )}
+
+          {/* PAYOUT TAB */}
+          {tab === "payout" && (
+            <form onSubmit={recordPayout} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{
+                padding: 16,
+                borderRadius: 12,
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.09)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}>
+                <div>
+                  <p style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.35)",
+                    margin: 0,
+                  }}>
+                    Commission pending
+                  </p>
+                  <p style={{ fontSize: 22, fontWeight: 900, fontFamily: "monospace", color: "#4ade80", marginTop: 4, marginBottom: 0 }}>
+                    {fmt(pending)}
+                  </p>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <p style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.35)",
+                    margin: 0,
+                  }}>
+                    Total paid
+                  </p>
+                  <p style={{ fontSize: 16, fontWeight: 700, fontFamily: "monospace", color: "rgba(255,255,255,0.55)", marginTop: 4, marginBottom: 0 }}>
+                    {fmt(affiliate.total_paid_cents)}
+                  </p>
+                </div>
+              </div>
+
+              {pending <= 0 ? (
+                <div style={{ padding: "24px 0", textAlign: "center" }}>
+                  <Check style={{ width: 32, height: 32, color: "#4ade80", margin: "0 auto 8px" }} />
+                  <p style={{ fontSize: 14, color: "#ffffff", fontWeight: 500, margin: "0 0 4px" }}>All paid up</p>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", margin: 0 }}>No pending commission for this affiliate.</p>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+                      Payout Amount (NZD)
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <span style={{
+                        position: "absolute",
+                        left: 14,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        fontSize: 13,
+                        color: "rgba(255,255,255,0.35)",
+                        pointerEvents: "none",
+                      }}>
+                        $
+                      </span>
+                      <input
+                        required
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        max={(pending / 100).toFixed(2)}
+                        value={payoutAmt}
+                        onChange={(e) => setPayoutAmt(e.target.value)}
+                        placeholder={(pending / 100).toFixed(2)}
+                        style={{ ...inputStyle, paddingLeft: 28, fontFamily: "monospace" }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPayoutAmt((pending / 100).toFixed(2))}
+                      style={{
+                        marginTop: 6,
+                        fontSize: 11,
+                        color: "#4ade80",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Pay full amount ({fmt(pending)})
+                    </button>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>
+                      Notes (optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={payoutNotes}
+                      onChange={(e) => setPayoutNotes(e.target.value)}
+                      placeholder="e.g. Bank transfer 31 May"
+                      style={inputStyle}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={payoutLoading}
+                    style={{
+                      width: "100%",
+                      height: 40,
+                      borderRadius: 9999,
+                      background: "#2f9b2f",
+                      color: "#fff",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      border: "none",
+                      cursor: payoutLoading ? "not-allowed" : "pointer",
+                      opacity: payoutLoading ? 0.5 : 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <Banknote style={{ width: 16, height: 16 }} />
+                    {payoutLoading ? "Recording…" : "Record Payout"}
+                  </button>
+                </>
+              )}
+            </form>
+          )}
+
+          {/* HISTORY TAB */}
+          {tab === "history" && (
+            <div>
+              {loadingHistory ? (
+                <div style={{ padding: "32px 0", textAlign: "center", color: "rgba(255,255,255,0.35)", fontSize: 13 }}>
+                  Loading…
+                </div>
+              ) : payouts.length === 0 ? (
+                <div style={{ padding: "32px 0", textAlign: "center", color: "rgba(255,255,255,0.35)", fontSize: 13 }}>
+                  No payouts recorded yet.
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {payouts.map((p) => (
+                    <div
+                      key={p.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: 16,
+                        borderRadius: 12,
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.09)",
+                      }}
+                    >
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 600, fontFamily: "monospace", color: "#4ade80", margin: 0 }}>
+                          {fmt(p.amount_cents)}
+                        </p>
+                        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2, marginBottom: 0 }}>
+                          {new Date(p.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}
+                          {p.notes && ` · ${p.notes}`}
+                        </p>
+                      </div>
+                      <span style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "4px 8px",
+                        borderRadius: 6,
+                        fontSize: 11,
+                        fontWeight: 500,
+                        ...(p.status === "completed"
+                          ? { background: "rgba(47,155,47,0.2)", color: "#4ade80", border: "1px solid rgba(47,155,47,0.3)" }
+                          : { background: "rgba(239,68,68,0.15)", color: "#f87171", border: "1px solid rgba(239,68,68,0.25)" }),
+                      }}>
+                        {p.status}
+                      </span>
+                    </div>
+                  ))}
+                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", textAlign: "right", marginTop: 4 }}>
+                    Total paid: {fmt(payouts.reduce((s, p) => s + (p.status === "completed" ? p.amount_cents : 0), 0))}
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
-
-          {/* Commission rate */}
-          <div>
-            <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Commission Rate (%)</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                min="1"
-                max="50"
-                value={rate}
-                onChange={(e) => setRate(e.target.value)}
-                className="w-24 h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] focus:outline-none focus:border-[#116DFF]/50 font-mono"
-              />
-              <button
-                onClick={saveRate}
-                disabled={saving || parseInt(rate) === affiliate.commission_rate}
-                className="h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
-              >
-                {saving ? "Saving…" : "Save"}
-              </button>
-            </div>
-          </div>
-
-          {/* Joined */}
-          <p className="text-[12px] text-[#8A94A6]">
-            Joined {new Date(affiliate.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
-            {affiliate.approved_at && ` · Approved ${new Date(affiliate.approved_at).toLocaleDateString("en-NZ")}`}
-          </p>
+          )}
         </div>
       </div>
     </div>

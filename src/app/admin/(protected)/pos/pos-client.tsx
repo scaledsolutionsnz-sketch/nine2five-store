@@ -41,6 +41,29 @@ type CartItem = {
 
 type PaymentMethod = "cash" | "eftpos" | "bank_transfer" | "stripe" | "manual";
 
+// ─── Theme tokens ─────────────────────────────────────────────────────────────
+
+const T = {
+  pageBg: "#06150C",
+  panelBg: "rgba(8,28,16,0.92)",
+  border: "1px solid rgba(255,255,255,0.09)",
+  borderSubtle: "1px solid rgba(255,255,255,0.06)",
+  borderHover: "1px solid rgba(47,155,47,0.4)",
+  green: "#2f9b2f",
+  greenBright: "#4ade80",
+  white: "#ffffff",
+  textMuted: "rgba(255,255,255,0.5)",
+  textDim: "rgba(255,255,255,0.3)",
+  textFaint: "rgba(255,255,255,0.18)",
+  inputBg: "rgba(255,255,255,0.06)",
+  inputBorder: "1px solid rgba(255,255,255,0.1)",
+  modalBg: "#0d1a12",
+  modalBorder: "1px solid rgba(255,255,255,0.12)",
+  amber: "#f59e0b",
+  red: "#ef4444",
+  redDim: "rgba(239,68,68,0.15)",
+};
+
 // ─── ProductCard ──────────────────────────────────────────────────────────────
 
 function ProductCard({
@@ -52,57 +75,109 @@ function ProductCard({
   cartItems: CartItem[];
   onAdd: (product: Product, variant: Variant) => void;
 }) {
+  const [hovered, setHovered] = useState(false);
   const variants = (product.product_variants ?? []).sort((a, b) => a.size.localeCompare(b.size));
 
   return (
-    <div className="rounded-[14px] bg-white border border-[#E2E8F0] flex flex-col" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: T.panelBg,
+        border: hovered ? T.borderHover : T.border,
+        borderRadius: 16,
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        transition: "border-color 0.15s",
+        cursor: "default",
+      }}
+    >
       {/* Image */}
-      <div className="relative aspect-square bg-[#F3F5F8] rounded-t-[13px] overflow-hidden">
+      <div style={{
+        position: "relative",
+        aspectRatio: "1/1",
+        background: "rgba(255,255,255,0.03)",
+        overflow: "hidden",
+      }}>
         {product.image_urls?.[0] ? (
           <Image
             src={product.image_urls[0]}
             alt={product.name}
             fill
-            className="object-cover"
+            style={{ objectFit: "cover" }}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Package style={{ width: 28, height: 28, color: "#C4CAD4" }} />
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <Package style={{ width: 28, height: 28, color: "rgba(255,255,255,0.15)" }} />
           </div>
         )}
       </div>
 
       {/* Info + size buttons */}
-      <div className="p-3">
-        <p className="text-[13px] font-semibold text-[#1F2937] leading-snug mb-1.5 line-clamp-2">
+      <div style={{ padding: "10px 10px 12px" }}>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.white,
+          lineHeight: 1.35,
+          marginBottom: 4,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+        }}>
           {product.name}
         </p>
-        <p className="text-[13px] font-bold text-[#1F2937] mb-2 font-mono">
+        <p style={{
+          fontSize: 13,
+          fontWeight: 700,
+          color: T.greenBright,
+          fontFamily: "monospace",
+          marginBottom: 8,
+        }}>
           ${(product.price / 100).toFixed(2)}
         </p>
 
-        <div className="flex gap-1.5">
+        <div style={{ display: "flex", gap: 5 }}>
           {variants.map(variant => {
             const inCart = cartItems.find(i => i.variantId === variant.id);
             const outOfStock = variant.stock_quantity === 0;
+            const lowStock = !outOfStock && variant.stock_quantity <= 3;
             return (
               <button
                 key={variant.id}
                 onClick={() => !outOfStock && onAdd(product, variant)}
                 disabled={outOfStock}
-                className="flex-1 h-[30px] rounded-lg text-[11px] font-bold transition-all duration-100 disabled:cursor-not-allowed"
                 style={{
+                  flex: 1,
+                  height: 28,
+                  borderRadius: 8,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  cursor: outOfStock ? "not-allowed" : "pointer",
+                  transition: "all 0.1s",
                   backgroundColor: outOfStock
-                    ? "#F3F5F8"
+                    ? "rgba(255,255,255,0.04)"
                     : inCart
-                      ? "#EAF2FF"
-                      : "#EAF2FF",
-                  color: outOfStock ? "#C4CAD4" : inCart ? "#116DFF" : "#116DFF",
+                      ? "rgba(47,155,47,0.25)"
+                      : "rgba(255,255,255,0.07)",
+                  color: outOfStock
+                    ? "rgba(255,255,255,0.2)"
+                    : inCart
+                      ? T.greenBright
+                      : "rgba(255,255,255,0.75)",
                   border: outOfStock
-                    ? "1px solid #E2E8F0"
+                    ? "1px solid rgba(255,255,255,0.05)"
                     : inCart
-                      ? "1.5px solid #116DFF"
-                      : "1px solid #BBD3FF",
+                      ? "1px solid rgba(74,222,128,0.5)"
+                      : "1px solid rgba(255,255,255,0.12)",
                 }}
               >
                 {variant.size}{inCart ? ` ×${inCart.quantity}` : ""}
@@ -112,16 +187,17 @@ function ProductCard({
         </div>
 
         {/* Stock labels */}
-        <div className="flex gap-1.5 mt-1">
+        <div style={{ display: "flex", gap: 5, marginTop: 4 }}>
           {variants.map(v => (
-            <div key={v.id} className="flex-1 text-center">
+            <div key={v.id} style={{ flex: 1, textAlign: "center" }}>
               <span style={{
-                fontSize: 9, fontWeight: 500,
+                fontSize: 9,
+                fontWeight: 500,
                 color: v.stock_quantity === 0
-                  ? "#991B1B"
+                  ? T.red
                   : v.stock_quantity <= 3
-                    ? "#92400E"
-                    : "#8A94A6",
+                    ? T.amber
+                    : "rgba(255,255,255,0.25)",
               }}>
                 {v.stock_quantity === 0 ? "Out" : `${v.stock_quantity}`}
               </span>
@@ -157,38 +233,89 @@ function CartItemRow({
   }
 
   return (
-    <div className="flex items-center gap-2.5 px-3.5 py-2.5 border-b border-[#E5EAF1]">
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "9px 14px",
+      borderBottom: T.borderSubtle,
+    }}>
       {/* Name + size */}
-      <div className="flex-1 min-w-0">
-        <p className="text-[12px] font-semibold text-[#1F2937] leading-tight truncate">{item.productName}</p>
-        <p className="text-[10px] text-[#6B7280] leading-none mt-0.5">Size {item.size}</p>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.white,
+          lineHeight: 1.3,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}>
+          {item.productName}
+        </p>
+        <p style={{
+          fontSize: 10,
+          color: T.textMuted,
+          marginTop: 2,
+          lineHeight: 1,
+        }}>
+          Size {item.size}
+        </p>
       </div>
 
       {/* Qty controls */}
-      <div className="flex items-center gap-1">
+      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
         <button
           onClick={() => onQty(item.variantId, -1)}
-          className="w-[22px] h-[22px] rounded-md border border-[#E2E8F0] bg-white flex items-center justify-center hover:bg-[#F6FAFF] transition-colors"
+          style={{
+            width: 22,
+            height: 22,
+            borderRadius: 6,
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.05)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
         >
-          <Minus style={{ width: 9, height: 9, color: "#6B7280" }} />
+          <Minus style={{ width: 9, height: 9, color: "rgba(255,255,255,0.5)" }} />
         </button>
-        <span className="text-[12px] font-bold text-[#1F2937] w-[18px] text-center font-mono">
+        <span style={{
+          fontSize: 12,
+          fontWeight: 700,
+          color: T.white,
+          width: 18,
+          textAlign: "center",
+          fontFamily: "monospace",
+        }}>
           {item.quantity}
         </span>
         <button
           onClick={() => onQty(item.variantId, 1)}
           disabled={item.quantity >= item.maxQty}
-          className="w-[22px] h-[22px] rounded-md border border-[#E2E8F0] bg-white flex items-center justify-center hover:bg-[#F6FAFF] transition-colors disabled:opacity-30"
+          style={{
+            width: 22,
+            height: 22,
+            borderRadius: 6,
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.05)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: item.quantity >= item.maxQty ? "not-allowed" : "pointer",
+            opacity: item.quantity >= item.maxQty ? 0.3 : 1,
+          }}
         >
-          <Plus style={{ width: 9, height: 9, color: "#6B7280" }} />
+          <Plus style={{ width: 9, height: 9, color: "rgba(255,255,255,0.5)" }} />
         </button>
       </div>
 
       {/* Price (editable) */}
-      <div className="w-[58px] text-right">
+      <div style={{ width: 58, textAlign: "right" }}>
         {editing ? (
-          <div className="flex items-center gap-0.5 justify-end">
-            <span className="text-[10px] text-[#6B7280]">$</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
+            <span style={{ fontSize: 10, color: T.textMuted }}>$</span>
             <input
               type="number"
               min="0"
@@ -198,20 +325,43 @@ function CartItemRow({
               onBlur={commitPrice}
               onKeyDown={e => e.key === "Enter" && commitPrice()}
               autoFocus
-              className="w-[46px] text-[12px] font-bold text-right bg-transparent border-b border-[#116DFF]/60 outline-none text-[#1F2937] font-mono"
+              style={{
+                width: 46,
+                fontSize: 12,
+                fontWeight: 700,
+                textAlign: "right",
+                background: "transparent",
+                border: "none",
+                borderBottom: `1px solid ${T.greenBright}`,
+                outline: "none",
+                color: T.white,
+                fontFamily: "monospace",
+              }}
             />
           </div>
         ) : (
           <button
             onClick={() => { setEditing(true); setPriceInput((item.unitPrice / 100).toFixed(2)); }}
             title="Click to override price"
-            className="text-right cursor-pointer"
+            style={{ textAlign: "right", cursor: "pointer", background: "none", border: "none", padding: 0 }}
           >
-            <p className="text-[12px] font-bold leading-tight font-mono" style={{ color: overridden ? "#116DFF" : "#1F2937" }}>
+            <p style={{
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: "monospace",
+              color: overridden ? T.greenBright : T.white,
+              lineHeight: 1.3,
+            }}>
               ${((item.unitPrice * item.quantity) / 100).toFixed(2)}
             </p>
             {overridden && (
-              <p className="text-[9px] text-[#8A94A6] line-through leading-none font-mono">
+              <p style={{
+                fontSize: 9,
+                color: T.textMuted,
+                textDecoration: "line-through",
+                fontFamily: "monospace",
+                lineHeight: 1,
+              }}>
                 ${((item.originalPrice * item.quantity) / 100).toFixed(2)}
               </p>
             )}
@@ -222,7 +372,21 @@ function CartItemRow({
       {/* Remove */}
       <button
         onClick={() => onRemove(item.variantId)}
-        className="w-5 h-5 flex items-center justify-center text-[#C4CAD4] hover:text-[#991B1B] transition-colors"
+        style={{
+          width: 20,
+          height: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "rgba(255,255,255,0.2)",
+          cursor: "pointer",
+          background: "none",
+          border: "none",
+          padding: 0,
+          transition: "color 0.15s",
+        }}
+        onMouseEnter={e => (e.currentTarget.style.color = T.red)}
+        onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
       >
         <X style={{ width: 11, height: 11 }} />
       </button>
@@ -265,26 +429,51 @@ function StripeForm({
   }
 
   return (
-    <form onSubmit={handlePay} className="flex flex-col gap-4">
+    <form onSubmit={handlePay} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <PaymentElement />
       {error && (
-        <p className="text-[12px] text-[#991B1B]">{error}</p>
+        <p style={{ fontSize: 12, color: T.red }}>{error}</p>
       )}
-      <div className="flex gap-2.5">
+      <div style={{ display: "flex", gap: 10 }}>
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 h-11 rounded-full bg-white border border-[#E2E8F0] text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-colors"
+          style={{
+            flex: 1,
+            height: 44,
+            borderRadius: 100,
+            background: T.inputBg,
+            border: T.border,
+            fontSize: 13,
+            fontWeight: 500,
+            color: T.white,
+            cursor: "pointer",
+          }}
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={submitting || !stripe}
-          className="flex-1 h-11 rounded-full bg-[#116DFF] text-white text-[13px] font-bold hover:bg-[#0D5FE0] disabled:opacity-60 transition-colors flex items-center justify-center gap-1.5"
+          style={{
+            flex: 1,
+            height: 44,
+            borderRadius: 100,
+            background: T.green,
+            border: "none",
+            fontSize: 13,
+            fontWeight: 700,
+            color: T.white,
+            cursor: submitting || !stripe ? "not-allowed" : "pointer",
+            opacity: submitting || !stripe ? 0.6 : 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+          }}
         >
           {submitting
-            ? <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" />
+            ? <Loader2 style={{ width: 15, height: 15, animation: "spin 1s linear infinite" }} />
             : `Charge $${(total / 100).toFixed(2)}`}
         </button>
       </div>
@@ -311,35 +500,79 @@ function SuccessScreen({
   };
 
   return (
-    <div className="flex items-center justify-center h-full">
-      <div className="text-center max-w-[360px]">
-        <div className="w-20 h-20 rounded-full bg-[#D5F1E2] border border-[#A7D7B9] flex items-center justify-center mx-auto mb-6">
-          <Check style={{ width: 36, height: 36, color: "#166B3B" }} strokeWidth={2.5} />
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+      <div style={{ textAlign: "center", maxWidth: 360 }}>
+        <div style={{
+          width: 80,
+          height: 80,
+          borderRadius: "50%",
+          background: "rgba(47,155,47,0.15)",
+          border: "1px solid rgba(47,155,47,0.4)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "0 auto 24px",
+        }}>
+          <Check style={{ width: 36, height: 36, color: T.greenBright }} strokeWidth={2.5} />
         </div>
 
-        <h2 className="text-[28px] font-bold text-[#1F2937] mb-1.5">
+        <h2 style={{ fontSize: 28, fontWeight: 700, color: T.white, marginBottom: 6 }}>
           Sale Complete
         </h2>
-        <p className="text-[15px] text-[#334155] mb-1">
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", marginBottom: 4 }}>
           Order #{orderNumber}
         </p>
-        <p className="text-[13px] text-[#6B7280] mb-5">
+        <p style={{ fontSize: 13, color: T.textMuted, marginBottom: 20 }}>
           {labels[paymentMethod]} · Collected in-person
         </p>
-        <p className="text-[32px] font-bold text-[#1F2937] mb-8 font-mono">
-          ${(total / 100).toFixed(2)} <span className="text-[16px] font-normal text-[#6B7280]">NZD</span>
+        <p style={{
+          fontSize: 32,
+          fontWeight: 700,
+          color: T.greenBright,
+          fontFamily: "monospace",
+          marginBottom: 32,
+        }}>
+          ${(total / 100).toFixed(2)}{" "}
+          <span style={{ fontSize: 16, fontWeight: 400, color: T.textMuted }}>NZD</span>
         </p>
 
-        <div className="flex gap-2.5">
+        <div style={{ display: "flex", gap: 10 }}>
           <Link
             href="/admin/orders"
-            className="flex-1 h-11 rounded-full bg-white border border-[#E2E8F0] flex items-center justify-center text-[13px] font-medium text-[#334155] hover:bg-[#F6FAFF] transition-colors"
+            style={{
+              flex: 1,
+              height: 44,
+              borderRadius: 100,
+              background: T.inputBg,
+              border: T.border,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 13,
+              fontWeight: 500,
+              color: T.white,
+              textDecoration: "none",
+            }}
           >
             View Order
           </Link>
           <button
             onClick={onNewSale}
-            className="flex-1 h-11 rounded-full bg-[#116DFF] text-white text-[13px] font-bold hover:bg-[#0D5FE0] transition-colors flex items-center justify-center gap-1.5"
+            style={{
+              flex: 1,
+              height: 44,
+              borderRadius: 100,
+              background: T.green,
+              border: "none",
+              fontSize: 13,
+              fontWeight: 700,
+              color: T.white,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+            }}
           >
             <RotateCcw style={{ width: 13, height: 13 }} />
             New Sale
@@ -355,6 +588,7 @@ function SuccessScreen({
 export function POSClient({ products }: { products: Product[] }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
 
   // Discount state
   const [discountCode, setDiscountCode] = useState("");
@@ -398,9 +632,15 @@ export function POSClient({ products }: { products: Product[] }) {
   const gstIncluded = Math.round(afterDiscount * 15 / 115);
   const total = afterDiscount;
 
-  const filteredProducts = products.filter(p =>
-    !search.trim() || p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // Category filter
+  const categories = ["all", ...Array.from(new Set(
+    products.flatMap(p => (p as Product & { category?: string }).category ? [(p as Product & { category?: string }).category!] : [])
+  ))];
+
+  const filteredProducts = products.filter(p => {
+    const matchSearch = !search.trim() || p.name.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
+  });
 
   // ── Cart Operations ──────────────────────────────────────────────
   function addToCart(product: Product, variant: Variant) {
@@ -462,7 +702,6 @@ export function POSClient({ products }: { products: Product[] }) {
     if (!cart.length) return;
     setSaleError("");
 
-    // Stripe card: first create PI, then show modal
     if (paymentMethod === "stripe" && !stripePaymentIntentId) {
       setStripeLoading(true);
       try {
@@ -536,7 +775,7 @@ export function POSClient({ products }: { products: Product[] }) {
   // ── Success screen ────────────────────────────────────────────────
   if (completed) {
     return (
-      <div style={{ height: "calc(100vh - 136px)", minHeight: 600 }}>
+      <div style={{ height: "calc(100vh - 136px)", minHeight: 600, background: T.pageBg }}>
         <SuccessScreen
           orderNumber={completed.orderNumber}
           total={total}
@@ -550,18 +789,33 @@ export function POSClient({ products }: { products: Product[] }) {
   // ── Stripe card modal ─────────────────────────────────────────────
   if (stripeSecret) {
     return (
-      <div style={{ height: "calc(100vh - 136px)", minHeight: 600 }} className="flex items-center justify-center">
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-7 w-full max-w-[460px]" style={{ boxShadow: "0 24px 48px rgba(15,23,42,0.12)" }}>
-          <div className="flex justify-between items-center mb-5">
+      <div style={{
+        height: "calc(100vh - 136px)",
+        minHeight: 600,
+        background: T.pageBg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        <div style={{
+          background: T.modalBg,
+          border: T.modalBorder,
+          borderRadius: 20,
+          padding: 28,
+          width: "100%",
+          maxWidth: 460,
+          boxShadow: "0 32px 64px rgba(0,0,0,0.6)",
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
             <div>
-              <h3 className="text-[16px] font-bold text-[#1F2937]">Card Payment</h3>
-              <p className="text-[12px] text-[#6B7280] mt-1">
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: T.white }}>Card Payment</h3>
+              <p style={{ fontSize: 12, color: T.textMuted, marginTop: 4 }}>
                 {cart.reduce((s, i) => s + i.quantity, 0)} item{cart.reduce((s, i) => s + i.quantity, 0) !== 1 ? "s" : ""}
               </p>
             </div>
-            <p className="text-[24px] font-bold text-[#1F2937] font-mono">
+            <p style={{ fontSize: 24, fontWeight: 700, color: T.greenBright, fontFamily: "monospace" }}>
               ${(total / 100).toFixed(2)}
-              <span className="text-[13px] font-normal text-[#6B7280]"> NZD</span>
+              <span style={{ fontSize: 13, fontWeight: 400, color: T.textMuted }}> NZD</span>
             </p>
           </div>
           <Elements
@@ -569,8 +823,13 @@ export function POSClient({ products }: { products: Product[] }) {
             options={{
               clientSecret: stripeSecret,
               appearance: {
-                theme: "stripe",
-                variables: { colorPrimary: "#116DFF", borderRadius: "10px" },
+                theme: "night",
+                variables: {
+                  colorPrimary: T.green,
+                  colorBackground: T.modalBg,
+                  colorText: T.white,
+                  borderRadius: "10px",
+                },
               },
             }}
           >
@@ -586,46 +845,91 @@ export function POSClient({ products }: { products: Product[] }) {
   }
 
   const paymentMethods: Array<{ id: PaymentMethod; label: string; icon: React.ReactNode }> = [
-    { id: "cash",          label: "Cash",     icon: <Banknote style={{ width: 16, height: 16 }} /> },
-    { id: "eftpos",        label: "EFTPOS",   icon: <CreditCard style={{ width: 16, height: 16 }} /> },
-    { id: "stripe",        label: "Card",     icon: <Smartphone style={{ width: 16, height: 16 }} /> },
-    { id: "bank_transfer", label: "Transfer", icon: <Building2 style={{ width: 16, height: 16 }} /> },
-    { id: "manual",        label: "Manual",   icon: <ClipboardList style={{ width: 16, height: 16 }} /> },
+    { id: "cash",          label: "Cash",     icon: <Banknote style={{ width: 15, height: 15 }} /> },
+    { id: "eftpos",        label: "EFTPOS",   icon: <CreditCard style={{ width: 15, height: 15 }} /> },
+    { id: "stripe",        label: "Card",     icon: <Smartphone style={{ width: 15, height: 15 }} /> },
+    { id: "bank_transfer", label: "Transfer", icon: <Building2 style={{ width: 15, height: 15 }} /> },
+    { id: "manual",        label: "Manual",   icon: <ClipboardList style={{ width: 15, height: 15 }} /> },
   ];
 
   const totalPairs = cart.reduce((s, i) => s + i.quantity, 0);
 
   // ── Main layout ───────────────────────────────────────────────────
   return (
-    <div style={{ height: "calc(100vh - 136px)", minHeight: 620 }} className="flex gap-4 overflow-hidden">
-      {/* ── LEFT: Product Grid ────────────────────────────────── */}
-      <div className="flex-1 flex flex-col gap-3 overflow-hidden">
+    <div style={{
+      height: "calc(100vh - 136px)",
+      minHeight: 620,
+      display: "flex",
+      gap: 16,
+      overflow: "hidden",
+      background: T.pageBg,
+    }}>
+      {/* ── LEFT: Product Grid ─────────────────────────────── */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12, overflow: "hidden" }}>
+
         {/* Search */}
-        <div className="shrink-0 flex items-center gap-2 h-10 px-3.5 bg-white border border-[#E2E8F0] rounded-full transition-colors focus-within:border-[#116DFF]/50">
-          <Search style={{ width: 14, height: 14, color: "#8A94A6", flexShrink: 0 }} />
+        <div style={{
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          height: 42,
+          padding: "0 14px",
+          background: T.inputBg,
+          border: T.inputBorder,
+          borderRadius: 100,
+        }}>
+          <Search style={{ width: 14, height: 14, color: T.textDim, flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search products..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="flex-1 text-[13px] bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none min-w-0"
+            style={{
+              flex: 1,
+              fontSize: 13,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              color: T.white,
+              minWidth: 0,
+            }}
           />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: T.textMuted }}
+            >
+              <X style={{ width: 12, height: 12 }} />
+            </button>
+          )}
         </div>
 
         {/* Grid */}
         <div
-          className="flex-1 overflow-y-auto pb-2"
           style={{
+            flex: 1,
+            overflowY: "auto",
+            paddingBottom: 8,
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
             gap: 10,
             alignContent: "start",
           }}
         >
           {filteredProducts.length === 0 ? (
-            <div style={{ gridColumn: "1/-1" }} className="flex flex-col items-center justify-center pt-16 text-[#C4CAD4] gap-2">
+            <div style={{
+              gridColumn: "1/-1",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: 64,
+              color: "rgba(255,255,255,0.2)",
+              gap: 8,
+            }}>
               <Package style={{ width: 32, height: 32 }} />
-              <p className="text-[13px]">No products found</p>
+              <p style={{ fontSize: 13 }}>No products found</p>
             </div>
           ) : (
             filteredProducts.map(product => (
@@ -640,15 +944,39 @@ export function POSClient({ products }: { products: Product[] }) {
         </div>
       </div>
 
-      {/* ── RIGHT: Cart ──────────────────────────────────────── */}
-      <div className="w-[364px] flex flex-col bg-white border border-[#E2E8F0] rounded-[14px] overflow-hidden shrink-0" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      {/* ── RIGHT: Cart ──────────────────────────────────── */}
+      <div style={{
+        width: 364,
+        display: "flex",
+        flexDirection: "column",
+        background: T.panelBg,
+        border: T.border,
+        borderRadius: 16,
+        overflow: "hidden",
+        flexShrink: 0,
+      }}>
         {/* Cart header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0] shrink-0">
-          <div className="flex items-center gap-1.5">
-            <ShoppingCart style={{ width: 15, height: 15, color: "#6B7280" }} />
-            <span className="text-[14px] font-bold text-[#1F2937]">Cart</span>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px",
+          borderBottom: T.border,
+          flexShrink: 0,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <ShoppingCart style={{ width: 15, height: 15, color: T.textMuted }} />
+            <span style={{ fontSize: 14, fontWeight: 700, color: T.white }}>Cart</span>
             {totalPairs > 0 && (
-              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-[#EAF2FF] text-[#116DFF] border border-[#BBD3FF]">
+              <span style={{
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "2px 7px",
+                borderRadius: 100,
+                background: "rgba(47,155,47,0.2)",
+                color: T.greenBright,
+                border: "1px solid rgba(74,222,128,0.3)",
+              }}>
                 {totalPairs} pair{totalPairs !== 1 ? "s" : ""}
               </span>
             )}
@@ -656,7 +984,16 @@ export function POSClient({ products }: { products: Product[] }) {
           {cart.length > 0 && (
             <button
               onClick={() => setCart([])}
-              className="text-[11px] text-[#6B7280] hover:text-[#991B1B] transition-colors"
+              style={{
+                fontSize: 11,
+                color: T.textMuted,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                transition: "color 0.15s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = T.red)}
+              onMouseLeave={e => (e.currentTarget.style.color = T.textMuted)}
             >
               Clear all
             </button>
@@ -664,11 +1001,19 @@ export function POSClient({ products }: { products: Product[] }) {
         </div>
 
         {/* Cart items (scrollable) */}
-        <div className="flex-1 overflow-y-auto">
+        <div style={{ flex: 1, overflowY: "auto" }}>
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-              <ShoppingCart style={{ width: 32, height: 32, color: "#C4CAD4" }} className="mb-2.5" />
-              <p className="text-[12px] text-[#6B7280] leading-relaxed">
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              padding: 24,
+              textAlign: "center",
+            }}>
+              <ShoppingCart style={{ width: 32, height: 32, color: "rgba(255,255,255,0.12)", marginBottom: 10 }} />
+              <p style={{ fontSize: 12, color: T.textMuted, lineHeight: 1.6 }}>
                 Tap a size on any product<br />to add it to the cart
               </p>
             </div>
@@ -685,61 +1030,107 @@ export function POSClient({ products }: { products: Product[] }) {
           )}
         </div>
 
-        {/* ── Fixed bottom ─────────────────────────────────────── */}
-        <div className="shrink-0 border-t border-[#E2E8F0]">
+        {/* ── Fixed bottom ─────────────────────────────────── */}
+        <div style={{ flexShrink: 0, borderTop: T.border }}>
 
           {/* Discount section */}
-          <div className="px-3.5 py-2.5 border-b border-[#E5EAF1]">
+          <div style={{ padding: "10px 14px 10px", borderBottom: T.borderSubtle }}>
             {appliedDiscount ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Tag style={{ width: 11, height: 11, color: "#116DFF" }} />
-                  <span className="text-[12px] font-bold text-[#116DFF] font-mono">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <Tag style={{ width: 11, height: 11, color: T.greenBright }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: T.greenBright, fontFamily: "monospace" }}>
                     {appliedDiscount.code}
                   </span>
-                  <span className="text-[11px] text-[#116DFF]/60 font-mono">
+                  <span style={{ fontSize: 11, color: "rgba(74,222,128,0.6)", fontFamily: "monospace" }}>
                     −${(appliedDiscount.amount / 100).toFixed(2)}
                   </span>
                 </div>
                 <button
                   onClick={() => setAppliedDiscount(null)}
-                  className="text-[#C4CAD4] hover:text-[#6B7280] transition-colors"
+                  style={{ color: T.textMuted, background: "none", border: "none", cursor: "pointer", padding: 0 }}
                 >
                   <X style={{ width: 11, height: 11 }} />
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col gap-1.5">
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {/* Code input */}
-                <div className="flex gap-1.5">
-                  <div className="flex-1 flex items-center gap-1.5 h-[30px] px-2.5 bg-white border border-[#E2E8F0] rounded-lg transition-colors focus-within:border-[#116DFF]/50">
-                    <Tag style={{ width: 10, height: 10, color: "#8A94A6", flexShrink: 0 }} />
+                <div style={{ display: "flex", gap: 6 }}>
+                  <div style={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    height: 30,
+                    padding: "0 10px",
+                    background: T.inputBg,
+                    border: T.inputBorder,
+                    borderRadius: 8,
+                  }}>
+                    <Tag style={{ width: 10, height: 10, color: T.textDim, flexShrink: 0 }} />
                     <input
                       type="text"
                       placeholder="Discount code"
                       value={discountCode}
                       onChange={e => { setDiscountCode(e.target.value.toUpperCase()); setDiscountError(""); }}
                       onKeyDown={e => e.key === "Enter" && applyDiscountCode()}
-                      className="flex-1 text-[11px] font-mono bg-transparent text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none min-w-0"
+                      style={{
+                        flex: 1,
+                        fontSize: 11,
+                        fontFamily: "monospace",
+                        background: "transparent",
+                        border: "none",
+                        outline: "none",
+                        color: T.white,
+                        minWidth: 0,
+                      }}
                     />
                   </div>
                   <button
                     onClick={applyDiscountCode}
                     disabled={discountLoading || !discountCode.trim()}
-                    className="h-[30px] px-2.5 rounded-lg text-[11px] font-semibold bg-[#EAF2FF] text-[#116DFF] border border-[#BBD3FF] hover:bg-[#DBEAFE] disabled:opacity-40 transition-colors flex items-center gap-1"
+                    style={{
+                      height: 30,
+                      padding: "0 10px",
+                      borderRadius: 8,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      background: "rgba(47,155,47,0.15)",
+                      color: T.greenBright,
+                      border: "1px solid rgba(47,155,47,0.3)",
+                      cursor: discountLoading || !discountCode.trim() ? "not-allowed" : "pointer",
+                      opacity: discountLoading || !discountCode.trim() ? 0.4 : 1,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
                   >
-                    {discountLoading ? <Loader2 style={{ width: 10, height: 10 }} className="animate-spin" /> : "Apply"}
+                    {discountLoading
+                      ? <Loader2 style={{ width: 10, height: 10, animation: "spin 1s linear infinite" }} />
+                      : "Apply"}
                   </button>
                 </div>
-                {discountError && <p className="text-[10px] text-[#991B1B]">{discountError}</p>}
+                {discountError && (
+                  <p style={{ fontSize: 10, color: T.red }}>{discountError}</p>
+                )}
 
                 {/* Manual discount */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-[#6B7280] whitespace-nowrap">Manual:</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 10, color: T.textMuted, whiteSpace: "nowrap" }}>Manual:</span>
                   <select
                     value={manualDiscType}
                     onChange={e => setManualDiscType(e.target.value as "none" | "pct" | "fixed")}
-                    className="h-[26px] px-1 text-[10px] bg-white border border-[#E2E8F0] rounded-md text-[#334155] focus:outline-none"
+                    style={{
+                      height: 26,
+                      padding: "0 4px",
+                      fontSize: 10,
+                      background: T.inputBg,
+                      border: T.inputBorder,
+                      borderRadius: 6,
+                      color: T.white,
+                      outline: "none",
+                    }}
                   >
                     <option value="none">None</option>
                     <option value="pct">%</option>
@@ -754,10 +1145,21 @@ export function POSClient({ products }: { products: Product[] }) {
                         value={manualDiscValue}
                         onChange={e => setManualDiscValue(e.target.value)}
                         placeholder={manualDiscType === "pct" ? "%" : "$"}
-                        className="w-[52px] h-[26px] text-center text-[11px] bg-white border border-[#E2E8F0] rounded-md text-[#334155] focus:outline-none font-mono"
+                        style={{
+                          width: 52,
+                          height: 26,
+                          textAlign: "center",
+                          fontSize: 11,
+                          background: T.inputBg,
+                          border: T.inputBorder,
+                          borderRadius: 6,
+                          color: T.white,
+                          outline: "none",
+                          fontFamily: "monospace",
+                        }}
                       />
                       {manualDiscAmount > 0 && (
-                        <span className="text-[10px] text-[#116DFF] font-semibold font-mono">
+                        <span style={{ fontSize: 10, color: T.greenBright, fontWeight: 600, fontFamily: "monospace" }}>
                           −${(manualDiscAmount / 100).toFixed(2)}
                         </span>
                       )}
@@ -769,51 +1171,67 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Totals */}
-          <div className="px-4 py-2.5 border-b border-[#E5EAF1]">
-            <div className="flex flex-col gap-1.5">
-              <div className="flex justify-between">
-                <span className="text-[12px] text-[#6B7280]">Subtotal</span>
-                <span className="text-[12px] text-[#6B7280] font-mono">${(subtotal / 100).toFixed(2)}</span>
+          <div style={{ padding: "10px 16px 10px", borderBottom: T.borderSubtle }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 12, color: T.textMuted }}>Subtotal</span>
+                <span style={{ fontSize: 12, color: T.textMuted, fontFamily: "monospace" }}>${(subtotal / 100).toFixed(2)}</span>
               </div>
               {totalDiscountAmount > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-[12px] text-[#116DFF]">Discount</span>
-                  <span className="text-[12px] text-[#116DFF] font-mono">−${(totalDiscountAmount / 100).toFixed(2)}</span>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 12, color: T.greenBright }}>Discount</span>
+                  <span style={{ fontSize: 12, color: T.greenBright, fontFamily: "monospace" }}>−${(totalDiscountAmount / 100).toFixed(2)}</span>
                 </div>
               )}
-              <div className="flex justify-between">
-                <span className="text-[11px] text-[#8A94A6]">Incl. GST (15%)</span>
-                <span className="text-[11px] text-[#8A94A6] font-mono">${(gstIncluded / 100).toFixed(2)}</span>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>Incl. GST (15%)</span>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", fontFamily: "monospace" }}>${(gstIncluded / 100).toFixed(2)}</span>
               </div>
             </div>
-            <div className="flex justify-between items-baseline mt-2.5 pt-2.5 border-t border-[#E5EAF1]">
-              <span className="text-[14px] font-bold text-[#1F2937]">Total</span>
-              <span className="text-[22px] font-bold text-[#1F2937] font-mono">
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "baseline",
+              marginTop: 10,
+              paddingTop: 10,
+              borderTop: T.borderSubtle,
+            }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: T.white }}>Total</span>
+              <span style={{ fontSize: 22, fontWeight: 700, color: T.white, fontFamily: "monospace" }}>
                 ${(total / 100).toFixed(2)}
-                <span className="text-[12px] font-normal text-[#6B7280]"> NZD</span>
+                <span style={{ fontSize: 12, fontWeight: 400, color: T.textMuted }}> NZD</span>
               </span>
             </div>
           </div>
 
           {/* Customer (collapsible) */}
-          <div className="px-4 py-2 border-b border-[#E5EAF1]">
+          <div style={{ padding: "8px 16px", borderBottom: T.borderSubtle }}>
             <button
               onClick={() => setShowCustomer(v => !v)}
-              className="w-full flex items-center justify-between"
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+              }}
             >
-              <div className="flex items-center gap-1.5">
-                <User style={{ width: 11, height: 11, color: "#8A94A6" }} />
-                <span className="text-[11px] text-[#6B7280]">
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <User style={{ width: 11, height: 11, color: T.textMuted }} />
+                <span style={{ fontSize: 11, color: T.textMuted }}>
                   {showCustomer ? "Customer details" : "Add customer (optional)"}
                 </span>
               </div>
               {showCustomer
-                ? <ChevronUp style={{ width: 11, height: 11, color: "#8A94A6" }} />
-                : <ChevronDown style={{ width: 11, height: 11, color: "#8A94A6" }} />}
+                ? <ChevronUp style={{ width: 11, height: 11, color: T.textMuted }} />
+                : <ChevronDown style={{ width: 11, height: 11, color: T.textMuted }} />}
             </button>
 
             {showCustomer && (
-              <div className="mt-2 flex flex-col gap-1.5">
+              <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
                 {(["name", "email", "phone"] as const).map(field => (
                   <input
                     key={field}
@@ -821,7 +1239,18 @@ export function POSClient({ products }: { products: Product[] }) {
                     placeholder={field === "name" ? "Full name" : field === "email" ? "Email (for receipt)" : "Phone"}
                     value={customer[field]}
                     onChange={e => setCustomer(c => ({ ...c, [field]: e.target.value }))}
-                    className="w-full h-[30px] px-2.5 text-[11px] bg-white border border-[#E2E8F0] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
+                    style={{
+                      width: "100%",
+                      height: 30,
+                      padding: "0 10px",
+                      fontSize: 11,
+                      background: T.inputBg,
+                      border: T.inputBorder,
+                      borderRadius: 8,
+                      color: T.white,
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
                   />
                 ))}
                 <input
@@ -829,17 +1258,28 @@ export function POSClient({ products }: { products: Product[] }) {
                   placeholder="Notes (optional)"
                   value={posNotes}
                   onChange={e => setPosNotes(e.target.value)}
-                  className="w-full h-[30px] px-2.5 text-[11px] bg-white border border-[#E2E8F0] rounded-lg text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50"
+                  style={{
+                    width: "100%",
+                    height: 30,
+                    padding: "0 10px",
+                    fontSize: 11,
+                    background: T.inputBg,
+                    border: T.inputBorder,
+                    borderRadius: 8,
+                    color: T.white,
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
                 />
                 {customer.email && (
-                  <label className="flex items-center gap-1.5 cursor-pointer">
+                  <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={sendReceipt}
                       onChange={e => setSendReceipt(e.target.checked)}
-                      className="w-3 h-3 accent-[#116DFF]"
+                      style={{ width: 12, height: 12, accentColor: T.green }}
                     />
-                    <span className="text-[10px] text-[#6B7280]">
+                    <span style={{ fontSize: 10, color: T.textMuted }}>
                       Email receipt to {customer.email}
                     </span>
                   </label>
@@ -849,25 +1289,45 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Payment method */}
-          <div className="px-4 py-3.5 border-b border-[#E5EAF1]">
-            <p className="text-[10px] font-semibold text-[#8A94A6] uppercase tracking-wider mb-2.5">
+          <div style={{ padding: "12px 16px 10px", borderBottom: T.borderSubtle }}>
+            <p style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: T.textMuted,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              marginBottom: 10,
+            }}>
               Payment
             </p>
-            <div className="flex gap-2">
+            <div style={{ display: "flex", gap: 6 }}>
               {paymentMethods.map(pm => {
                 const active = paymentMethod === pm.id;
                 return (
                   <button
                     key={pm.id}
                     onClick={() => setPaymentMethod(pm.id)}
-                    className="flex-1 flex flex-col items-center justify-center gap-1 h-[56px] rounded-[14px] text-[11px] font-semibold transition-all duration-100"
                     style={{
-                      backgroundColor: active ? "#EAF2FF" : "#F3F5F8",
-                      color: active ? "#116DFF" : "#6B7280",
-                      border: active ? "1.5px solid #BBD3FF" : "1.5px solid #E2E8F0",
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                      height: 54,
+                      borderRadius: 12,
+                      fontSize: 10,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.1s",
+                      backgroundColor: active ? "rgba(47,155,47,0.2)" : "rgba(255,255,255,0.04)",
+                      color: active ? T.greenBright : T.textMuted,
+                      border: active
+                        ? "1px solid rgba(47,155,47,0.5)"
+                        : "1px solid rgba(255,255,255,0.07)",
                     }}
                   >
-                    <span style={{ opacity: active ? 1 : 0.6 }}>{pm.icon}</span>
+                    <span style={{ opacity: active ? 1 : 0.5 }}>{pm.icon}</span>
                     {pm.label}
                   </button>
                 );
@@ -876,25 +1336,46 @@ export function POSClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Error + CTA */}
-          <div className="px-4 py-4">
+          <div style={{ padding: "12px 16px 16px" }}>
             {saleError && (
-              <p className="text-[11px] text-[#991B1B] mb-3 px-2.5 py-1.5 bg-[#FEE2E2] rounded-lg border border-[#FCA5A5]">
+              <p style={{
+                fontSize: 11,
+                color: T.red,
+                marginBottom: 12,
+                padding: "8px 10px",
+                background: T.redDim,
+                borderRadius: 8,
+                border: "1px solid rgba(239,68,68,0.25)",
+              }}>
                 {saleError}
               </p>
             )}
             <button
               onClick={() => completeSale()}
               disabled={cart.length === 0 || processing || stripeLoading}
-              className="w-full h-13 rounded-[14px] text-[14px] font-bold text-white transition-all duration-150 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: cart.length === 0 ? "#E2E8F0" : "#116DFF",
-                color: cart.length === 0 ? "#8A94A6" : "white",
-                boxShadow: cart.length > 0 ? "0 4px 16px rgba(17,109,255,0.25)" : "none",
+                width: "100%",
                 height: 52,
+                borderRadius: 14,
+                fontSize: 15,
+                fontWeight: 700,
+                color: T.white,
+                cursor: cart.length === 0 || processing || stripeLoading ? "not-allowed" : "pointer",
+                background: cart.length === 0
+                  ? "rgba(255,255,255,0.06)"
+                  : T.green,
+                border: "none",
+                opacity: cart.length === 0 ? 0.5 : 1,
+                boxShadow: cart.length > 0 ? "0 4px 20px rgba(47,155,47,0.35)" : "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                transition: "all 0.15s",
               }}
             >
               {processing || stripeLoading ? (
-                <Loader2 style={{ width: 16, height: 16 }} className="animate-spin" />
+                <Loader2 style={{ width: 16, height: 16, animation: "spin 1s linear infinite" }} />
               ) : (
                 <>
                   Complete Sale
@@ -908,4 +1389,3 @@ export function POSClient({ products }: { products: Product[] }) {
     </div>
   );
 }
-

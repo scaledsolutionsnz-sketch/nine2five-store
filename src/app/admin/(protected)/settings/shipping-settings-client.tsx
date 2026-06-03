@@ -32,51 +32,89 @@ function RegionCard({
   tiers: Tier[];
 }) {
   return (
-    <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+    <div style={{
+      borderRadius: 14,
+      background: "rgba(8,28,16,0.92)",
+      border: "1px solid rgba(255,255,255,0.09)",
+      overflow: "hidden",
+    }}>
       {/* Header */}
-      <div className="px-6 py-4 flex items-center gap-3 border-b border-[#E2E8F0]">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-base bg-[#EAF2FF] border border-[#BBD3FF]">
+      <div style={{
+        padding: "16px 24px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+      }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: 10,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0, fontSize: 16,
+          background: "rgba(47,155,47,0.1)",
+          border: "1px solid rgba(47,155,47,0.2)",
+        }}>
           {flag}
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[13px] text-[#1F2937] leading-none">{region}</p>
-          <p className="text-[12px] text-[#6B7280] mt-0.5 leading-none">{sublabel}</p>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontWeight: 600, fontSize: 13, color: "#ffffff", lineHeight: 1 }}>{region}</p>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2, lineHeight: 1 }}>{sublabel}</p>
         </div>
-        <div className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#D5F1E2] text-[#166B3B]">
+        <div style={{
+          flexShrink: 0, padding: "6px 12px", borderRadius: 999,
+          fontSize: 11, fontWeight: 600,
+          background: "rgba(47,155,47,0.12)",
+          color: "#2f9b2f",
+          border: "1px solid rgba(47,155,47,0.2)",
+        }}>
           {delivery}
         </div>
       </div>
 
       {/* Tier table */}
-      <div className="px-6 py-5">
-        <div className="space-y-1.5">
+      <div style={{ padding: "20px 24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {tiers.map((tier, i) => (
             <div
               key={i}
-              className="flex items-center justify-between py-2.5 px-3 rounded-xl"
-              style={{ backgroundColor: i % 2 === 0 ? "#F3F5F8" : "transparent" }}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "10px 12px", borderRadius: 10,
+                background: i % 2 === 0 ? "rgba(255,255,255,0.04)" : "transparent",
+              }}
             >
-              <div className="flex items-center gap-2.5">
-                <Package style={{ width: 13, height: 13, color: "#8A94A6" }} strokeWidth={1.8} />
-                <span className="text-[13px] text-[#334155]">{tier.label}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <Package style={{ width: 13, height: 13, color: "rgba(255,255,255,0.35)" }} strokeWidth={1.8} />
+                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>{tier.label}</span>
               </div>
-              <span className="text-[13px] font-semibold text-[#1F2937] font-mono">
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#ffffff", fontFamily: "monospace" }}>
                 ${(tier.cost / 100).toFixed(2)} NZD
               </span>
             </div>
           ))}
-          <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-[#FEE2E2] border border-[#FCA5A5]">
-            <div className="flex items-center gap-2.5">
-              <Package style={{ width: 13, height: 13, color: "#991B1B" }} strokeWidth={1.8} />
-              <span className="text-[13px] text-[#991B1B]">13+ pairs</span>
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "10px 12px", borderRadius: 10,
+            background: "rgba(239,68,68,0.08)",
+            border: "1px solid rgba(239,68,68,0.2)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <Package style={{ width: 13, height: 13, color: "rgba(239,68,68,0.7)" }} strokeWidth={1.8} />
+              <span style={{ fontSize: 13, color: "rgba(239,68,68,0.85)" }}>13+ pairs</span>
             </div>
-            <span className="text-[12px] font-medium text-[#991B1B]/80">Contact for rates</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(239,68,68,0.7)" }}>Contact for rates</span>
           </div>
         </div>
       </div>
 
       {/* Footer note */}
-      <div className="px-6 py-3 rounded-b-xl text-[11px] text-[#8A94A6] border-t border-[#E2E8F0] bg-[#F3F5F8]">
+      <div style={{
+        padding: "10px 24px",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.02)",
+        fontSize: 11,
+        color: "rgba(255,255,255,0.35)",
+        borderRadius: "0 0 14px 14px",
+      }}>
         Based on 70g per pair · automatic weight calculation
       </div>
     </div>
@@ -85,22 +123,39 @@ function RegionCard({
 
 export function ShippingSettingsClient() {
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Shipping section */}
-      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="px-6 py-4 flex items-center gap-3 border-b border-[#E2E8F0]">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#EAF2FF] border border-[#BBD3FF]">
-            <Globe style={{ width: 16, height: 16, color: "#116DFF" }} strokeWidth={1.8} />
+      <div style={{
+        borderRadius: 14,
+        background: "rgba(8,28,16,0.92)",
+        border: "1px solid rgba(255,255,255,0.09)",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          padding: "16px 24px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}>
+          <div style={{
+            width: 36, height: 36, borderRadius: 10,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+            background: "rgba(47,155,47,0.1)",
+            border: "1px solid rgba(47,155,47,0.2)",
+          }}>
+            <Globe style={{ width: 16, height: 16, color: "#2f9b2f" }} strokeWidth={1.8} />
           </div>
           <div>
-            <p className="font-semibold text-[14px] text-[#1F2937] leading-none">Shipping rates</p>
-            <p className="text-[12px] text-[#6B7280] mt-0.5 leading-none">
+            <p style={{ fontWeight: 600, fontSize: 14, color: "#ffffff", lineHeight: 1 }}>Shipping rates</p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 3, lineHeight: 1 }}>
               Weight-based tiered rates · 70g per pair
             </p>
           </div>
         </div>
 
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           <RegionCard
             flag="🇳🇿"
             region="Domestic (NZ)"

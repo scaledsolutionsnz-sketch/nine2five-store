@@ -9,10 +9,14 @@ export async function POST(req: NextRequest) {
       password: string;
       referral_code?: string;
       how_promote?: string;
+      terms_accepted?: boolean;
     };
 
     if (!body.name || !body.email || !body.password) {
       return NextResponse.json({ error: "Name, email and password are required" }, { status: 400 });
+    }
+    if (!body.terms_accepted) {
+      return NextResponse.json({ error: "You must accept the terms and conditions" }, { status: 400 });
     }
     if (body.password.length < 8) {
       return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
@@ -68,9 +72,10 @@ export async function POST(req: NextRequest) {
         email: body.email.toLowerCase().trim(),
         name: body.name.trim(),
         referral_code: code,
-        commission_rate: 10,
+        commission_rate: 20,
         status: "pending",
         notes: body.how_promote ? `How they'll promote: ${body.how_promote}` : null,
+        terms_accepted_at: new Date().toISOString(),
       })
       .select()
       .single();

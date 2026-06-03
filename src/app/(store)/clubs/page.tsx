@@ -14,21 +14,21 @@ const STEPS = [
   { num: "01", title: "Fill in the form below", desc: "Tell us your club name, sport, colours, and rough size split. Takes 2 minutes." },
   { num: "02", title: "We send a free mockup", desc: "Within 48 hours we'll send a design preview with your logo and colours. No cost, no obligation." },
   { num: "03", title: "Approve and place your order", desc: "Happy with the design? Pay a deposit and we lock in production. Balance on delivery." },
-  { num: "04", title: "Sell. Keep the margin.", desc: "Sell at $25 each. Buy at $12. Your club keeps $650+ from one order — no volunteers, no weekend stalls." },
+  { num: "04", title: "Sell. Keep the margin.", desc: "Sell through your club at whatever price works for you. Your club keeps the full margin — no volunteers, no weekend stalls." },
 ];
 
 const NUMBERS = [
   { stat: "Free", label: "Design & Mockup" },
   { stat: "50", label: "Min. Order (pairs)" },
-  { stat: "$12", label: "Your price per pair" },
-  { stat: "$650", label: "Club revenue (50 pairs @ $25)" },
+  { stat: "48hr", label: "Mockup turnaround" },
+  { stat: "NZ & AU", label: "Shipping destinations" },
 ];
 
 const FAQS = [
-  { q: "What's the minimum order?", a: "50 pairs. First 50 pairs at $12 each. First 100 pairs at $10 each. Custom sizing and colour split available." },
+  { q: "What's the minimum order?", a: "50 pairs. Custom sizing and colour split available. Contact us for pricing." },
   { q: "How much does the design cost?", a: "Nothing. Design and mockups are completely free. You only pay when you're ready to order." },
   { q: "How long does production take?", a: "Once you approve the design and pay a deposit, production is approximately 3–5 weeks. We'll confirm the exact lead time when you enquire." },
-  { q: "Can we sell them as a fundraiser?", a: "Yes — that's the most common use. Buy at wholesale, sell at retail, keep the difference. One order of 50 pairs can raise $650+ for your club." },
+  { q: "Can we sell them as a fundraiser?", a: "Yes — that's the most common use. Buy at wholesale, sell at retail, keep the difference. Contact us and we'll work out the numbers together." },
   { q: "Do you ship to Australia?", a: "Yes. NZ shipping is 2–4 business days. Australia is 5–10 business days." },
   { q: "Can we see a sample before committing?", a: "Yes. DM or email us and we'll send you a sample pair so you can check the quality before placing a bulk order." },
 ];
@@ -70,16 +70,19 @@ export default function ClubsPage() {
           Custom grip socks for clubs, schools, gyms, and teams across New Zealand and Australia.
         </p>
         <p style={{ color: "rgba(255,255,255,0.32)", fontSize: 15, lineHeight: 1.7, maxWidth: 520, marginBottom: 40 }}>
-          Free design. Free mockup. MOQ 50 pairs. Buy at <strong style={{ color: "#2E8B28" }}>$12/pair</strong>, sell at $25 — your club keeps <strong style={{ color: "#2E8B28" }}>$650</strong> from one order. No sausage sizzle required.
+          Free design. Free mockup. MOQ 50 pairs. Your club keeps the margin — no volunteers, no weekend stalls required.
         </p>
         <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
           <a href="#enquire" className="btn-green">
             Get a Free Mockup <ArrowUpRight style={{ width: 16, height: 16 }} />
           </a>
-          <a href="#how-it-works" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 56, padding: "0 2rem", borderRadius: 9999, border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.6)", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
-            See how it works
+          <a href="https://www.instagram.com/nine2five.nz/" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 56, padding: "0 2rem", borderRadius: 9999, border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.6)", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+            DM us on Instagram
           </a>
         </div>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.22)", marginTop: 16 }}>
+          Prefer email? <a href="mailto:nine2five.co.nz@gmail.com" style={{ color: "#2E8B28", textDecoration: "none" }}>nine2five.co.nz@gmail.com</a>
+        </p>
       </div>
 
       {/* ── Numbers ── */}

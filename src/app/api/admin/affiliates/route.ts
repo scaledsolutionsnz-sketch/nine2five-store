@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       email: body.email.toLowerCase().trim(),
       name: body.name.trim(),
       referral_code: code,
-      commission_rate: Math.max(1, Math.min(100, body.commission_rate ?? 10)),
+      commission_rate: Math.max(1, Math.min(100, body.commission_rate ?? 20)),
       status: "pending",
     })
     .select()

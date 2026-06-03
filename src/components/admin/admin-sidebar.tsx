@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, ShoppingBag, Users, Package,
   Megaphone, Tag, UserCheck, Warehouse, ClipboardList,
-  BarChart2, Receipt, Settings, LogOut, ShoppingCart, Inbox, ImagePlay,
+  BarChart2, Receipt, Settings, LogOut, ShoppingCart, Inbox, ImagePlay, Star,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -40,9 +40,10 @@ const SECTIONS = [
   {
     label: "Marketing",
     items: [
-      { href: "/admin/inbox",     label: "Inbox",           icon: Inbox },
-      { href: "/admin/campaigns", label: "Email Campaigns", icon: Megaphone },
-      { href: "/admin/social",    label: "Social",          icon: ImagePlay },
+      { href: "/admin/inbox",        label: "Inbox",           icon: Inbox },
+      { href: "/admin/campaigns",    label: "Email Campaigns", icon: Megaphone },
+      { href: "/admin/social",       label: "Social",          icon: ImagePlay },
+      { href: "/admin/ambassadors",  label: "Ambassadors",     icon: Star },
     ],
   },
 ];

@@ -326,24 +326,24 @@ export function OrdersTableClient({ orders, now }: { orders: OrderRow[]; now: nu
 
       {/* Table */}
       <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 900 }}>
-          <thead style={{ background: "#eaf2fb" }}>
-            <tr>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 900 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
               <th style={{ padding: "12px 16px", width: 44 }}>
                 <input
                   type="checkbox"
                   checked={allChecked}
                   onChange={toggleAll}
-                  style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#2f9b2f" }}
+                  style={{ width: 15, height: 15, cursor: "pointer", accentColor: "#2f9b2f" }}
                 />
               </th>
               {["Order", "Date Created", "Customer", "Payment", "Fulfillment", "Total", ""].map((h, i) => (
-                <th key={i} style={{ textAlign: i === 6 ? "center" : "left", padding: "12px 16px", fontWeight: 800, color: "#334155", whiteSpace: "nowrap" }}>{h}</th>
+                <th key={i} style={{ textAlign: "left", padding: "12px 16px", fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => {
+            {orders.map((order, idx) => {
               const addr = order.shipping_address as { first_name?: string; last_name?: string };
               const effectiveStatus = localStatuses[order.id] ?? order.status;
               const paymentKey = getPayment(effectiveStatus);
@@ -354,108 +354,112 @@ export function OrdersTableClient({ orders, now }: { orders: OrderRow[]; now: nu
               const customerName = [addr?.first_name, addr?.last_name].filter(Boolean).join(" ");
               const isNew = now - new Date(order.created_at).getTime() < 24 * 60 * 60 * 1000;
               const isChecked = selected.has(order.id);
+              const initials = [addr?.first_name?.[0], addr?.last_name?.[0]].filter(Boolean).join("").toUpperCase() || "?";
 
               return (
                 <tr
                   key={order.id}
-                  style={{ borderTop: "1px solid #e5e7eb", background: isChecked ? "rgba(47,155,47,0.06)" : undefined, transition: "background 0.1s" }}
+                  style={{ borderTop: idx > 0 ? "1px solid rgba(255,255,255,0.06)" : undefined, background: isChecked ? "rgba(47,155,47,0.07)" : undefined, transition: "background 0.1s" }}
                 >
                   {/* Checkbox */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle" }} onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => toggleOne(order.id)}
-                      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#2f9b2f" }}
-                    />
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle" }} onClick={(e) => e.stopPropagation()}>
+                    <input type="checkbox" checked={isChecked} onChange={() => toggleOne(order.id)}
+                      style={{ width: 15, height: 15, cursor: "pointer", accentColor: "#2f9b2f" }} />
                   </td>
 
                   {/* Order # */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle", position: "relative" }}>
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle", position: "relative" }}>
                     <Link href={`/admin/orders/${order.id}`} style={{ position: "absolute", inset: 0, zIndex: 0 }} aria-label={`View order #${order.order_number}`} />
-                    <div style={{ position: "relative", zIndex: 1 }}>
-                      <span style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, color: "#111827" }}>
+                    <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 7 }}>
+                      <span style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, color: "#fff" }}>
                         #{order.order_number}
                       </span>
                       {isNew && (
-                        <div style={{ marginTop: 4 }}>
-                          <span style={{ display: "inline-flex", padding: "1px 6px", background: "#2f9b2f", color: "#fff", borderRadius: 4, fontSize: 10, fontWeight: 900 }}>
-                            NEW
-                          </span>
-                        </div>
+                        <span style={{ display: "inline-flex", padding: "1px 6px", background: "rgba(47,155,47,0.25)", color: "#4ade80", borderRadius: 4, fontSize: 9, fontWeight: 900, border: "1px solid rgba(47,155,47,0.3)" }}>
+                          NEW
+                        </span>
                       )}
                     </div>
                   </td>
 
                   {/* Date */}
-                  <td style={{ padding: "13px 16px", color: "#6b7280", whiteSpace: "nowrap", verticalAlign: "middle", fontSize: 13 }}>
+                  <td style={{ padding: "14px 16px", color: "rgba(255,255,255,0.45)", whiteSpace: "nowrap", verticalAlign: "middle", fontSize: 12 }}>
                     {formatDate(order.created_at)}
                   </td>
 
                   {/* Customer */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", whiteSpace: "nowrap" }}>
-                      {customerName || <span style={{ color: "#9ca3af" }}>Guest</span>}
-                    </p>
-                    {order.guest_email && (
-                      <p style={{ fontSize: 13, color: "#9ca3af", marginTop: 2, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {order.guest_email}
-                      </p>
-                    )}
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                      <div style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(47,155,47,0.15)", border: "1px solid rgba(47,155,47,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#2f9b2f", flexShrink: 0 }}>
+                        {initials}
+                      </div>
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: "#fff", whiteSpace: "nowrap", margin: 0 }}>
+                          {customerName || <span style={{ color: "rgba(255,255,255,0.3)" }}>Guest</span>}
+                        </p>
+                        {order.guest_email && (
+                          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 1, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {order.guest_email}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </td>
 
                   {/* Payment */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle" }}>
                     <span style={{ ...BADGE_BASE, background: payment.bg, color: payment.color }}>{payment.label}</span>
                   </td>
 
                   {/* Fulfillment */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle" }}>
                     <span style={{ ...BADGE_BASE, background: fulfillment.bg, color: fulfillment.color }}>{fulfillment.label}</span>
                   </td>
 
                   {/* Total */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle", fontFamily: "monospace", fontWeight: 700, fontSize: 13, color: "#111827" }}>
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle", fontFamily: "monospace", fontWeight: 700, fontSize: 13, color: "#fff" }}>
                     NZ${(order.total / 100).toFixed(2)}
                   </td>
 
-                  {/* Peek + Fulfill + View */}
-                  <td style={{ padding: "13px 16px", verticalAlign: "middle", textAlign: "right", position: "relative", zIndex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+                  {/* Actions */}
+                  <td style={{ padding: "14px 16px", verticalAlign: "middle", position: "relative", zIndex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
                       <button
                         data-peek
                         onClick={(e) => { e.stopPropagation(); openPeek(order.id, e.currentTarget); }}
-                        title="Quick peek"
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 4,
-                          padding: "4px 10px", borderRadius: 8, border: "1px solid #d1d5db",
-                          background: peekId === order.id ? "#f0fdf4" : "#fff",
-                          color: peekId === order.id ? "#166534" : "#6b7280",
+                          padding: "4px 10px", borderRadius: 8,
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          background: peekId === order.id ? "rgba(47,155,47,0.15)" : "rgba(255,255,255,0.05)",
+                          color: peekId === order.id ? "#4ade80" : "rgba(255,255,255,0.55)",
                           fontSize: 12, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
                         }}
                       >
                         Items
-                        <ChevronDown style={{ width: 12, height: 12, transition: "transform 0.2s", transform: peekId === order.id ? "rotate(180deg)" : "rotate(0deg)" }} />
+                        <ChevronDown style={{ width: 11, height: 11, transition: "transform 0.2s", transform: peekId === order.id ? "rotate(180deg)" : "rotate(0deg)" }} />
                       </button>
                       {isUnfulfilled && (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleFulfillOne(order.id); }}
                           disabled={fulfillingRow === order.id}
                           style={{
-                            display: "inline-flex", alignItems: "center", gap: 5,
-                            padding: "4px 10px", borderRadius: 8, border: "1px solid #bbf7d0",
-                            background: "#f0fdf4", color: "#166534",
+                            display: "inline-flex", alignItems: "center", gap: 4,
+                            padding: "4px 10px", borderRadius: 8,
+                            border: "1px solid rgba(47,155,47,0.3)",
+                            background: "rgba(47,155,47,0.12)", color: "#4ade80",
                             fontSize: 12, fontWeight: 700, cursor: fulfillingRow === order.id ? "not-allowed" : "pointer",
                             transition: "all 0.15s", opacity: fulfillingRow === order.id ? 0.6 : 1,
                           }}
                         >
                           {fulfillingRow === order.id
-                            ? <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" />
-                            : <PackageCheck style={{ width: 12, height: 12 }} />}
+                            ? <Loader2 style={{ width: 11, height: 11 }} className="animate-spin" />
+                            : <PackageCheck style={{ width: 11, height: 11 }} />}
                           Fulfill
                         </button>
                       )}
-                      <Link href={`/admin/orders/${order.id}`} style={{ fontSize: 13, fontWeight: 700, color: "#2f9b2f", textDecoration: "none" }}>
+                      <Link href={`/admin/orders/${order.id}`}
+                        style={{ fontSize: 12, fontWeight: 700, color: "#2f9b2f", textDecoration: "none", padding: "4px 8px", borderRadius: 8, border: "1px solid rgba(47,155,47,0.25)", background: "rgba(47,155,47,0.08)" }}>
                         View
                       </Link>
                     </div>
@@ -467,7 +471,7 @@ export function OrdersTableClient({ orders, now }: { orders: OrderRow[]; now: nu
         </table>
 
         {orders.length === 0 && (
-          <div style={{ textAlign: "center", padding: "48px 24px", color: "#94a3b8", fontSize: 14 }}>
+          <div style={{ textAlign: "center", padding: "48px 24px", color: "rgba(255,255,255,0.3)", fontSize: 14 }}>
             No orders found.
           </div>
         )}

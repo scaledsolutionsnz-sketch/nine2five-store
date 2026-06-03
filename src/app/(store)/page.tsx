@@ -45,7 +45,7 @@ const COLLECTIONS = [
   {
     name: "Clubs & Teams",
     tag: "Custom",
-    desc: "Your logo. Your colours. Your club's identity on every pair. MOQ 50. Free design. Your club keeps the margin. One order can raise $650+ — no sausage sizzle required.",
+    desc: "Your logo. Your colours. Your club's identity on every pair. MOQ 50. Free design and free mockup — you only pay when you're happy. Your club keeps the margin.",
     href: "/clubs",
     image: "/gallery/7.webp",
   },
@@ -78,16 +78,18 @@ async function getFeaturedProducts(): Promise<Product[]> {
   if (!products.length) products = getStaticProducts();
 
   // Merge basic-black + basic-white into a single card
-  const hasBlack = products.some((p) => p.slug === "basic-black");
-  const hasWhite = products.some((p) => p.slug === "basic-white");
+  const blackProduct = products.find((p) => p.slug === "basic-black");
+  const whiteProduct = products.find((p) => p.slug === "basic-white");
+  const hasBlack = !!blackProduct;
+  const hasWhite = !!whiteProduct;
   if (hasBlack || hasWhite) {
     const merged: Product = {
       id: "basic",
       name: "Basic Grip Sock",
       slug: "basic",
       description: "No frills. Pure performance. Available in Black and White.",
-      price: 2000,
-      compare_at_price: 2500,
+      price: (blackProduct ?? whiteProduct)!.price,
+      compare_at_price: null,
       image_urls: ["/products/basic-black/2.webp"],
       active: true,
       created_at: new Date().toISOString(),
@@ -334,21 +336,23 @@ export default async function HomePage() {
         ════════════════════════════════════════════ */}
         <section className="relative overflow-hidden" style={{ minHeight: "100dvh" }}>
 
-          {/* Full-bleed background — video on mobile, image on desktop */}
+          {/* Full-bleed background — video on mobile, video on desktop */}
           <div className="absolute inset-0">
             {/* Mobile: video */}
             <HeroVideo />
-            {/* Desktop: image */}
-            <div className="hidden md:block absolute inset-0">
-              <Image
-                src="/hero-landing.avif"
-                alt="Nine2Five athlete wearing Māori grip socks"
-                fill
-                className="object-cover object-center"
-                priority
-                unoptimized
-              />
-            </div>
+            {/* Desktop: video */}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster="/hero-desktop-poster.jpg"
+              aria-hidden="true"
+              className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"
+            >
+              <source src="/hero-desktop.mp4" type="video/mp4" />
+            </video>
             <div
               className="absolute inset-0"
               style={{
@@ -381,12 +385,12 @@ export default async function HomePage() {
             }}
           />
 
-          {/* Content — bottom with floating card on desktop */}
+          {/* Content — vertically centered with navbar offset */}
           <div
-            className="absolute z-10 left-0 right-0 bottom-0"
-            style={{ paddingBottom: "clamp(3rem, 7dvh, 6rem)" }}
+            className="absolute z-10 inset-0 flex items-center"
+            style={{ paddingTop: "clamp(5rem, 12dvh, 8rem)" }}
           >
-            <div className="hero-content" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "2rem" }}>
+            <div className="hero-content" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", width: "100%" }}>
 
               {/* Text block */}
               <div style={{ flex: "1 1 auto", minWidth: 0 }}>
@@ -440,7 +444,7 @@ export default async function HomePage() {
                       <Star key={i} style={{ width: 12, height: 12, color: "#2E8B28", fill: "#2E8B28" }} />
                     ))}
                     <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.72)", marginLeft: 5 }}>4.9</span>
-                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.32)", marginLeft: 4 }}>· 5,000+ athletes</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.32)", marginLeft: 4 }}>· NZ-owned · Māori-led</span>
                   </div>
                   <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                     {["Rugby", "Pilates", "CrossFit", "Touch"].map((s) => (
@@ -492,7 +496,7 @@ export default async function HomePage() {
                   </div>
                   <p style={{ fontSize: 12.5, fontWeight: 800, color: "#fff", margin: "0 0 5px", letterSpacing: "0.01em" }}>Black Kahotea</p>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, fontWeight: 900, color: "#2E8B28" }}>$31.00</span>
+                    <span style={{ fontSize: 14, fontWeight: 900, color: "#2E8B28" }}>$25.00</span>
                     <div style={{ display: "flex", gap: 1 }}>
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} style={{ width: 9, height: 9, color: "#2E8B28", fill: "#2E8B28" }} />
@@ -504,7 +508,7 @@ export default async function HomePage() {
                   </div>
                 </Link>
                 <p style={{ fontSize: 10, color: "rgba(255,255,255,0.18)", textAlign: "center", marginTop: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  2,500+ Sold
+                  Best Seller
                 </p>
               </div>
 
@@ -514,7 +518,7 @@ export default async function HomePage() {
           {/* Scroll indicator */}
           <div
             className="h-a5 absolute z-10 right-6 md:right-14 lg:right-20 hidden md:flex flex-col items-center gap-2"
-            style={{ bottom: "clamp(3rem, 7dvh, 6rem)" }}
+            style={{ bottom: "clamp(2rem, 4dvh, 3rem)" }}
           >
             <div
               className="scroll-line"
@@ -586,35 +590,21 @@ export default async function HomePage() {
         </div>
 
         {/* ════════════════════════════════════════════
-            COLLECTIONS
+            PRODUCT GRID
         ════════════════════════════════════════════ */}
-        <section className="collections-section">
-          <div className="collections-container">
-            <div className="collections-header">
-              <p className="collections-label">Shop by Collection</p>
-              <h2 className="font-display collections-title">COLLECTIONS</h2>
+        <section style={{ backgroundColor: "#06150C", padding: "7rem 0" }}>
+          <div className="page-container">
+            <div className="section-header">
+              <div>
+                <p className="section-label">Our Products</p>
+                <h2 className="font-display section-title">SHOP THE RANGE</h2>
+              </div>
+              <Link href="/shop" className="view-all-link">
+                View All <ArrowUpRight className="inline h-4 w-4 ml-1" />
+              </Link>
             </div>
-
-            <div className="collections-grid">
-              {COLLECTIONS.map((col) => (
-                <Link key={col.name} href={col.href} className="collection-card">
-                  <Image
-                    src={col.image}
-                    alt={col.name}
-                    fill
-                    className="object-cover object-center"
-                    unoptimized
-                  />
-                  <div className="collection-card-content">
-                    <p className="collection-card-label">{col.tag}</p>
-                    <h3 className="font-display collection-card-title">{col.name.toUpperCase()}</h3>
-                    <p className="collection-card-description">{col.desc}</p>
-                    <span className="collection-card-link">
-                      Explore <span className="explore-arrow"><ArrowUpRight className="h-4 w-4" /></span>
-                    </span>
-                  </div>
-                </Link>
-              ))}
+            <div className="hp-product-grid">
+              {featured.map((p) => <HomepageCard key={p.id} product={p} />)}
             </div>
           </div>
         </section>
@@ -691,7 +681,7 @@ export default async function HomePage() {
                   marginBottom: 16,
                 }}
               >
-                We create products shaped by whakapapa, tikanga, and movement. Every design is a statement of pride — built for athletes who carry their identity into every space they enter.
+                Nine2Five was built in Masterton, NZ — by a Māori founder who was tired of sportswear that ignored where we come from. Every design is drawn from whakapapa, tikanga, and the movements our tūpuna made. Not a collaboration. Not a collection. A statement.
               </p>
               <p
                 style={{
@@ -707,26 +697,6 @@ export default async function HomePage() {
               <Link href="/shop" className="btn-green-sm">
                 Shop the Collection <ArrowUpRight className="h-4 w-4" />
               </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ════════════════════════════════════════════
-            PRODUCT GRID
-        ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#06150C", padding: "7rem 0" }}>
-          <div className="page-container">
-            <div className="section-header">
-              <div>
-                <p className="section-label">Our Products</p>
-                <h2 className="font-display section-title">SHOP THE RANGE</h2>
-              </div>
-              <Link href="/shop" className="view-all-link">
-                View All <ArrowUpRight className="inline h-4 w-4 ml-1" />
-              </Link>
-            </div>
-            <div className="hp-product-grid">
-              {featured.map((p) => <HomepageCard key={p.id} product={p} />)}
             </div>
           </div>
         </section>
@@ -790,9 +760,9 @@ export default async function HomePage() {
               style={{ borderLeft: "1px solid rgba(255,255,255,0.07)" }}
             >
               {[
-                { num: "5,000+", label: "Happy Customers" },
-                { num: "4.9★",  label: "Customer Rating" },
-                { num: "2–4",   label: "Days NZ Delivery" },
+                { num: "NZ",   label: "Owned & Māori-Led" },
+                { num: "4.9★", label: "Community Rating" },
+                { num: "2–4",  label: "Days NZ Delivery" },
               ].map(({ num, label }) => (
                 <div
                   key={label}
@@ -828,29 +798,80 @@ export default async function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════
-            SPONSORSHIP STRIP
+            WHO WE'VE WORKED WITH
         ════════════════════════════════════════════ */}
-        <section style={{ backgroundColor: "#06150C", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "32px clamp(20px, 4vw, 48px)" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
-              <div>
-                <p style={{ fontSize: 10, letterSpacing: "0.4em", color: "#2E8B28", fontWeight: 700, textTransform: "uppercase", marginBottom: 6 }}>Official Sponsor</p>
-                <p style={{ fontSize: 18, fontWeight: 800, color: "#ffffff", margin: 0 }}>Lincoln University Rugby</p>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>Rams &amp; Wethers squads — Canterbury, NZ</p>
-              </div>
-              <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
-                {[
-                  { num: "55+", label: "Players Sponsored" },
-                  { num: "2025", label: "Season Sponsor" },
-                  { num: "NZ", label: "University Rugby" },
-                ].map(({ num, label }) => (
-                  <div key={label} style={{ textAlign: "center" }}>
-                    <p className="font-display font-black" style={{ fontSize: "1.5rem", color: "#2E8B28", lineHeight: 1, marginBottom: 4 }}>{num}</p>
-                    <p style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(255,255,255,0.28)" }}>{label}</p>
+        <section style={{ backgroundColor: "#06150C", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "56px 0" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(20px, 4vw, 48px)" }}>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.35em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 32, textAlign: "center" }}>
+              Who We&apos;ve Worked With
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+
+              {/* Lincoln University Rugby */}
+              <div style={{ background: "#0d1f12", border: "1px solid rgba(46,139,40,0.25)", borderRadius: 18, padding: "28px 28px 24px" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
+                  <div style={{ borderRadius: 10, overflow: "hidden", flexShrink: 0, width: 80, height: 80, position: "relative" }}>
+                    <Image
+                      src="/partners/lincoln-rugby.jpg"
+                      alt="Lincoln University Rugby"
+                      width={80}
+                      height={80}
+                      style={{ objectFit: "cover", display: "block", width: "100%", height: "100%" }}
+                      unoptimized
+                    />
                   </div>
-                ))}
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 4 }}>Official Sock Sponsor</p>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", margin: 0, lineHeight: 1.2 }}>Lincoln University Rugby</p>
+                  </div>
+                  <span style={{ background: "rgba(46,139,40,0.15)", color: "#2E8B28", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>2025</span>
+                </div>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: 16 }}>
+                  Rams &amp; Wethers squads — Canterbury, NZ. Official grip sock for both Lincoln University Rugby teams in the 2025 season.
+                </p>
+                <div style={{ display: "flex", gap: 24 }}>
+                  {[{ num: "55+", label: "Players" }, { num: "2", label: "Squads" }, { num: "Uni", label: "Rugby" }].map(({ num, label }) => (
+                    <div key={label}>
+                      <p className="font-display font-black" style={{ fontSize: "1.25rem", color: "#2E8B28", lineHeight: 1, marginBottom: 3 }}>{num}</p>
+                      <p style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.25)" }}>{label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              {/* Global Youth Sevens */}
+              <div style={{ background: "#0d1f12", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 18, padding: "28px 28px 24px" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
+                  <div style={{ background: "#ffffff", borderRadius: 10, padding: "8px 12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Image
+                      src="/partners/global-youth-sevens.png"
+                      alt="Global Youth Sevens"
+                      width={100}
+                      height={40}
+                      style={{ objectFit: "contain", display: "block" }}
+                      unoptimized
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 4 }}>Tournament Partner</p>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", margin: 0, lineHeight: 1.2 }}>Global Youth Sevens</p>
+                  </div>
+                  <span style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>Custom Order</span>
+                </div>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: 16 }}>
+                  Custom-designed Nine2Five grip socks made exclusively for the Global Youth Sevens tournament. Every player, every team, same sock.
+                </p>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {["Youth Rugby", "Sevens", "Custom Design", "Tournament"].map((tag) => (
+                    <span key={tag} style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 600, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "3px 8px", letterSpacing: "0.05em" }}>{tag}</span>
+                  ))}
+                </div>
+              </div>
+
             </div>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", textAlign: "center", marginTop: 24 }}>
+              Want your club or event on this list? <Link href="/clubs" style={{ color: "#2E8B28", textDecoration: "none", fontWeight: 600 }}>Get a free mockup →</Link>
+            </p>
           </div>
         </section>
 
@@ -987,7 +1008,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <span style={{ fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1 }}>4.9</span>
-              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>from 5,000+ verified customers</span>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>from our community</span>
             </div>
             {/* Cards */}
             <div className="testimonials-grid">
@@ -995,7 +1016,7 @@ export default async function HomePage() {
                 <div key={t.name} className="t-card">
                   <span className="t-verified">
                     <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M10 3L5 9 2 6" stroke="#2E8B28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    Verified Purchase
+                    Nine2Five Customer
                   </span>
                   <div className="t-stars">
                     {Array.from({ length: 5 }).map((_, j) => (
@@ -1051,65 +1072,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════
-            CTA CLOSER
-        ════════════════════════════════════════════ */}
-        <section
-          style={{
-            backgroundColor: "#06150C",
-            padding: "9rem 0",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
-          }}
-        >
-          <div className="max-w-[1320px] mx-auto px-6 sm:px-10 md:px-14 lg:px-20 text-center">
-            <p
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.35em",
-                color: "#2E8B28",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                marginBottom: 24,
-              }}
-            >
-              Nine2Five Limited
-            </p>
-            <h2
-              className="font-display font-black text-white"
-              style={{
-                fontSize: "clamp(3.5rem, 9vw, 8rem)",
-                lineHeight: 0.87,
-                letterSpacing: "-0.025em",
-                marginBottom: 24,
-              }}
-            >
-              GRIP UP.<br />STAND PROUD.
-            </h2>
-            <p
-              style={{
-                color: "rgba(255,255,255,0.32)",
-                fontSize: 16,
-                maxWidth: 420,
-                margin: "0 auto 1.5rem",
-                lineHeight: 1.65,
-              }}
-            >
-              Grip socks forged from Māori identity. Every design carries whakapapa — made for athletes who move with purpose.
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.18)", fontSize: 13, maxWidth: 340, margin: "0 auto 3rem", lineHeight: 1.6 }}>
-              NZ-owned. Māori-led. Masterton, New Zealand.
-            </p>
-            <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/shop" className="btn-green-lg">
-                Shop Now <ArrowUpRight className="h-4 w-4" />
-              </Link>
-              <Link href="/clubs" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 56, padding: "0 2.6rem", borderRadius: 9999, border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.6)", fontSize: 13, fontWeight: 700, textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                Club Orders
-              </Link>
-            </div>
-
-          </div>
-        </section>
 
       </div>
     </>

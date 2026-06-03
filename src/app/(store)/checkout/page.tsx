@@ -142,7 +142,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!clientSecret || isBulk) return;
     const discountAmt = discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount;
-    const effectiveShip = discounts.some(d => d.free_shipping) ? 0 : shippingCost;
+    const effectiveShip = (country !== "AU" && discounts.some(d => d.free_shipping)) ? 0 : shippingCost;
     fetch("/api/create-payment-intent", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -179,7 +179,7 @@ export default function CheckoutPage() {
   }
 
   const totalDiscountAmount = discounts.reduce((sum, d) => sum + d.amount, 0) + bundleDiscount;
-  const effectiveShipping = discounts.some(d => d.free_shipping) ? 0 : shippingCost;
+  const effectiveShipping = (country !== "AU" && discounts.some(d => d.free_shipping)) ? 0 : shippingCost;
   const orderTotal = total + effectiveShipping - totalDiscountAmount;
   const totalPairs = items.reduce((s, i) => s + i.quantity, 0);
   const shippingInfo = calculateShippingByPairs(totalPairs, country);

@@ -30,6 +30,10 @@ export function calculateShippingByPairs(pairs: number, country: string): Shippi
   if (pairs > 12) {
     return { cost: 0, isBulk: true, label: "", delivery: "" };
   }
+  // Free NZ shipping on 5+ pairs (bundle perk)
+  if (country === "NZ" && pairs >= 5) {
+    return { cost: 0, isBulk: false, label: "NZ Standard — Free", delivery: "2–4 business days" };
+  }
   const tiers = country === "AU" ? AU_TIERS : NZ_TIERS;
   const tier = tiers.find((t) => pairs <= t.max) ?? tiers[tiers.length - 1];
   return {

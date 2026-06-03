@@ -16,13 +16,7 @@ export default async function PurchaseOrdersPage() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Purchase Orders</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Track and receive stock orders from suppliers.</p>
-        </div>
-      </div>
+    <div style={{ minHeight: "100vh", background: "#06150C", color: "#f8f8f2", padding: "32px 28px" }}>
       <PurchaseOrdersClient
         initialOrders={orders ?? []}
         suppliers={suppliers ?? []}

@@ -24,6 +24,90 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  // Reverse affiliate commission on full refund
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object;
+    if (charge.refunded) {
+      try {
+        const supabase = getServiceClient();
+        const { data: order } = await supabase
+          .from("orders")
+          .select("id, affiliate_conversion_id")
+          .eq("stripe_payment_intent_id", charge.payment_intent as string)
+          .maybeSingle();
+
+        if (order?.affiliate_conversion_id) {
+          const { data: conversion } = await supabase
+            .from("affiliate_conversions")
+            .select("id, status, affiliate_id, commission_cents")
+            .eq("id", order.affiliate_conversion_id)
+            .maybeSingle();
+
+          // Only reverse if not already paid out
+          if (conversion && conversion.status !== "paid") {
+            await supabase
+              .from("affiliate_conversions")
+              .update({ status: "reversed" })
+              .eq("id", conversion.id);
+
+            // Decrement affiliate totals atomically via RPC
+            await supabase.rpc("reverse_affiliate_conversion", {
+              p_affiliate_id: conversion.affiliate_id,
+              p_commission_cents: conversion.commission_cents,
+            });
+          }
+        }
+
+        await supabase
+          .from("orders")
+          .update({ status: "refunded" })
+          .eq("stripe_payment_intent_id", charge.payment_intent as string);
+      } catch (err) {
+        console.error("Refund webhook error:", err);
+      }
+    }
+  }
+
+  // Reverse affiliate commission when a chargeback is opened
+  if (event.type === "charge.dispute.created") {
+    const dispute = event.data.object;
+    try {
+      const supabase = getServiceClient();
+      const { data: order } = await supabase
+        .from("orders")
+        .select("id, affiliate_conversion_id")
+        .eq("stripe_payment_intent_id", dispute.payment_intent as string)
+        .maybeSingle();
+
+      if (order?.affiliate_conversion_id) {
+        const { data: conversion } = await supabase
+          .from("affiliate_conversions")
+          .select("id, status, affiliate_id, commission_cents")
+          .eq("id", order.affiliate_conversion_id)
+          .maybeSingle();
+
+        if (conversion && conversion.status !== "paid") {
+          await supabase
+            .from("affiliate_conversions")
+            .update({ status: "reversed" })
+            .eq("id", conversion.id);
+
+          await supabase.rpc("reverse_affiliate_conversion", {
+            p_affiliate_id: conversion.affiliate_id,
+            p_commission_cents: conversion.commission_cents,
+          });
+        }
+      }
+
+      await supabase
+        .from("orders")
+        .update({ status: "disputed" })
+        .eq("stripe_payment_intent_id", dispute.payment_intent as string);
+    } catch (err) {
+      console.error("Dispute webhook error:", err);
+    }
+  }
+
   if (event.type === "payment_intent.succeeded") {
     const pi = event.data.object;
     const meta = pi.metadata as Record<string, string>;
@@ -80,19 +164,23 @@ export async function POST(req: NextRequest) {
       const affiliateCode = meta.affiliate_code || null;
       const discountCode = meta.discount_code || null;
 
-      // Resolve affiliate
+      // Resolve affiliate — block self-referrals
       let affiliateId: string | null = null;
       if (affiliateCode) {
         const { data: affiliate } = await supabase
           .from("affiliates")
-          .select("id")
+          .select("id, email")
           .eq("referral_code", affiliateCode)
           .eq("status", "active")
           .single();
-        affiliateId = affiliate?.id ?? null;
+        const buyerEmail = (meta.email ?? "").toLowerCase();
+        const isSelfReferral = affiliate && affiliate.email.toLowerCase() === buyerEmail;
+        affiliateId = (affiliate && !isSelfReferral) ? affiliate.id : null;
       }
 
       const orderTotal = subtotal + shipping - discountAmount;
+      // Commission is calculated on product value only (subtotal minus discount), not shipping
+      const commissionBase = subtotal - discountAmount;
 
       // Create order
       const { data: order, error: orderError } = await supabase
@@ -154,12 +242,12 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Record affiliate conversion
+      // Record affiliate conversion (on product value only, not shipping)
       if (affiliateId && order) {
         const { data: conversionId } = await supabase.rpc("record_affiliate_conversion", {
           p_affiliate_id: affiliateId,
           p_order_id: order.id,
-          p_order_total_cents: orderTotal,
+          p_order_total_cents: commissionBase,
         });
         if (conversionId) {
           await supabase

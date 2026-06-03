@@ -5,10 +5,10 @@ import { Loader2, Sparkles, RefreshCw, Send, Clock, ImageIcon, CheckSquare, Squa
 import { toast } from "sonner";
 
 const BG = "#06150C";
-const SURFACE = "#0e1f14";
-const BORDER = "rgba(255,255,255,0.08)";
+const SURFACE = "rgba(8,28,16,0.92)";
+const BORDER = "rgba(255,255,255,0.09)";
 const ACCENT = "#2f9b2f";
-const MUTED = "rgba(255,255,255,0.4)";
+const MUTED = "rgba(255,255,255,0.55)";
 const DIM = "rgba(255,255,255,0.12)";
 
 const PRESETS = [
@@ -170,6 +170,7 @@ export default function SocialPage() {
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#f8f8f2", padding: "32px 28px" }}>
       <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @media (max-width: 900px) { .social-grid { grid-template-columns: 1fr !important; } }
         textarea:focus, input:focus { outline: none; border-color: ${ACCENT} !important; }
         .preset-btn:hover { border-color: rgba(47,155,47,0.4) !important; background: rgba(47,155,47,0.06) !important; }
@@ -177,8 +178,8 @@ export default function SocialPage() {
       `}</style>
 
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 900, color: "#fff", margin: 0, lineHeight: 1.1 }}>Social Content</h1>
-        <p style={{ color: MUTED, marginTop: 6, fontSize: 14 }}>Generate images with DALL-E 3 and post to Buffer.</p>
+        <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>Social Content</h1>
+        <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>Generate images with DALL-E 3 and post to Buffer.</p>
       </div>
 
       <div className="social-grid" style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 20, alignItems: "start" }}>
@@ -192,7 +193,14 @@ export default function SocialPage() {
               <button
                 key={mode}
                 onClick={() => { setImageMode(mode); setImageUrl(null); setRevisedPrompt(null); }}
-                style={{ flex: 1, height: 38, borderRadius: 12, border: "none", background: imageMode === mode ? "rgba(47,155,47,0.15)" : "transparent", color: imageMode === mode ? "#4ade80" : MUTED, fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, transition: "all 0.15s" }}
+                style={{
+                  flex: 1, height: 38, borderRadius: 12, border: "none",
+                  background: imageMode === mode ? "rgba(47,155,47,0.15)" : "transparent",
+                  color: imageMode === mode ? "#4ade80" : MUTED,
+                  fontSize: 13, fontWeight: 700, cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                  transition: "all 0.15s",
+                }}
               >
                 {mode === "generate" ? <><Sparkles style={{ width: 14, height: 14 }} /> Generate</> : <><Upload style={{ width: 14, height: 14 }} /> Upload</>}
               </button>
@@ -203,14 +211,20 @@ export default function SocialPage() {
             <>
               {/* Presets */}
               <div style={{ background: SURFACE, borderRadius: 16, padding: "20px 22px", border: `1px solid ${BORDER}` }}>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 14 }}>Quick presets</p>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 14 }}>Quick presets</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {PRESETS.map((p) => (
                     <button
                       key={p.label}
                       className="preset-btn"
                       onClick={() => setPrompt(p.prompt)}
-                      style={{ padding: "7px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600, background: prompt === p.prompt ? "rgba(47,155,47,0.12)" : "transparent", border: `1px solid ${prompt === p.prompt ? "rgba(47,155,47,0.5)" : DIM}`, color: prompt === p.prompt ? "#4ade80" : "rgba(255,255,255,0.6)", cursor: "pointer", transition: "all 0.15s" }}
+                      style={{
+                        padding: "7px 14px", borderRadius: 999, fontSize: 12, fontWeight: 600,
+                        background: prompt === p.prompt ? "rgba(47,155,47,0.12)" : "transparent",
+                        border: `1px solid ${prompt === p.prompt ? "rgba(47,155,47,0.5)" : DIM}`,
+                        color: prompt === p.prompt ? "#4ade80" : "rgba(255,255,255,0.6)",
+                        cursor: "pointer", transition: "all 0.15s",
+                      }}
                     >
                       {p.label}
                     </button>
@@ -220,21 +234,35 @@ export default function SocialPage() {
 
               {/* Prompt input */}
               <div style={{ background: SURFACE, borderRadius: 16, padding: "20px 22px", border: `1px solid ${BORDER}` }}>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 12 }}>Prompt</p>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 12 }}>Prompt</p>
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Describe the image you want to generate..."
                   rows={4}
-                  style={{ width: "100%", background: "rgba(255,255,255,0.04)", border: `1px solid ${BORDER}`, borderRadius: 12, padding: "12px 14px", color: "#fff", fontSize: 14, resize: "vertical", fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box", transition: "border-color 0.2s" }}
+                  style={{
+                    width: "100%", background: "rgba(255,255,255,0.06)",
+                    border: `1px solid rgba(255,255,255,0.1)`,
+                    borderRadius: 10, padding: "12px 14px", color: "#fff",
+                    fontSize: 14, resize: "vertical", fontFamily: "inherit",
+                    lineHeight: 1.6, boxSizing: "border-box", transition: "border-color 0.2s",
+                  }}
                 />
                 <button
                   onClick={generate}
                   disabled={generating || !prompt.trim()}
-                  style={{ marginTop: 12, width: "100%", height: 48, borderRadius: 999, border: "none", background: generating || !prompt.trim() ? "rgba(47,155,47,0.3)" : ACCENT, color: "#fff", fontSize: 13, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase", cursor: generating || !prompt.trim() ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "background 0.2s" }}
+                  style={{
+                    marginTop: 12, width: "100%", height: 48, borderRadius: 999, border: "none",
+                    background: generating || !prompt.trim() ? "rgba(47,155,47,0.3)" : ACCENT,
+                    color: "#fff", fontSize: 13, fontWeight: 900, letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    cursor: generating || !prompt.trim() ? "not-allowed" : "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    transition: "background 0.2s",
+                  }}
                 >
                   {generating
-                    ? <><Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> Generating</>
+                    ? <><Loader2 style={{ width: 16, height: 16, animation: "spin 1s linear infinite" }} /> Generating</>
                     : <><Sparkles style={{ width: 16, height: 16 }} /> Generate Image</>}
                 </button>
               </div>
@@ -246,7 +274,14 @@ export default function SocialPage() {
               onDragLeave={() => setDragOver(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              style={{ background: dragOver ? "rgba(47,155,47,0.08)" : SURFACE, borderRadius: 16, border: `2px dashed ${dragOver ? "rgba(47,155,47,0.6)" : "rgba(255,255,255,0.15)"}`, padding: "48px 24px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, cursor: "pointer", transition: "all 0.2s", minHeight: 220 }}
+              style={{
+                background: dragOver ? "rgba(47,155,47,0.08)" : SURFACE,
+                borderRadius: 16,
+                border: `2px dashed ${dragOver ? "rgba(47,155,47,0.6)" : "rgba(255,255,255,0.15)"}`,
+                padding: "48px 24px", display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", gap: 12,
+                cursor: "pointer", transition: "all 0.2s", minHeight: 220,
+              }}
             >
               <input
                 ref={fileInputRef}
@@ -257,12 +292,16 @@ export default function SocialPage() {
               />
               {uploading ? (
                 <>
-                  <Loader2 style={{ width: 32, height: 32, color: ACCENT }} className="animate-spin" />
+                  <Loader2 style={{ width: 32, height: 32, color: ACCENT, animation: "spin 1s linear infinite" }} />
                   <p style={{ fontSize: 13, color: MUTED }}>Uploading...</p>
                 </>
               ) : (
                 <>
-                  <div style={{ width: 52, height: 52, borderRadius: 14, background: "rgba(47,155,47,0.1)", border: `1px solid rgba(47,155,47,0.2)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{
+                    width: 52, height: 52, borderRadius: 14,
+                    background: "rgba(47,155,47,0.1)", border: "1px solid rgba(47,155,47,0.2)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
                     <Upload style={{ width: 22, height: 22, color: ACCENT }} />
                   </div>
                   <div style={{ textAlign: "center" }}>
@@ -275,10 +314,15 @@ export default function SocialPage() {
           )}
 
           {/* Image preview */}
-          <div style={{ background: SURFACE, borderRadius: 16, border: `1px solid ${BORDER}`, overflow: "hidden", aspectRatio: "1/1", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+          <div style={{
+            background: SURFACE, borderRadius: 16, border: `1px solid ${BORDER}`,
+            overflow: "hidden", aspectRatio: "1/1",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            position: "relative",
+          }}>
             {(generating || uploading) && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-                <Loader2 style={{ width: 32, height: 32, color: ACCENT }} className="animate-spin" />
+                <Loader2 style={{ width: 32, height: 32, color: ACCENT, animation: "spin 1s linear infinite" }} />
                 <p style={{ fontSize: 13, color: MUTED }}>{generating ? "Generating with DALL-E 3..." : "Uploading image..."}</p>
               </div>
             )}
@@ -295,14 +339,25 @@ export default function SocialPage() {
                   {imageMode === "generate" && (
                     <button
                       onClick={generate}
-                      style={{ height: 36, padding: "0 14px", borderRadius: 999, background: "rgba(0,0,0,0.6)", border: `1px solid ${BORDER}`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, backdropFilter: "blur(8px)" }}
+                      style={{
+                        height: 36, padding: "0 14px", borderRadius: 999,
+                        background: "rgba(0,0,0,0.6)", border: `1px solid ${BORDER}`,
+                        color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 6, backdropFilter: "blur(8px)",
+                      }}
                     >
                       <RefreshCw style={{ width: 13, height: 13 }} /> Regenerate
                     </button>
                   )}
                   <button
                     onClick={() => { setImageUrl(null); setRevisedPrompt(null); }}
-                    style={{ height: 36, width: 36, borderRadius: 999, background: "rgba(0,0,0,0.6)", border: `1px solid ${BORDER}`, color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}
+                    style={{
+                      height: 36, width: 36, borderRadius: 999,
+                      background: "rgba(0,0,0,0.6)", border: `1px solid ${BORDER}`,
+                      color: "#fff", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      backdropFilter: "blur(8px)",
+                    }}
                   >
                     <X style={{ width: 14, height: 14 }} />
                   </button>
@@ -324,7 +379,7 @@ export default function SocialPage() {
           {/* Caption */}
           <div style={{ background: SURFACE, borderRadius: 16, padding: "20px 22px", border: `1px solid ${BORDER}` }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED }}>Caption</p>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>Caption</p>
               <span style={{ fontSize: 11, color: captionOver ? "#f87171" : MUTED }}>{captionLen}/2200</span>
             </div>
             <textarea
@@ -332,16 +387,22 @@ export default function SocialPage() {
               onChange={(e) => setCaption(e.target.value)}
               placeholder="Write your caption..."
               rows={6}
-              style={{ width: "100%", background: "rgba(255,255,255,0.04)", border: `1px solid ${captionOver ? "rgba(248,113,113,0.5)" : BORDER}`, borderRadius: 12, padding: "12px 14px", color: "#fff", fontSize: 14, resize: "vertical", fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box", transition: "border-color 0.2s" }}
+              style={{
+                width: "100%", background: "rgba(255,255,255,0.06)",
+                border: `1px solid ${captionOver ? "rgba(248,113,113,0.5)" : "rgba(255,255,255,0.1)"}`,
+                borderRadius: 10, padding: "12px 14px", color: "#fff",
+                fontSize: 14, resize: "vertical", fontFamily: "inherit",
+                lineHeight: 1.6, boxSizing: "border-box", transition: "border-color 0.2s",
+              }}
             />
           </div>
 
           {/* Channels */}
           <div style={{ background: SURFACE, borderRadius: 16, padding: "20px 22px", border: `1px solid ${BORDER}` }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 14 }}>Channels</p>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 14 }}>Channels</p>
             {loadingChannels && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, color: MUTED, fontSize: 13 }}>
-                <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> Loading...
+                <Loader2 style={{ width: 14, height: 14, animation: "spin 1s linear infinite" }} /> Loading...
               </div>
             )}
             {!loadingChannels && channelError && (
@@ -357,13 +418,17 @@ export default function SocialPage() {
                   key={ch.id}
                   className="channel-row"
                   onClick={() => toggleChannel(ch.id)}
-                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, cursor: "pointer", transition: "background 0.15s", marginBottom: 4 }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12,
+                    padding: "10px 12px", borderRadius: 10,
+                    cursor: "pointer", transition: "background 0.15s", marginBottom: 4,
+                  }}
                 >
                   {selected
                     ? <CheckSquare style={{ width: 16, height: 16, color: ACCENT, flexShrink: 0 }} />
                     : <Square style={{ width: 16, height: 16, color: DIM, flexShrink: 0 }} />}
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: selected ? "#fff" : "rgba(255,255,255,0.5)" }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: selected ? "#fff" : "rgba(255,255,255,0.55)" }}>
                       {SERVICE_LABELS[ch.service] ?? ch.service}
                     </p>
                     <p style={{ fontSize: 11, color: MUTED }}>{ch.displayName}</p>
@@ -375,13 +440,21 @@ export default function SocialPage() {
 
           {/* Schedule */}
           <div style={{ background: SURFACE, borderRadius: 16, padding: "20px 22px", border: `1px solid ${BORDER}` }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 14 }}>Timing</p>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 14 }}>Timing</p>
             <div style={{ display: "flex", gap: 8, marginBottom: scheduleMode === "later" ? 14 : 0 }}>
               {(["now", "later"] as const).map((mode) => (
                 <button
                   key={mode}
                   onClick={() => setScheduleMode(mode)}
-                  style={{ flex: 1, height: 38, borderRadius: 10, border: `1px solid ${scheduleMode === mode ? "rgba(47,155,47,0.5)" : DIM}`, background: scheduleMode === mode ? "rgba(47,155,47,0.1)" : "transparent", color: scheduleMode === mode ? "#4ade80" : "rgba(255,255,255,0.4)", fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all 0.15s" }}
+                  style={{
+                    flex: 1, height: 38, borderRadius: 10,
+                    border: `1px solid ${scheduleMode === mode ? "rgba(47,155,47,0.5)" : DIM}`,
+                    background: scheduleMode === mode ? "rgba(47,155,47,0.1)" : "transparent",
+                    color: scheduleMode === mode ? "#4ade80" : "rgba(255,255,255,0.4)",
+                    fontSize: 12, fontWeight: 700, cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                    transition: "all 0.15s",
+                  }}
                 >
                   {mode === "now" ? <><Send style={{ width: 12, height: 12 }} /> Post now</> : <><Clock style={{ width: 12, height: 12 }} /> Schedule</>}
                 </button>
@@ -392,7 +465,15 @@ export default function SocialPage() {
                 type="datetime-local"
                 value={scheduledAt}
                 onChange={(e) => setScheduledAt(e.target.value)}
-                style={{ width: "100%", height: 42, background: "rgba(255,255,255,0.04)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "0 14px", color: "#fff", fontSize: 13, fontFamily: "inherit", boxSizing: "border-box", colorScheme: "dark", transition: "border-color 0.2s" }}
+                style={{
+                  width: "100%", height: 42,
+                  background: "rgba(255,255,255,0.06)",
+                  border: `1px solid rgba(255,255,255,0.1)`,
+                  borderRadius: 10, padding: "0 14px", color: "#fff",
+                  fontSize: 13, fontFamily: "inherit",
+                  boxSizing: "border-box", colorScheme: "dark",
+                  transition: "border-color 0.2s",
+                }}
               />
             )}
           </div>
@@ -401,10 +482,20 @@ export default function SocialPage() {
           <button
             onClick={post}
             disabled={posting || uploading || !imageUrl || !caption.trim() || !selectedChannels.length || captionOver}
-            style={{ width: "100%", height: 52, borderRadius: 999, border: "none", background: posting || !imageUrl || !caption.trim() || !selectedChannels.length || captionOver ? "rgba(47,155,47,0.3)" : ACCENT, color: "#fff", fontSize: 14, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase", cursor: posting || !imageUrl || !caption.trim() || !selectedChannels.length || captionOver ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "background 0.2s" }}
+            style={{
+              width: "100%", height: 52, borderRadius: 999, border: "none",
+              background: posting || !imageUrl || !caption.trim() || !selectedChannels.length || captionOver
+                ? "rgba(47,155,47,0.3)" : ACCENT,
+              color: "#fff", fontSize: 14, fontWeight: 900, letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              cursor: posting || !imageUrl || !caption.trim() || !selectedChannels.length || captionOver
+                ? "not-allowed" : "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              transition: "background 0.2s",
+            }}
           >
             {posting
-              ? <><Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> Posting...</>
+              ? <><Loader2 style={{ width: 16, height: 16, animation: "spin 1s linear infinite" }} /> Posting...</>
               : scheduleMode === "later"
                 ? <><Clock style={{ width: 16, height: 16 }} /> Schedule Post</>
                 : <><Send style={{ width: 16, height: 16 }} /> Post to Buffer</>}

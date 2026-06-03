@@ -11,5 +11,9 @@ export default async function POSPage() {
     .eq("active", true)
     .order("name");
 
-  return <POSClient products={products ?? []} />;
+  return (
+    <div style={{ background: "#06150C", minHeight: "100vh", padding: "0" }}>
+      <POSClient products={products ?? []} />
+    </div>
+  );
 }

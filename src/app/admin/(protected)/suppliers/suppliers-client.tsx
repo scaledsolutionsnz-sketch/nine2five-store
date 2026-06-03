@@ -5,8 +5,39 @@ import { toast } from "sonner";
 import { Plus, Loader2, Pencil, X, Check, Warehouse } from "lucide-react";
 import type { Supplier } from "@/types/database";
 
-const inputClass =
-  "w-full h-10 px-3.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 transition-colors";
+const darkInput: React.CSSProperties = {
+  width: "100%",
+  height: 40,
+  padding: "0 14px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.06)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  color: "#fff",
+  fontSize: 13,
+  outline: "none",
+  boxSizing: "border-box",
+};
+
+const darkTextarea: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 14px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.06)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  color: "#fff",
+  fontSize: 13,
+  outline: "none",
+  resize: "none" as const,
+  boxSizing: "border-box" as const,
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 12,
+  fontWeight: 500,
+  color: "rgba(255,255,255,0.55)",
+  marginBottom: 6,
+};
 
 function SupplierForm({
   initial,
@@ -48,54 +79,90 @@ function SupplierForm({
   }
 
   return (
-    <div className="p-6 bg-white border border-[#E2E8F0] rounded-[14px] space-y-4" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-      <h3 className="text-[14px] font-semibold text-[#1F2937]">{initial?.id ? "Edit Supplier" : "New Supplier"}</h3>
-      <div>
-        <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Company name</label>
-        <input placeholder="Acme Socks Ltd" value={form.name} onChange={set("name")} className={inputClass} />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
+    <div style={{
+      padding: 24,
+      background: "rgba(8,28,16,0.92)",
+      border: "1px solid rgba(255,255,255,0.09)",
+      borderRadius: 14,
+    }}>
+      <h3 style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", marginBottom: 16 }}>
+        {initial?.id ? "Edit Supplier" : "New Supplier"}
+      </h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
-          <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Contact name</label>
-          <input placeholder="Jane Smith" value={form.contact_name} onChange={set("contact_name")} className={inputClass} />
+          <label style={labelStyle}>Company name</label>
+          <input placeholder="Acme Socks Ltd" value={form.name} onChange={set("name")} style={darkInput} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div>
+            <label style={labelStyle}>Contact name</label>
+            <input placeholder="Jane Smith" value={form.contact_name} onChange={set("contact_name")} style={darkInput} />
+          </div>
+          <div>
+            <label style={labelStyle}>Email</label>
+            <input placeholder="jane@example.com" type="email" value={form.email} onChange={set("email")} style={darkInput} />
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div>
+            <label style={labelStyle}>Phone</label>
+            <input placeholder="+64 9 000 0000" value={form.phone} onChange={set("phone")} style={darkInput} />
+          </div>
+          <div>
+            <label style={labelStyle}>Address</label>
+            <input placeholder="123 Main St, Auckland" value={form.address} onChange={set("address")} style={darkInput} />
+          </div>
         </div>
         <div>
-          <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Email</label>
-          <input placeholder="jane@example.com" type="email" value={form.email} onChange={set("email")} className={inputClass} />
+          <label style={labelStyle}>Notes</label>
+          <textarea
+            placeholder="Any notes about this supplier…"
+            value={form.notes}
+            onChange={set("notes")}
+            rows={2}
+            style={darkTextarea}
+          />
         </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Phone</label>
-          <input placeholder="+64 9 000 0000" value={form.phone} onChange={set("phone")} className={inputClass} />
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, paddingTop: 4 }}>
+          <button
+            onClick={onCancel}
+            style={{
+              height: 36,
+              padding: "0 16px",
+              borderRadius: 9999,
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "#ffffff",
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={save}
+            disabled={saving}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              height: 40,
+              padding: "0 20px",
+              borderRadius: 9999,
+              background: "#2f9b2f",
+              border: "none",
+              color: "#ffffff",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: saving ? "not-allowed" : "pointer",
+              opacity: saving ? 0.5 : 1,
+            }}
+          >
+            {saving ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <Check style={{ width: 14, height: 14 }} />}
+            Save
+          </button>
         </div>
-        <div>
-          <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Address</label>
-          <input placeholder="123 Main St, Auckland" value={form.address} onChange={set("address")} className={inputClass} />
-        </div>
-      </div>
-      <div>
-        <label className="block text-[12px] font-medium text-[#374151] mb-1.5">Notes</label>
-        <textarea
-          placeholder="Any notes about this supplier…"
-          value={form.notes}
-          onChange={set("notes")}
-          rows={2}
-          className="w-full px-3.5 py-2.5 rounded-lg bg-white border border-[#E2E8F0] text-[13px] text-[#334155] placeholder:text-[#C4CAD4] focus:outline-none focus:border-[#116DFF]/50 resize-none transition-colors"
-        />
-      </div>
-      <div className="flex justify-end gap-3 pt-1">
-        <button onClick={onCancel} className="h-9 px-4 rounded-full bg-white border border-[#D8E2F0] hover:bg-[#F4F8FF] text-[#27364A] text-[13px] font-medium transition-colors">
-          Cancel
-        </button>
-        <button
-          onClick={save}
-          disabled={saving}
-          className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] disabled:opacity-50 transition-colors"
-        >
-          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
-          Save
-        </button>
       </div>
     </div>
   );
@@ -129,18 +196,31 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
   const inactive = suppliers.filter((s) => !s.active);
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Page header */}
-      <div className="flex items-start justify-between">
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Suppliers</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Manage your sock suppliers and contact details.</p>
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#ffffff", margin: 0, lineHeight: 1.1 }}>Suppliers</h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginTop: 6, fontSize: 14 }}>Manage your sock suppliers and contact details.</p>
         </div>
         <button
           onClick={() => setCreating(true)}
-          className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#116DFF] text-white text-[13px] font-semibold hover:bg-[#0D5FE0] transition-colors"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            height: 40,
+            padding: "0 20px",
+            borderRadius: 9999,
+            background: "#2f9b2f",
+            border: "none",
+            color: "#ffffff",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
         >
-          <Plus className="h-4 w-4" /> Add Supplier
+          <Plus style={{ width: 16, height: 16 }} /> Add Supplier
         </button>
       </div>
 
@@ -149,16 +229,36 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
       )}
 
       {/* Active suppliers */}
-      <div className="rounded-[14px] bg-white border border-[#E2E8F0] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
-        <div className="px-6 py-4 border-b border-[#E2E8F0]">
-          <h3 className="text-[14px] font-semibold text-[#1F2937] leading-none">Active Suppliers</h3>
-          <p className="text-[12px] text-[#6B7280] mt-1">{active.length} supplier{active.length !== 1 ? "s" : ""}</p>
+      <div style={{
+        borderRadius: 14,
+        background: "rgba(8,28,16,0.92)",
+        border: "1px solid rgba(255,255,255,0.09)",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          padding: "16px 24px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", lineHeight: 1 }}>Active Suppliers</h3>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 4 }}>
+            {active.length} supplier{active.length !== 1 ? "s" : ""}
+          </p>
         </div>
-        <table className="w-full">
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ backgroundColor: "#EAF2FF", borderBottom: "1px solid #BBD3FF" }}>
+            <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               {["Supplier", "Contact", "Email", "Phone", ""].map((h) => (
-                <th key={h} className="text-left px-[18px] h-[52px] text-[13px] font-medium text-[#1F2D3D] whitespace-nowrap">{h}</th>
+                <th key={h} style={{
+                  textAlign: "left",
+                  padding: "0 18px",
+                  height: 44,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.35)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  whiteSpace: "nowrap",
+                }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -166,30 +266,80 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
             {active.map((s) => (
               editing === s.id ? (
                 <tr key={s.id}>
-                  <td colSpan={5} className="p-4">
+                  <td colSpan={5} style={{ padding: 16 }}>
                     <SupplierForm initial={s} onSave={handleSaved} onCancel={() => setEditing(null)} />
                   </td>
                 </tr>
               ) : (
-                <tr key={s.id} className="border-b border-[#E5EAF1] last:border-0 hover:bg-[#F6FAFF] transition-colors">
-                  <td className="px-[18px] py-[14px] text-[13px] font-medium text-[#1F2937]">{s.name}</td>
-                  <td className="px-[18px] py-[14px] text-[13px] text-[#334155]">{s.contact_name ?? "—"}</td>
-                  <td className="px-[18px] py-[14px] text-[13px] text-[#6B7280]">{s.email ?? "—"}</td>
-                  <td className="px-[18px] py-[14px] text-[13px] text-[#6B7280]">{s.phone ?? "—"}</td>
-                  <td className="px-[18px] py-[14px]">
-                    <div className="flex items-center justify-end gap-1">
+                <tr
+                  key={s.id}
+                  style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", transition: "background 0.15s" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <td style={{ padding: "14px 18px", fontSize: 13, fontWeight: 500, color: "#ffffff" }}>{s.name}</td>
+                  <td style={{ padding: "14px 18px", fontSize: 13, color: "rgba(255,255,255,0.55)" }}>{s.contact_name ?? "—"}</td>
+                  <td style={{ padding: "14px 18px", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>{s.email ?? "—"}</td>
+                  <td style={{ padding: "14px 18px", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>{s.phone ?? "—"}</td>
+                  <td style={{ padding: "14px 18px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
                       <button
                         onClick={() => setEditing(s.id)}
-                        className="h-7 w-7 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#334155] hover:bg-[#F3F5F8] transition-colors"
+                        style={{
+                          height: 28,
+                          width: 28,
+                          borderRadius: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "transparent",
+                          border: "none",
+                          color: "rgba(255,255,255,0.35)",
+                          cursor: "pointer",
+                          transition: "all 0.15s",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.08)";
+                          (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                          (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.35)";
+                        }}
                       >
-                        <Pencil className="h-3.5 w-3.5" />
+                        <Pencil style={{ width: 13, height: 13 }} />
                       </button>
                       <button
                         onClick={() => deactivate(s.id)}
                         disabled={deactivating === s.id}
-                        className="h-7 w-7 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#991B1B] hover:bg-[#FEE2E2] transition-colors disabled:opacity-40"
+                        style={{
+                          height: 28,
+                          width: 28,
+                          borderRadius: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "transparent",
+                          border: "none",
+                          color: "rgba(255,255,255,0.35)",
+                          cursor: deactivating === s.id ? "not-allowed" : "pointer",
+                          opacity: deactivating === s.id ? 0.4 : 1,
+                          transition: "all 0.15s",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (deactivating !== s.id) {
+                            (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.15)";
+                            (e.currentTarget as HTMLButtonElement).style.color = "#f87171";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                          (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.35)";
+                        }}
                       >
-                        {deactivating === s.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
+                        {deactivating === s.id
+                          ? <Loader2 style={{ width: 13, height: 13 }} className="animate-spin" />
+                          : <X style={{ width: 13, height: 13 }} />}
                       </button>
                     </div>
                   </td>
@@ -199,9 +349,9 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
           </tbody>
         </table>
         {active.length === 0 && !creating && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <Warehouse className="h-8 w-8 text-[#C4CAD4] mb-3" />
-            <p className="text-[13px] text-[#6B7280]">No suppliers yet. Add one above.</p>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 0", textAlign: "center" }}>
+            <Warehouse style={{ width: 32, height: 32, color: "rgba(255,255,255,0.15)", marginBottom: 12 }} />
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>No suppliers yet. Add one above.</p>
           </div>
         )}
       </div>
@@ -209,11 +359,20 @@ export function SuppliersClient({ initialSuppliers }: { initialSuppliers: Suppli
       {/* Inactive */}
       {inactive.length > 0 && (
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#8A94A6] mb-3">Inactive</p>
-          <div className="space-y-1">
+          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.35)", marginBottom: 12 }}>Inactive</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {inactive.map((s) => (
-              <div key={s.id} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-[#F3F5F8] border border-[#E2E8F0] opacity-50">
-                <p className="text-[13px] text-[#6B7280] line-through">{s.name}</p>
+              <div key={s.id} style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 16px",
+                borderRadius: 10,
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                opacity: 0.5,
+              }}>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", textDecoration: "line-through" }}>{s.name}</p>
               </div>
             ))}
           </div>

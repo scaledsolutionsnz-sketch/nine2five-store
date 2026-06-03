@@ -245,7 +245,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <PrintButton />
-          <OrderActions orderId={o.id} currentStatus={o.status} trackingNumber={o.tracking_number} />
+          <OrderActions
+            orderId={o.id}
+            currentStatus={o.status}
+            trackingNumber={o.tracking_number}
+            orderTotal={o.total}
+            hasStripePayment={!!o.stripe_payment_intent_id}
+          />
         </div>
       </div>
 

@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const userAgent = req.headers.get("user-agent") ?? null;
     const referrer = req.headers.get("referer") ?? null;
 
-    // Record the click and increment counter (fire and forget)
+    // Record the click and increment counter atomically (fire and forget)
     supabase
       .from("affiliate_clicks")
       .insert({
@@ -42,10 +42,7 @@ export async function POST(req: NextRequest) {
         landing_page: landing_page ?? null,
       })
       .then(() => {
-        supabase
-          .from("affiliates")
-          .update({ total_clicks: affiliate.total_clicks + 1 })
-          .eq("id", affiliate.id);
+        supabase.rpc("increment_affiliate_clicks", { p_affiliate_id: affiliate.id });
       });
 
     return NextResponse.json({

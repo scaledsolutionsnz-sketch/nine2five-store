@@ -9,13 +9,7 @@ export default async function SuppliersPage() {
   const { data } = await supabase.from("suppliers").select("*").order("name");
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-[22px] font-semibold text-[#1F2937]">Suppliers</h1>
-          <p className="text-[14px] text-[#64748B] mt-1">Manage your product suppliers and contacts.</p>
-        </div>
-      </div>
+    <div style={{ minHeight: "100vh", background: "#06150C", color: "#f8f8f2", padding: "32px 28px" }}>
       <SuppliersClient initialSuppliers={(data ?? []) as Supplier[]} />
     </div>
   );

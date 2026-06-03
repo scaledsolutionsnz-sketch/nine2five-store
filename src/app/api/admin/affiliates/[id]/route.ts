@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { writeAuditLog } from "@/lib/audit";
+import { getResend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
+import { affiliateApprovedHtml, affiliateApprovedText } from "@/lib/emails/affiliate-approved";
+
+const DASHBOARD_URL = "https://nine2five.nz/affiliate/dashboard";
 
 export async function PATCH(
   req: NextRequest,
@@ -31,6 +35,14 @@ export async function PATCH(
   }
 
   const service = await createServiceClient();
+
+  // Fetch current record before update so we can check previous status
+  const { data: before } = await service
+    .from("affiliates")
+    .select("status, name, email, referral_code")
+    .eq("id", id)
+    .single();
+
   const { data, error } = await service
     .from("affiliates")
     .update(update)
@@ -54,6 +66,23 @@ export async function PATCH(
     details: update as Record<string, unknown>,
     request: req,
   });
+
+  // Send approval email if transitioning from non-active → active
+  if (body.status === "active" && before && before.status !== "active") {
+    try {
+      await getResend().emails.send({
+        from: FROM_EMAIL,
+        replyTo: REPLY_TO,
+        to: before.email,
+        subject: "You're approved — Nine2Five Ambassador Programme",
+        html: affiliateApprovedHtml(before.name, before.referral_code, DASHBOARD_URL),
+        text: affiliateApprovedText(before.name, before.referral_code, DASHBOARD_URL),
+      });
+    } catch (emailErr) {
+      // Log but don't fail the request — status update already succeeded
+      console.error("Approval email failed:", emailErr);
+    }
+  }
 
   return NextResponse.json(data);
 }

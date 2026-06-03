@@ -47,30 +47,30 @@ export default async function ShopPage() {
     {
       label: null,
       title: "2 Pairs",
-      subtitle: "Mix designs — one for training, one for game day",
-      price: "$55",
-      was: "$62",
-      save: "Save $7",
+      subtitle: "Mix designs — one for training, one for game day.",
+      perk: "$24 per pair — save $2",
+      price: "$48",
+      tag: "$24/pair — save $2",
       pairs: 2,
       href: "/shop",
     },
     {
       label: "MOST POPULAR",
       title: "3 Pairs",
-      subtitle: "The sweet spot — one for every session",
-      price: "$75",
-      was: "$93",
-      save: "Save $18",
+      subtitle: "One for every session — never run out mid-week.",
+      perk: "$23 per pair — save $6",
+      price: "$69",
+      tag: "$23/pair — save $6",
       pairs: 3,
       href: "/shop",
     },
     {
       label: "BEST VALUE",
       title: "5 Pairs",
-      subtitle: "$21/pair — stock up and never run out",
+      subtitle: "A pair for every sport. Stock up once, sorted for the season.",
+      perk: "Free NZ shipping + priority dispatch + free design card",
       price: "$105",
-      was: "$155",
-      save: "Save $50",
+      tag: "$21/pair — save $20",
       pairs: 5,
       href: "/shop",
     },
@@ -107,10 +107,11 @@ export default async function ShopPage() {
 
           {/* Bundle & Save */}
           <div style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 16 }}>Bundle &amp; Save</p>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 8 }}>Bundle &amp; Save</p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>$25 a pair. The more you grab, the less each pair costs — free shipping on 5 pairs.</p>
           </div>
           <div className="bundle-grid">
-            {BUNDLES.map(({ label, title, subtitle, price, was, save, href }) => (
+            {BUNDLES.map(({ label, title, subtitle, perk, price, tag, href }) => (
               <Link
                 key={title}
                 href={href}
@@ -135,12 +136,14 @@ export default async function ShopPage() {
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                   <p style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", margin: 0 }}>{title}</p>
-                  <span style={{ background: "rgba(46,139,40,0.15)", color: "#2E8B28", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", padding: "3px 8px", borderRadius: 999 }}>{save}</span>
+                  <span style={{ background: "rgba(46,139,40,0.15)", color: "#2E8B28", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", padding: "3px 8px", borderRadius: 999 }}>{tag}</span>
                 </div>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>{subtitle}</p>
+                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>{subtitle}</p>
+                <p style={{ fontSize: 11, color: "#2E8B28", fontWeight: 700, marginBottom: 14, display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ fontSize: 10 }}>✦</span> {perk}
+                </p>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: "auto" }}>
                   <span style={{ fontSize: 22, fontWeight: 900, color: "#2E8B28" }}>{price}</span>
-                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.28)", textDecoration: "line-through" }}>{was}</span>
                   <ArrowUpRight style={{ width: 14, height: 14, color: "rgba(255,255,255,0.3)", marginLeft: "auto" }} />
                 </div>
               </Link>
@@ -164,7 +167,7 @@ export default async function ShopPage() {
           </div>
 
           {/* All products */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $31 each</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $25 each</p>
           <ShopGrid products={products} />
 
           {/* Club CTA */}
@@ -178,7 +181,7 @@ export default async function ShopPage() {
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 10 }}>Clubs &amp; Teams</p>
               <p style={{ fontSize: 20, fontWeight: 800, color: "#ffffff", marginBottom: 8 }}>Ordering for a team or club?</p>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, maxWidth: 440 }}>
-                Custom design free. MOQ 50 pairs at $12 each. Sell at $25 — your club keeps $650. We send a free mockup first.
+                Custom design free. MOQ 50 pairs. Your club keeps the margin — we send a free mockup first, no commitment required.
               </p>
             </div>
             <Link

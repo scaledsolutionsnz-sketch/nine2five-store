@@ -8,15 +8,15 @@ export function BundleNudge() {
   let msg: { strong: string; rest: string } | null = null;
 
   if (count === 0) {
-    msg = { strong: "Bundle & save:", rest: "2 pairs $55 · 3 pairs $75 · 5 pairs $105 ($21/pair)" };
+    msg = { strong: "$25 each.", rest: "2 pairs $48 · 3 pairs $69 · 5 pairs $105 with free NZ shipping." };
   } else if (count === 1) {
-    msg = { strong: "Add 1 more pair → save $7.", rest: "Bundle discount applied automatically at checkout." };
+    msg = { strong: "Add one more:", rest: "2 pairs drops to $24 each — save $2." };
   } else if (count === 2) {
-    msg = { strong: "$7 bundle discount active.", rest: "Add 1 more pair → save $18 total." };
-  } else if (count >= 3 && count < 5) {
-    msg = { strong: "$18 bundle discount active.", rest: `Add ${5 - count} more pair${5 - count > 1 ? "s" : ""} → save $50 total ($21/pair).` };
+    msg = { strong: "2 pairs — $24 each.", rest: "Add one more to drop to $23 per pair." };
+  } else if (count === 3 || count === 4) {
+    msg = { strong: `${count} pairs — $23 each.`, rest: `Add ${5 - count} more to drop to $21 per pair and get free NZ shipping.` };
   } else {
-    msg = { strong: "$50 bundle discount active.", rest: "$21/pair — best value unlocked." };
+    msg = { strong: "5 pairs — $21 each.", rest: "Free NZ shipping, priority dispatch, and a free design card. Sorted." };
   }
 
   return (
