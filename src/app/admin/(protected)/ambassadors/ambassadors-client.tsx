@@ -37,7 +37,19 @@ type Application = {
   anything_else: string | null;
   status: string;
   admin_notes: string | null;
+  tags: string[] | null;
 };
+
+const ALL_TAGS = [
+  { value: "athlete",     label: "Athlete",      color: "#f59e0b" },
+  { value: "creator",     label: "Creator",      color: "#3b82f6" },
+  { value: "local",       label: "Local",        color: "#10b981" },
+  { value: "high-reach",  label: "High Reach",   color: "#8b5cf6" },
+  { value: "micro",       label: "Micro",        color: "#06b6d4" },
+  { value: "fashion",     label: "Fashion",      color: "#ec4899" },
+  { value: "sport",       label: "Sport",        color: "#f97316" },
+  { value: "priority",    label: "Priority",     color: "#ef4444" },
+];
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   new:       { bg: "rgba(59,130,246,0.15)", text: "#60a5fa", border: "rgba(59,130,246,0.3)" },
@@ -138,16 +150,42 @@ function ApplicationDrawer({ app, onClose, onStatusChange }: {
         </div>
 
         {/* Status controls */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {Object.keys(STATUS_COLORS).map(s => (
-            <button key={s} onClick={() => void setStatus(s)} style={{
-              padding: "6px 14px", borderRadius: 99, fontSize: 12, fontWeight: 700,
-              cursor: "pointer", textTransform: "capitalize",
-              background: app.status === s ? STATUS_COLORS[s].bg : "rgba(255,255,255,0.05)",
-              color: app.status === s ? STATUS_COLORS[s].text : "rgba(255,255,255,0.4)",
-              border: `1.5px solid ${app.status === s ? STATUS_COLORS[s].border : "rgba(255,255,255,0.1)"}`,
-            }}>{s}</button>
-          ))}
+        <div>
+          <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.4)", letterSpacing: "0.08em", marginBottom: 8 }}>STATUS</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {Object.keys(STATUS_COLORS).map(s => (
+              <button key={s} onClick={() => void setStatus(s)} style={{
+                padding: "6px 14px", borderRadius: 99, fontSize: 12, fontWeight: 700,
+                cursor: "pointer", textTransform: "capitalize",
+                background: app.status === s ? STATUS_COLORS[s].bg : "rgba(255,255,255,0.05)",
+                color: app.status === s ? STATUS_COLORS[s].text : "rgba(255,255,255,0.4)",
+                border: `1.5px solid ${app.status === s ? STATUS_COLORS[s].border : "rgba(255,255,255,0.1)"}`,
+              }}>{s}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div>
+          <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.4)", letterSpacing: "0.08em", marginBottom: 8 }}>CATEGORIES</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {ALL_TAGS.map(tag => {
+              const active = (app.tags ?? []).includes(tag.value);
+              return (
+                <button key={tag.value} type="button" onClick={async () => {
+                  const current = app.tags ?? [];
+                  const next = active ? current.filter(t => t !== tag.value) : [...current, tag.value];
+                  await supabase.from("ambassador_applications").update({ tags: next }).eq("id", app.id);
+                  app.tags = next;
+                }} style={{
+                  padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: active ? `${tag.color}25` : "rgba(255,255,255,0.05)",
+                  color: active ? tag.color : "rgba(255,255,255,0.4)",
+                  border: `1.5px solid ${active ? tag.color + "60" : "rgba(255,255,255,0.1)"}`,
+                }}>{tag.label}</button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Social reach summary */}
@@ -319,6 +357,17 @@ export function AmbassadorsClient({ applications: initial }: { applications: App
                   <p style={{ fontSize: 13, fontWeight: 700, color: "#4ade80" }}>{totalFollowers > 0 ? fmt(totalFollowers) : "—"} followers</p>
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2, textTransform: "capitalize" }}>{platformNames || "No platforms"}</p>
                 </div>
+
+                {/* Tags */}
+                {(app.tags ?? []).map(t => {
+                  const tag = ALL_TAGS.find(x => x.value === t);
+                  return tag ? (
+                    <span key={t} style={{
+                      fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 99,
+                      background: `${tag.color}20`, color: tag.color, border: `1px solid ${tag.color}40`,
+                    }}>{tag.label}</span>
+                  ) : null;
+                })}
 
                 {/* Athlete */}
                 {app.is_athlete && <Badge text={`🏅 ${(app.sports ?? []).slice(0, 2).join(", ")}`} />}

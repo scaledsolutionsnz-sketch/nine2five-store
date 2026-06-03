@@ -361,13 +361,22 @@ export default function AmbassadorForm() {
         padding: "40px 20px", background: "var(--background)",
       }}>
         <div style={{ fontSize: 64, marginBottom: 24 }}>🤙</div>
-        <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fff", fontFamily: "var(--font-outfit)", marginBottom: 12 }}>
-          Application Received
+        <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fff", fontFamily: "var(--font-outfit)", marginBottom: 16 }}>
+          Thank You for Applying
         </h1>
-        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", maxWidth: 380, lineHeight: 1.6 }}>
-          We&apos;ll review your application and be in touch within 5–7 days. Keep doing your thing.
-        </p>
-        <p style={{ marginTop: 32, fontSize: 22, fontWeight: 900, letterSpacing: "0.18em", color: "#2E8B28", fontFamily: "var(--font-outfit)" }}>
+        <div style={{
+          maxWidth: 480, background: "rgba(8,32,20,0.82)", border: "1px solid rgba(70,190,70,0.22)",
+          borderRadius: 20, padding: "28px 32px", marginBottom: 32,
+        }}>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.8)", lineHeight: 1.75, marginBottom: 16 }}>
+            We genuinely appreciate you taking the time to apply. We wish we could bring everyone on board — but to make sure our ambassadors actually represent the brand properly and get the support they deserve, we keep the programme small and selective.
+          </p>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
+            We&apos;ll review your application personally and be in touch within <strong style={{ color: "#4ade80" }}>5–7 days</strong>. If it&apos;s not the right time, we&apos;ll keep you on file for future rounds.
+          </p>
+        </div>
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", marginBottom: 24 }}>Keep doing your thing. 🌿</p>
+        <p style={{ fontSize: 22, fontWeight: 900, letterSpacing: "0.18em", color: "#2E8B28", fontFamily: "var(--font-outfit)" }}>
           NINE2FIVE
         </p>
       </div>
