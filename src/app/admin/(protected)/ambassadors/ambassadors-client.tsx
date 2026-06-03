@@ -300,13 +300,13 @@ export function AmbassadorsClient({ applications: initial }: { applications: App
   return (
     <div style={{ color: "#fff" }}>
       {/* Header */}
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 900, fontFamily: "var(--font-outfit)", marginBottom: 4 }}>Ambassador Applications</h1>
+      <div style={{ marginBottom: 36 }}>
+        <h1 style={{ fontSize: 30, fontWeight: 900, fontFamily: "var(--font-outfit)", marginBottom: 8 }}>Ambassador Applications</h1>
         <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)" }}>{apps.length} total application{apps.length !== 1 ? "s" : ""}</p>
       </div>
 
       {/* Filter tabs */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 32, flexWrap: "wrap" }}>
         {STATUS_FILTERS.map(s => (
           <button key={s} onClick={() => setFilter(s)} style={{
             padding: "7px 16px", borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: "pointer",
@@ -328,7 +328,7 @@ export function AmbassadorsClient({ applications: initial }: { applications: App
           <p style={{ fontSize: 13, marginTop: 6 }}>Share the application link to start receiving submissions.</p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {filtered.map(app => {
             const totalFollowers = (app.platforms ?? []).reduce((s, p) => s + (p.followers ?? 0), 0);
             const platformNames = (app.platforms ?? []).map(p => p.platform).join(", ");
