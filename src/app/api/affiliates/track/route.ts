@@ -31,8 +31,10 @@ export async function POST(req: NextRequest) {
     const userAgent = req.headers.get("user-agent") ?? null;
     const referrer = req.headers.get("referer") ?? null;
 
-    // Record the click and increment counter atomically (fire and forget)
-    supabase
+    // Record the click and increment the cached counter — AWAITED so they run
+    // before the response (Vercel freezes the function after it returns, which is
+    // why the previous fire-and-forget .then() never executed the increment).
+    await supabase
       .from("affiliate_clicks")
       .insert({
         affiliate_id: affiliate.id,
@@ -40,10 +42,8 @@ export async function POST(req: NextRequest) {
         user_agent: userAgent,
         referrer: referrer,
         landing_page: landing_page ?? null,
-      })
-      .then(() => {
-        supabase.rpc("increment_affiliate_clicks", { p_affiliate_id: affiliate.id });
       });
+    await supabase.rpc("increment_affiliate_clicks", { p_affiliate_id: affiliate.id });
 
     return NextResponse.json({
       ok: true,
