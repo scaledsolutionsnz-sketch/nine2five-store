@@ -3,6 +3,13 @@ import { stripe } from "@/lib/stripe";
 import type { CartItem } from "@/types/database";
 import { calculateShippingByPairs } from "@/lib/shipping";
 
+// Read the affiliate referral cookie server-side, so attribution does not depend
+// on the client PATCH running (express/Stripe Link can confirm without it).
+function readRefCookie(req: NextRequest): string {
+  const raw = req.cookies.get("n2f_ref")?.value ?? "";
+  return raw.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 50);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { items, country } = await req.json() as { items: CartItem[]; country: string };
@@ -26,6 +33,9 @@ export async function POST(req: NextRequest) {
         subtotal: String(subtotal),
         shipping: String(shipping),
         country,
+        // Attach affiliate attribution at creation so it survives even if the
+        // client PATCH never runs (e.g. Stripe Link / wallet express checkout).
+        affiliate_code: readRefCookie(req),
       },
     });
 
@@ -100,7 +110,9 @@ export async function PATCH(req: NextRequest) {
         subtotal: String(subtotal),
         discount_code: body.discount_code || "",
         discount_amount: String(discountAmt),
-        affiliate_code: body.affiliate_code || "",
+        // Prefer the server-read cookie (set at PI creation); fall back to the
+        // client value. Avoids clobbering the creation-time code with an empty one.
+        affiliate_code: readRefCookie(req) || (body.affiliate_code ?? ""),
         session_id: body.session_id || "",
         accepts_marketing: body.accepts_marketing ? "1" : "0",
       },
