@@ -8,7 +8,13 @@ const COOKIE_DAYS = 30;
 
 function setCookie(name: string, value: string, days: number) {
   const expires = new Date(Date.now() + days * 86400000).toUTCString();
-  document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+  const host = window.location.hostname;
+  // In prod, scope to the registrable domain so a link on www.nine2five.nz still
+  // carries to apex nine2five.nz (and vice versa). On preview/localhost, stay
+  // host-only — a Domain= the browser doesn't own would be rejected.
+  const domainAttr = host === "nine2five.nz" || host.endsWith(".nine2five.nz") ? "; Domain=.nine2five.nz" : "";
+  const secureAttr = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=${value}; expires=${expires}; path=/${domainAttr}; SameSite=Lax${secureAttr}`;
 }
 
 export function getCookie(name: string): string | null {

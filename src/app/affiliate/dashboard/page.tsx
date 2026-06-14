@@ -27,6 +27,17 @@ export default async function AffiliateDashboardPage() {
     .order("created_at", { ascending: false })
     .limit(50);
 
+  // Authoritative stats from source rows — the cached counters can drift
+  // (esp. total_clicks; the track route used to fire-and-forget the increment).
+  const [{ count: clicksCount }, { data: convStatRows }] = await Promise.all([
+    service.from("affiliate_clicks").select("*", { count: "exact", head: true }).eq("affiliate_id", affiliate.id),
+    service.from("affiliate_conversions").select("commission_cents, status").eq("affiliate_id", affiliate.id),
+  ]);
+  const liveConv = (convStatRows ?? []).filter((c) => c.status !== "reversed");
+  affiliate.total_clicks = clicksCount ?? 0;
+  affiliate.total_conversions = liveConv.length;
+  affiliate.total_commission_cents = liveConv.reduce((s, c) => s + (c.commission_cents ?? 0), 0);
+
   return (
     <AffiliateDashboardClient
       affiliate={affiliate as Affiliate}

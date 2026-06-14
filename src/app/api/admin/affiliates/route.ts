@@ -7,13 +7,36 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data, error } = await supabase
-    .from("affiliates")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const service = await createServiceClient();
+  const [{ data, error }, clicksRes, convRes] = await Promise.all([
+    supabase.from("affiliates").select("*").order("created_at", { ascending: false }),
+    service.from("affiliate_clicks").select("affiliate_id"),
+    service.from("affiliate_conversions").select("affiliate_id, commission_cents, status"),
+  ]);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+
+  // Single source of truth: derive the displayed totals from the actual rows
+  // rather than the cached counters (which can drift).
+  const clicksByAff = new Map<string, number>();
+  for (const c of clicksRes.data ?? []) {
+    clicksByAff.set(c.affiliate_id, (clicksByAff.get(c.affiliate_id) ?? 0) + 1);
+  }
+  const convByAff = new Map<string, number>();
+  const commByAff = new Map<string, number>();
+  for (const v of convRes.data ?? []) {
+    if (v.status === "reversed") continue;
+    convByAff.set(v.affiliate_id, (convByAff.get(v.affiliate_id) ?? 0) + 1);
+    commByAff.set(v.affiliate_id, (commByAff.get(v.affiliate_id) ?? 0) + (v.commission_cents ?? 0));
+  }
+  const enriched = (data ?? []).map((a) => ({
+    ...a,
+    total_clicks: clicksByAff.get(a.id) ?? 0,
+    total_conversions: convByAff.get(a.id) ?? 0,
+    total_commission_cents: commByAff.get(a.id) ?? 0,
+  }));
+
+  return NextResponse.json(enriched);
 }
 
 export async function POST(req: NextRequest) {
