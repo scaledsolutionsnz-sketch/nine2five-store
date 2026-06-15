@@ -9,7 +9,7 @@ export async function GET() {
 
   const service = await createServiceClient();
   const [{ data, error }, clicksRes, convRes] = await Promise.all([
-    supabase.from("affiliates").select("*").order("created_at", { ascending: false }),
+    supabase.from("affiliates").select("*").is("archived_at", null).order("created_at", { ascending: false }),
     service.from("affiliate_clicks").select("affiliate_id"),
     service.from("affiliate_conversions").select("affiliate_id, commission_cents, status"),
   ]);

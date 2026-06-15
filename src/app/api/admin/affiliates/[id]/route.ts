@@ -87,8 +87,13 @@ export async function PATCH(
   return NextResponse.json(data);
 }
 
+// SOFT-DELETE (archive). We never hard-delete: affiliate_clicks is ON DELETE
+// CASCADE (a hard delete would destroy the affiliate's tracked clicks) and
+// affiliate_conversions / affiliate_payouts are ON DELETE RESTRICT. Archiving sets
+// archived_at and hides the affiliate from the admin list while preserving all
+// tracking data; it is reversible (clear archived_at to restore).
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -97,8 +102,23 @@ export async function DELETE(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const service = await createServiceClient();
-  const { error } = await service.from("affiliates").delete().eq("id", id);
+  const { data, error } = await service
+    .from("affiliates")
+    .update({ archived_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("id, name, email, referral_code")
+    .single();
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog({
+    action: "affiliate.archived",
+    entity: "affiliates",
+    entityId: id,
+    actor: user.email!,
+    details: { soft_delete: true, ...(data ?? {}) },
+    request: req,
+  });
 
   return NextResponse.json({ ok: true });
 }

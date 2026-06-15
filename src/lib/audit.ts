@@ -19,6 +19,7 @@ export type AuditAction =
   | "affiliate.suspended"
   | "affiliate.commission_changed"
   | "affiliate.payout_created"
+  | "affiliate.archived"
   | "campaign.sent"
   | "campaign.created"
   | "customer.tagged"
