@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { Copy, Check, MousePointer, TrendingUp, DollarSign, Clock, LogOut, AlertCircle, Building2, Loader2 } from "lucide-react";
+import { Copy, Check, MousePointer, TrendingUp, DollarSign, Clock, LogOut, AlertCircle, Building2, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import type { Affiliate, AffiliateConversion } from "@/types/database";
 
@@ -32,6 +32,13 @@ interface Props {
 export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  function refreshStats() {
+    setRefreshing(true);
+    router.refresh(); // re-runs the server component (force-dynamic) to pull fresh counts
+    setTimeout(() => setRefreshing(false), 900);
+  }
   const [bankName, setBankName] = useState(affiliate.payout_bank_name ?? "");
   const [bankAccount, setBankAccount] = useState(affiliate.payout_bank_account ?? "");
   const [savingBank, setSavingBank] = useState(false);
@@ -131,9 +138,25 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
         )}
 
         {/* Page header */}
-        <div>
-          <h1 className="font-display font-bold" style={{ fontSize: 28, color: "#ffffff", marginBottom: 6 }}>Your Dashboard</h1>
-          <p style={{ fontSize: 14, color: MUTED }}>Track your clicks, sales, and earnings.</p>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
+          <div>
+            <h1 className="font-display font-bold" style={{ fontSize: 28, color: "#ffffff", marginBottom: 6 }}>Your Dashboard</h1>
+            <p style={{ fontSize: 14, color: MUTED }}>Track your clicks, sales, and earnings.</p>
+          </div>
+          <button
+            onClick={refreshStats}
+            disabled={refreshing}
+            style={{
+              display: "flex", alignItems: "center", gap: 8, flexShrink: 0,
+              height: 40, padding: "0 16px", borderRadius: 10,
+              background: "rgba(255,255,255,0.04)", border: `1px solid ${BORDER}`,
+              color: "#ffffff", fontSize: 13, fontWeight: 600,
+              cursor: refreshing ? "default" : "pointer", opacity: refreshing ? 0.6 : 1,
+            }}
+          >
+            <RefreshCw style={{ width: 15, height: 15 }} className={refreshing ? "animate-spin" : ""} />
+            {refreshing ? "Refreshing…" : "Refresh"}
+          </button>
         </div>
 
         {/* Stats grid */}
