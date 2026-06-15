@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import type { Affiliate, AffiliatePayout, AffiliateStatus } from "@/types/database";
 import {
   Plus, Check, X, Pause, TrendingUp, Users,
-  DollarSign, MousePointer, Copy, ChevronDown, Banknote, History
+  DollarSign, MousePointer, Copy, ChevronDown, Banknote, History, Trash2, AlertTriangle, Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -45,6 +45,8 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
   const [affiliates, setAffiliates] = useState(initial);
   const [showCreate, setShowCreate] = useState(false);
   const [selected, setSelected] = useState<Affiliate | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Affiliate | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [, startTransition] = useTransition();
 
   const totals = affiliates.reduce(
@@ -72,6 +74,18 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
   function copyLink(code: string) {
     navigator.clipboard.writeText(`https://nine2five.nz?ref=${code}`);
     toast.success("Referral link copied");
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    const res = await fetch(`/api/admin/affiliates/${deleteTarget.id}`, { method: "DELETE" });
+    setDeleting(false);
+    if (!res.ok) { toast.error("Failed to archive affiliate"); return; }
+    // Soft-delete: remove from the visible list (tracking data is preserved server-side).
+    setAffiliates((prev) => prev.filter((a) => a.id !== deleteTarget.id));
+    toast.success(`Archived ${deleteTarget.name}`);
+    setDeleteTarget(null);
   }
 
   void startTransition;
@@ -122,7 +136,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
               background: "rgba(8,28,16,0.92)",
               border: "1px solid rgba(255,255,255,0.09)",
               borderRadius: 16,
-              padding: "20px 22px",
+              padding: 22,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -177,10 +191,10 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                 <th
                   key={h}
                   style={{
-                    padding: "0 18px",
-                    height: 52,
+                    padding: "0 20px",
+                    height: 46,
                     textAlign: "left",
-                    color: "rgba(255,255,255,0.35)",
+                    color: "rgba(255,255,255,0.4)",
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
                     fontSize: 11,
@@ -216,6 +230,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                 onCopyLink={copyLink}
                 onUpdateStatus={updateStatus}
                 onSelect={setSelected}
+                onDelete={setDeleteTarget}
               />
             ))}
           </tbody>
@@ -244,6 +259,62 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
           }}
         />
       )}
+
+      {/* Soft-delete (archive) confirm */}
+      {deleteTarget && (
+        <div
+          onClick={() => !deleting && setDeleteTarget(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 24 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxWidth: 440, background: "#0a1f12", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: 28 }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+              <div style={{ height: 40, width: 40, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)" }}>
+                <AlertTriangle style={{ width: 18, height: 18, color: "#f87171" }} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: "#fff", margin: 0 }}>Archive affiliate?</h3>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", margin: "2px 0 0" }}>{deleteTarget.name} · <code style={{ fontFamily: "monospace", color: "#4ade80" }}>{deleteTarget.referral_code}</code></p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: 13.5, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, margin: "0 0 14px" }}>
+              This <strong style={{ color: "#fff" }}>archives</strong> the affiliate and hides them from the list. Their tracking data is <strong style={{ color: "#fff" }}>preserved</strong>, not deleted.
+            </p>
+
+            <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+              <div style={{ flex: 1, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "10px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", margin: 0 }}>Clicks attached</p>
+                <p style={{ fontSize: 18, fontWeight: 700, color: "#fff", fontFamily: "monospace", margin: "2px 0 0" }}>{deleteTarget.total_clicks.toLocaleString()}</p>
+              </div>
+              <div style={{ flex: 1, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "10px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", margin: 0 }}>Conversions</p>
+                <p style={{ fontSize: 18, fontWeight: 700, color: "#fff", fontFamily: "monospace", margin: "2px 0 0" }}>{deleteTarget.total_conversions.toLocaleString()}</p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                style={{ height: 38, padding: "0 16px", borderRadius: 8, background: "transparent", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 13, fontWeight: 500, cursor: deleting ? "default" : "pointer" }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting}
+                style={{ display: "flex", alignItems: "center", gap: 8, height: 38, padding: "0 18px", borderRadius: 8, background: "#dc2626", border: "none", color: "#fff", fontSize: 13, fontWeight: 600, cursor: deleting ? "default" : "pointer", opacity: deleting ? 0.7 : 1 }}
+              >
+                {deleting ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <Trash2 style={{ width: 14, height: 14 }} />}
+                {deleting ? "Archiving…" : "Archive affiliate"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -254,11 +325,13 @@ function TableRow({
   onCopyLink,
   onUpdateStatus,
   onSelect,
+  onDelete,
 }: {
   affiliate: Affiliate;
   onCopyLink: (code: string) => void;
   onUpdateStatus: (id: string, status: AffiliateStatus) => void;
   onSelect: (a: Affiliate) => void;
+  onDelete: (a: Affiliate) => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -272,11 +345,11 @@ function TableRow({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <td style={{ padding: "14px 18px" }}>
+      <td style={{ padding: "18px 20px" }}>
         <p style={{ fontSize: 13, fontWeight: 500, color: "#ffffff", margin: 0 }}>{a.name}</p>
         <p style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2, marginBottom: 0 }}>{a.email}</p>
       </td>
-      <td style={{ padding: "14px 18px" }}>
+      <td style={{ padding: "18px 20px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <code style={{
             fontSize: 12,
@@ -297,7 +370,7 @@ function TableRow({
           </button>
         </div>
       </td>
-      <td style={{ padding: "14px 18px" }}>
+      <td style={{ padding: "18px 20px" }}>
         <span style={{
           display: "inline-flex",
           alignItems: "center",
@@ -310,13 +383,13 @@ function TableRow({
           {STATUS[a.status].label}
         </span>
       </td>
-      <td style={{ padding: "14px 18px", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>
+      <td style={{ padding: "18px 20px", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>
         {a.total_clicks.toLocaleString()}
       </td>
-      <td style={{ padding: "14px 18px", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>
+      <td style={{ padding: "18px 20px", fontSize: 13, color: "#ffffff", fontFamily: "monospace" }}>
         {a.total_conversions.toLocaleString()}
       </td>
-      <td style={{ padding: "14px 18px" }}>
+      <td style={{ padding: "18px 20px" }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: "#4ade80", fontFamily: "monospace" }}>
           {fmt(a.total_commission_cents)}
         </span>
@@ -326,10 +399,10 @@ function TableRow({
           </span>
         )}
       </td>
-      <td style={{ padding: "14px 18px", fontSize: 13, color: "#4ade80", fontFamily: "monospace" }}>
+      <td style={{ padding: "18px 20px", fontSize: 13, color: "#4ade80", fontFamily: "monospace" }}>
         {a.commission_rate}%
       </td>
-      <td style={{ padding: "14px 18px" }}>
+      <td style={{ padding: "18px 20px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           {a.status === "pending" && (
             <ActionButton
@@ -368,6 +441,14 @@ function TableRow({
             hoverColor="#ffffff"
           >
             <ChevronDown style={{ width: 14, height: 14 }} />
+          </ActionButton>
+          <ActionButton
+            title="Archive (delete)"
+            onClick={() => onDelete(a)}
+            hoverBg="rgba(239,68,68,0.15)"
+            hoverColor="#f87171"
+          >
+            <Trash2 style={{ width: 14, height: 14 }} />
           </ActionButton>
         </div>
       </td>
