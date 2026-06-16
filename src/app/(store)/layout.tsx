@@ -4,7 +4,6 @@ import { AffiliateTracker } from "@/components/storefront/affiliate-tracker";
 import { VisitorTracker } from "@/components/storefront/visitor-tracker";
 import { Pixels } from "@/components/analytics/pixels";
 import { KoruIntro } from "@/components/storefront/koru-intro";
-import { EmailCapture } from "@/components/storefront/email-capture";
 import { AuthHashRedirect } from "@/components/storefront/auth-hash-redirect";
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -23,7 +22,6 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       </Suspense>
       <VisitorTracker />
       <main style={{ paddingTop: "68px", overflowX: "hidden" }}>{children}</main>
-      <EmailCapture />
 
       {/* ════════════════════════════════════════════
           FOOTER
