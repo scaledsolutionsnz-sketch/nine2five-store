@@ -25,18 +25,25 @@ export async function POST(req: NextRequest) {
     const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     const total = subtotal + shipping;
 
+    const metadata: Record<string, string> = {
+      subtotal: String(subtotal),
+      shipping: String(shipping),
+      country,
+      // Attach affiliate attribution + a compact item list at creation, so they
+      // survive even if the client PATCH never runs (Stripe Link / express checkout).
+      affiliate_code: readRefCookie(req),
+    };
+    // Compact items [{v:variantId,q,p}] — the webhook rebuilds line items from this
+    // when the client metadata is missing. Stripe caps a metadata value at 500 chars,
+    // so only attach when it fits (normal carts do; the full PATCH covers the rest).
+    const itemsMin = JSON.stringify(items.map((i) => ({ v: i.variantId, q: i.quantity, p: i.price })));
+    if (itemsMin.length <= 480) metadata.items_min = itemsMin;
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: total,
       currency: "nzd",
       automatic_payment_methods: { enabled: true },
-      metadata: {
-        subtotal: String(subtotal),
-        shipping: String(shipping),
-        country,
-        // Attach affiliate attribution at creation so it survives even if the
-        // client PATCH never runs (e.g. Stripe Link / wallet express checkout).
-        affiliate_code: readRefCookie(req),
-      },
+      metadata,
     });
 
     return NextResponse.json({

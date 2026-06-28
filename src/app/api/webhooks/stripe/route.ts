@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 import { getResend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
@@ -11,6 +12,32 @@ function getServiceClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
+}
+
+type OrderItem = { productId: string; variantId: string; productName: string; size: string; quantity: number; price: number };
+
+function safeJson<T>(s: string | undefined, fallback: T): T {
+  try { return s ? (JSON.parse(s) as T) : fallback; } catch { return fallback; }
+}
+
+// Rebuild line items from the compact list stored on the PaymentIntent at creation
+// (items_min = [{v:variantId,q,p}]). Used when the client metadata never arrived
+// (Stripe Link / express checkout, or a too-large/failed metadata write).
+async function resolveCompactItems(min: string, supabase: ReturnType<typeof getServiceClient>): Promise<OrderItem[]> {
+  const arr = safeJson<{ v: string; q: number; p: number }[]>(min, []);
+  if (!arr.length) return [];
+  const { data: vars } = await supabase
+    .from("product_variants")
+    .select("id, product_id, size, products(name)")
+    .in("id", arr.map((x) => x.v));
+  const byId = new Map((vars ?? []).map((v) => [v.id as string, v]));
+  return arr.flatMap((x) => {
+    const v = byId.get(x.v);
+    if (!v) return [];
+    const prod = v.products as { name?: string } | { name?: string }[] | null;
+    const name = Array.isArray(prod) ? prod[0]?.name : prod?.name;
+    return [{ productId: v.product_id as string, variantId: v.id as string, productName: name ?? "", size: (v.size as string) ?? "", quantity: x.q, price: x.p }];
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -111,83 +138,91 @@ export async function POST(req: NextRequest) {
   if (event.type === "payment_intent.succeeded") {
     const pi = event.data.object;
     const meta = pi.metadata as Record<string, string>;
+    const supabase = getServiceClient();
 
-    try {
-      const supabase = getServiceClient();
+    // Idempotency — order already exists (e.g. POS, or a webhook retry).
+    const { data: existingOrder } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("stripe_payment_intent_id", pi.id)
+      .maybeSingle();
+    if (existingOrder) {
+      return NextResponse.json({ received: true });
+    }
 
-      // Skip if order already created (e.g. by POS)
-      const { data: existingOrder } = await supabase
-        .from("orders")
-        .select("id")
-        .eq("stripe_payment_intent_id", pi.id)
-        .maybeSingle();
-      if (existingOrder) {
-        return NextResponse.json({ received: true });
+    // Resolve order data. The client writes most of it to PI metadata at submit,
+    // but Stripe Link / express checkout (and failed metadata writes) skip that —
+    // so fall back to Stripe's OWN data (its collected shipping + the charge email)
+    // and to the compact item list stored at PI creation. Without this, those
+    // orders land with no customer / address / items.
+    let shippingAddress = safeJson<ShippingAddress>(meta.shippingAddress, {} as ShippingAddress);
+    let items = safeJson<OrderItem[]>(meta.items, []);
+    let email = (meta.email || "").trim();
+    const addrEmpty = !shippingAddress?.line1;
+
+    if (!email || addrEmpty || items.length === 0) {
+      try {
+        const full = await stripe.paymentIntents.retrieve(pi.id, { expand: ["latest_charge"] });
+        const charge = full.latest_charge as Stripe.Charge | null;
+        if (!email) email = (charge?.billing_details?.email || full.receipt_email || "").trim();
+        if (addrEmpty && full.shipping?.address) {
+          const s = full.shipping;
+          const a = s.address!;
+          const [fn, ...ln] = (s.name || "").split(" ");
+          shippingAddress = {
+            first_name: fn || "", last_name: ln.join(" ") || "",
+            line1: a.line1 || "", line2: a.line2 || "",
+            city: a.city || "", region: a.state || "",
+            postcode: a.postal_code || "", phone: s.phone || "",
+            country: a.country || "NZ",
+          } as ShippingAddress;
+        }
+      } catch (e) {
+        console.error("[webhook] Stripe fallback fetch failed for", pi.id, e);
       }
+    }
+    if (items.length === 0 && meta.items_min) {
+      items = await resolveCompactItems(meta.items_min, supabase);
+    }
 
-      const shippingAddress: ShippingAddress = JSON.parse(meta.shippingAddress || "{}");
-      const items: Array<{
-        productId: string; variantId: string; productName: string;
-        size: string; quantity: number; price: number;
-      }> = JSON.parse(meta.items || "[]");
+    const subtotal = parseInt(meta.subtotal || "0") || items.reduce((s, i) => s + i.price * i.quantity, 0);
+    const shipping = parseInt(meta.shipping || "0");
+    const discountAmount = parseInt(meta.discount_amount || "0");
+    const affiliateCode = meta.affiliate_code || null;
+    const discountCode = meta.discount_code || null;
+    const orderTotal = subtotal + shipping - discountAmount;
+    const commissionBase = subtotal - discountAmount; // commission on product value only
 
-      // Upsert customer
-      let customerId: string | null = null;
-      if (meta.email) {
+    // ── CRITICAL: create the order. On failure, return 500 so Stripe RETRIES.
+    //    (The old handler returned 200 even on error → orders were silently lost.)
+    let order: { id: string; order_number: number; created_at: string } | null = null;
+    let customerId: string | null = null;
+    try {
+      if (email) {
         const { data: existingCustomer } = await supabase
-          .from("customers")
-          .select("id")
-          .eq("email", meta.email)
-          .single();
-
+          .from("customers").select("id").eq("email", email).maybeSingle();
         if (existingCustomer) {
           customerId = existingCustomer.id;
         } else {
           const { data: newCustomer } = await supabase
             .from("customers")
             .insert({
-              email: meta.email,
+              email,
               first_name: shippingAddress.first_name || "",
               last_name: shippingAddress.last_name || "",
               phone: shippingAddress.phone || null,
               accepts_marketing: meta.accepts_marketing === "1",
             })
-            .select("id")
-            .single();
+            .select("id").single();
           customerId = newCustomer?.id ?? null;
         }
       }
 
-      const subtotal = parseInt(meta.subtotal || "0");
-      const shipping = parseInt(meta.shipping || "0");
-      const discountAmount = parseInt(meta.discount_amount || "0");
-      const affiliateCode = meta.affiliate_code || null;
-      const discountCode = meta.discount_code || null;
-
-      // Resolve affiliate — block self-referrals
-      let affiliateId: string | null = null;
-      if (affiliateCode) {
-        const { data: affiliate } = await supabase
-          .from("affiliates")
-          .select("id, email")
-          .eq("referral_code", affiliateCode)
-          .eq("status", "active")
-          .single();
-        const buyerEmail = (meta.email ?? "").toLowerCase();
-        const isSelfReferral = affiliate && affiliate.email.toLowerCase() === buyerEmail;
-        affiliateId = (affiliate && !isSelfReferral) ? affiliate.id : null;
-      }
-
-      const orderTotal = subtotal + shipping - discountAmount;
-      // Commission is calculated on product value only (subtotal minus discount), not shipping
-      const commissionBase = subtotal - discountAmount;
-
-      // Create order
-      const { data: order, error: orderError } = await supabase
+      const { data: o, error: orderError } = await supabase
         .from("orders")
         .insert({
           customer_id: customerId,
-          guest_email: customerId ? null : meta.email,
+          guest_email: customerId ? null : (email || null),
           status: "processing",
           subtotal,
           shipping_cost: shipping,
@@ -200,16 +235,13 @@ export async function POST(req: NextRequest) {
         })
         .select("id, order_number, created_at")
         .single();
+      if (orderError || !o) throw new Error(`Order insert failed: ${orderError?.message ?? "no row"}`);
+      order = o;
 
-      if (orderError) {
-        console.error("Order insert failed:", JSON.stringify(orderError));
-        throw new Error(`Order insert failed: ${orderError.message}`);
-      }
-
-      if (order && items.length > 0) {
-        await supabase.from("order_items").insert(
+      if (items.length > 0) {
+        const { error: oiErr } = await supabase.from("order_items").insert(
           items.map((item) => ({
-            order_id: order.id,
+            order_id: order!.id,
             product_id: item.productId,
             variant_id: item.variantId,
             product_name: item.productName,
@@ -218,127 +250,97 @@ export async function POST(req: NextRequest) {
             unit_price: item.price,
           }))
         );
+        if (oiErr) throw new Error(`order_items insert failed: ${oiErr.message}`);
 
-        // Decrement stock + log movement
         for (const item of items) {
-          await supabase.rpc("decrement_stock", {
-            p_variant_id: item.variantId,
-            p_quantity: item.quantity,
-          });
+          await supabase.rpc("decrement_stock", { p_variant_id: item.variantId, p_quantity: item.quantity });
           await supabase.from("stock_movements").insert({
-            variant_id: item.variantId,
-            type: "sale",
-            quantity: -item.quantity,
-            reference_id: order.id,
-            note: `Order #${order.order_number}`,
+            variant_id: item.variantId, type: "sale", quantity: -item.quantity,
+            reference_id: order.id, note: `Order #${order.order_number}`,
           });
         }
       }
+    } catch (err) {
+      console.error("[webhook] ORDER CREATION FAILED for", pi.id, "— returning 500 so Stripe retries:", err);
+      return NextResponse.json({ error: "order creation failed" }, { status: 500 });
+    }
 
-      // Increment discount code uses (supports comma-separated multiple codes)
+    if (!order) return NextResponse.json({ received: true }); // unreachable; satisfies types
+
+    // ── Best-effort side effects: log on failure, never fail the webhook (the order
+    //    is already safely created, so we must not trigger a Stripe retry for these).
+    try {
       if (discountCode) {
-        for (const code of discountCode.split(",").map((c: string) => c.trim()).filter(Boolean)) {
+        for (const code of discountCode.split(",").map((c) => c.trim()).filter(Boolean)) {
           await supabase.rpc("increment_discount_uses", { p_code: code });
         }
       }
+    } catch (e) { console.error("[webhook] discount uses:", e); }
 
-      // Record affiliate conversion (on product value only, not shipping)
-      if (affiliateId && order) {
-        const { data: conversionId } = await supabase.rpc("record_affiliate_conversion", {
-          p_affiliate_id: affiliateId,
-          p_order_id: order.id,
-          p_order_total_cents: commissionBase,
-        });
-        if (conversionId) {
-          await supabase
-            .from("orders")
-            .update({ affiliate_conversion_id: conversionId })
-            .eq("id", order.id);
-        }
-      }
-
-      // Update customer LTV
-      if (customerId) {
-        await supabase.rpc("update_customer_ltv", { p_customer_id: customerId });
-      }
-
-      // Mark cart session converted
-      if (meta.session_id) {
-        await supabase
-          .from("cart_sessions")
-          .update({ converted_at: new Date().toISOString() })
-          .eq("session_id", meta.session_id);
-      }
-
-      // Auto-create eShip shipment for delivery orders
-      if (order && items.length > 0) {
-        const totalPairs = items.reduce((s, i) => s + i.quantity, 0);
-        try {
-          const eship = await createEShipShipment({
-            orderNumber: order.order_number,
-            shippingAddress,
-            totalPairs,
-            items: items.map((i) => ({
-              sku: i.variantId,
-              description: `${i.productName} – ${i.size}`,
-              quantity: i.quantity,
-              unit_price: i.price,
-            })),
+    try {
+      if (affiliateCode) {
+        const { data: affiliate } = await supabase
+          .from("affiliates").select("id, email")
+          .eq("referral_code", affiliateCode).eq("status", "active").single();
+        const isSelf = affiliate && affiliate.email.toLowerCase() === email.toLowerCase();
+        if (affiliate && !isSelf) {
+          const { data: conversionId } = await supabase.rpc("record_affiliate_conversion", {
+            p_affiliate_id: affiliate.id, p_order_id: order.id, p_order_total_cents: commissionBase,
           });
-          // Order created in eShip — tracking number assigned when label is printed in eShip dashboard
-          void eship;
-        } catch (err) {
-          console.error("eShip auto-create failed for order", order.order_number, err);
+          if (conversionId) {
+            await supabase.from("orders").update({ affiliate_conversion_id: conversionId }).eq("id", order.id);
+          }
         }
       }
+    } catch (e) { console.error("[webhook] affiliate conversion:", e); }
 
-      // Send order confirmation email
-      if (meta.email && order) {
-        const customerName = shippingAddress.first_name || meta.email.split("@")[0];
+    try {
+      if (customerId) await supabase.rpc("update_customer_ltv", { p_customer_id: customerId });
+    } catch (e) { console.error("[webhook] customer LTV:", e); }
+
+    try {
+      if (meta.session_id) {
+        await supabase.from("cart_sessions").update({ converted_at: new Date().toISOString() }).eq("session_id", meta.session_id);
+      }
+    } catch (e) { console.error("[webhook] cart session:", e); }
+
+    try {
+      if (items.length > 0) {
+        const totalPairs = items.reduce((s, i) => s + i.quantity, 0);
+        await createEShipShipment({
+          orderNumber: order.order_number,
+          shippingAddress,
+          totalPairs,
+          items: items.map((i) => ({ sku: i.variantId, description: `${i.productName} – ${i.size}`, quantity: i.quantity, unit_price: i.price })),
+        });
+      }
+    } catch (e) { console.error("[webhook] eShip auto-create failed for order", order.order_number, e); }
+
+    try {
+      if (email) {
+        const customerName = shippingAddress.first_name || email.split("@")[0];
+        const common = {
+          order_number: order.order_number,
+          customer_name: customerName,
+          items: items.map((i) => ({ product_name: i.productName, size: i.size, quantity: i.quantity, unit_price: i.price })),
+          subtotal,
+          shipping_cost: shipping,
+          discount_code: discountCode,
+          discount_amount_cents: discountAmount,
+          total: orderTotal,
+          shipping_address: shippingAddress,
+        };
         await getResend().emails.send({
           from: FROM_EMAIL,
           replyTo: REPLY_TO,
-          to: meta.email,
+          to: email,
           bcc: "nine2five.co.nz@gmail.com",
           subject: `Order #${order.order_number} confirmed — Nine2Five`,
-          html: orderConfirmationHtml({
-            order_number: order.order_number,
-            order_date: order.created_at,
-            customer_name: customerName,
-            items: items.map((i) => ({
-              product_name: i.productName,
-              size: i.size,
-              quantity: i.quantity,
-              unit_price: i.price,
-            })),
-            subtotal,
-            shipping_cost: shipping,
-            discount_code: discountCode,
-            discount_amount_cents: discountAmount,
-            total: orderTotal,
-            shipping_address: shippingAddress,
-          }),
-          text: orderConfirmationText({
-            order_number: order.order_number,
-            customer_name: customerName,
-            items: items.map((i) => ({
-              product_name: i.productName,
-              size: i.size,
-              quantity: i.quantity,
-              unit_price: i.price,
-            })),
-            subtotal,
-            shipping_cost: shipping,
-            discount_code: discountCode,
-            discount_amount_cents: discountAmount,
-            total: orderTotal,
-            shipping_address: shippingAddress,
-          }),
+          html: orderConfirmationHtml({ ...common, order_date: order.created_at }),
+          text: orderConfirmationText(common),
         });
       }
-    } catch (err) {
-      console.error("Webhook processing error:", err);
-    }
+    } catch (e) { console.error("[webhook] confirmation email:", e); }
   }
 
   return NextResponse.json({ received: true });
