@@ -156,6 +156,38 @@ export default function CheckoutPage() {
     }).catch(() => {});
   }, [discounts, shippingCost, clientSecret, isBulk, total, bundleDiscount]);
 
+  // Write the full order details (email, address, items, etc.) to the PaymentIntent
+  // as soon as the address is complete — debounced — so the metadata is on the PI
+  // BEFORE any confirmation path. Stripe Link / Afterpay confirm WITHOUT the pay-button
+  // submit, which previously left orders with no address or items. This makes the data
+  // land regardless of how the customer pays.
+  useEffect(() => {
+    if (!clientSecret || isBulk) return;
+    const addrComplete = !!(address.first_name && address.last_name && address.line1 && address.city && address.postcode && address.region);
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !addrComplete || !items.length) return;
+    const t = setTimeout(() => {
+      const discountAmt = discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount;
+      const ship = (country !== "AU" && discounts.some((d) => d.free_shipping)) ? 0 : shippingCost;
+      fetch("/api/create-payment-intent", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientSecret,
+          email,
+          shippingAddress: { ...address, country },
+          items: items.map((i) => ({ productId: i.productId, variantId: i.variantId, productName: i.productName, size: i.size, quantity: i.quantity, price: i.price })),
+          shipping: ship,
+          discount_code: discounts.length ? discounts.map((d) => d.code).join(",") : null,
+          discount_amount: discountAmt,
+          affiliate_code: getCookie("n2f_ref"),
+          session_id: sessionIdRef.current,
+          accepts_marketing: acceptsMarketing,
+        }),
+      }).catch(() => {});
+    }, 700);
+    return () => clearTimeout(t);
+  }, [clientSecret, isBulk, email, address, items, country, discounts, bundleDiscount, shippingCost, acceptsMarketing]);
+
   const syncCart = useCallback(() => {
     const sessionId = sessionIdRef.current;
     if (!sessionId || !email || !items.length) return;
