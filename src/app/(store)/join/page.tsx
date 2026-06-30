@@ -87,7 +87,7 @@ export default function JoinPage() {
             NINE<span style={{ color: ACCENT }}>2</span>FIVE
           </Link>
           <Link href="/affiliate/login" style={{ fontSize: 13, color: MUTED, textDecoration: "none", transition: "color 0.2s" }}>
-            Already an affiliate? Sign in
+            Already an ambassador? Sign in
           </Link>
         </div>
       </header>
@@ -104,7 +104,7 @@ export default function JoinPage() {
               Application received!
             </h1>
             <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.7, marginBottom: 32, maxWidth: 380, margin: "0 auto 32px" }}>
-              We&apos;ll review your application within 24 hours. Once approved, sign in to access your dashboard and referral link.
+              Your application is now pending approval. We&apos;ll review it within 24 hours and email you as soon as you&apos;re approved — then you can sign in to access your dashboard and ambassador link.
             </p>
             <Link
               href="/affiliate/login"
@@ -245,7 +245,7 @@ export default function JoinPage() {
                 <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
                   I agree to the{" "}
                   <a href="/affiliate-terms" target="_blank" rel="noopener noreferrer" style={{ color: MUTED, textDecoration: "underline" }}>
-                    Affiliate Terms & Conditions
+                    Ambassador Terms & Conditions
                   </a>
                   , including disclosing paid partnerships when promoting Nine2Five.
                 </span>
@@ -269,6 +269,10 @@ export default function JoinPage() {
               >
                 {loading ? <Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> : "Apply Now"}
               </button>
+
+              <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.3)", lineHeight: 1.6, marginTop: -2 }}>
+                Applications are reviewed before approval. We&apos;ll email you once you&apos;re approved.
+              </p>
 
               <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.22)", marginTop: -2 }}>
                 Already have an account?{" "}

@@ -210,7 +210,7 @@ function LoginForm() {
         </div>
 
         <p style={{ marginTop: 20, textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.25)" }}>
-          Want to become an affiliate?{" "}
+          Want to become an ambassador?{" "}
           <Link href="/join" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline" }}>
             Apply here
           </Link>
