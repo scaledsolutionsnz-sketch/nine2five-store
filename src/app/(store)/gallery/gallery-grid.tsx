@@ -63,6 +63,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
                 src={item.src}
                 alt={item.alt}
                 fill
+                sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
                 className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
               />
 
@@ -139,6 +140,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
               src={items[lightbox].src}
               alt={items[lightbox].alt}
               fill
+              sizes="(max-width: 960px) 90vw, 960px"
               className="object-contain"
               priority
             />
