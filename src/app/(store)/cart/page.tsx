@@ -103,44 +103,6 @@ export default function CartPage() {
               </div>
             ))}
 
-            {/* 5-pair upsell banner — inside items column so it doesn't break the grid */}
-          {(count === 3 || count === 4) && (() => {
-            const lastItem = items[items.length - 1];
-            return (
-              <div style={{
-                background: "linear-gradient(135deg, rgba(46,139,40,0.12), rgba(46,139,40,0.06))",
-                border: "1px solid rgba(46,139,40,0.35)",
-                borderRadius: 16, padding: "18px 20px", marginBottom: 24,
-                display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap",
-              }}>
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 800, color: "#fff", marginBottom: 6 }}>
-                    Add {5 - count} more {5 - count === 1 ? "pair" : "pairs"} — unlock the full kit
-                  </p>
-                  <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                    <span style={{ fontSize: 12, color: "#2E8B28", fontWeight: 700 }}>✦ Drop to $21/pair</span>
-                    <span style={{ fontSize: 12, color: "#2E8B28", fontWeight: 700 }}>✦ Save $20 total</span>
-                    <span style={{ fontSize: 12, color: "#2E8B28", fontWeight: 700 }}>✦ Free NZ shipping</span>
-                  </div>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
-                  <button
-                    onClick={() => updateQuantity(lastItem.variantId, lastItem.productName, lastItem.quantity + 1)}
-                    style={{
-                      background: "#2E8B28", color: "#fff", border: "none", cursor: "pointer",
-                      fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em",
-                      padding: "10px 20px", borderRadius: 999, whiteSpace: "nowrap",
-                    }}
-                  >
-                    + Add {5 - count === 1 ? "1 Pair" : `${5 - count} Pairs`}
-                  </button>
-                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", textAlign: "right" }}>
-                    adds {lastItem.productName}
-                  </span>
-                </div>
-              </div>
-            );
-          })()}
           </div>
 
           {/* Summary */}

@@ -43,39 +43,6 @@ export default async function ShopPage() {
     ];
   }
 
-  const BUNDLES = [
-    {
-      label: null,
-      title: "2 Pairs",
-      subtitle: "Mix designs — one for training, one for game day.",
-      perk: "$24 per pair — save $2",
-      price: "$48",
-      tag: "$24/pair — save $2",
-      pairs: 2,
-      href: "/shop",
-    },
-    {
-      label: "MOST POPULAR",
-      title: "3 Pairs",
-      subtitle: "One for every session — never run out mid-week.",
-      perk: "$23 per pair — save $6",
-      price: "$69",
-      tag: "$23/pair — save $6",
-      pairs: 3,
-      href: "/shop",
-    },
-    {
-      label: "BEST VALUE",
-      title: "5 Pairs",
-      subtitle: "A pair for every sport. Stock up once, sorted for the season.",
-      perk: "Free NZ shipping + priority dispatch + free design card",
-      price: "$105",
-      tag: "$21/pair — save $20",
-      pairs: 5,
-      href: "/shop",
-    },
-  ];
-
   return (
     <>
       <style>{`
@@ -85,9 +52,7 @@ export default async function ShopPage() {
         .shop-label { color: #2E8B28; font-size: 12px; font-weight: 700; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 10px; }
         .shop-title { font-size: clamp(48px, 6vw, 86px); line-height: 0.95; margin: 0 0 10px; color: #ffffff; font-weight: 800; font-family: "Outfit", sans-serif; }
         .shop-count { color: rgba(255,255,255,0.55); font-size: 18px; margin: 0; }
-        .bundle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 56px; }
         @media (max-width: 1024px) { .shop-container { padding: 48px 32px 80px; } }
-        @media (max-width: 768px)  { .bundle-grid { grid-template-columns: 1fr; gap: 14px; } }
         @media (max-width: 640px) {
           .shop-container { padding: 36px 20px 64px; }
           .shop-title { font-size: clamp(42px, 14vw, 58px); }
@@ -103,51 +68,6 @@ export default async function ShopPage() {
             <p className="shop-label">Collection</p>
             <h1 className="shop-title">All Products</h1>
             <p className="shop-count">{products.length} designs available · returns on unwashed pairs</p>
-          </div>
-
-          {/* Bundle & Save */}
-          <div style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 8 }}>Bundle &amp; Save</p>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>$25 a pair. The more you grab, the less each pair costs — free shipping on 5 pairs.</p>
-          </div>
-          <div className="bundle-grid">
-            {BUNDLES.map(({ label, title, subtitle, perk, price, tag, href }) => (
-              <Link
-                key={title}
-                href={href}
-                style={{
-                  display: "flex", flexDirection: "column",
-                  background: label === "MOST POPULAR" ? "rgba(46,139,40,0.08)" : "#0d1f12",
-                  border: `1px solid ${label === "MOST POPULAR" ? "rgba(46,139,40,0.35)" : "rgba(255,255,255,0.07)"}`,
-                  borderRadius: 16, padding: "20px 22px",
-                  textDecoration: "none", position: "relative",
-                  transition: "border-color 0.2s",
-                }}
-              >
-                {label && (
-                  <span style={{
-                    position: "absolute", top: -11, left: 20,
-                    background: "#2E8B28", color: "#fff",
-                    fontSize: 9, fontWeight: 800, letterSpacing: "0.15em",
-                    textTransform: "uppercase", padding: "3px 10px", borderRadius: 999,
-                  }}>
-                    {label}
-                  </span>
-                )}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                  <p style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", margin: 0 }}>{title}</p>
-                  <span style={{ background: "rgba(46,139,40,0.15)", color: "#2E8B28", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", padding: "3px 8px", borderRadius: 999 }}>{tag}</span>
-                </div>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>{subtitle}</p>
-                <p style={{ fontSize: 11, color: "#2E8B28", fontWeight: 700, marginBottom: 14, display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ fontSize: 10 }}>✦</span> {perk}
-                </p>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: "auto" }}>
-                  <span style={{ fontSize: 22, fontWeight: 900, color: "#2E8B28" }}>{price}</span>
-                  <ArrowUpRight style={{ width: 14, height: 14, color: "rgba(255,255,255,0.3)", marginLeft: "auto" }} />
-                </div>
-              </Link>
-            ))}
           </div>
 
           {/* Guarantee bar */}
@@ -167,7 +87,7 @@ export default async function ShopPage() {
           </div>
 
           {/* All products */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>Individual Pairs — $25 each</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>All Designs — $25 each</p>
           <ShopGrid products={products} />
 
           {/* Club CTA */}

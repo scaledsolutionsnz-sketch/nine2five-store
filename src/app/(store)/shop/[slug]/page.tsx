@@ -10,7 +10,6 @@ import type { Metadata } from "next";
 import { Shield, Truck, RotateCcw } from "lucide-react";
 import { getStaticProducts, getProductExtras, SIZES } from "@/lib/products";
 import { CollapsibleDescription } from "@/components/storefront/collapsible-description";
-import { BundleNudge } from "@/components/storefront/bundle-nudge";
 import { ProductReviews } from "@/components/storefront/product-reviews";
 
 export const dynamic = "force-dynamic";
@@ -174,9 +173,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </span>
               )}
             </div>
-
-            {/* Dynamic bundle nudge */}
-            <BundleNudge />
 
             {/* Description */}
             <CollapsibleDescription text={p.description} />

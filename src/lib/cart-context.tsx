@@ -14,10 +14,10 @@ interface CartContextValue {
   bundleDiscount: number;
 }
 
-function calcBundleDiscount(pairs: number): number {
-  if (pairs >= 5) return 400 * pairs; // $25 → $21/pair
-  if (pairs >= 3) return 200 * pairs; // $25 → $23/pair
-  if (pairs >= 2) return 100 * pairs; // $25 → $24/pair
+// Bundle deals removed pre-launch — every pair is full price ($25). The
+// bundleDiscount value is kept (always 0) so cart/checkout plumbing stays intact;
+// the "Bundle discount" summary lines are guarded by `> 0` and won't render.
+function calcBundleDiscount(_pairs: number): number {
   return 0;
 }
 
