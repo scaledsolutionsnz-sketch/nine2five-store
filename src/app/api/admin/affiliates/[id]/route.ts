@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { writeAuditLog } from "@/lib/audit";
 import { getResend, FROM_EMAIL, REPLY_TO } from "@/lib/email";
 import { affiliateApprovedHtml, affiliateApprovedText } from "@/lib/emails/affiliate-approved";
@@ -34,7 +34,7 @@ export async function PATCH(
     update.notes = body.notes;
   }
 
-  const service = await createServiceClient();
+  const service = createServiceRoleClient();
 
   // Fetch current record before update so we can check previous status
   const { data: before } = await service
@@ -101,7 +101,7 @@ export async function DELETE(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const service = await createServiceClient();
+  const service = createServiceRoleClient();
   const { data, error } = await service
     .from("affiliates")
     .update({ archived_at: new Date().toISOString() })
