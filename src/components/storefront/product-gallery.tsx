@@ -76,9 +76,9 @@ export function ProductGallery({
             fill
             className="object-cover object-center"
             priority={current === 0}
+            sizes="(max-width: 768px) 100vw, 600px"
             style={{ transition: "opacity 0.4s ease" }}
             onError={() => handleImageError(visibleOriginalIndexes[current])}
-            unoptimized
           />
         )}
 
@@ -118,8 +118,8 @@ export function ProductGallery({
           {visibleImages.slice(0, 6).map((url, i) => (
             <button key={i} onClick={() => goTo(i)}
               style={{ width: 74, height: 74, borderRadius: 12, overflow: "hidden", border: i === current ? "2px solid #2E8B28" : "1px solid rgba(255,255,255,0.08)", position: "relative", flexShrink: 0, background: "#07180e", padding: 0, cursor: "pointer", transition: "border-color 0.2s" }}>
-              <Image src={url} alt={`${name} ${i + 1}`} fill className="object-cover object-center"
-                onError={() => handleImageError(visibleOriginalIndexes[i])} unoptimized />
+              <Image src={url} alt={`${name} ${i + 1}`} fill className="object-cover object-center" sizes="74px"
+                onError={() => handleImageError(visibleOriginalIndexes[i])} />
             </button>
           ))}
         </div>

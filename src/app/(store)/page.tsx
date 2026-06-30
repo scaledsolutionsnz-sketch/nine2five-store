@@ -488,7 +488,7 @@ export default async function HomePage() {
                       alt="Black Kahotea"
                       fill
                       className="object-cover object-center"
-                      unoptimized
+                      sizes="(max-width: 768px) 50vw, 220px"
                     />
                     <span style={{ position: "absolute", top: 8, left: 8, background: "#2E8B28", color: "#fff", fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 10px", borderRadius: 999 }}>
                       Best Seller
@@ -621,7 +621,7 @@ export default async function HomePage() {
                 alt="Nine2Five socks in action"
                 fill
                 className="object-cover object-center"
-                unoptimized
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
               <div
                 className="absolute inset-0"
@@ -817,7 +817,6 @@ export default async function HomePage() {
                       width={80}
                       height={80}
                       style={{ objectFit: "cover", display: "block", width: "100%", height: "100%" }}
-                      unoptimized
                     />
                   </div>
                   <div style={{ flex: 1 }}>
@@ -849,7 +848,6 @@ export default async function HomePage() {
                       width={100}
                       height={40}
                       style={{ objectFit: "contain", display: "block" }}
-                      unoptimized
                     />
                   </div>
                   <div style={{ flex: 1 }}>
@@ -981,7 +979,7 @@ export default async function HomePage() {
             <div className="hp-gallery-grid">
               {[2,4,6,8,10,13,16,19,21,23,25,27].map((n) => (
                 <Link key={n} href="/gallery" className="hp-gallery-item">
-                  <Image src={`/gallery/${n}.png`} alt="Nine2Five lifestyle" fill className="object-cover" unoptimized />
+                  <Image src={`/gallery/${n}.png`} alt="Nine2Five lifestyle" fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw" />
                 </Link>
               ))}
             </div>

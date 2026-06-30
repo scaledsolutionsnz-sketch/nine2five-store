@@ -324,7 +324,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                       alt={od.name}
                       fill
                       className="object-cover"
-                      unoptimized
+                      sizes="(max-width: 768px) 50vw, 220px"
                     />
                   </div>
                   <div style={{ padding: "10px 10px 12px" }}>
