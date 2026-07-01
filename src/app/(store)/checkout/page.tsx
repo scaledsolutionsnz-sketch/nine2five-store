@@ -752,8 +752,7 @@ function PaymentStep({
   const { clearCart } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [ready, setReady] = useState(false);
-  const [prepFailed, setPrepFailed] = useState(false);
+  const [preparing, setPreparing] = useState(true);
 
   // Write the full order details to the PaymentIntent (metadata + Stripe shipping
   // address). A complete delivery address is MANDATORY before any method can pay —
@@ -785,31 +784,22 @@ function PaymentStep({
     }
   }, [clientSecret, email, address, items, shippingCost, discounts, bundleDiscount, sessionId, acceptsMarketing]);
 
-  async function prepare() {
-    setPrepFailed(false);
-    setReady(false);
-    let ok = false;
-    for (let i = 0; i < 3 && !ok; i++) {
-      ok = await writeOrderMeta();
-      if (!ok) await new Promise((r) => setTimeout(r, 600));
-    }
-    if (ok) setReady(true); else setPrepFailed(true);
-  }
-
-  // On entering the payment step, write the address to the PI, then reveal the form.
+  // On entering the payment step, attach the address to the PI, then reveal the form.
+  // Best-effort with a short retry, but it ALWAYS reveals within a moment even if the
+  // write fails — checkout must never block (confirmParams.shipping is the backup).
   useEffect(() => {
     let cancelled = false;
+    setPreparing(true);
     (async () => {
-      setReady(false);
-      setPrepFailed(false);
       let ok = false;
-      for (let i = 0; i < 3 && !ok && !cancelled; i++) {
+      for (let i = 0; i < 2 && !ok && !cancelled; i++) {
         ok = await writeOrderMeta();
-        if (!ok && !cancelled) await new Promise((r) => setTimeout(r, 600));
+        if (!ok && !cancelled) await new Promise((r) => setTimeout(r, 500));
       }
-      if (!cancelled) { if (ok) setReady(true); else setPrepFailed(true); }
+      if (!cancelled) setPreparing(false);
     })();
-    return () => { cancelled = true; };
+    const t = setTimeout(() => { if (!cancelled) setPreparing(false); }, 3500);
+    return () => { cancelled = true; clearTimeout(t); };
   }, [writeOrderMeta]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -898,12 +888,7 @@ function PaymentStep({
       {/* Payment card */}
       <div style={{ padding: 24, borderRadius: 18, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <p style={{ fontSize: 11, fontWeight: 900, color: "rgba(255,255,255,0.45)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 }}>Payment</p>
-        {prepFailed ? (
-          <div style={{ textAlign: "center", padding: "12px 0" }}>
-            <p style={{ fontSize: 13, color: "#f87171", marginBottom: 12 }}>Couldn&apos;t prepare your order — please check your connection and try again.</p>
-            <button type="button" onClick={prepare} style={{ padding: "10px 22px", borderRadius: 999, background: "#3a7722", color: "#fff", fontWeight: 700, fontSize: 13, border: "none", cursor: "pointer" }}>Retry</button>
-          </div>
-        ) : !ready ? (
+        {preparing ? (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "24px 0", color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
             <Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> Preparing secure payment…
           </div>
@@ -927,8 +912,8 @@ function PaymentStep({
         </button>
         <button
           type="submit"
-          disabled={submitting || !stripe || !ready}
-          style={{ flex: 1, height: 52, borderRadius: 999, background: (submitting || !ready) ? "rgba(47,155,47,0.5)" : "#3a7722", color: "#fff", fontWeight: 900, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.12em", border: "none", cursor: (submitting || !ready) ? "not-allowed" : "pointer", transition: "background 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+          disabled={submitting || !stripe || preparing}
+          style={{ flex: 1, height: 52, borderRadius: 999, background: (submitting || preparing) ? "rgba(47,155,47,0.5)" : "#3a7722", color: "#fff", fontWeight: 900, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.12em", border: "none", cursor: (submitting || preparing) ? "not-allowed" : "pointer", transition: "background 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
         >
           {submitting ? (
             <>

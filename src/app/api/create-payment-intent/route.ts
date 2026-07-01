@@ -66,7 +66,7 @@ export async function PATCH(req: NextRequest) {
       subtotal?: number;
       email?: string;
       shippingAddress?: Record<string, string>;
-      items?: Array<{ price: number; quantity: number }>;
+      items?: Array<{ variantId?: string; price: number; quantity: number }>;
       shipping?: number;
       discount_code?: string | null;
       discount_amount?: number;
@@ -93,6 +93,27 @@ export async function PATCH(req: NextRequest) {
     const newTotal = Math.max(subtotal + shipping - discountAmt, 50);
 
     const addr = body.shippingAddress ?? {};
+
+    const metadata: Record<string, string> = {
+      email: body.email || "",
+      shippingAddress: JSON.stringify(addr),
+      shipping: String(shipping),
+      subtotal: String(subtotal),
+      discount_code: body.discount_code || "",
+      discount_amount: String(discountAmt),
+      // Prefer the server-read cookie (set at PI creation); fall back to the
+      // client value. Avoids clobbering the creation-time code with an empty one.
+      affiliate_code: readRefCookie(req) || (body.affiliate_code ?? ""),
+      session_id: body.session_id || "",
+      accepts_marketing: body.accepts_marketing ? "1" : "0",
+    };
+    // Compact line items (variant/qty/price). Stripe caps EACH metadata value at 500
+    // chars — a verbose items list overflowed it and made this whole update FAIL, which
+    // both blocked checkout ("check your connection") and left orders with no address.
+    // The webhook rebuilds full line items from this compact list (items_min).
+    const itemsMin = JSON.stringify(items.map((i) => ({ v: i.variantId, q: i.quantity, p: i.price })));
+    if (itemsMin.length <= 480) metadata.items_min = itemsMin;
+
     await stripe.paymentIntents.update(piId, {
       amount: newTotal,
       ...(addr.line1 ? {
@@ -109,20 +130,7 @@ export async function PATCH(req: NextRequest) {
           },
         },
       } : {}),
-      metadata: {
-        email: body.email || "",
-        shippingAddress: JSON.stringify(addr),
-        items: JSON.stringify(items),
-        shipping: String(shipping),
-        subtotal: String(subtotal),
-        discount_code: body.discount_code || "",
-        discount_amount: String(discountAmt),
-        // Prefer the server-read cookie (set at PI creation); fall back to the
-        // client value. Avoids clobbering the creation-time code with an empty one.
-        affiliate_code: readRefCookie(req) || (body.affiliate_code ?? ""),
-        session_id: body.session_id || "",
-        accepts_marketing: body.accepts_marketing ? "1" : "0",
-      },
+      metadata,
     });
 
     return NextResponse.json({ ok: true, total: newTotal });
