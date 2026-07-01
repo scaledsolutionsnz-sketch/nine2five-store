@@ -114,22 +114,12 @@ export async function PATCH(req: NextRequest) {
     const itemsMin = JSON.stringify(items.map((i) => ({ v: i.variantId, q: i.quantity, p: i.price })));
     if (itemsMin.length <= 480) metadata.items_min = itemsMin;
 
+    // We deliberately do NOT set the PI's `shipping` field. Setting it with the secret
+    // key makes Stripe reject the client's publishable-key confirmation ("shipping was
+    // last set with a restricted key"), which breaks checkout (incl. Link). The address
+    // rides in metadata.shippingAddress, which the webhook reads as its primary source.
     await stripe.paymentIntents.update(piId, {
       amount: newTotal,
-      ...(addr.line1 ? {
-        shipping: {
-          name: `${addr.first_name ?? ""} ${addr.last_name ?? ""}`.trim(),
-          phone: addr.phone ?? undefined,
-          address: {
-            line1: addr.line1,
-            line2: addr.line2 ?? undefined,
-            city: addr.city ?? undefined,
-            state: addr.region ?? undefined,
-            postal_code: addr.postcode ?? undefined,
-            country: addr.country ?? "NZ",
-          },
-        },
-      } : {}),
       metadata,
     });
 
