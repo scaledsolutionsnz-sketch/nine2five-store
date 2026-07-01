@@ -278,17 +278,32 @@ export async function POST(req: NextRequest) {
     } catch (e) { console.error("[webhook] discount uses:", e); }
 
     try {
-      if (affiliateCode) {
+      // Attribution code: prefer the referral-link cookie; otherwise fall back to a
+      // checkout code that matches an active ambassador's referral_code. This is
+      // "code-based attribution" — an ambassador's code credits them when a customer
+      // TYPES it at checkout (e.g. "use code elva10"), even with no click/cookie.
+      let attributionCode = (affiliateCode || "").toLowerCase();
+      if (!attributionCode && discountCode) {
+        for (const c of discountCode.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)) {
+          const { data: aff } = await supabase
+            .from("affiliates").select("referral_code")
+            .eq("referral_code", c).eq("status", "active").maybeSingle();
+          if (aff) { attributionCode = aff.referral_code; break; }
+        }
+      }
+      if (attributionCode) {
         const { data: affiliate } = await supabase
           .from("affiliates").select("id, email")
-          .eq("referral_code", affiliateCode).eq("status", "active").single();
+          .eq("referral_code", attributionCode).eq("status", "active").single();
         const isSelf = affiliate && affiliate.email.toLowerCase() === email.toLowerCase();
         if (affiliate && !isSelf) {
           const { data: conversionId } = await supabase.rpc("record_affiliate_conversion", {
             p_affiliate_id: affiliate.id, p_order_id: order.id, p_order_total_cents: commissionBase,
           });
           if (conversionId) {
-            await supabase.from("orders").update({ affiliate_conversion_id: conversionId }).eq("id", order.id);
+            await supabase.from("orders")
+              .update({ affiliate_conversion_id: conversionId, affiliate_code: attributionCode })
+              .eq("id", order.id);
           }
         }
       }
