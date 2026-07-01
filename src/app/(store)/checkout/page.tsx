@@ -752,13 +752,71 @@ function PaymentStep({
   const { clearCart } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [ready, setReady] = useState(false);
+  const [prepFailed, setPrepFailed] = useState(false);
+
+  // Write the full order details to the PaymentIntent (metadata + Stripe shipping
+  // address). A complete delivery address is MANDATORY before any method can pay —
+  // incl. Stripe Link / Afterpay, which confirm WITHOUT our submit handler. We attach
+  // the address to the PI server-side (create-payment-intent PATCH sets pi.shipping),
+  // and gate the payment form on it, so the webhook always has an address.
+  const writeOrderMeta = useCallback(async (): Promise<boolean> => {
+    const affiliateCode = typeof document !== "undefined" ? getCookie("n2f_ref") : null;
+    try {
+      const res = await fetch("/api/create-payment-intent", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientSecret,
+          email,
+          shippingAddress: address,
+          items: items.map((i) => ({ productId: i.productId, variantId: i.variantId, productName: i.productName, size: i.size, quantity: i.quantity, price: i.price })),
+          shipping: shippingCost,
+          discount_code: discounts.length ? discounts.map((d) => d.code).join(",") : null,
+          discount_amount: discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount,
+          affiliate_code: affiliateCode,
+          session_id: sessionId,
+          accepts_marketing: acceptsMarketing,
+        }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }, [clientSecret, email, address, items, shippingCost, discounts, bundleDiscount, sessionId, acceptsMarketing]);
+
+  async function prepare() {
+    setPrepFailed(false);
+    setReady(false);
+    let ok = false;
+    for (let i = 0; i < 3 && !ok; i++) {
+      ok = await writeOrderMeta();
+      if (!ok) await new Promise((r) => setTimeout(r, 600));
+    }
+    if (ok) setReady(true); else setPrepFailed(true);
+  }
+
+  // On entering the payment step, write the address to the PI, then reveal the form.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setReady(false);
+      setPrepFailed(false);
+      let ok = false;
+      for (let i = 0; i < 3 && !ok && !cancelled; i++) {
+        ok = await writeOrderMeta();
+        if (!ok && !cancelled) await new Promise((r) => setTimeout(r, 600));
+      }
+      if (!cancelled) { if (ok) setReady(true); else setPrepFailed(true); }
+    })();
+    return () => { cancelled = true; };
+  }, [writeOrderMeta]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!stripe || !elements) return;
 
     // Hard guard: never confirm a payment without a complete delivery address.
-    // (Prevents addressless orders even if some earlier step were bypassed.)
     if (!address.line1 || !address.city || !address.postcode) {
       setError("Please add your full delivery address before paying.");
       return;
@@ -767,31 +825,8 @@ function PaymentStep({
     setSubmitting(true);
     setError("");
 
-    const affiliateCode = typeof document !== "undefined" ? getCookie("n2f_ref") : null;
-
-    await fetch("/api/create-payment-intent", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        clientSecret,
-        email,
-        shippingAddress: address,
-        items: items.map((i) => ({
-          productId: i.productId,
-          variantId: i.variantId,
-          productName: i.productName,
-          size: i.size,
-          quantity: i.quantity,
-          price: i.price,
-        })),
-        shipping: shippingCost,
-        discount_code: discounts.length ? discounts.map(d => d.code).join(",") : null,
-        discount_amount: discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount,
-        affiliate_code: affiliateCode,
-        session_id: sessionId,
-        accepts_marketing: acceptsMarketing,
-      }),
-    });
+    // Re-write right before confirming, to catch any last-second change.
+    await writeOrderMeta();
 
     const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
     const discountAmt = discounts.reduce((s, d) => s + d.amount, 0) + bundleDiscount;
@@ -863,7 +898,18 @@ function PaymentStep({
       {/* Payment card */}
       <div style={{ padding: 24, borderRadius: 18, background: "rgba(7,24,14,0.82)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <p style={{ fontSize: 11, fontWeight: 900, color: "rgba(255,255,255,0.45)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 }}>Payment</p>
-        <PaymentElement options={{ layout: { type: "tabs", defaultCollapsed: false } }} />
+        {prepFailed ? (
+          <div style={{ textAlign: "center", padding: "12px 0" }}>
+            <p style={{ fontSize: 13, color: "#f87171", marginBottom: 12 }}>Couldn&apos;t prepare your order — please check your connection and try again.</p>
+            <button type="button" onClick={prepare} style={{ padding: "10px 22px", borderRadius: 999, background: "#3a7722", color: "#fff", fontWeight: 700, fontSize: 13, border: "none", cursor: "pointer" }}>Retry</button>
+          </div>
+        ) : !ready ? (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "24px 0", color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
+            <Loader2 style={{ width: 16, height: 16 }} className="animate-spin" /> Preparing secure payment…
+          </div>
+        ) : (
+          <PaymentElement options={{ layout: { type: "tabs", defaultCollapsed: false } }} />
+        )}
       </div>
 
       {error && (
@@ -881,8 +927,8 @@ function PaymentStep({
         </button>
         <button
           type="submit"
-          disabled={submitting || !stripe}
-          style={{ flex: 1, height: 52, borderRadius: 999, background: submitting ? "rgba(47,155,47,0.5)" : "#3a7722", color: "#fff", fontWeight: 900, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.12em", border: "none", cursor: submitting ? "not-allowed" : "pointer", transition: "background 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+          disabled={submitting || !stripe || !ready}
+          style={{ flex: 1, height: 52, borderRadius: 999, background: (submitting || !ready) ? "rgba(47,155,47,0.5)" : "#3a7722", color: "#fff", fontWeight: 900, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.12em", border: "none", cursor: (submitting || !ready) ? "not-allowed" : "pointer", transition: "background 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
         >
           {submitting ? (
             <>
