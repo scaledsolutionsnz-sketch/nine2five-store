@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { DiscountCode } from "@/types/database";
-import { Plus, X, Copy, Tag, Hash, BarChart2, MoreHorizontal, Check, Trash2 } from "lucide-react";
+import { Plus, X, Copy, Tag, Hash, BarChart2, MoreHorizontal, Check, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -23,8 +23,9 @@ function statusLabel(c: DiscountCode) {
 
 // ─── Action menu ─────────────────────────────────────────────────────────────
 
-function ActionMenu({ code, onToggle, onDelete }: {
+function ActionMenu({ code, onEdit, onToggle, onDelete }: {
   code: DiscountCode;
+  onEdit: () => void;
   onToggle: () => void;
   onDelete: () => void;
 }) {
@@ -60,6 +61,15 @@ function ActionMenu({ code, onToggle, onDelete }: {
             Copy code
           </button>
           <button
+            onClick={() => { onEdit(); setOpen(false); }}
+            style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", fontSize: 13, color: "rgba(255,255,255,0.8)", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.06)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "none")}
+          >
+            <Pencil style={{ width: 13, height: 13 }} />
+            Edit
+          </button>
+          <button
             onClick={() => { onToggle(); setOpen(false); }}
             style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", fontSize: 13, color: "rgba(255,255,255,0.8)", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
             onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.06)")}
@@ -91,6 +101,7 @@ function ActionMenu({ code, onToggle, onDelete }: {
 export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
   const [codes, setCodes] = useState(initial);
   const [showCreate, setShowCreate] = useState(false);
+  const [editTarget, setEditTarget] = useState<DiscountCode | null>(null);
 
   const activeCodes = codes.filter(isActive).length;
   const totalUses   = codes.reduce((sum, c) => sum + c.uses, 0);
@@ -108,6 +119,10 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
     } else {
       toast.error("Failed to update discount code");
     }
+  }
+
+  function applyUpdate(updated: DiscountCode) {
+    setCodes(cs => cs.map(c => c.id === updated.id ? updated : c));
   }
 
   async function deleteCode(id: string) {
@@ -281,6 +296,7 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
                       <td style={{ padding: "13px 16px", verticalAlign: "middle", textAlign: "right" }}>
                         <ActionMenu
                           code={c}
+                          onEdit={() => setEditTarget(c)}
                           onToggle={() => toggleActive(c.id, c.active)}
                           onDelete={() => deleteCode(c.id)}
                         />
@@ -300,6 +316,160 @@ export function DiscountsClient({ codes: initial }: { codes: DiscountCode[] }) {
           onCreate={(code) => { setCodes(p => [code, ...p]); setShowCreate(false); }}
         />
       )}
+
+      {editTarget && (
+        <EditModal
+          code={editTarget}
+          onClose={() => setEditTarget(null)}
+          onSave={(updated) => { applyUpdate(updated); setEditTarget(null); }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── Edit modal ───────────────────────────────────────────────────────────────
+
+function EditModal({ code, onClose, onSave }: { code: DiscountCode; onClose: () => void; onSave: (c: DiscountCode) => void }) {
+  const initialType: "percentage" | "fixed" | "free_shipping" =
+    code.type === "fixed" && code.value === 0 ? "free_shipping" : (code.type as "percentage" | "fixed");
+
+  const [form, setForm] = useState({
+    type: initialType,
+    value: initialType === "free_shipping" ? "" : initialType === "percentage" ? String(code.value) : (code.value / 100).toFixed(2),
+    min_order: code.min_order_cents ? (code.min_order_cents / 100).toFixed(2) : "",
+    max_uses: code.max_uses != null ? String(code.max_uses) : "",
+    expires_at: code.expires_at ? new Date(code.expires_at).toISOString().slice(0, 10) : "",
+    active: code.active,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fieldStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 14px", borderRadius: 10,
+    background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+    fontSize: 13, color: "#fff", outline: "none", boxSizing: "border-box",
+  };
+  const labelStyle: React.CSSProperties = {
+    display: "block", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.7)", marginBottom: 6,
+  };
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const res = await fetch(`/api/admin/discounts/${code.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: form.type,
+        value: form.type === "free_shipping" ? 0 : form.type === "percentage" ? parseInt(form.value) : Math.round(parseFloat(form.value) * 100),
+        min_order_cents: form.min_order ? Math.round(parseFloat(form.min_order) * 100) : 0,
+        max_uses: form.max_uses ? parseInt(form.max_uses) : null,
+        expires_at: form.expires_at || null,
+        active: form.active,
+      }),
+    });
+    if (!res.ok) {
+      const d = await res.json() as { error: string };
+      setError(d.error);
+      setLoading(false);
+      return;
+    }
+    const updated = await res.json() as DiscountCode;
+    onSave(updated);
+    toast.success("Discount code updated");
+  }
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", padding: 16 }}>
+      <div style={{ background: "#0d1a12", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, width: "100%", maxWidth: 440, overflow: "hidden", boxShadow: "0 24px 48px rgba(0,0,0,0.5)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 22px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <div>
+            <h2 style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", margin: 0 }}>Edit Discount Code</h2>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4, fontFamily: "monospace" }}>{code.code}</p>
+          </div>
+          <button onClick={onClose} style={{ height: 32, width: 32, borderRadius: 10, border: "none", background: "rgba(255,255,255,0.06)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.5)" }}>
+            <X style={{ width: 16, height: 16 }} />
+          </button>
+        </div>
+
+        <form onSubmit={submit} style={{ padding: 22, display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Type</label>
+              <select
+                value={form.type}
+                onChange={e => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" | "free_shipping" }))}
+                style={fieldStyle}
+              >
+                <option value="percentage">Percentage off</option>
+                <option value="fixed">Fixed amount off</option>
+                <option value="free_shipping">Free shipping</option>
+              </select>
+            </div>
+            {form.type !== "free_shipping" && (
+              <div>
+                <label style={labelStyle}>{form.type === "percentage" ? "Discount %" : "Amount ($)"}</label>
+                <input
+                  required
+                  type="number"
+                  min="1"
+                  value={form.value}
+                  onChange={e => setForm(f => ({ ...f, value: e.target.value }))}
+                  placeholder={form.type === "percentage" ? "20" : "10.00"}
+                  style={fieldStyle}
+                />
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Min Order ($)</label>
+              <input type="number" value={form.min_order} onChange={e => setForm(f => ({ ...f, min_order: e.target.value }))} placeholder="0" style={fieldStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Max Uses</label>
+              <input type="number" value={form.max_uses} onChange={e => setForm(f => ({ ...f, max_uses: e.target.value }))} placeholder="Unlimited" style={fieldStyle} />
+            </div>
+          </div>
+
+          <div>
+            <label style={labelStyle}>Expiry date (leave blank for never)</label>
+            <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))} style={fieldStyle} />
+          </div>
+
+          <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+            <input type="checkbox" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} style={{ width: 16, height: 16, accentColor: "#2f9b2f", cursor: "pointer" }} />
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>Active</span>
+          </label>
+
+          {error && (
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: "12px 16px" }}>
+              <X style={{ width: 14, height: 14, color: "#f87171", marginTop: 1, flexShrink: 0 }} />
+              <p style={{ fontSize: 12, color: "#f87171" }}>{error}</p>
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 12, paddingTop: 4 }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{ flex: 1, height: 40, padding: "0 16px", borderRadius: 9999, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{ flex: 1, height: 42, padding: "0 20px", borderRadius: 9999, background: "#2f9b2f", color: "#fff", fontWeight: 900, fontSize: 13, border: "none", cursor: "pointer", letterSpacing: "0.08em", opacity: loading ? 0.6 : 1 }}
+            >
+              {loading ? "Saving…" : "Save changes"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
