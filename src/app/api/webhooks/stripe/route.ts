@@ -200,10 +200,19 @@ export async function POST(req: NextRequest) {
 
     const subtotal = parseInt(meta.subtotal || "0") || items.reduce((s, i) => s + i.price * i.quantity, 0);
     const shipping = parseInt(meta.shipping || "0");
-    const discountAmount = parseInt(meta.discount_amount || "0");
+    const metaDiscount = parseInt(meta.discount_amount || "0");
     const affiliateCode = meta.affiliate_code || null;
     const discountCode = meta.discount_code || null;
-    const orderTotal = subtotal + shipping - discountAmount;
+
+    // The authoritative total is what Stripe actually charged. On express/Link orders
+    // the discount metadata can be missing, so subtotal+shipping-metaDiscount overstates
+    // the total (e.g. shows $310 when $30 was charged). Use amount_received and, when the
+    // charge is lower than metadata knew, infer the real discount from the difference so
+    // the order stays internally consistent (subtotal - discount + shipping = total).
+    const chargedTotal = pi.amount_received || pi.amount || (subtotal + shipping - metaDiscount);
+    const inferredDiscount = subtotal + shipping - chargedTotal;
+    const discountAmount = inferredDiscount > metaDiscount ? inferredDiscount : metaDiscount;
+    const orderTotal = chargedTotal;
     const commissionBase = subtotal - discountAmount; // commission on product value only
 
     // ── CRITICAL: create the order. On failure, return 500 so Stripe RETRIES.
