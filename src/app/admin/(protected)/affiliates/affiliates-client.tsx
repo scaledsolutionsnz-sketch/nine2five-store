@@ -125,6 +125,17 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
           </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <a
+            href="/admin/affiliates/submissions"
+            style={{
+              display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 18px",
+              borderRadius: 9999, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
+              color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none",
+            }}
+          >
+            <Users style={{ width: 15, height: 15 }} />
+            Submissions
+          </a>
           <button
             onClick={() => generateCodes()}
             disabled={generating}

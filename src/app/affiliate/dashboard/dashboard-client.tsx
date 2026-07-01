@@ -16,6 +16,9 @@ const BORDER = "rgba(255,255,255,0.08)";
 const ACCENT = "#2f9b2f";
 const MUTED = "rgba(255,255,255,0.35)";
 
+const INPUT_STYLE: React.CSSProperties = { width: "100%", height: 46, padding: "0 14px", borderRadius: 12, fontSize: 14, backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", outline: "none", boxSizing: "border-box" };
+const LABEL_SM: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: MUTED, marginBottom: 8 };
+
 function fmt(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
@@ -46,8 +49,15 @@ export function AffiliateDashboardClient({ affiliate, conversions, discountCode 
     router.refresh(); // re-runs the server component (force-dynamic) to pull fresh counts
     setTimeout(() => setRefreshing(false), 900);
   }
+  const [country, setCountry] = useState(affiliate.country ?? "NZ");
+  const [payoutMethod, setPayoutMethod] = useState<"bank_nz" | "paypal" | "wise">(
+    affiliate.payout_method ?? ((affiliate.country ?? "NZ") === "NZ" ? "bank_nz" : "paypal")
+  );
   const [bankName, setBankName] = useState(affiliate.payout_bank_name ?? "");
   const [bankAccount, setBankAccount] = useState(affiliate.payout_bank_account ?? "");
+  const [paypalEmail, setPaypalEmail] = useState(affiliate.paypal_email ?? "");
+  const [wiseEmail, setWiseEmail] = useState(affiliate.wise_email ?? "");
+  const [wiseRef, setWiseRef] = useState(affiliate.wise_account_ref ?? "");
   const [savingBank, setSavingBank] = useState(false);
   const referralLink = `${SITE_URL}?ref=${affiliate.referral_code}`;
   const pendingPayout = affiliate.total_commission_cents - affiliate.total_paid_cents;
@@ -73,10 +83,19 @@ export function AffiliateDashboardClient({ affiliate, conversions, discountCode 
     router.push("/affiliate/login");
   }
 
-  async function saveBank(e: React.FormEvent) {
+  async function savePayout(e: React.FormEvent) {
     e.preventDefault();
-    if (!bankName.trim() || !bankAccount.trim()) {
+    // Client-side required-field check for the chosen method.
+    if (payoutMethod === "bank_nz" && (!bankName.trim() || !bankAccount.trim())) {
       toast.error("Enter both account name and number");
+      return;
+    }
+    if (payoutMethod === "paypal" && !paypalEmail.trim()) {
+      toast.error("Enter your PayPal email");
+      return;
+    }
+    if (payoutMethod === "wise" && !wiseEmail.trim()) {
+      toast.error("Enter your Wise email");
       return;
     }
     setSavingBank(true);
@@ -84,7 +103,15 @@ export function AffiliateDashboardClient({ affiliate, conversions, discountCode 
       const res = await fetch("/api/affiliates/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payout_bank_name: bankName, payout_bank_account: bankAccount }),
+        body: JSON.stringify({
+          country,
+          payout_method: payoutMethod,
+          payout_bank_name: bankName,
+          payout_bank_account: bankAccount,
+          paypal_email: paypalEmail,
+          wise_email: wiseEmail,
+          wise_account_ref: wiseRef,
+        }),
       });
       const data = await res.json();
       if (!res.ok) toast.error(data.error ?? "Failed to save");
@@ -242,7 +269,7 @@ export function AffiliateDashboardClient({ affiliate, conversions, discountCode 
             {[
               { n: "1", title: "Share your link or code", body: "Post your link or code on TikTok, Instagram, YouTube — wherever your audience is." },
               { n: "2", title: "They buy socks",  body: "When someone clicks your link OR uses your code at checkout, the sale is tracked to you automatically." },
-              { n: "3", title: `You earn ${affiliate.commission_rate}%`, body: "We pay out monthly via bank transfer. No minimums, no fuss." },
+              { n: "3", title: `You earn ${affiliate.commission_rate}%`, body: "We pay out monthly to your chosen payout method. No minimums, no fuss." },
             ].map(({ n, title, body }) => (
               <div key={n} style={{ display: "flex", gap: 14 }}>
                 <div style={{ flexShrink: 0, width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, background: "rgba(46,139,40,0.12)", color: ACCENT, border: "1px solid rgba(46,139,40,0.2)" }}>
@@ -257,37 +284,95 @@ export function AffiliateDashboardClient({ affiliate, conversions, discountCode 
           </div>
         </div>
 
-        {/* Payout Settings */}
-        <form onSubmit={saveBank} style={card}>
+        {/* Payout details */}
+        <form onSubmit={savePayout} style={card}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
             <Building2 style={{ width: 16, height: 16, color: "#A78BFA" }} strokeWidth={1.8} />
-            <h2 className="font-display font-bold" style={{ fontSize: 18, color: "#ffffff" }}>Payout Settings</h2>
+            <h2 className="font-display font-bold" style={{ fontSize: 18, color: "#ffffff" }}>Payout details</h2>
           </div>
           <p style={{ fontSize: 14, color: MUTED, marginBottom: 20 }}>
-            We pay out monthly via bank transfer. Add your NZ bank account below.
+            We pay out monthly. Add your payout details below so we can pay you.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-            <div>
-              <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: MUTED, marginBottom: 8 }}>Account Name</label>
-              <input
-                type="text"
-                placeholder="Full name on account"
-                value={bankName}
-                onChange={e => setBankName(e.target.value)}
-                style={{ width: "100%", height: 46, padding: "0 14px", borderRadius: 12, fontSize: 14, backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", outline: "none", boxSizing: "border-box" as const }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: MUTED, marginBottom: 8 }}>Account Number</label>
-              <input
-                type="text"
-                placeholder="XX-XXXX-XXXXXXX-XX"
-                value={bankAccount}
-                onChange={e => setBankAccount(e.target.value)}
-                style={{ width: "100%", height: 46, padding: "0 14px", borderRadius: 12, fontSize: 14, backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)", color: "#ffffff", outline: "none", boxSizing: "border-box" as const }}
-              />
-            </div>
+
+          {/* Country */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={LABEL_SM}>Your country</label>
+            <select
+              value={country}
+              onChange={e => {
+                const c = e.target.value;
+                setCountry(c);
+                // Nudge the default method when country changes (NZ → bank; overseas → PayPal).
+                setPayoutMethod(m => (c === "NZ" ? "bank_nz" : (m === "bank_nz" ? "paypal" : m)));
+              }}
+              style={INPUT_STYLE}
+            >
+              <option value="NZ">New Zealand</option>
+              <option value="AU">Australia</option>
+              <option value="OTHER">Other</option>
+            </select>
           </div>
+
+          {/* Method selector */}
+          <label style={LABEL_SM}>Payout method</label>
+          <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+            {([
+              { key: "bank_nz", label: "Bank transfer (NZ)" },
+              { key: "paypal", label: "PayPal" },
+              { key: "wise", label: "Wise" },
+            ] as const).map(({ key, label }) => {
+              const active = payoutMethod === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setPayoutMethod(key)}
+                  style={{
+                    flex: "1 1 auto", minWidth: 120, height: 42, borderRadius: 12, fontSize: 13, fontWeight: 700, cursor: "pointer",
+                    color: active ? "#fff" : MUTED,
+                    background: active ? "rgba(167,139,250,0.22)" : "rgba(255,255,255,0.04)",
+                    border: active ? "1px solid rgba(167,139,250,0.5)" : "1px solid rgba(255,255,255,0.10)",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Method-specific fields */}
+          {payoutMethod === "bank_nz" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div>
+                <label style={LABEL_SM}>Account Name</label>
+                <input type="text" placeholder="Full name on account" value={bankName} onChange={e => setBankName(e.target.value)} style={INPUT_STYLE} />
+              </div>
+              <div>
+                <label style={LABEL_SM}>Account Number</label>
+                <input type="text" placeholder="XX-XXXX-XXXXXXX-XX" value={bankAccount} onChange={e => setBankAccount(e.target.value)} style={INPUT_STYLE} />
+              </div>
+            </div>
+          )}
+          {payoutMethod === "paypal" && (
+            <div>
+              <label style={LABEL_SM}>PayPal email</label>
+              <input type="email" placeholder="you@example.com" value={paypalEmail} onChange={e => setPaypalEmail(e.target.value)} style={INPUT_STYLE} />
+            </div>
+          )}
+          {payoutMethod === "wise" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div>
+                <label style={LABEL_SM}>Wise email</label>
+                <input type="email" placeholder="you@example.com" value={wiseEmail} onChange={e => setWiseEmail(e.target.value)} style={INPUT_STYLE} />
+              </div>
+              <div>
+                <label style={LABEL_SM}>Wise account ref <span style={{ textTransform: "none", color: "rgba(255,255,255,0.25)", fontWeight: 400 }}>— optional</span></label>
+                <input type="text" placeholder="Account number / tag" value={wiseRef} onChange={e => setWiseRef(e.target.value)} style={INPUT_STYLE} />
+              </div>
+            </div>
+          )}
+
           <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
             <button
               type="submit"
@@ -299,7 +384,7 @@ export function AffiliateDashboardClient({ affiliate, conversions, discountCode 
             </button>
           </div>
           <p style={{ fontSize: 11, marginTop: 12, color: "rgba(255,255,255,0.18)" }}>
-            Your bank details are only used for monthly commission payouts. We never share them.
+            Your payout details are only used for monthly commission payouts. We never share them.
           </p>
         </form>
 

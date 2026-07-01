@@ -167,8 +167,13 @@ export interface Affiliate {
   commission_rate: number;     // %
   status: AffiliateStatus;
   stripe_account_id: string | null;
+  country: string | null;
+  payout_method: "bank_nz" | "paypal" | "wise" | null;
   payout_bank_name: string | null;
   payout_bank_account: string | null;
+  paypal_email: string | null;
+  wise_email: string | null;
+  wise_account_ref: string | null;
   terms_accepted_at: string | null;
   total_clicks: number;
   total_conversions: number;
