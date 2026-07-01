@@ -20,6 +20,7 @@ export type AuditAction =
   | "affiliate.commission_changed"
   | "affiliate.payout_created"
   | "affiliate.archived"
+  | "affiliate.discount_codes_generated"
   | "campaign.sent"
   | "campaign.created"
   | "customer.tagged"
