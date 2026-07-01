@@ -67,6 +67,20 @@ export async function PATCH(
     request: req,
   });
 
+  // Keep the ambassador's discount code in sync with their status. Their code is
+  // named the same as their referral_code, so suspending them deactivates it (stops
+  // giving discounts that no one earns on) and re-activating turns it back on.
+  // Best-effort — never fail the status update over this.
+  if (body.status !== undefined && before?.referral_code) {
+    try {
+      if (body.status === "suspended") {
+        await service.from("discount_codes").update({ active: false }).ilike("code", before.referral_code);
+      } else if (body.status === "active") {
+        await service.from("discount_codes").update({ active: true }).ilike("code", before.referral_code);
+      }
+    } catch (e) { console.error("[affiliate PATCH] discount code sync:", e); }
+  }
+
   // Send approval email if transitioning from non-active → active
   if (body.status === "active" && before && before.status !== "active") {
     try {
@@ -110,6 +124,14 @@ export async function DELETE(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Deactivate their discount code too — an archived ambassador's code should stop
+  // giving discounts (no one would earn on it). Best-effort.
+  if (data?.referral_code) {
+    try {
+      await service.from("discount_codes").update({ active: false }).ilike("code", data.referral_code);
+    } catch (e) { console.error("[affiliate DELETE] discount code deactivate:", e); }
+  }
 
   await writeAuditLog({
     action: "affiliate.archived",

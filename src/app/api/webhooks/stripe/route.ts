@@ -278,12 +278,12 @@ export async function POST(req: NextRequest) {
     } catch (e) { console.error("[webhook] discount uses:", e); }
 
     try {
-      // Attribution code: prefer the referral-link cookie; otherwise fall back to a
-      // checkout code that matches an active ambassador's referral_code. This is
-      // "code-based attribution" — an ambassador's code credits them when a customer
-      // TYPES it at checkout (e.g. "use code elva10"), even with no click/cookie.
-      let attributionCode = (affiliateCode || "").toLowerCase();
-      if (!attributionCode && discountCode) {
+      // Attribution: an explicitly-TYPED code that matches an active ambassador's
+      // referral_code WINS over the referral-link cookie — a code the customer typed
+      // is a stronger, fresher signal than a possibly-stale 30-day cookie. Fall back
+      // to the cookie when no typed code matches an active ambassador.
+      let attributionCode = "";
+      if (discountCode) {
         for (const c of discountCode.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)) {
           const { data: aff } = await supabase
             .from("affiliates").select("referral_code")
@@ -291,6 +291,7 @@ export async function POST(req: NextRequest) {
           if (aff) { attributionCode = aff.referral_code; break; }
         }
       }
+      if (!attributionCode) attributionCode = (affiliateCode || "").toLowerCase();
       if (attributionCode) {
         const { data: affiliate } = await supabase
           .from("affiliates").select("id, email")
