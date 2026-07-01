@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import type { Affiliate, AffiliatePayout, AffiliateStatus } from "@/types/database";
 import {
   Plus, Check, X, Pause, TrendingUp, Users,
-  DollarSign, MousePointer, Copy, ChevronDown, Banknote, History, Trash2, AlertTriangle, Loader2
+  DollarSign, MousePointer, Copy, ChevronDown, Banknote, History, Trash2, AlertTriangle, Loader2, Tag
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -47,7 +47,31 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
   const [selected, setSelected] = useState<Affiliate | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Affiliate | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [, startTransition] = useTransition();
+
+  // Create a 10%-off discount code named the same as the ambassador's referral
+  // code (so the webhook's code-based attribution credits them). Idempotent.
+  async function generateCodes(affiliateId?: string) {
+    setGenerating(true);
+    const res = await fetch("/api/admin/affiliates/discount-codes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(affiliateId ? { affiliate_id: affiliateId } : {}),
+    });
+    setGenerating(false);
+    if (!res.ok) { toast.error("Failed to generate codes"); return; }
+    const d = await res.json() as { created: string[]; skipped: string[] };
+    if (affiliateId) {
+      if (d.created.length) toast.success(`Created ${d.created[0]} — 10% off`);
+      else toast(`${d.skipped[0] ?? "Code"} already exists`);
+    } else {
+      toast.success(
+        `Created ${d.created.length} code${d.created.length !== 1 ? "s" : ""}` +
+        (d.skipped.length ? ` · ${d.skipped.length} already existed` : "")
+      );
+    }
+  }
 
   const totals = affiliates.reduce(
     (acc, a) => ({
@@ -100,26 +124,41 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
             Manage referral partners and track commission.
           </p>
         </div>
-        <button
-          onClick={() => setShowCreate(true)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            height: 40,
-            padding: "0 20px",
-            borderRadius: 9999,
-            background: "#2f9b2f",
-            color: "#fff",
-            fontSize: 13,
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <Plus style={{ width: 16, height: 16 }} />
-          Add Affiliate
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={() => generateCodes()}
+            disabled={generating}
+            title="Create a 10% discount code (named after each referral code) for every active ambassador that doesn't have one"
+            style={{
+              display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 18px",
+              borderRadius: 9999, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
+              color: "#fff", fontSize: 13, fontWeight: 600, cursor: generating ? "default" : "pointer", opacity: generating ? 0.6 : 1,
+            }}
+          >
+            {generating ? <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" /> : <Tag style={{ width: 15, height: 15 }} />}
+            Generate 10% codes
+          </button>
+          <button
+            onClick={() => setShowCreate(true)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              height: 40,
+              padding: "0 20px",
+              borderRadius: 9999,
+              background: "#2f9b2f",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <Plus style={{ width: 16, height: 16 }} />
+            Add Affiliate
+          </button>
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -231,6 +270,7 @@ export function AffiliatesClient({ affiliates: initial }: Props) {
                 onUpdateStatus={updateStatus}
                 onSelect={setSelected}
                 onDelete={setDeleteTarget}
+                onCreateCode={generateCodes}
               />
             ))}
           </tbody>
@@ -326,12 +366,14 @@ function TableRow({
   onUpdateStatus,
   onSelect,
   onDelete,
+  onCreateCode,
 }: {
   affiliate: Affiliate;
   onCopyLink: (code: string) => void;
   onUpdateStatus: (id: string, status: AffiliateStatus) => void;
   onSelect: (a: Affiliate) => void;
   onDelete: (a: Affiliate) => void;
+  onCreateCode: (id: string) => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -442,6 +484,14 @@ function TableRow({
               <Check style={{ width: 14, height: 14 }} />
             </ActionButton>
           )}
+          <ActionButton
+            title={`Create 10% discount code "${a.referral_code}"`}
+            onClick={() => onCreateCode(a.id)}
+            hoverBg="rgba(167,139,250,0.2)"
+            hoverColor="#A78BFA"
+          >
+            <Tag style={{ width: 14, height: 14 }} />
+          </ActionButton>
           <ActionButton
             title="Details"
             onClick={() => onSelect(a)}
