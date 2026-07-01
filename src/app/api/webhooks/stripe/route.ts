@@ -176,6 +176,19 @@ export async function POST(req: NextRequest) {
             postcode: a.postal_code || "", phone: s.phone || "",
             country: a.country || "NZ",
           } as ShippingAddress;
+        } else if (addrEmpty && charge?.billing_details?.address?.line1) {
+          // Last-resort fallback: some express methods only put the address in the
+          // charge's billing details. Only use it when there's a real street line.
+          const b = charge.billing_details;
+          const a = b.address!;
+          const [fn, ...ln] = (b.name || "").split(" ");
+          shippingAddress = {
+            first_name: fn || "", last_name: ln.join(" ") || "",
+            line1: a.line1 || "", line2: a.line2 || "",
+            city: a.city || "", region: a.state || "",
+            postcode: a.postal_code || "", phone: b.phone || "",
+            country: a.country || "NZ",
+          } as ShippingAddress;
         }
       } catch (e) {
         console.error("[webhook] Stripe fallback fetch failed for", pi.id, e);

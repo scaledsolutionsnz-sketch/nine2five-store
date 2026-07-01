@@ -756,6 +756,14 @@ function PaymentStep({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!stripe || !elements) return;
+
+    // Hard guard: never confirm a payment without a complete delivery address.
+    // (Prevents addressless orders even if some earlier step were bypassed.)
+    if (!address.line1 || !address.city || !address.postcode) {
+      setError("Please add your full delivery address before paying.");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
@@ -803,6 +811,22 @@ function PaymentStep({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/order-confirmed`,
+        // Attach the delivery address to the PaymentIntent at confirmation time so
+        // Stripe ALWAYS carries it (independent of our async metadata PATCH). Express
+        // methods like Link don't collect our form address otherwise — this is what
+        // stops orders landing with no shipping address. The webhook reads pi.shipping.
+        shipping: {
+          name: `${address.first_name ?? ""} ${address.last_name ?? ""}`.trim(),
+          phone: address.phone || undefined,
+          address: {
+            line1: address.line1,
+            line2: address.line2 || undefined,
+            city: address.city,
+            state: address.region,
+            postal_code: address.postcode,
+            country: address.country || "NZ",
+          },
+        },
         payment_method_data: {
           billing_details: {
             name: `${address.first_name} ${address.last_name}`,
