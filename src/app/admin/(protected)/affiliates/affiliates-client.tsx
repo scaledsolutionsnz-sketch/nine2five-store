@@ -1099,6 +1099,36 @@ function AffiliateDetailModal({
                 </div>
               </div>
 
+              {/* Bank account the ambassador entered — needed to actually pay them */}
+              <div style={{ padding: 16, borderRadius: 12, background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.2)" }}>
+                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", margin: "0 0 8px" }}>
+                  Bank account
+                </p>
+                {affiliate.payout_bank_account ? (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: "#fff", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {affiliate.payout_bank_name || "—"}
+                      </p>
+                      <p style={{ fontSize: 14, fontFamily: "monospace", color: "#A78BFA", margin: "2px 0 0" }}>
+                        {affiliate.payout_bank_account}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { navigator.clipboard.writeText(`${affiliate.payout_bank_name ?? ""} ${affiliate.payout_bank_account ?? ""}`.trim()); toast.success("Bank details copied"); }}
+                      style={{ flexShrink: 0, height: 32, padding: "0 12px", borderRadius: 8, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 12, cursor: "pointer" }}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                ) : (
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: 0 }}>
+                    Not added yet — the ambassador enters this in their portal.
+                  </p>
+                )}
+              </div>
+
               {pending <= 0 ? (
                 <div style={{ padding: "24px 0", textAlign: "center" }}>
                   <Check style={{ width: 32, height: 32, color: "#4ade80", margin: "0 auto 8px" }} />
