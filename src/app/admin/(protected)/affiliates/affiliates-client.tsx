@@ -363,12 +363,20 @@ function TableRow({
             {a.referral_code}
           </code>
           <button
+            title="Copy referral link"
             onClick={() => onCopyLink(a.referral_code)}
             style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "rgba(255,255,255,0.35)", display: "flex" }}
           >
             <Copy style={{ width: 12, height: 12 }} />
           </button>
         </div>
+        <button
+          onClick={() => onCopyLink(a.referral_code)}
+          title="Copy referral link"
+          style={{ background: "none", border: "none", padding: 0, marginTop: 6, cursor: "pointer", fontFamily: "monospace", fontSize: 11, color: "rgba(255,255,255,0.4)", textAlign: "left", display: "block" }}
+        >
+          nine2five.nz?ref={a.referral_code}
+        </button>
       </td>
       <td style={{ padding: "18px 20px" }}>
         <span style={{
