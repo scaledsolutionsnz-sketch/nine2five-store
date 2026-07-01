@@ -21,7 +21,16 @@ export async function POST(
 
   if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
 
-  const addr = order.shipping_address as ShippingAddress;
+  const addr = order.shipping_address as ShippingAddress | null;
+  // Guard: without a real shipping address there's nothing to send. Return a clear
+  // message instead of letting eShip crash deep in the payload build.
+  if (!addr || !addr.line1 || !addr.city || !addr.postcode) {
+    return NextResponse.json(
+      { error: "This order has no shipping address — add one before sending to eShip." },
+      { status: 400 }
+    );
+  }
+
   const orderItems = order.order_items as Array<{ quantity: number; variant_id: string; product_name: string; size: string; unit_price: number }>;
   const totalPairs = orderItems.reduce((s, i) => s + i.quantity, 0);
 

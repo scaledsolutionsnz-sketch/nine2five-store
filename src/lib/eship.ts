@@ -54,7 +54,8 @@ export async function createEShipShipment({
   const weightKg = parseFloat(((totalPairs * GRAMS_PER_PAIR + PACKAGING_GRAMS) / 1000).toFixed(3));
   const dims = dimsForPairs(totalPairs);
 
-  const isNZ = addr.country === "NZ" || addr.country.toLowerCase() === "new zealand";
+  const country = addr?.country ?? "";
+  const isNZ = country === "NZ" || country.toLowerCase() === "new zealand" || country === "";
   const nzService = nzCarrierForPairs(totalPairs);
   const carrierName = isNZ ? "MyNZPost Business" : "NZ Post International";
   const carrierServiceCode = isNZ ? nzService.code : "IECON";
