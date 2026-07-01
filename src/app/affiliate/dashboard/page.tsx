@@ -34,7 +34,7 @@ export default async function AffiliateDashboardPage() {
     service.from("affiliate_conversions").select("commission_cents, status").eq("affiliate_id", affiliate.id),
     service
       .from("affiliate_conversions")
-      .select("*, orders(order_number)")
+      .select("*, orders(order_number, discount_code)")
       .eq("affiliate_id", affiliate.id)
       .order("created_at", { ascending: false })
       .limit(50),
@@ -44,10 +44,20 @@ export default async function AffiliateDashboardPage() {
   affiliate.total_conversions = liveConv.length;
   affiliate.total_commission_cents = liveConv.reduce((s, c) => s + (c.commission_cents ?? 0), 0);
 
+  // The ambassador's own discount code (by convention it's named the same as their
+  // referral code). Shown in the portal so they can share the code, not just the link.
+  const { data: ownDiscount } = await service
+    .from("discount_codes")
+    .select("code, type, value")
+    .ilike("code", affiliate.referral_code)
+    .eq("active", true)
+    .maybeSingle();
+
   return (
     <AffiliateDashboardClient
       affiliate={affiliate as Affiliate}
-      conversions={(conversions ?? []) as (AffiliateConversion & { orders: { order_number: number } | null })[]}
+      conversions={(conversions ?? []) as (AffiliateConversion & { orders: { order_number: number; discount_code: string | null } | null })[]}
+      discountCode={ownDiscount ?? null}
     />
   );
 }

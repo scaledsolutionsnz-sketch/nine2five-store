@@ -26,10 +26,17 @@ function fmtDate(iso: string) {
 
 interface Props {
   affiliate: Affiliate;
-  conversions: (AffiliateConversion & { orders: { order_number: number } | null })[];
+  conversions: (AffiliateConversion & { orders: { order_number: number; discount_code: string | null } | null })[];
+  discountCode?: { code: string; type: string; value: number } | null;
 }
 
-export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
+function discountLabel(d: { type: string; value: number }) {
+  if (d.type === "fixed" && d.value === 0) return "Free shipping";
+  if (d.type === "percentage") return `${d.value}% off`;
+  return `$${(d.value / 100).toFixed(0)} off`;
+}
+
+export function AffiliateDashboardClient({ affiliate, conversions, discountCode }: Props) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -52,6 +59,12 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
     setCopied(true);
     toast.success("Link copied!");
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  function copyCode() {
+    if (!discountCode) return;
+    navigator.clipboard.writeText(discountCode.code);
+    toast.success("Code copied!");
   }
 
   async function signOut() {
@@ -201,13 +214,34 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
           </p>
         </div>
 
+        {/* Discount code */}
+        {discountCode && (
+          <div style={card}>
+            <h2 className="font-display font-bold" style={{ fontSize: 18, color: "#ffffff", marginBottom: 6 }}>Your Discount Code</h2>
+            <p style={{ fontSize: 14, color: MUTED, marginBottom: 18 }}>
+              Your followers enter this at checkout for <span style={{ color: "#ffffff", fontWeight: 600 }}>{discountLabel(discountCode)}</span> — and you still earn your {affiliate.commission_rate}%, even if they never clicked your link.
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ flex: 1, minWidth: 0, height: 46, padding: "0 16px", borderRadius: 12, display: "flex", alignItems: "center", background: "rgba(255,255,255,0.04)", border: `1px solid ${BORDER}` }}>
+                <code style={{ fontSize: 16, fontWeight: 800, letterSpacing: "0.08em", color: ACCENT, fontFamily: "monospace" }}>{discountCode.code}</code>
+              </div>
+              <button
+                onClick={copyCode}
+                style={{ display: "flex", alignItems: "center", gap: 8, height: 46, padding: "0 20px", borderRadius: 12, fontWeight: 700, fontSize: 14, color: "#ffffff", flexShrink: 0, cursor: "pointer", border: "none", background: ACCENT }}
+              >
+                <Copy style={{ width: 15, height: 15 }} /> Copy
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* How it works */}
         <div style={card}>
           <h2 className="font-display font-bold" style={{ fontSize: 18, color: "#ffffff", marginBottom: 22 }}>How it works</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {[
-              { n: "1", title: "Share your link", body: "Post it on TikTok, Instagram, YouTube — wherever your audience is." },
-              { n: "2", title: "They buy socks",  body: "When someone clicks your link and places an order, it's tracked automatically." },
+              { n: "1", title: "Share your link or code", body: "Post your link or code on TikTok, Instagram, YouTube — wherever your audience is." },
+              { n: "2", title: "They buy socks",  body: "When someone clicks your link OR uses your code at checkout, the sale is tracked to you automatically." },
               { n: "3", title: `You earn ${affiliate.commission_rate}%`, body: "We pay out monthly via bank transfer. No minimums, no fuss." },
             ].map(({ n, title, body }) => (
               <div key={n} style={{ display: "flex", gap: 14 }}>
@@ -286,7 +320,7 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
-                    {["Date", "Order", "Earned", "Status"].map((h) => (
+                    {["Date", "Order", "Source", "Earned", "Status"].map((h) => (
                       <th key={h} style={{ padding: "12px 28px", textAlign: "left", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: MUTED }}>
                         {h}
                       </th>
@@ -294,11 +328,24 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {conversions.map((c, i) => (
+                  {conversions.map((c, i) => {
+                    const usedCode = (c.orders?.discount_code ?? "")
+                      .toLowerCase().split(",").map((s) => s.trim())
+                      .includes(affiliate.referral_code.toLowerCase());
+                    return (
                     <tr key={c.id} style={{ borderBottom: i < conversions.length - 1 ? `1px solid ${BORDER}` : undefined }}>
                       <td style={{ padding: "16px 28px", fontSize: 14, color: MUTED }}>{fmtDate(c.created_at)}</td>
                       <td style={{ padding: "16px 28px", fontSize: 14, fontFamily: "monospace", color: "#ffffff" }}>
                         {c.orders ? `#${c.orders.order_number}` : "—"}
+                      </td>
+                      <td style={{ padding: "16px 28px" }}>
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", padding: "4px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600,
+                          background: usedCode ? "rgba(167,139,250,0.12)" : "rgba(46,139,40,0.12)",
+                          color: usedCode ? "#A78BFA" : ACCENT,
+                        }}>
+                          {usedCode ? "Code" : "Link"}
+                        </span>
                       </td>
                       <td style={{ padding: "16px 28px", fontSize: 14, fontWeight: 600, fontFamily: "monospace", color: ACCENT }}>
                         {fmt(c.commission_cents)}
@@ -313,7 +360,8 @@ export function AffiliateDashboardClient({ affiliate, conversions }: Props) {
                         </span>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
