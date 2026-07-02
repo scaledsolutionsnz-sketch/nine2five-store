@@ -2,8 +2,13 @@ import type { ShippingAddress } from "@/types/database";
 import { nzCarrierForPairs } from "@/lib/shipping";
 
 const BASE = "https://api.starshipit.com/api";
-const GRAMS_PER_PAIR = 70;
-const PACKAGING_GRAMS = 50;
+
+// Per-item values declared to NZ Post eShip. Change these to adjust what every line
+// item (and the package total) sends. NOTE: the eShip/StarShipIT API takes weight in
+// KILOGRAMS (the package weight below is also kg), so 65 g is sent as 0.065 kg.
+const DEFAULT_UNIT_WEIGHT_GRAMS = 65; // weight per unit
+const DEFAULT_UNIT_PRICE_NZD = 20;    // declared value per unit, NZD
+const PACKAGING_GRAMS = 50;           // added once to the package total
 
 export type EShipResult = {
   starshipitOrderId: number;
@@ -51,7 +56,9 @@ export async function createEShipShipment({
     throw new Error("NZPOST_ESHIP_API_KEY is not set");
   }
 
-  const weightKg = parseFloat(((totalPairs * GRAMS_PER_PAIR + PACKAGING_GRAMS) / 1000).toFixed(3));
+  // Package total = (units × per-unit grams) + packaging, in kg. Uses the same per-unit
+  // weight as the line items so the item weights and the package total add up.
+  const weightKg = parseFloat(((totalPairs * DEFAULT_UNIT_WEIGHT_GRAMS + PACKAGING_GRAMS) / 1000).toFixed(3));
   const dims = dimsForPairs(totalPairs);
 
   const country = addr?.country ?? "";
@@ -88,8 +95,8 @@ export async function createEShipShipment({
           sku: item.sku,
           description: item.description,
           quantity: item.quantity,
-          weight: GRAMS_PER_PAIR / 1000,
-          unit_price: item.unit_price,
+          weight: DEFAULT_UNIT_WEIGHT_GRAMS / 1000, // kg → lands as 65 g per unit
+          unit_price: DEFAULT_UNIT_PRICE_NZD,        // $20 NZD per unit
         })),
       },
     }),
