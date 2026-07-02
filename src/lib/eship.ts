@@ -4,9 +4,11 @@ import { nzCarrierForPairs } from "@/lib/shipping";
 const BASE = "https://api.starshipit.com/api";
 
 // Per-item values declared to NZ Post eShip. Change these to adjust what every line
-// item (and the package total) sends. NOTE: the eShip/StarShipIT API takes weight in
-// KILOGRAMS (the package weight below is also kg), so 65 g is sent as 0.065 kg.
-const DEFAULT_UNIT_WEIGHT_GRAMS = 65; // weight per unit
+// item (and the package total) sends. Verified against the live StarShipIT API:
+//   • item WEIGHT is in GRAMS (send 65 → stored as 0.065 kg). Note the PACKAGE weight
+//     below is in kg — different unit, on purpose.
+//   • item value field is `value` (NZD). `unit_price` is ignored by StarShipIT.
+const DEFAULT_UNIT_WEIGHT_GRAMS = 65; // weight per unit (grams)
 const DEFAULT_UNIT_PRICE_NZD = 20;    // declared value per unit, NZD
 const PACKAGING_GRAMS = 50;           // added once to the package total
 
@@ -95,8 +97,8 @@ export async function createEShipShipment({
           sku: item.sku,
           description: item.description,
           quantity: item.quantity,
-          weight: DEFAULT_UNIT_WEIGHT_GRAMS / 1000, // kg → lands as 65 g per unit
-          unit_price: DEFAULT_UNIT_PRICE_NZD,        // $20 NZD per unit
+          weight: DEFAULT_UNIT_WEIGHT_GRAMS, // GRAMS on items (StarShipIT stores as kg) → 65 g
+          value: DEFAULT_UNIT_PRICE_NZD,     // StarShipIT item value field, NZD → $20
         })),
       },
     }),
