@@ -10,6 +10,17 @@ function readRefCookie(req: NextRequest): string {
   return raw.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 50);
 }
 
+// Pull a Black/White colour choice out of a product name (e.g. "Basic — Black" or
+// "Basic Grip Sock (White)"). Only matches the explicit colour markers the Basic
+// picker uses, so product names like "Black Kahotea" don't false-match. Carried in
+// items_min as `c` so the webhook can label the order line (the "Basic" product in
+// the DB has no colour variant, so this is the only signal).
+function colourTag(name?: string): "black" | "white" | undefined {
+  const m = /\((black|white)\)|—\s*(black|white)\b/i.exec(name ?? "");
+  if (!m) return undefined;
+  return (m[1] || m[2]).toLowerCase() as "black" | "white";
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { items, country } = await req.json() as { items: CartItem[]; country: string };
@@ -36,7 +47,10 @@ export async function POST(req: NextRequest) {
     // Compact items [{v:variantId,q,p}] — the webhook rebuilds line items from this
     // when the client metadata is missing. Stripe caps a metadata value at 500 chars,
     // so only attach when it fits (normal carts do; the full PATCH covers the rest).
-    const itemsMin = JSON.stringify(items.map((i) => ({ v: i.variantId, q: i.quantity, p: i.price })));
+    const itemsMin = JSON.stringify(items.map((i) => {
+      const c = colourTag(i.productName);
+      return c ? { v: i.variantId, q: i.quantity, p: i.price, c } : { v: i.variantId, q: i.quantity, p: i.price };
+    }));
     if (itemsMin.length <= 480) metadata.items_min = itemsMin;
 
     const paymentIntent = await stripe.paymentIntents.create({
@@ -66,7 +80,7 @@ export async function PATCH(req: NextRequest) {
       subtotal?: number;
       email?: string;
       shippingAddress?: Record<string, string>;
-      items?: Array<{ variantId?: string; price: number; quantity: number }>;
+      items?: Array<{ variantId?: string; price: number; quantity: number; productName?: string }>;
       shipping?: number;
       discount_code?: string | null;
       discount_amount?: number;
@@ -110,8 +124,12 @@ export async function PATCH(req: NextRequest) {
     // Compact line items (variant/qty/price). Stripe caps EACH metadata value at 500
     // chars — a verbose items list overflowed it and made this whole update FAIL, which
     // both blocked checkout ("check your connection") and left orders with no address.
-    // The webhook rebuilds full line items from this compact list (items_min).
-    const itemsMin = JSON.stringify(items.map((i) => ({ v: i.variantId, q: i.quantity, p: i.price })));
+    // The webhook rebuilds full line items from this compact list (items_min). `c`
+    // carries a Basic Black/White colour choice (the DB "Basic" product has no colour).
+    const itemsMin = JSON.stringify(items.map((i) => {
+      const c = colourTag(i.productName);
+      return c ? { v: i.variantId, q: i.quantity, p: i.price, c } : { v: i.variantId, q: i.quantity, p: i.price };
+    }));
     if (itemsMin.length <= 480) metadata.items_min = itemsMin;
 
     // We deliberately do NOT set the PI's `shipping` field. Setting it with the secret

@@ -24,7 +24,7 @@ function safeJson<T>(s: string | undefined, fallback: T): T {
 // (items_min = [{v:variantId,q,p}]). Used when the client metadata never arrived
 // (Stripe Link / express checkout, or a too-large/failed metadata write).
 async function resolveCompactItems(min: string, supabase: ReturnType<typeof getServiceClient>): Promise<OrderItem[]> {
-  const arr = safeJson<{ v: string; q: number; p: number }[]>(min, []);
+  const arr = safeJson<{ v: string; q: number; p: number; c?: string }[]>(min, []);
   if (!arr.length) return [];
   const { data: vars } = await supabase
     .from("product_variants")
@@ -35,8 +35,11 @@ async function resolveCompactItems(min: string, supabase: ReturnType<typeof getS
     const v = byId.get(x.v);
     if (!v) return [];
     const prod = v.products as { name?: string } | { name?: string }[] | null;
-    const name = Array.isArray(prod) ? prod[0]?.name : prod?.name;
-    return [{ productId: v.product_id as string, variantId: v.id as string, productName: name ?? "", size: (v.size as string) ?? "", quantity: x.q, price: x.p }];
+    let name = (Array.isArray(prod) ? prod[0]?.name : prod?.name) ?? "";
+    // `c` carries a Basic Black/White choice — the DB product has no colour variant,
+    // so append it here so the order line shows which colour was ordered.
+    if (x.c === "black" || x.c === "white") name = `${name} (${x.c === "black" ? "Black" : "White"})`;
+    return [{ productId: v.product_id as string, variantId: v.id as string, productName: name, size: (v.size as string) ?? "", quantity: x.q, price: x.p }];
   });
 }
 
