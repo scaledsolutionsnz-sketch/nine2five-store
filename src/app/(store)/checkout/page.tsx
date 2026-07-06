@@ -314,7 +314,7 @@ export default function CheckoutPage() {
                 {isBulk && !loading && (
                   <div style={{ ...CS.formCard, textAlign: "center" }}>
                     <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>
-                      Your order contains more than 12 pairs.<br />Please contact us directly for bulk shipping rates.
+                      Your order contains more than 30 pairs.<br />Please contact us directly for bulk shipping rates.
                     </p>
                     <a href="mailto:nine2five.co.nz@gmail.com" style={{ display: "inline-block", background: "#2f9b2f", color: "#fff", fontWeight: 800, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.12em", padding: "14px 32px", borderRadius: 999, textDecoration: "none" }}>
                       Contact Us

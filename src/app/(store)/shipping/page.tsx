@@ -10,6 +10,7 @@ const NZ_RATES = [
   { pairs: "3 pairs",   price: "$7.71", service: "NZPost Courier Pack" },
   { pairs: "4–6 pairs", price: "$9.75", service: "NZPost Courier Pack" },
   { pairs: "7–12 pairs", price: "$10.30", service: "NZPost Courier Pack" },
+  { pairs: "20–30 pairs", price: "$30.00", service: "NZPost Courier Pack" },
 ];
 
 const AU_RATES = [
@@ -17,6 +18,7 @@ const AU_RATES = [
   { pairs: "3–4 pairs",  price: "$16.00", service: "International Standard" },
   { pairs: "5–6 pairs",  price: "$20.00", service: "International Standard" },
   { pairs: "7–12 pairs", price: "$30.00", service: "International Standard" },
+  { pairs: "20–30 pairs", price: "$30.00", service: "International Standard" },
 ];
 
 export default function ShippingPage() {
@@ -89,9 +91,9 @@ export default function ShippingPage() {
 
           {/* Bulk */}
           <section>
-            <h2 className="text-white font-bold text-base mb-2">Orders over 12 pairs</h2>
+            <h2 className="text-white font-bold text-base mb-2">Orders over 30 pairs</h2>
             <p className="text-white/50 leading-relaxed">
-              For bulk orders of more than 12 pairs, please contact us directly for a shipping quote.
+              For bulk orders of more than 30 pairs, please contact us directly for a shipping quote.
               Email{" "}
               <a href="mailto:nine2five.co.nz@gmail.com" className="text-[#3a7722] hover:underline">
                 nine2five.co.nz@gmail.com

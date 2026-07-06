@@ -26,11 +26,25 @@ const AU_TIERS = [
   { max: 12, cost: 3000 },
 ];
 
+// Order limits + large-order shipping
+const MAX_PAIRS = 30;      // orders above this are bulk ("contact us")
+const LARGE_MIN = 20;      // 20–30 pairs
+const LARGE_COST = 3000;   // flat $30 shipping for large orders
+
 export function calculateShippingByPairs(pairs: number, country: string): ShippingResult {
-  if (pairs > 12) {
+  if (pairs > MAX_PAIRS) {
     return { cost: 0, isBulk: true, label: "", delivery: "" };
   }
-  // Free NZ shipping on 5+ pairs (bundle perk)
+  // Large orders (20–30 pairs): flat $30 shipping, both countries.
+  if (pairs >= LARGE_MIN) {
+    return {
+      cost: LARGE_COST,
+      isBulk: false,
+      label: country === "AU" ? "Australia Standard" : "NZ Standard",
+      delivery: country === "AU" ? "5–10 business days" : "2–4 business days",
+    };
+  }
+  // Free NZ shipping on 5+ pairs (bundle perk) — applies up to 19 pairs
   if (country === "NZ" && pairs >= 5) {
     return { cost: 0, isBulk: false, label: "NZ Standard — Free", delivery: "2–4 business days" };
   }
