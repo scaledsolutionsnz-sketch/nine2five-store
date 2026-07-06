@@ -142,7 +142,9 @@ export function BasicProductClient({ black, white }: Props) {
 
             <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
               <div style={{ flex: 1 }}>
-                <AddToCart product={p} variants={v} />
+                {/* Bake the chosen colour into the name so the order records Black vs
+                    White (the underlying product can just be named "Basic"). */}
+                <AddToCart product={{ ...p, name: `Basic — ${colour === "black" ? "Black" : "White"}` }} variants={v} />
               </div>
               <WishlistButton productId={p.id} />
             </div>
