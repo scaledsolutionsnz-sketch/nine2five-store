@@ -5,6 +5,7 @@ import { VisitorTracker } from "@/components/storefront/visitor-tracker";
 import { Pixels } from "@/components/analytics/pixels";
 import { KoruIntro } from "@/components/storefront/koru-intro";
 import { AuthHashRedirect } from "@/components/storefront/auth-hash-redirect";
+import { MatarikiBanner } from "@/components/storefront/matariki-banner";
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +22,10 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <AffiliateTracker />
       </Suspense>
       <VisitorTracker />
-      <main style={{ paddingTop: "68px", overflowX: "hidden" }}>{children}</main>
+      <main style={{ paddingTop: "68px", overflowX: "hidden" }}>
+        <MatarikiBanner />
+        {children}
+      </main>
 
       {/* ════════════════════════════════════════════
           FOOTER
