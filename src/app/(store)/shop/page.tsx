@@ -87,7 +87,7 @@ export default async function ShopPage() {
           </div>
 
           {/* All products */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>All Designs — $20 each</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", color: "#2E8B28", textTransform: "uppercase", marginBottom: 20 }}>All Designs — $25 each</p>
           <ShopGrid products={products} />
 
           {/* Club CTA */}

@@ -11,12 +11,12 @@ export const revalidate = 0;
 
 /* ─── Fallback products (6 items) ───────────────────────────── */
 const FALLBACK_PRODUCTS = [
-  { name: "Grey Kahotea",  price: 2000, badge: null,      compare: null },
-  { name: "Toa Whenua",    price: 2000, badge: "New",     compare: null },
-  { name: "Pasifika",      price: 1800, badge: "Limited", compare: 2200 },
-  { name: "Black Kahotea", price: 2000, badge: null,      compare: null },
-  { name: "Ahi Kaa",       price: 1800, badge: "Sale",    compare: 2400 },
-  { name: "Ataahua White", price: 2000, badge: "New",     compare: null },
+  { name: "Grey Kahotea",  price: 2500, badge: null,      compare: null },
+  { name: "Toa Whenua",    price: 2500, badge: "New",     compare: null },
+  { name: "Pasifika",      price: 2500, badge: "Limited", compare: null },
+  { name: "Black Kahotea", price: 2500, badge: null,      compare: null },
+  { name: "Ahi Kaa",       price: 2500, badge: null,      compare: null },
+  { name: "Ataahua White", price: 2500, badge: "New",     compare: null },
 ];
 
 /* ─── Collections ───────────────────────────────────────────── */
