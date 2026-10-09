@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { Loader2, Plus, Minus, History, ChevronUp, AlertTriangle } from "lucide-react";
+import { Loader2, Plus, Minus, History, X, AlertTriangle } from "lucide-react";
 import type { StockMovement } from "@/types/database";
 
 interface Variant { id: string; size: string; stock_quantity: number; }
 interface Product { id: string; name: string; product_variants: Variant[]; }
+type PanelKind = "adjust" | "history";
+type OpenPanel = { variantId: string; kind: PanelKind } | null;
+
+/** Under this many pairs a size counts as low. Same threshold as low_stock_view (migration 008). */
+const LOW_STOCK = 10;
 
 const ADJUSTMENT_TYPES = [
   { value: "restock",    label: "Restock"    },
@@ -16,339 +21,376 @@ const ADJUSTMENT_TYPES = [
 ] as const;
 type AdjType = typeof ADJUSTMENT_TYPES[number]["value"];
 
-function VariantRow({
-  productId,
-  productName,
-  showName,
-  variant,
-  onUpdate,
-}: {
-  productId: string;
-  productName: string;
-  showName: boolean;
+/* Sizes run smallest first: "6-9" before "10-13" (plain text order put 10-13 first). */
+const APPAREL_SIZES = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+function sizeRank(size: string) {
+  const n = parseInt(size, 10);
+  if (!Number.isNaN(n)) return n;
+  const i = APPAREL_SIZES.indexOf(size.trim().toUpperCase());
+  return i >= 0 ? 1000 + i : 2000;
+}
+const bySize = (a: string, b: string) => sizeRank(a) - sizeRank(b) || a.localeCompare(b);
+
+function tone(qty: number) {
+  if (qty === 0)        return { color: "#F87171", bg: "rgba(239,68,68,0.12)",  border: "rgba(239,68,68,0.38)" };
+  if (qty < LOW_STOCK)  return { color: "#FBBF24", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.38)" };
+  return                       { color: "#ffffff", bg: "rgba(255,255,255,0.06)", border: "rgba(255,255,255,0.12)" };
+}
+
+const CELL_W = 72;
+const thStyle = { padding: "12px 18px", textAlign: "left" as const, fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap" as const };
+const tdStyle = { padding: "14px 18px", verticalAlign: "middle" as const };
+/* The Design column stays put when the table scrolls sideways on a phone. Opaque fills match the card over the page. */
+const stickyCol = (bg = "#081b10") => ({ position: "sticky" as const, left: 0, zIndex: 1, background: bg });
+const fieldStyle = { height: 36, borderRadius: 9, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: "#fff", fontSize: 13, outline: "none", colorScheme: "dark" as const };
+
+async function postAdjust(body: { variantId: string; delta: number; type: AdjType; note: string | null }) {
+  const res = await fetch("/api/admin/inventory/adjust", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return (await res.json().catch(() => ({ error: "Could not reach the server" }))) as { newQuantity?: number; error?: string };
+}
+
+function IconButton({ active, activeColor, label, onClick, children }: { active: boolean; activeColor: string; label: string; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button" onClick={onClick} title={label} aria-label={label} aria-pressed={active}
+      style={{
+        height: 30, width: 30, borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        border: `1px solid ${active ? activeColor : "rgba(255,255,255,0.08)"}`,
+        background: active ? "rgba(255,255,255,0.08)" : "transparent",
+        color: active ? activeColor : "rgba(255,255,255,0.45)",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** One size of one design: the stock number (type and press Enter to save) plus adjust and history buttons. */
+function StockCell({ variant, label, open, onToggle, onSaved }: {
   variant: Variant;
-  onUpdate: (productId: string, variantId: string, newQty: number) => void;
+  label: string;
+  open: PanelKind | null;
+  onToggle: (kind: PanelKind) => void;
+  onSaved: (newQty: number) => void;
 }) {
-  const [qty, setQty] = useState(variant.stock_quantity);
+  const [draft, setDraft] = useState(String(variant.stock_quantity));
   const [saving, setSaving] = useState(false);
-  const [panel, setPanel] = useState<"adjust" | "history" | null>(null);
+  // Keep the box in step when the number changes elsewhere (an Add/Remove adjustment).
+  const [synced, setSynced] = useState(variant.stock_quantity);
+  if (synced !== variant.stock_quantity) {
+    setSynced(variant.stock_quantity);
+    setDraft(String(variant.stock_quantity));
+  }
+
+  const parsed = /^\d+$/.test(draft.trim()) ? parseInt(draft, 10) : null;
+  const dirty = parsed !== null && parsed !== variant.stock_quantity;
+  const t = tone(variant.stock_quantity);
+
+  async function save() {
+    if (parsed === null) { setDraft(String(variant.stock_quantity)); return; }
+    if (!dirty || saving) return;
+    setSaving(true);
+    const data = await postAdjust({ variantId: variant.id, delta: parsed - variant.stock_quantity, type: "adjustment", note: "Manual edit" });
+    setSaving(false);
+    if (data.error || data.newQuantity === undefined) { toast.error(data.error ?? "Could not save"); return; }
+    onSaved(data.newQuantity);
+    toast.success(`${label}: ${data.newQuantity} in stock`);
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      <input
+        type="text" inputMode="numeric" aria-label={`${label} stock`}
+        value={draft}
+        onChange={(e) => setDraft(e.target.value.replace(/[^\d]/g, ""))}
+        onBlur={save}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") e.currentTarget.blur();
+          if (e.key === "Escape") { setDraft(String(variant.stock_quantity)); e.currentTarget.blur(); }
+        }}
+        style={{
+          width: CELL_W, height: 38, borderRadius: 10, textAlign: "center", fontSize: 15, fontWeight: 800,
+          fontVariantNumeric: "tabular-nums", outline: "none", colorScheme: "dark",
+          border: `1px solid ${dirty ? "#2f9b2f" : t.border}`,
+          background: dirty ? "rgba(47,155,47,0.14)" : t.bg,
+          color: dirty ? "#4ade80" : t.color,
+        }}
+      />
+      <IconButton active={open === "adjust"} activeColor="#4ade80" label={`Add or remove stock: ${label}`} onClick={() => onToggle("adjust")}>
+        <Plus style={{ width: 14, height: 14 }} />
+      </IconButton>
+      <IconButton active={open === "history"} activeColor="#60A5FA" label={`Stock history: ${label}`} onClick={() => onToggle("history")}>
+        <History style={{ width: 14, height: 14 }} />
+      </IconButton>
+      {saving && <Loader2 style={{ width: 14, height: 14, color: "rgba(255,255,255,0.5)" }} className="animate-spin" />}
+    </div>
+  );
+}
+
+function AdjustPanel({ variant, onApplied }: { variant: Variant; onApplied: (newQty: number) => void }) {
   const [delta, setDelta] = useState(1);
   const [adjType, setAdjType] = useState<AdjType>("restock");
   const [note, setNote] = useState("");
   const [applying, setApplying] = useState(false);
-  const [movements, setMovements] = useState<StockMovement[] | null>(null);
-  const [loadingHistory, setLoadingHistory] = useState(false);
+  const qty = variant.stock_quantity;
 
-  const dirty = qty !== variant.stock_quantity;
-
-  async function save() {
-    if (!dirty) return;
-    setSaving(true);
-    const res = await fetch("/api/admin/inventory/adjust", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ variantId: variant.id, delta: qty - variant.stock_quantity, type: "adjustment", note: "Manual edit" }),
-    });
-    const data = await res.json();
-    setSaving(false);
-    if (data.error) { toast.error(data.error); return; }
-    onUpdate(productId, variant.id, data.newQuantity);
-    toast.success("Saved");
-  }
-
-  async function applyAdjustment(sign: 1 | -1) {
-    const amount = delta * sign;
+  async function apply(sign: 1 | -1) {
     setApplying(true);
-    const res = await fetch("/api/admin/inventory/adjust", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ variantId: variant.id, delta: amount, type: adjType, note: note || null }),
-    });
-    const data = await res.json();
+    const data = await postAdjust({ variantId: variant.id, delta: delta * sign, type: adjType, note: note || null });
     setApplying(false);
-    if (data.error) { toast.error(data.error); return; }
-    onUpdate(productId, variant.id, data.newQuantity);
-    setQty(data.newQuantity);
-    setNote("");
-    setMovements(null);
-    setPanel(null);
-    toast.success(`${sign > 0 ? "+" : "-"}${delta} applied`);
+    if (data.error || data.newQuantity === undefined) { toast.error(data.error ?? "Could not save"); return; }
+    onApplied(data.newQuantity);
+    toast.success(`${sign > 0 ? "+" : "−"}${delta} applied, now ${data.newQuantity}`);
   }
 
-  async function toggleHistory() {
-    if (panel === "history") { setPanel(null); return; }
-    setPanel("history");
-    if (movements !== null) return;
-    setLoadingHistory(true);
-    const res = await fetch(`/api/admin/inventory/movements/${variant.id}`);
-    const data = await res.json();
-    setLoadingHistory(false);
-    setMovements(data.movements ?? []);
-  }
-
-  const stockColor =
-    qty === 0 ? "#b91c1c" :
-    qty < 10  ? "#92400e" :
-                "#111827";
-
-  const inputBorderColor = dirty ? "#2f9b2f" : "#d8dee8";
-  const inputBg = dirty ? "#f0fff4" : "#fff";
-
+  const stepBtn = { ...fieldStyle, width: 36, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" };
   return (
-    <>
-      <tr style={{ borderTop: showName ? "2px solid #e5e7eb" : "1px solid #e5e7eb" }}>
-        {/* Product name */}
-        <td style={{ padding: "13px 16px", color: "#111827", fontWeight: 800, fontSize: 14, verticalAlign: "middle" }}>
-          {showName ? productName : ""}
-        </td>
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <button type="button" aria-label="One less" onClick={() => setDelta((d) => Math.max(1, d - 1))} style={stepBtn}>
+          <Minus style={{ width: 14, height: 14 }} />
+        </button>
+        <input
+          type="text" inputMode="numeric" aria-label="How many pairs"
+          value={delta}
+          onChange={(e) => setDelta(Math.max(1, parseInt(e.target.value.replace(/[^\d]/g, ""), 10) || 1))}
+          style={{ ...fieldStyle, width: 64, textAlign: "center", fontWeight: 800, fontVariantNumeric: "tabular-nums" }}
+        />
+        <button type="button" aria-label="One more" onClick={() => setDelta((d) => d + 1)} style={stepBtn}>
+          <Plus style={{ width: 14, height: 14 }} />
+        </button>
+      </div>
 
-        {/* Size */}
-        <td style={{ padding: "13px 16px", color: "#334155", fontSize: 14, verticalAlign: "middle" }}>
-          {variant.size}
-        </td>
+      <select aria-label="Reason" value={adjType} onChange={(e) => setAdjType(e.target.value as AdjType)} style={{ ...fieldStyle, padding: "0 12px" }}>
+        {ADJUSTMENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+      </select>
 
-        {/* SKU placeholder */}
-        <td style={{ padding: "13px 16px", color: "#94a3b8", fontSize: 13, verticalAlign: "middle", fontFamily: "monospace" }}>
-          —
-        </td>
+      <input placeholder="Note (optional)" aria-label="Note" value={note} onChange={(e) => setNote(e.target.value)} style={{ ...fieldStyle, padding: "0 14px", width: 200 }} />
 
-        {/* Stock input */}
-        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <input
-              type="number" min={0}
-              value={qty}
-              onChange={(e) => setQty(parseInt(e.target.value) || 0)}
-              onBlur={save}
-              onKeyDown={(e) => e.key === "Enter" && save()}
-              style={{
-                width: 80, height: 40, borderRadius: 10, border: `1px solid ${inputBorderColor}`,
-                background: inputBg, color: dirty ? "#2f9b2f" : stockColor,
-                fontWeight: 800, textAlign: "center", fontSize: 14, outline: "none",
-              }}
-            />
-            {saving && <Loader2 style={{ width: 14, height: 14, color: "#6b7280" }} className="animate-spin" />}
-          </div>
-        </td>
-
-        {/* Status badge */}
-        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
-          {qty === 0 && (
-            <span style={{ display: "inline-flex", padding: "3px 10px", borderRadius: 999, background: "#fee2e2", color: "#b91c1c", fontSize: 12, fontWeight: 800 }}>
-              Out of stock
-            </span>
-          )}
-          {qty > 0 && qty < 10 && (
-            <span style={{ display: "inline-flex", padding: "3px 10px", borderRadius: 999, background: "#fef3c7", color: "#92400e", fontSize: 12, fontWeight: 800 }}>
-              Low stock
-            </span>
-          )}
-          {qty >= 10 && (
-            <span style={{ display: "inline-flex", padding: "3px 10px", borderRadius: 999, background: "#dcfce7", color: "#166534", fontSize: 12, fontWeight: 800 }}>
-              In stock
-            </span>
-          )}
-        </td>
-
-        {/* Action buttons */}
-        <td style={{ padding: "13px 16px", verticalAlign: "middle" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
-            <button
-              onClick={() => setPanel(panel === "adjust" ? null : "adjust")}
-              title="Adjust stock"
-              style={{
-                height: 32, width: 32, borderRadius: 8, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                background: panel === "adjust" ? "#dcfce7" : "#f3f4f6",
-                color: panel === "adjust" ? "#166534" : "#6b7280",
-              }}
-            >
-              <Plus style={{ width: 14, height: 14 }} />
-            </button>
-            <button
-              onClick={toggleHistory}
-              title="Movement history"
-              style={{
-                height: 32, width: 32, borderRadius: 8, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                background: panel === "history" ? "#dbeafe" : "#f3f4f6",
-                color: panel === "history" ? "#1e40af" : "#6b7280",
-              }}
-            >
-              {loadingHistory ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <History style={{ width: 14, height: 14 }} />}
-            </button>
-          </div>
-        </td>
-      </tr>
-
-      {/* Adjust panel */}
-      {panel === "adjust" && (
-        <tr style={{ borderTop: "1px solid #e5e7eb" }}>
-          <td colSpan={6} style={{ padding: "14px 16px", background: "#f0fff4" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <button
-                  onClick={() => setDelta(d => Math.max(1, d - 1))}
-                  style={{ height: 36, width: 36, borderRadius: 8, background: "#fff", border: "1px solid #d8dee8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
-                  <Minus style={{ width: 14, height: 14, color: "#6b7280" }} />
-                </button>
-                <input
-                  type="number" min={1}
-                  value={delta}
-                  onChange={(e) => setDelta(Math.max(1, parseInt(e.target.value) || 1))}
-                  style={{ width: 64, height: 36, textAlign: "center", borderRadius: 8, border: "1px solid #d8dee8", background: "#fff", color: "#334155", fontSize: 13, fontWeight: 700, outline: "none" }}
-                />
-                <button
-                  onClick={() => setDelta(d => d + 1)}
-                  style={{ height: 36, width: 36, borderRadius: 8, background: "#fff", border: "1px solid #d8dee8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
-                  <Plus style={{ width: 14, height: 14, color: "#6b7280" }} />
-                </button>
-              </div>
-
-              <select
-                value={adjType}
-                onChange={(e) => setAdjType(e.target.value as AdjType)}
-                style={{ height: 36, padding: "0 12px", borderRadius: 8, border: "1px solid #d8dee8", background: "#fff", fontSize: 13, color: "#334155", outline: "none" }}
-              >
-                {ADJUSTMENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-              </select>
-
-              <input
-                placeholder="Note (optional)"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                style={{ height: 36, padding: "0 14px", borderRadius: 8, border: "1px solid #d8dee8", background: "#fff", fontSize: 13, color: "#334155", outline: "none", width: 176 }}
-              />
-
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
-                <span style={{ fontSize: 12, color: "#6b7280" }}>
-                  Remove → {Math.max(0, qty - delta)} &nbsp;·&nbsp; Add → {qty + delta}
-                </span>
-                <button
-                  onClick={() => applyAdjustment(-1)}
-                  disabled={applying}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 36, padding: "0 16px", borderRadius: 999, background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5", fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: applying ? 0.5 : 1 }}
-                >
-                  {applying ? <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> : <Minus style={{ width: 12, height: 12 }} />}
-                  Remove
-                </button>
-                <button
-                  onClick={() => applyAdjustment(1)}
-                  disabled={applying}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 36, padding: "0 16px", borderRadius: 999, background: "#2f9b2f", color: "#fff", border: "none", fontSize: 13, fontWeight: 900, cursor: "pointer", opacity: applying ? 0.5 : 1 }}
-                >
-                  {applying ? <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> : <Plus style={{ width: 12, height: 12 }} />}
-                  Add
-                </button>
-              </div>
-            </div>
-          </td>
-        </tr>
-      )}
-
-      {/* History panel */}
-      {panel === "history" && (
-        <tr style={{ borderTop: "1px solid #e5e7eb" }}>
-          <td colSpan={6} style={{ padding: "14px 16px", background: "#f8faff" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <p style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: "#6b7280" }}>Recent movements</p>
-              <button onClick={() => setPanel(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280" }}>
-                <ChevronUp style={{ width: 14, height: 14 }} />
-              </button>
-            </div>
-            {!movements || movements.length === 0 ? (
-              <p style={{ fontSize: 13, color: "#6b7280" }}>No movements yet.</p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {movements.map((m) => (
-                  <div key={m.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{
-                        padding: "2px 6px", borderRadius: 4, fontSize: 10, fontWeight: 800,
-                        background: m.quantity > 0 ? "#dcfce7" : "#fee2e2",
-                        color: m.quantity > 0 ? "#166534" : "#b91c1c",
-                      }}>
-                        {m.quantity > 0 ? "+" : ""}{m.quantity}
-                      </span>
-                      <span style={{ color: "#334155", textTransform: "capitalize" }}>{m.type}</span>
-                      {m.note && <span style={{ color: "#6b7280" }}>· {m.note}</span>}
-                    </div>
-                    <span style={{ color: "#94a3b8", fontFamily: "monospace", fontSize: 12 }}>
-                      {new Date(m.created_at).toLocaleDateString("en-NZ")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </td>
-        </tr>
-      )}
-    </>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
+        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", fontVariantNumeric: "tabular-nums" }}>
+          Remove → <span style={{ color: "#F87171" }}>{Math.max(0, qty - delta)}</span> &nbsp;·&nbsp; Add → <span style={{ color: "#4ade80" }}>{qty + delta}</span>
+        </span>
+        <button
+          type="button" onClick={() => apply(-1)} disabled={applying}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 36, padding: "0 16px", borderRadius: 999, background: "rgba(239,68,68,0.12)", color: "#F87171", border: "1px solid rgba(239,68,68,0.35)", fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: applying ? 0.5 : 1 }}
+        >
+          {applying ? <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> : <Minus style={{ width: 12, height: 12 }} />}
+          Remove {delta}
+        </button>
+        <button
+          type="button" onClick={() => apply(1)} disabled={applying}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 36, padding: "0 16px", borderRadius: 999, background: "#2f9b2f", color: "#fff", border: "none", fontSize: 13, fontWeight: 800, cursor: "pointer", opacity: applying ? 0.5 : 1 }}
+        >
+          {applying ? <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> : <Plus style={{ width: 12, height: 12 }} />}
+          Add {delta}
+        </button>
+      </div>
+    </div>
   );
 }
 
-export function InventoryEditor({
-  initialProducts,
-  lowStock,
-}: {
-  initialProducts: Product[];
-  lowStock: { variant_id: string; product_name: string; size: string; stock_quantity: number }[];
-}) {
-  const [products, setProducts] = useState(initialProducts);
+function HistoryPanel({ variantId }: { variantId: string }) {
+  const [movements, setMovements] = useState<StockMovement[] | null>(null);
 
-  function handleUpdate(productId: string, variantId: string, newQty: number) {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === productId
-          ? { ...p, product_variants: p.product_variants.map((v) => v.id === variantId ? { ...v, stock_quantity: newQty } : v) }
-          : p
-      )
-    );
+  useEffect(() => {
+    let live = true;
+    fetch(`/api/admin/inventory/movements/${variantId}`)
+      .then((r) => r.json())
+      .then((d) => { if (live) setMovements(d.movements ?? []); })
+      .catch(() => { if (live) setMovements([]); });
+    return () => { live = false; };
+  }, [variantId]);
+
+  if (movements === null) {
+    return <p style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(255,255,255,0.45)" }}><Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> Loading history…</p>;
+  }
+  if (movements.length === 0) return <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>No stock movements yet.</p>;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {movements.map((m) => (
+        <div key={m.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, fontSize: 13 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+            <span style={{
+              minWidth: 40, textAlign: "center", padding: "2px 6px", borderRadius: 6, fontSize: 11, fontWeight: 800, fontVariantNumeric: "tabular-nums",
+              background: m.quantity > 0 ? "rgba(47,155,47,0.16)" : "rgba(239,68,68,0.14)",
+              color: m.quantity > 0 ? "#4ade80" : "#F87171",
+            }}>
+              {m.quantity > 0 ? "+" : ""}{m.quantity}
+            </span>
+            <span style={{ color: "rgba(255,255,255,0.8)", textTransform: "capitalize" }}>{m.type}</span>
+            {m.note && <span style={{ color: "rgba(255,255,255,0.4)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>· {m.note}</span>}
+          </div>
+          <span style={{ color: "rgba(255,255,255,0.35)", fontFamily: "monospace", fontSize: 12, flexShrink: 0 }}>
+            {new Date(m.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function InventoryEditor({ initialProducts }: { initialProducts: Product[] }) {
+  const [products, setProducts] = useState(initialProducts);
+  const [open, setOpen] = useState<OpenPanel>(null);
+
+  function setQty(variantId: string, newQty: number) {
+    setProducts((prev) => prev.map((p) => ({
+      ...p,
+      product_variants: p.product_variants.map((v) => (v.id === variantId ? { ...v, stock_quantity: newQty } : v)),
+    })));
+  }
+
+  function toggle(variantId: string, kind: PanelKind) {
+    setOpen((o) => (o?.variantId === variantId && o.kind === kind ? null : { variantId, kind }));
+  }
+
+  const sizes = useMemo(
+    () => [...new Set(products.flatMap((p) => p.product_variants.map((v) => v.size)))].sort(bySize),
+    [products],
+  );
+  const variants = products.flatMap((p) => p.product_variants.map((v) => ({ ...v, product: p.name })));
+  const sizeTotals = sizes.map((s) => variants.filter((v) => v.size === s).reduce((n, v) => n + v.stock_quantity, 0));
+  const grandTotal = sizeTotals.reduce((n, t) => n + t, 0);
+  const restock = variants
+    .filter((v) => v.stock_quantity < LOW_STOCK)
+    .sort((a, b) => a.stock_quantity - b.stock_quantity || a.product.localeCompare(b.product) || bySize(a.size, b.size));
+  const outCount = restock.filter((v) => v.stock_quantity === 0).length;
+  const lowCount = restock.length - outCount;
+  const colCount = sizes.length + 2;
+
+  function openAdjust(variantId: string) {
+    setOpen({ variantId, kind: "adjust" });
+    requestAnimationFrame(() => document.getElementById(`stock-${variantId}`)?.scrollIntoView({ behavior: "smooth", block: "center" }));
   }
 
   return (
     <div>
-      {/* Low stock alert */}
-      {lowStock.length > 0 && (
-        <div style={{ background: "#fff7d6", color: "#92400e", border: "1px solid #facc15", borderRadius: 16, padding: "14px 18px", marginBottom: 18, fontWeight: 700, fontSize: 14, display: "flex", alignItems: "flex-start", gap: 12 }}>
-          <AlertTriangle style={{ width: 16, height: 16, flexShrink: 0, marginTop: 2 }} />
-          <div>
-            <span style={{ fontWeight: 800 }}>{lowStock.length} variant{lowStock.length !== 1 ? "s" : ""} need restocking</span>
-            <span style={{ fontWeight: 500, fontSize: 13, display: "block", marginTop: 2, color: "#92400e", opacity: 0.8 }}>
-              {lowStock.map((v) => `${v.product_name} (${v.size})`).join(" · ")}
-            </span>
+      {/* Sizes to restock, live: updates as numbers are saved. Click one to restock it. */}
+      {restock.length > 0 && (
+        <div style={{ background: "rgba(245,158,11,0.07)", border: "1px solid rgba(245,158,11,0.28)", borderRadius: 16, padding: "14px 18px", marginBottom: 18, display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <AlertTriangle style={{ width: 16, height: 16, flexShrink: 0, marginTop: 3, color: "#FBBF24" }} />
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontWeight: 800, fontSize: 14, color: "#FBBF24" }}>
+              {restock.length} size{restock.length !== 1 ? "s" : ""} need restocking
+              <span style={{ fontWeight: 500, color: "rgba(251,191,36,0.7)" }}>
+                {outCount > 0 && ` · ${outCount} out of stock`}{lowCount > 0 && ` · ${lowCount} running low`}
+              </span>
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+              {restock.map((v) => {
+                const t = tone(v.stock_quantity);
+                return (
+                  <button
+                    key={v.id} type="button" onClick={() => openAdjust(v.id)} title={`Restock ${v.product} ${v.size}`}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, fontSize: 12, fontWeight: 600, cursor: "pointer", background: t.bg, border: `1px solid ${t.border}`, color: "rgba(255,255,255,0.85)" }}
+                  >
+                    {v.product} {v.size}
+                    <span style={{ fontWeight: 800, color: t.color, fontVariantNumeric: "tabular-nums" }}>{v.stock_quantity}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Inventory table */}
-      <div style={{ background: "#f7f8f4", borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.10)" }}>
+      {/* Stock by design and size, with totals along the bottom */}
+      <div style={{ borderRadius: 18, overflow: "hidden", background: "rgba(8,28,16,0.92)", border: "1px solid rgba(255,255,255,0.09)" }}>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-            <thead style={{ background: "#eaf2fb" }}>
-              <tr>
-                {["Product", "Size", "SKU", "Stock", "Status", "Actions"].map((h) => (
-                  <th key={h} style={{ textAlign: h === "Actions" ? "right" : "left", padding: "12px 16px", fontWeight: 800, color: "#334155", whiteSpace: "nowrap" }}>{h}</th>
-                ))}
+          <table style={{ width: "100%", minWidth: 200 + sizes.length * 190, borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                <th style={{ ...thStyle, ...stickyCol() }}>Design</th>
+                {sizes.map((s) => <th key={s} style={thStyle}>Size {s}</th>)}
+                <th style={{ ...thStyle, textAlign: "right" }}>Total</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product) =>
-                [...product.product_variants]
-                  .sort((a, b) => a.size.localeCompare(b.size))
-                  .map((variant, vi) => (
-                    <VariantRow
-                      key={variant.id}
-                      productId={product.id}
-                      productName={product.name}
-                      showName={vi === 0}
-                      variant={variant}
-                      onUpdate={handleUpdate}
-                    />
-                  ))
+              {products.length === 0 && (
+                <tr><td colSpan={colCount} style={{ padding: "48px 18px", textAlign: "center", color: "rgba(255,255,255,0.3)" }}>No active products.</td></tr>
               )}
+              {products.map((product, i) => {
+                const total = product.product_variants.reduce((n, v) => n + v.stock_quantity, 0);
+                const openVariant = product.product_variants.find((v) => v.id === open?.variantId);
+                return (
+                  <Fragment key={product.id}>
+                    <tr className="hover:bg-white/[0.02]" style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.06)" : undefined }}>
+                      <td style={{ ...tdStyle, ...stickyCol(), fontWeight: 700, fontSize: 14, color: "#fff", whiteSpace: "nowrap" }}>{product.name}</td>
+                      {sizes.map((s) => {
+                        const inSize = product.product_variants.filter((v) => v.size === s);
+                        return (
+                          <td key={s} style={tdStyle}>
+                            {inSize.length === 0 ? (
+                              <span style={{ display: "inline-block", width: CELL_W, textAlign: "center", color: "rgba(255,255,255,0.2)" }}>—</span>
+                            ) : (
+                              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                                {inSize.map((v) => (
+                                  <div key={v.id} id={`stock-${v.id}`}>
+                                    <StockCell
+                                      variant={v}
+                                      label={`${product.name} ${v.size}`}
+                                      open={open?.variantId === v.id ? open.kind : null}
+                                      onToggle={(kind) => toggle(v.id, kind)}
+                                      onSaved={(q) => setQty(v.id, q)}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td style={{ ...tdStyle, textAlign: "right", fontWeight: 800, fontSize: 15, fontVariantNumeric: "tabular-nums", color: total === 0 ? "#F87171" : "#fff" }}>{total}</td>
+                    </tr>
+                    {openVariant && open && (
+                      <tr>
+                        <td colSpan={colCount} style={{ padding: "0 18px 16px" }}>
+                          <div style={{ borderRadius: 14, padding: "14px 16px", background: open.kind === "adjust" ? "rgba(47,155,47,0.08)" : "rgba(96,165,250,0.07)", border: `1px solid ${open.kind === "adjust" ? "rgba(47,155,47,0.25)" : "rgba(96,165,250,0.22)"}` }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(255,255,255,0.45)" }}>
+                                {open.kind === "adjust" ? "Add or remove stock" : "Stock history"} · <span style={{ color: "#fff" }}>{product.name} {openVariant.size}</span>
+                              </p>
+                              <button type="button" aria-label="Close" onClick={() => setOpen(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.45)", display: "flex" }}>
+                                <X style={{ width: 15, height: 15 }} />
+                              </button>
+                            </div>
+                            {open.kind === "adjust"
+                              ? <AdjustPanel key={openVariant.id} variant={openVariant} onApplied={(q) => setQty(openVariant.id, q)} />
+                              : <HistoryPanel key={openVariant.id} variantId={openVariant.id} />}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
             </tbody>
+            {products.length > 0 && (
+              <tfoot>
+                <tr style={{ borderTop: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.035)" }}>
+                  <td style={{ ...tdStyle, ...stickyCol("#11231a"), fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)", whiteSpace: "nowrap" }}>Total pairs</td>
+                  {sizeTotals.map((t, i) => (
+                    <td key={sizes[i]} style={tdStyle}>
+                      <span style={{ display: "inline-block", width: CELL_W, textAlign: "center", fontWeight: 800, fontSize: 15, color: "#fff", fontVariantNumeric: "tabular-nums" }}>{t}</span>
+                    </td>
+                  ))}
+                  <td style={{ ...tdStyle, textAlign: "right", fontWeight: 900, fontSize: 18, color: "#4ade80", fontVariantNumeric: "tabular-nums" }}>{grandTotal}</td>
+                </tr>
+              </tfoot>
+            )}
           </table>
+        </div>
+        <div style={{ padding: "12px 18px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
+          <p>{products.length} design{products.length !== 1 ? "s" : ""} · {variants.length} sizes · type a number and press Enter to save it</p>
+          <p style={{ display: "flex", gap: 14 }}>
+            <span><span style={{ color: "#F87171" }}>●</span> Out of stock</span>
+            <span><span style={{ color: "#FBBF24" }}>●</span> Under {LOW_STOCK}</span>
+          </p>
         </div>
       </div>
     </div>
