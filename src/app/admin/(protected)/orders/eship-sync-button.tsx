@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2, RefreshCw } from "lucide-react";
 
-type Result = { markedShipped?: number[]; markedDelivered?: number[]; trackingAdded?: number; error?: string };
+type Result = { markedShipped?: number[]; markedDelivered?: number[]; trackingAdded?: number; sentToEShip?: { pushed: number[]; failed: { order: number; error: string }[] }; error?: string };
 
-/** Pulls shipped orders and delivery status back from NZ Post eShip (also runs hourly). */
+/** Sends new orders to NZ Post eShip and pulls shipped/delivered status back (also runs hourly). */
 export function EShipSyncButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -23,9 +23,15 @@ export function EShipSyncButton() {
       } else {
         const shipped = data.markedShipped?.length ?? 0;
         const delivered = data.markedDelivered?.length ?? 0;
-        setMessage(shipped || delivered
-          ? `Updated from NZ Post: ${shipped} newly shipped, ${delivered} delivered.`
-          : "Up to date with NZ Post.");
+        const sent = data.sentToEShip?.pushed ?? [];
+        const failed = data.sentToEShip?.failed ?? [];
+        const parts = [
+          sent.length ? `${sent.length} sent to eShip (#${sent.join(", #")})` : "",
+          shipped ? `${shipped} newly shipped` : "",
+          delivered ? `${delivered} delivered` : "",
+          failed.length ? `${failed.length} couldn't be sent: #${failed.map((f) => f.order).join(", #")}` : "",
+        ].filter(Boolean);
+        setMessage(parts.length ? parts.join(" · ") : "Up to date with NZ Post.");
         router.refresh();
       }
     } catch {
@@ -42,7 +48,7 @@ export function EShipSyncButton() {
         type="button"
         onClick={sync}
         disabled={busy}
-        title="Pull shipped and delivered orders from NZ Post eShip. This also runs every hour."
+        title="Send new orders to NZ Post eShip and pull back shipped and delivered ones. This also runs every hour."
         style={{ height: 34, padding: "0 14px", borderRadius: 999, fontSize: 12, fontWeight: 800, background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: 7, opacity: busy ? 0.7 : 1 }}
       >
         {busy ? <Loader2 style={{ width: 13, height: 13 }} className="animate-spin" /> : <RefreshCw style={{ width: 13, height: 13 }} />}

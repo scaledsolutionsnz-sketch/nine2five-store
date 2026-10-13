@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { syncEShip } from "@/lib/eship-sync";
+import { pushMissingToEShip, syncEShip } from "@/lib/eship-sync";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
-/** Hourly: pull shipped orders and delivery status back from NZ Post eShip. */
+/** Hourly: send new orders to NZ Post eShip, and pull shipped orders and delivery status back. */
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization");
   if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
+    // Send new orders that aren't in eShip yet, then pull back what has shipped.
+    const sent = await pushMissingToEShip();
     const result = await syncEShip();
-    return NextResponse.json({ ok: true, ...result });
+    return NextResponse.json({ ok: true, sentToEShip: sent, ...result });
   } catch (err) {
     console.error("[cron] eShip sync failed:", err);
     return NextResponse.json({ error: err instanceof Error ? err.message : "eShip sync failed" }, { status: 500 });

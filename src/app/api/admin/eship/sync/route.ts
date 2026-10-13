@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { syncEShip } from "@/lib/eship-sync";
+import { pushMissingToEShip, syncEShip } from "@/lib/eship-sync";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -11,7 +11,8 @@ export const maxDuration = 120;
  */
 export async function POST() {
   try {
-    return NextResponse.json({ ok: true, ...(await syncEShip()) });
+    const sent = await pushMissingToEShip();
+    return NextResponse.json({ ok: true, sentToEShip: sent, ...(await syncEShip()) });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "eShip sync failed" }, { status: 502 });
   }
@@ -20,7 +21,8 @@ export async function POST() {
 export async function GET(req: NextRequest) {
   const dryRun = req.nextUrl.searchParams.get("dry") === "1";
   try {
-    return NextResponse.json({ ok: true, dryRun, ...(await syncEShip({ dryRun, maxTrackingChecks: dryRun ? 3 : 40 })) });
+    const sent = await pushMissingToEShip({ dryRun });
+    return NextResponse.json({ ok: true, dryRun, sentToEShip: sent, ...(await syncEShip({ dryRun, maxTrackingChecks: dryRun ? 3 : 40 })) });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "eShip sync failed" }, { status: 502 });
   }

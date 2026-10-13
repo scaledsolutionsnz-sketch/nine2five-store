@@ -1,4 +1,6 @@
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { createEShipShipment } from "@/lib/eship";
+import type { ShippingAddress } from "@/types/database";
 
 /**
  * Brings shipping status back from NZ Post eShip (StarShipIT) into our orders.
@@ -12,6 +14,10 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
  *    "delivered" (shown as Fulfilled on the orders page).
  * Orders made by hand in eShip (low numbers like 92-95) don't match a store
  * order and are skipped.
+ *
+ * It also sends orders to eShip that never got there: only paid website orders
+ * are pushed automatically (Stripe webhook), so orders added in the admin, POS
+ * orders for delivery and replacements sat outside eShip until someone noticed.
  */
 
 const BASE = "https://api.starshipit.com/api";
@@ -189,4 +195,61 @@ export async function syncEShip({ sinceDays = 90, maxTrackingChecks = 40, dryRun
       },
     } : {}),
   };
+}
+
+/** Order numbers eShip already holds that haven't shipped (its New and Printed tabs). */
+export async function listUnshippedNumbers(): Promise<Set<string>> {
+  const out = new Set<string>();
+  for (let page = 1; page <= 20; page++) {
+    const params = new URLSearchParams({ limit: "250", page: String(page) });
+    const data = await api<{ orders?: { order_number?: string | number | null }[]; total_pages?: number }>(`/orders/unshipped?${params}`);
+    for (const o of data.orders ?? []) if (o.order_number != null) out.add(String(o.order_number).trim());
+    if (!data.orders?.length || page >= (data.total_pages ?? 1)) break;
+  }
+  return out;
+}
+
+const IN_PERSON = /in-person sale/i;
+
+/**
+ * Send recent unfulfilled orders to eShip if they aren't there yet. Only orders
+ * from the last `sinceDays` days, so the June-July backlog (sent before eShip
+ * was used) is never re-imported, and never in-person POS sales.
+ */
+export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}): Promise<{ pushed: number[]; skipped: { order: number; reason: string }[]; failed: { order: number; error: string }[] }> {
+  if (!process.env.NZPOST_ESHIP_API_KEY) throw new Error("NZPOST_ESHIP_API_KEY is not set");
+  const db = createServiceRoleClient();
+  const since = new Date(Date.now() - sinceDays * 86_400_000).toISOString();
+  const { data, error } = await db.from("orders")
+    .select("id, order_number, status, shipping_address, created_at, order_items(quantity, variant_id, product_name, size, unit_price)")
+    .in("status", ["pending", "processing"]).gte("created_at", since).order("order_number");
+  if (error) throw new Error(`Could not read orders: ${error.message}`);
+  const orders = (data ?? []) as { id: string; order_number: number; shipping_address: ShippingAddress | null; order_items: { quantity: number; variant_id: string; product_name: string; size: string; unit_price: number }[] }[];
+  if (!orders.length) return { pushed: [], skipped: [], failed: [] };
+
+  const [unshipped, shipped] = await Promise.all([listUnshippedNumbers(), listShipped(since)]);
+  const inEShip = new Set([...unshipped, ...shipped.map((o) => String(o.order_number ?? "").trim())]);
+  const pushed: number[] = []; const skipped: { order: number; reason: string }[] = []; const failed: { order: number; error: string }[] = [];
+  for (const o of orders) {
+    const addr = o.shipping_address;
+    if (inEShip.has(String(o.order_number))) continue;
+    if (!addr?.line1 || !addr.city || !addr.postcode || IN_PERSON.test(addr.line1)) { skipped.push({ order: o.order_number, reason: "no delivery address (collected in person or missing)" }); continue; }
+    const items = o.order_items ?? [];
+    const totalPairs = items.reduce((n, i) => n + i.quantity, 0);
+    if (!totalPairs) { skipped.push({ order: o.order_number, reason: "no items" }); continue; }
+    if (dryRun) { pushed.push(o.order_number); continue; }
+    try {
+      await createEShipShipment({
+        orderNumber: o.order_number,
+        shippingAddress: addr,
+        totalPairs,
+        items: items.map((i) => ({ sku: i.variant_id, description: `${i.product_name} – ${i.size}`, quantity: i.quantity, unit_price: i.unit_price })),
+      });
+      pushed.push(o.order_number);
+    } catch (e) {
+      failed.push({ order: o.order_number, error: e instanceof Error ? e.message.slice(0, 300) : "eShip error" });
+    }
+    await sleep(600);
+  }
+  return { pushed, skipped, failed };
 }
