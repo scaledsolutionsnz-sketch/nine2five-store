@@ -162,7 +162,9 @@ export async function syncEShip({ sinceDays = 90, maxTrackingChecks = 40, dryRun
     if (Object.keys(patch).length) {
       if (!dryRun) {
         patch.updated_at = now;
-        await db.from("orders").update(patch).eq("id", r.id).in("status", ["pending", "processing", "shipped"]);
+        // A tracking-only patch may also land on a delivered order; a status change never moves one backwards.
+        const from = patch.status ? ["pending", "processing", "shipped"] : ["pending", "processing", "shipped", "delivered"];
+        await db.from("orders").update(patch).eq("id", r.id).in("status", from);
       }
       if (patch.status === "shipped") markedShipped.push(r.order_number);
       if (patch.status === "delivered") markedDeliveredFromList.push(r.order_number);
