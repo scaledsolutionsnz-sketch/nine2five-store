@@ -42,8 +42,20 @@ export type EShipShippedOrder = {
   [key: string]: unknown;
 };
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// eShip allows about two calls a second: space calls out and wait out a 429.
+let lastCall = 0;
 async function api<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { headers: headers(), cache: "no-store" });
+  let res: Response;
+  for (let attempt = 1; ; attempt++) {
+    const wait = lastCall + 600 - Date.now();
+    if (wait > 0) await sleep(wait);
+    lastCall = Date.now();
+    res = await fetch(`${BASE}${path}`, { headers: headers(), cache: "no-store" });
+    if (res.status !== 429 || attempt >= 4) break;
+    await sleep(1500 * attempt);
+  }
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`eShip ${path.split("?")[0]} failed (${res.status}): ${text.slice(0, 200)}`);
@@ -85,7 +97,6 @@ export async function trackingStatus(orderNumber: number, trackingNumber: string
   return null;
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** NZ Post's status text on an eShip shipped order, e.g. "Delivered", "In Transit", "Printed". */
 const statusOf = (o: EShipShippedOrder) => String(o.tracking_short_status || o.tracking_full_status || "").trim();
@@ -216,7 +227,18 @@ const IN_PERSON = /in-person sale/i;
  * from the last `sinceDays` days, so the June-July backlog (sent before eShip
  * was used) is never re-imported, and never in-person POS sales.
  */
-export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}): Promise<{ pushed: number[]; skipped: { order: number; reason: string }[]; failed: { order: number; error: string }[] }> {
+export type PushResult = { pushed: number[]; skipped: { order: number; reason: string }[]; failed: { order: number; error: string }[]; error?: string };
+
+/** Same as pushMissingToEShip, but a failure is reported instead of thrown so the status pull still runs. */
+export async function pushMissingSafely(opts: { sinceDays?: number; dryRun?: boolean } = {}): Promise<PushResult> {
+  try {
+    return await pushMissingToEShip(opts);
+  } catch (e) {
+    return { pushed: [], skipped: [], failed: [], error: e instanceof Error ? e.message.slice(0, 300) : "eShip error" };
+  }
+}
+
+export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}): Promise<PushResult> {
   if (!process.env.NZPOST_ESHIP_API_KEY) throw new Error("NZPOST_ESHIP_API_KEY is not set");
   const db = createServiceRoleClient();
   const since = new Date(Date.now() - sinceDays * 86_400_000).toISOString();
@@ -227,7 +249,8 @@ export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}
   const orders = (data ?? []) as { id: string; order_number: number; shipping_address: ShippingAddress | null; order_items: { quantity: number; variant_id: string; product_name: string; size: string; unit_price: number }[] }[];
   if (!orders.length) return { pushed: [], skipped: [], failed: [] };
 
-  const [unshipped, shipped] = await Promise.all([listUnshippedNumbers(), listShipped(since)]);
+  const unshipped = await listUnshippedNumbers();
+  const shipped = await listShipped(since);
   const inEShip = new Set([...unshipped, ...shipped.map((o) => String(o.order_number ?? "").trim())]);
   const pushed: number[] = []; const skipped: { order: number; reason: string }[] = []; const failed: { order: number; error: string }[] = [];
   for (const o of orders) {
@@ -238,6 +261,8 @@ export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}
     const totalPairs = items.reduce((n, i) => n + i.quantity, 0);
     if (!totalPairs) { skipped.push({ order: o.order_number, reason: "no items" }); continue; }
     if (dryRun) { pushed.push(o.order_number); continue; }
+    await sleep(Math.max(0, lastCall + 1000 - Date.now()));
+    lastCall = Date.now();
     try {
       await createEShipShipment({
         orderNumber: o.order_number,
@@ -249,7 +274,6 @@ export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}
     } catch (e) {
       failed.push({ order: o.order_number, error: e instanceof Error ? e.message.slice(0, 300) : "eShip error" });
     }
-    await sleep(600);
   }
   return { pushed, skipped, failed };
 }

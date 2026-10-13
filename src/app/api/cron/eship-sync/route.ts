@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { pushMissingToEShip, syncEShip } from "@/lib/eship-sync";
+import { pushMissingSafely, syncEShip } from "@/lib/eship-sync";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
   try {
     // Send new orders that aren't in eShip yet, then pull back what has shipped.
-    const sent = await pushMissingToEShip();
+    const sent = await pushMissingSafely();
     const result = await syncEShip();
     return NextResponse.json({ ok: true, sentToEShip: sent, ...result });
   } catch (err) {

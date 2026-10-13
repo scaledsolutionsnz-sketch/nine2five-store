@@ -1,28 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
-import { pushMissingToEShip, syncEShip } from "@/lib/eship-sync";
+import { NextResponse } from "next/server";
+import { pushMissingSafely, syncEShip } from "@/lib/eship-sync";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 /**
  * "Sync with NZ Post" on the orders page (admin only: the middleware checks
- * admin_users for every /api/admin route). GET ?dry=1 shows what would change
- * without writing anything.
+ * admin_users for every /api/admin route). GET only previews what would change
+ * (a dry run), so opening the URL never sends or edits anything.
  */
 export async function POST() {
   try {
-    const sent = await pushMissingToEShip();
+    const sent = await pushMissingSafely();
     return NextResponse.json({ ok: true, sentToEShip: sent, ...(await syncEShip()) });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "eShip sync failed" }, { status: 502 });
   }
 }
 
-export async function GET(req: NextRequest) {
-  const dryRun = req.nextUrl.searchParams.get("dry") === "1";
+export async function GET() {
   try {
-    const sent = await pushMissingToEShip({ dryRun });
-    return NextResponse.json({ ok: true, dryRun, sentToEShip: sent, ...(await syncEShip({ dryRun, maxTrackingChecks: dryRun ? 3 : 40 })) });
+    const sent = await pushMissingSafely({ dryRun: true });
+    return NextResponse.json({ ok: true, dryRun: true, sentToEShip: sent, ...(await syncEShip({ dryRun: true, maxTrackingChecks: 3 })) });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "eShip sync failed" }, { status: 502 });
   }
