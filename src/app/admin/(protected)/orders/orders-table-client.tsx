@@ -414,6 +414,12 @@ export function OrdersTableClient({ orders, now }: { orders: OrderRow[]; now: nu
                   {/* Fulfillment */}
                   <td style={{ padding: "14px 16px", verticalAlign: "middle" }}>
                     <span style={{ ...BADGE_BASE, background: fulfillment.bg, color: fulfillment.color }}>{fulfillment.label}</span>
+                    {order.tracking_number && (fulfillmentKey === "shipped" || fulfillmentKey === "fulfilled") && (
+                      <a href={`https://www.nzpost.co.nz/tools/tracking/item/${encodeURIComponent(order.tracking_number)}`} target="_blank" rel="noopener noreferrer"
+                        style={{ display: "block", marginTop: 4, fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "underline", fontFamily: "monospace" }}>
+                        Track {order.tracking_number}
+                      </a>
+                    )}
                   </td>
 
                   {/* Total */}

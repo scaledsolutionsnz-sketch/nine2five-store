@@ -6,17 +6,30 @@ import type { Order } from "@/types/database";
 import { Plus, ShoppingCart, DollarSign, PackageCheck, Clock } from "lucide-react";
 import { OrdersTableClient } from "./orders-table-client";
 import { OrdersSearchClient } from "./orders-search-client";
+import { EShipSyncButton } from "./eship-sync-button";
 
 const PAGE_SIZE = 50;
+
+/* Fulfillment views. "Shipped" is in transit with NZ Post; "Fulfilled" is delivered.
+   Statuses come back from NZ Post eShip hourly (src/lib/eship-sync.ts). */
+const VIEWS = {
+  all: { label: "All", statuses: null },
+  unfulfilled: { label: "Unfulfilled", statuses: ["pending", "processing"] },
+  shipped: { label: "Shipped", statuses: ["shipped"] },
+  fulfilled: { label: "Fulfilled", statuses: ["delivered"] },
+} as const;
+type ViewKey = keyof typeof VIEWS;
 
 type OrderRow = Order & { order_items: { quantity: number; product_name: string; size: string }[] };
 
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; search?: string }>;
+  searchParams: Promise<{ page?: string; search?: string; view?: string }>;
 }) {
-  const { page: pageParam, search: rawSearch } = await searchParams;
+  const { page: pageParam, search: rawSearch, view: rawView } = await searchParams;
+  const view: ViewKey = rawView && rawView in VIEWS ? (rawView as ViewKey) : "all";
+  const viewStatuses = VIEWS[view].statuses;
   const search = rawSearch?.trim() ?? "";
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
   const from = (page - 1) * PAGE_SIZE;
@@ -28,6 +41,8 @@ export default async function OrdersPage({
     .from("orders")
     .select("*, order_items(quantity, product_name, size)", { count: "exact" })
     .order("created_at", { ascending: false });
+
+  if (viewStatuses) query = query.in("status", [...viewStatuses]);
 
   if (search) {
     const num = parseInt(search.replace(/^#/, ""), 10);
@@ -51,6 +66,13 @@ export default async function OrdersPage({
 
   const totalRevenue = (allStats ?? []).reduce((s, o) => s + (o.total ?? 0), 0);
   const unfulfilledCount = (allStats ?? []).filter(o => o.status === "pending" || o.status === "processing").length;
+  const viewCounts: Record<ViewKey, number> = {
+    all: (allStats ?? []).length,
+    unfulfilled: unfulfilledCount,
+    shipped: (allStats ?? []).filter(o => o.status === "shipped").length,
+    fulfilled: (allStats ?? []).filter(o => o.status === "delivered").length,
+  };
+  const qs = (p: number) => `/admin/orders?page=${p}${view !== "all" ? `&view=${view}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
   const todayOrders = (allStats ?? []).filter(o => now - new Date(o.created_at).getTime() < 86_400_000).length;
   const avgOrder = (allStats ?? []).length > 0 ? Math.round(totalRevenue / (allStats ?? []).length) : 0;
 
@@ -103,7 +125,7 @@ export default async function OrdersPage({
         {/* Toolbar */}
         <div style={{ padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <p style={{ fontWeight: 800, fontSize: 14, color: "#fff" }}>All Orders</p>
+            <p style={{ fontWeight: 800, fontSize: 14, color: "#fff" }}>{view === "all" ? "All Orders" : `${VIEWS[view].label} Orders`}</p>
             <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "monospace" }}>({count ?? 0})</span>
             {todayOrders > 0 && (
               <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", background: "rgba(47,155,47,0.2)", color: "#4ade80", border: "1px solid rgba(47,155,47,0.3)", borderRadius: 9999, padding: "2px 8px" }}>
@@ -111,8 +133,27 @@ export default async function OrdersPage({
               </span>
             )}
           </div>
-          <OrdersSearchClient defaultValue={search} />
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <EShipSyncButton />
+            <OrdersSearchClient defaultValue={search} />
+          </div>
         </div>
+
+        {/* Fulfillment views */}
+        <nav aria-label="Filter orders by fulfillment" style={{ padding: "10px 20px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {(Object.keys(VIEWS) as ViewKey[]).map((key) => {
+            const active = key === view;
+            return (
+              <Link key={key} href={key === "all" ? "/admin/orders" : `/admin/orders?view=${key}`} aria-current={active ? "page" : undefined}
+                style={{ height: 32, padding: "0 14px", borderRadius: 999, fontSize: 12, fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8,
+                  background: active ? "rgba(47,155,47,0.2)" : "rgba(255,255,255,0.05)", color: active ? "#4ade80" : "rgba(255,255,255,0.7)",
+                  border: `1px solid ${active ? "rgba(47,155,47,0.4)" : "rgba(255,255,255,0.1)"}` }}>
+                {VIEWS[key].label}
+                <span style={{ fontFamily: "monospace", fontSize: 11, opacity: 0.8 }}>{viewCounts[key].toLocaleString()}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
         <OrdersTableClient orders={orders} now={now} />
       </div>
@@ -125,7 +166,7 @@ export default async function OrdersPage({
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {page > 1 && (
-              <Link href={`/admin/orders?page=${page - 1}${search ? `&search=${encodeURIComponent(search)}` : ""}`}
+              <Link href={qs(page - 1)}
                 style={{ height: 38, padding: "0 16px", borderRadius: 999, fontSize: 13, fontWeight: 700, background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", display: "inline-flex", alignItems: "center", textDecoration: "none" }}>
                 ← Previous
               </Link>
@@ -134,7 +175,7 @@ export default async function OrdersPage({
               {page} / {totalPages}
             </span>
             {page < totalPages && (
-              <Link href={`/admin/orders?page=${page + 1}${search ? `&search=${encodeURIComponent(search)}` : ""}`}
+              <Link href={qs(page + 1)}
                 style={{ height: 38, padding: "0 16px", borderRadius: 999, fontSize: 13, fontWeight: 700, background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", display: "inline-flex", alignItems: "center", textDecoration: "none" }}>
                 Next →
               </Link>

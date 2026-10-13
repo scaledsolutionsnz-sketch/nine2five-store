@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/low-stock",
       "schedule": "0 20 * * *"
+    },
+    {
+      "path": "/api/cron/eship-sync",
+      "schedule": "15 * * * *"
     }
   ]
 }
