@@ -46,16 +46,19 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // eShip allows about two calls a second: space calls out and wait out a 429.
 let lastCall = 0;
-async function api<T>(path: string): Promise<T> {
-  let res: Response;
+async function call(path: string): Promise<Response> {
   for (let attempt = 1; ; attempt++) {
     const wait = lastCall + 600 - Date.now();
     if (wait > 0) await sleep(wait);
     lastCall = Date.now();
-    res = await fetch(`${BASE}${path}`, { headers: headers(), cache: "no-store" });
-    if (res.status !== 429 || attempt >= 4) break;
+    const res = await fetch(`${BASE}${path}`, { headers: headers(), cache: "no-store" });
+    if (res.status !== 429 || attempt >= 4) return res;
     await sleep(1500 * attempt);
   }
+}
+
+async function api<T>(path: string): Promise<T> {
+  const res = await call(path);
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`eShip ${path.split("?")[0]} failed (${res.status}): ${text.slice(0, 200)}`);
@@ -208,16 +211,13 @@ export async function syncEShip({ sinceDays = 90, maxTrackingChecks = 40, dryRun
   };
 }
 
-/** Order numbers eShip already holds that haven't shipped (its New and Printed tabs). */
-export async function listUnshippedNumbers(): Promise<Set<string>> {
-  const out = new Set<string>();
-  for (let page = 1; page <= 20; page++) {
-    const params = new URLSearchParams({ limit: "250", page: String(page) });
-    const data = await api<{ orders?: { order_number?: string | number | null }[]; total_pages?: number }>(`/orders/unshipped?${params}`);
-    for (const o of data.orders ?? []) if (o.order_number != null) out.add(String(o.order_number).trim());
-    if (!data.orders?.length || page >= (data.total_pages ?? 1)) break;
-  }
-  return out;
+/** Whether eShip already has this order, in any tab (New, Printed, Shipped...). */
+async function findInEShip(orderNumber: number): Promise<{ found: boolean; status?: string }> {
+  const res = await call(`/orders?order_number=${orderNumber}`);
+  const body = (await res.json().catch(() => null)) as { success?: boolean; order?: { status?: string } | null } | null;
+  if (body?.order) return { found: true, status: body.order.status };
+  if (res.status === 404 || (res.ok && body?.success === false) || (res.ok && body && !body.order)) return { found: false };
+  throw new Error(`eShip order lookup failed (${res.status})`);
 }
 
 const IN_PERSON = /in-person sale/i;
@@ -249,17 +249,19 @@ export async function pushMissingToEShip({ sinceDays = 21, dryRun = false } = {}
   const orders = (data ?? []) as { id: string; order_number: number; shipping_address: ShippingAddress | null; order_items: { quantity: number; variant_id: string; product_name: string; size: string; unit_price: number }[] }[];
   if (!orders.length) return { pushed: [], skipped: [], failed: [] };
 
-  const unshipped = await listUnshippedNumbers();
-  const shipped = await listShipped(since);
-  const inEShip = new Set([...unshipped, ...shipped.map((o) => String(o.order_number ?? "").trim())]);
   const pushed: number[] = []; const skipped: { order: number; reason: string }[] = []; const failed: { order: number; error: string }[] = [];
   for (const o of orders) {
     const addr = o.shipping_address;
-    if (inEShip.has(String(o.order_number))) continue;
     if (!addr?.line1 || !addr.city || !addr.postcode || IN_PERSON.test(addr.line1)) { skipped.push({ order: o.order_number, reason: "no delivery address (collected in person or missing)" }); continue; }
     const items = o.order_items ?? [];
     const totalPairs = items.reduce((n, i) => n + i.quantity, 0);
     if (!totalPairs) { skipped.push({ order: o.order_number, reason: "no items" }); continue; }
+    try {
+      if ((await findInEShip(o.order_number)).found) continue;
+    } catch (e) {
+      failed.push({ order: o.order_number, error: e instanceof Error ? e.message : "eShip lookup failed" });
+      continue;
+    }
     if (dryRun) { pushed.push(o.order_number); continue; }
     await sleep(Math.max(0, lastCall + 1000 - Date.now()));
     lastCall = Date.now();
