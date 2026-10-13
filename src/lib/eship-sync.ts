@@ -30,6 +30,8 @@ export type EShipShippedOrder = {
   shipped_date?: string | null;
   tracking_number?: string | null;
   tracking_url?: string | null;
+  tracking_short_status?: string | null;
+  tracking_full_status?: string | null;
   packages?: EShipPackage[] | null;
   [key: string]: unknown;
 };
@@ -79,6 +81,12 @@ export async function trackingStatus(orderNumber: number, trackingNumber: string
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** NZ Post's status text on an eShip shipped order, e.g. "Delivered", "In Transit", "Printed". */
+const statusOf = (o: EShipShippedOrder) => String(o.tracking_short_status || o.tracking_full_status || "").trim();
+const isDelivered = (s: string) => /deliver/i.test(s) && !/out\s*for|attempt|fail/i.test(s);
+/** A label printed but never handed to NZ Post (eShip's "Printed" tab) isn't shipped yet. */
+const isNotYetSent = (s: string) => /printed|awaiting|label created|not yet/i.test(s);
+
 export type EShipSyncResult = {
   eshipShipped: number;
   matched: number;
@@ -87,7 +95,7 @@ export type EShipSyncResult = {
   markedDelivered: number[];
   trackingChecked: number;
   notInStore: string[];
-  preview?: { orderKeys: string[]; packageKeys: string[]; firstTracking: string | null; trackSample: { order: number; status: string | null } | null };
+  preview?: { orderKeys: string[]; packageKeys: string[]; firstTracking: string | null; trackSample: { order: number; status: string | null } | null; statusCounts: Record<string, number>; statusOf1133?: string };
 };
 
 export async function syncEShip({ sinceDays = 90, maxTrackingChecks = 40, dryRun = false } = {}): Promise<EShipSyncResult> {
@@ -117,26 +125,37 @@ export async function syncEShip({ sinceDays = 90, maxTrackingChecks = 40, dryRun
   const markedShipped: number[] = [];
   let trackingAdded = 0;
   const inTransit: typeof rows = [];
+  const markedDeliveredFromList: number[] = [];
+  const statusCounts: Record<string, number> = {};
   for (const r of rows) {
     const o = byNumber.get(r.order_number)!;
     const tracking = trackingNumberOf(o);
+    const nzStatus = statusOf(o);
+    statusCounts[nzStatus || "(none)"] = (statusCounts[nzStatus || "(none)"] ?? 0) + 1;
     const patch: Record<string, unknown> = {};
-    if (r.status === "pending" || r.status === "processing") patch.status = "shipped";
+    if (isDelivered(nzStatus)) {
+      if (r.status === "pending" || r.status === "processing" || r.status === "shipped") patch.status = "delivered";
+    } else if (!isNotYetSent(nzStatus) && (r.status === "pending" || r.status === "processing")) {
+      patch.status = "shipped";
+    }
     if (!r.tracking_number && tracking) patch.tracking_number = tracking;
     if (Object.keys(patch).length) {
       if (!dryRun) {
         patch.updated_at = now;
         await db.from("orders").update(patch).eq("id", r.id).in("status", ["pending", "processing", "shipped"]);
       }
-      if (patch.status) markedShipped.push(r.order_number);
+      if (patch.status === "shipped") markedShipped.push(r.order_number);
+      if (patch.status === "delivered") markedDeliveredFromList.push(r.order_number);
       if (patch.tracking_number) trackingAdded++;
     }
-    if (r.status === "shipped" || patch.status === "shipped") inTransit.push({ ...r, tracking_number: (patch.tracking_number as string) ?? r.tracking_number });
+    // Only orders eShip gave no status for need a separate tracking lookup.
+    const stillShipped = patch.status === "shipped" || (r.status === "shipped" && !patch.status);
+    if (stillShipped && !nzStatus) inTransit.push({ ...r, tracking_number: (patch.tracking_number as string) ?? r.tracking_number });
   }
 
   // Newest first, so a backlog of old international parcels can't crowd out this week's.
   inTransit.sort((a, b) => b.order_number - a.order_number);
-  const markedDelivered: number[] = [];
+  const markedDelivered: number[] = [...markedDeliveredFromList];
   let trackingChecked = 0;
   let trackSample: { order: number; status: string | null } | null = null;
   for (const r of inTransit.slice(0, maxTrackingChecks)) {
@@ -165,6 +184,8 @@ export async function syncEShip({ sinceDays = 90, maxTrackingChecks = 40, dryRun
         packageKeys: first?.packages?.[0] ? Object.keys(first.packages[0]) : [],
         firstTracking: first ? trackingNumberOf(first) : null,
         trackSample,
+        statusCounts,
+        statusOf1133: byNumber.get(1133) ? statusOf(byNumber.get(1133)!) : undefined,
       },
     } : {}),
   };
