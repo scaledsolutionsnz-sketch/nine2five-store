@@ -22,6 +22,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       </Suspense>
       <VisitorTracker />
       <main style={{ paddingTop: "68px", overflowX: "hidden" }}>
+        {/* Order delay notice. Remove once orders are back to normal turnaround. */}
+        <div
+          role="status"
+          style={{ backgroundColor: "#2E8B28", color: "#ffffff", textAlign: "center", padding: "10px 20px", fontSize: 13, fontWeight: 600, lineHeight: 1.5, letterSpacing: "0.01em" }}
+        >
+          Due to high demand, all new orders will be delayed by 1 to 1.5 weeks. Thank you for your patience.
+        </div>
         {children}
       </main>
 
