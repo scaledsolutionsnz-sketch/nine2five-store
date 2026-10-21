@@ -1,5 +1,8 @@
 import type { ShippingAddress } from "@/types/database";
 
+// Temporary: matches the delay banner in src/app/(store)/layout.tsx. Remove both once orders are back to normal.
+const ORDER_DELAY_NOTICE = "Due to high demand, all new orders are delayed by 1 to 1.5 weeks. Thank you for your patience.";
+
 interface OrderItem {
   product_name: string;
   size: string;
@@ -107,6 +110,9 @@ export function orderConfirmationHtml(data: OrderConfirmationData): string {
               <p style="margin:12px 0 0;font-size:14px;color:#737373;line-height:1.6;">
                 Your order is confirmed and we&apos;re getting it ready to send. We&apos;ll email you again with tracking once it ships.
               </p>
+              <p style="margin:16px 0 0;padding:12px 14px;font-size:14px;color:#ffffff;line-height:1.6;background:#0f2a17;border-left:3px solid #2E8B28;border-radius:6px;">
+                ${ORDER_DELAY_NOTICE}
+              </p>
             </td>
           </tr>
 
@@ -204,6 +210,8 @@ export function orderConfirmationText(data: OrderConfirmationData): string {
     `Kia ora ${data.customer_name},`,
     ``,
     `Your order is confirmed. We'll email you with tracking once it ships.`,
+    ``,
+    ORDER_DELAY_NOTICE,
     ``,
     `ITEMS`,
     ...data.items.map((i) => `- ${i.product_name} (Size ${i.size} × ${i.quantity}) — ${fmt(i.unit_price * i.quantity)}`),
