@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const VALID_SEGMENTS = ["all", "subscribed", "high_value"] as const;
+const VALID_SEGMENTS = ["all", "subscribed", "high_value", "past_customers"] as const;
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();

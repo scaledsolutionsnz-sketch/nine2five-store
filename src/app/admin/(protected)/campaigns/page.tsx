@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { createServiceClient } from "@/lib/supabase/server";
 import { CampaignManager } from "./campaign-manager";
 import type { EmailCampaign } from "@/types/database";
+import { pastCustomerRecipients } from "@/lib/campaign-segments";
 
 export default async function CampaignsPage() {
   const supabase = await createServiceClient();
@@ -12,11 +13,13 @@ export default async function CampaignsPage() {
     { count: customerCount },
     { count: subscribedCount },
     { count: highValueCount },
+    pastCustomers,
   ] = await Promise.all([
     supabase.from("email_campaigns").select("*").order("created_at", { ascending: false }),
     supabase.from("customers").select("*", { count: "exact", head: true }),
     supabase.from("customers").select("*", { count: "exact", head: true }).eq("accepts_marketing", true),
     supabase.from("customers").select("*", { count: "exact", head: true }).gte("lifetime_value_cents", 10000),
+    pastCustomerRecipients(supabase),
   ]);
 
   return (
@@ -30,6 +33,7 @@ export default async function CampaignsPage() {
         customerCount={customerCount ?? 0}
         subscribedCount={subscribedCount ?? 0}
         highValueCount={highValueCount ?? 0}
+        pastCustomerCount={pastCustomers.length}
       />
     </div>
   );

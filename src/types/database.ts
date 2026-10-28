@@ -11,7 +11,7 @@ export type OrderStatus =
 
 export type CampaignStatus = "draft" | "sent";
 
-export type CampaignSegment = "all" | "subscribed" | "high_value";
+export type CampaignSegment = "all" | "subscribed" | "high_value" | "past_customers";
 
 export type AffiliateStatus = "pending" | "active" | "suspended";
 

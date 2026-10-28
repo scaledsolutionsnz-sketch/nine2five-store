@@ -12,6 +12,7 @@ const SEGMENTS: { value: CampaignSegment; label: string; desc: string }[] = [
   { value: "all",        label: "All customers",       desc: "Everyone who has placed an order" },
   { value: "subscribed", label: "Subscribed only",     desc: "Customers who opted in to marketing" },
   { value: "high_value", label: "High-value ($100+)",  desc: "Customers with lifetime spend over $100" },
+  { value: "past_customers", label: "Past customers", desc: "Subscribed customers who have ordered before" },
 ];
 
 const darkInput: React.CSSProperties = {
@@ -32,11 +33,13 @@ export function CampaignManager({
   customerCount,
   subscribedCount,
   highValueCount,
+  pastCustomerCount,
 }: {
   initialCampaigns: EmailCampaign[];
   customerCount: number;
   subscribedCount: number;
   highValueCount: number;
+  pastCustomerCount: number;
 }) {
   const [campaigns, setCampaigns] = useState(initialCampaigns);
   const [creating, setCreating] = useState(false);
@@ -50,6 +53,7 @@ export function CampaignManager({
     all: customerCount,
     subscribed: subscribedCount,
     high_value: highValueCount,
+    past_customers: pastCustomerCount,
   };
 
   async function createCampaign() {

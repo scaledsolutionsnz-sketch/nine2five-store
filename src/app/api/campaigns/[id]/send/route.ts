@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { campaignHtml, campaignText } from "@/lib/emails/campaign";
+import { pastCustomerRecipients } from "@/lib/campaign-segments";
 
 const FROM = "Nine2Five <hello@nine2five.nz>";
 const BATCH_SIZE = 100;
@@ -36,7 +37,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
   // 'all' — no filter
 
-  const { data: customers } = await query;
+  const customers = segment === "past_customers"
+    ? await pastCustomerRecipients(serviceClient)
+    : (await query).data;
   if (!customers?.length) return NextResponse.json({ error: "No customers in segment" }, { status: 400 });
 
   const resend = new Resend(process.env.RESEND_API_KEY!);
