@@ -31,7 +31,7 @@ export function OrdersSearchClient({ defaultValue }: { defaultValue: string }) {
         type="text"
         value={value}
         onChange={handleChange}
-        placeholder="Search orders or email…"
+        placeholder="Search order #, name or email…"
         style={{
           height: 34, paddingLeft: 34, paddingRight: value ? 32 : 14,
           borderRadius: 9999, fontSize: 13, width: 240,

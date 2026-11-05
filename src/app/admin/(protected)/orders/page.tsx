@@ -45,11 +45,28 @@ export default async function OrdersPage({
   if (viewStatuses) query = query.in("status", [...viewStatuses]);
 
   if (search) {
-    const num = parseInt(search.replace(/^#/, ""), 10);
-    if (!isNaN(num)) {
-      query = query.eq("order_number", num);
+    if (/^#?\d+$/.test(search)) {
+      query = query.eq("order_number", parseInt(search.replace(/^#/, ""), 10));
     } else {
-      query = query.ilike("guest_email", `%${search}%`);
+      /* Signed-in customers have no guest_email (their email lives on the customer record),
+         so every word must match the shipping name, the guest email or the customer's account. */
+      const terms = search.split(/\s+/).map((t) => t.replace(/[,()"'\\%*]/g, "")).filter(Boolean);
+      for (const term of terms) {
+        const like = `%${term}%`;
+        const { data: customers } = await supabase
+          .from("customers")
+          .select("id")
+          .or(`email.ilike.${like},first_name.ilike.${like},last_name.ilike.${like}`)
+          .limit(100);
+        const filters = [
+          `guest_email.ilike.${like}`,
+          `shipping_address->>first_name.ilike.${like}`,
+          `shipping_address->>last_name.ilike.${like}`,
+        ];
+        const ids = (customers ?? []).map((c) => c.id);
+        if (ids.length) filters.push(`customer_id.in.(${ids.join(",")})`);
+        query = query.or(filters.join(","));
+      }
     }
   }
 
