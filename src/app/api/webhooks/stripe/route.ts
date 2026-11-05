@@ -26,6 +26,23 @@ function safeJson<T>(s: string | undefined, fallback: T): T {
 async function resolveCompactItems(min: string, supabase: ReturnType<typeof getServiceClient>): Promise<OrderItem[]> {
   const arr = safeJson<{ v: string; q: number; p: number; c?: string }[]>(min, []);
   if (!arr.length) return [];
+  // The Basic page's static fallback invents ids like "basic-white-10-13" (there is one
+  // "basic" product in the DB, not one per colour). Map those onto the real Basic variant
+  // for that size, or the order lands with no items and never reaches eShip (#1257).
+  const FAKE_BASIC = /^basic-(?:black|white)-(.+)$/;
+  const fakeSizes = arr.map((x) => FAKE_BASIC.exec(x.v)?.[1]).filter((s): s is string => !!s);
+  if (fakeSizes.length) {
+    const { data: basicVars } = await supabase
+      .from("product_variants")
+      .select("id, size, products!inner(slug)")
+      .eq("products.slug", "basic");
+    const bySize = new Map((basicVars ?? []).map((v) => [v.size as string, v.id as string]));
+    for (const x of arr) {
+      const size = FAKE_BASIC.exec(x.v)?.[1];
+      const real = size ? bySize.get(size) : undefined;
+      if (real) x.v = real;
+    }
+  }
   const { data: vars } = await supabase
     .from("product_variants")
     .select("id, product_id, size, products(name)")
