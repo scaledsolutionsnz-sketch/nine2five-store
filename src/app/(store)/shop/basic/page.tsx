@@ -17,8 +17,26 @@ async function getBasicProducts() {
     const { data: products } = await supabase
       .from("products")
       .select("*")
-      .in("slug", ["basic-black", "basic-white"])
+      .in("slug", ["basic", "basic-black", "basic-white"])
       .eq("active", true);
+
+    // The live DB has a single "basic" product (its variants are the real ids the
+    // webhook and stock need); the colour is baked into the cart line's name by
+    // BasicProductClient. Images still come from the per-colour static entries.
+    const basic = products?.find((p) => p.slug === "basic");
+    if (basic) {
+      const { data: v } = await supabase.from("product_variants").select("*").eq("product_id", basic.id);
+      const variants = (v ?? []) as ProductVariant[];
+      const statics = getStaticProducts();
+      const forColour = (slug: "basic-black" | "basic-white"): Product => ({
+        ...(basic as Product),
+        image_urls: statics.find((p) => p.slug === slug)?.image_urls ?? (basic as Product).image_urls,
+      });
+      return {
+        black: { product: forColour("basic-black"), variants },
+        white: { product: forColour("basic-white"), variants },
+      };
+    }
 
     if (products && products.length >= 2) {
       const variantMap: Record<string, ProductVariant[]> = {};
