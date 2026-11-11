@@ -14,10 +14,10 @@ export function shippingNotice(now: Date = new Date()): string | null {
   const key = nz.getFullYear() * 1_000_000 + (nz.getMonth() + 1) * 10_000 + nz.getDate() * 100 + nz.getHours();
 
   if (key < 2026111512) {
-    return "Heads up: we're closed for two weeks from Monday 16 November. Order by midday Sunday 15 November and your socks ship before we close. Anything after that ships from 28 November.";
+    return "Heads up: we're not shipping from Monday 16 to Friday 27 November. Order by midday Sunday 15 November and your socks go out before then. Everything ordered after that ships on Saturday 28 November.";
   }
   if (key < 2026112800) {
-    return "We're closed until 28 November. You can still order now, and everything will ship in order from Saturday 28 November. Thank you for your patience.";
+    return "We're not shipping until 28 November. Order now and your socks ship on Saturday 28 November, in the order they came in. Thank you for your patience.";
   }
   if (key < 2026121200) {
     return "Christmas at Nine2Five: every order is gift-wrapped and ready for under the tree. Aotearoa, order by Friday 18 December. Australia, order by Friday 11 December.";
