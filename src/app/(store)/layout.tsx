@@ -5,8 +5,12 @@ import { VisitorTracker } from "@/components/storefront/visitor-tracker";
 import { Pixels } from "@/components/analytics/pixels";
 import { KoruIntro } from "@/components/storefront/koru-intro";
 import { AuthHashRedirect } from "@/components/storefront/auth-hash-redirect";
+import { shippingNotice } from "@/lib/shipping-notice";
+
+export const dynamic = "force-dynamic";
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
+  const notice = shippingNotice();
   return (
     <>
       <AuthHashRedirect />
@@ -22,6 +26,14 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       </Suspense>
       <VisitorTracker />
       <main style={{ paddingTop: "68px", overflowX: "hidden" }}>
+        {notice && (
+          <div
+            role="status"
+            style={{ backgroundColor: "#2E8B28", color: "#ffffff", textAlign: "center", padding: "10px 20px", fontSize: 13, fontWeight: 600, lineHeight: 1.5, letterSpacing: "0.01em" }}
+          >
+            {notice}
+          </div>
+        )}
         {children}
       </main>
 
